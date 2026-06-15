@@ -883,7 +883,33 @@
 	const printBtn = root.querySelector( '.fcc-print-btn' );
 	if ( printBtn ) {
 		printBtn.addEventListener( 'click', function () {
+			// Temporarily hide all page elements except the calculator.
+			const hiddenEls = [];
+			document.body.childNodes.forEach( function ( node ) {
+				if ( node.nodeType === 1 && node !== root && ! node.contains( root ) ) {
+					hiddenEls.push( { el: node, display: node.style.display } );
+					node.style.setProperty( 'display', 'none', 'important' );
+				}
+			} );
+
+			// Also hide the immediate wrapper's siblings if root is nested.
+			let ancestor = root.parentElement;
+			while ( ancestor && ancestor !== document.body ) {
+				Array.from( ancestor.parentElement ? ancestor.parentElement.children : [] ).forEach( function ( sib ) {
+					if ( sib !== ancestor ) {
+						hiddenEls.push( { el: sib, display: sib.style.display } );
+						sib.style.setProperty( 'display', 'none', 'important' );
+					}
+				} );
+				ancestor = ancestor.parentElement;
+			}
+
 			window.print();
+
+			// Restore everything after print dialog closes.
+			hiddenEls.forEach( function ( item ) {
+				item.el.style.display = item.display;
+			} );
 		} );
 	}
 

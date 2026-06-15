@@ -1684,24 +1684,66 @@ select.fcc-bmr-input {
 }
 
 /* --------------------------------------------------------------------------
-   Print
+   Print — show only calculator results, hide entire page chrome
    -------------------------------------------------------------------------- */
 @media print {
-	.fcc-hero { background: #005EB8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	/* Hide everything on the page by default */
+	body > *,
+	body > * > *,
+	header, footer, nav,
+	#header, #footer, #nav, #masthead, #colophon, #site-header, #site-footer,
+	.site-header, .site-footer, .site-navigation, .main-navigation,
+	.wp-block-template-part,
+	.elementor-location-header, .elementor-location-footer,
+	.ast-above-header-wrap, .ast-below-header, .ast-breadcrumbs-wrapper,
+	.header-main-layout-1, .footer-widget-area, .footer-top,
+	[class*="header"], [class*="footer"], [class*="navbar"], [class*="nav-"],
+	[id*="header"], [id*="footer"],
+	aside, .sidebar, .widget-area,
+	.wpadminbar { display: none !important; }
+
+	/* Show only the calculator and its direct ancestors */
+	html, body,
+	.fcc-calculator,
+	.fcc-calculator * { display: revert; visibility: visible; }
+
+	/* Position calculator at top-left of print page */
+	.fcc-calculator {
+		position: absolute !important;
+		top: 0 !important;
+		left: 0 !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		box-shadow: none !important;
+		border-radius: 0 !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+	/* Hide interactive/non-result parts of the calculator */
 	.fcc-tabs-nav,
 	.fcc-search-section,
 	.fcc-quantity-section,
 	.fcc-bmr-section,
-	.fcc-result-actions { display: none !important; }
+	.fcc-result-actions,
+	.fcc-compare-section,
+	.fcc-meal-section,
+	[data-panel="compare"],
+	[data-panel="meal"],
+	[data-panel="bmr"] { display: none !important; }
 
-	.fcc-calculator {
-		box-shadow: none;
-		border-radius: 0;
-		max-width: 100%;
-	}
+	/* Ensure result content shows */
+	.fcc-hero { background: #005EB8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	.fcc-results-section,
+	.fcc-nutrition-table,
+	.fcc-tl-row,
+	.fcc-macro-chart-wrapper { display: revert !important; }
 
 	.fcc-nutrition-table th,
-	.fcc-nutrition-table td { border: 1px solid #ccc; }
+	.fcc-nutrition-table td { border: 1px solid #ccc !important; }
+
+	/* Clean up page margins */
+	@page { margin: 1cm; }
 }
 
 /* ==========================================================================
