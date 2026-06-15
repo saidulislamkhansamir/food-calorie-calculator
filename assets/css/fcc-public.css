@@ -1684,52 +1684,26 @@ select.fcc-bmr-input {
 }
 
 /* --------------------------------------------------------------------------
-   Print — show only calculator results, hide entire page chrome
+   Print — JS injects .fcc-print-clone directly into <body>; hide everything else
    -------------------------------------------------------------------------- */
 @media print {
-	/* Step 1: make everything on the page invisible (but still in layout flow) */
-	body * { visibility: hidden !important; }
+	body > *:not(.fcc-print-clone) { display: none !important; }
 
-	/* Step 2: make the calculator and all its children visible */
-	.fcc-calculator,
-	.fcc-calculator * { visibility: visible !important; }
-
-	/* Step 3: pin calculator to top of the printed page */
-	.fcc-calculator {
-		position: fixed !important;
-		top: 0 !important;
-		left: 0 !important;
-		right: 0 !important;
-		width: 100% !important;
-		max-width: 100% !important;
-		margin: 0 !important;
-		padding: 1rem !important;
+	.fcc-print-clone {
+		display: block !important;
 		box-shadow: none !important;
 		border-radius: 0 !important;
-		background: #fff !important;
+		max-width: 100% !important;
+		margin: 0 !important;
+		padding: 0 !important;
 		-webkit-print-color-adjust: exact;
 		print-color-adjust: exact;
 	}
 
-	/* Step 4: hide interactive/non-result parts inside the calculator */
-	.fcc-tabs-nav,
-	.fcc-search-section,
-	.fcc-quantity-section,
-	.fcc-result-actions,
-	[data-panel="compare"],
-	[data-panel="meal"],
-	[data-panel="bmr"] { visibility: hidden !important; }
+	.fcc-print-clone .fcc-hero { background: #005EB8 !important; }
 
-	/* But keep the hero banner and result panel visible */
-	.fcc-hero,
-	.fcc-hero *,
-	[data-panel="food"],
-	[data-panel="food"] * { visibility: visible !important; }
-
-	.fcc-hero { background: #005EB8 !important; }
-
-	.fcc-nutrition-table th,
-	.fcc-nutrition-table td { border: 1px solid #ccc !important; }
+	.fcc-print-clone .fcc-nutrition-table th,
+	.fcc-print-clone .fcc-nutrition-table td { border: 1px solid #ccc !important; }
 
 	@page { margin: 1cm; }
 }

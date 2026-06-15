@@ -883,11 +883,26 @@
 	const printBtn = root.querySelector( '.fcc-print-btn' );
 	if ( printBtn ) {
 		printBtn.addEventListener( 'click', function () {
+			// Clone the calculator, strip non-result parts, inject at body level.
+			const clone = root.cloneNode( true );
+			clone.classList.add( 'fcc-print-clone' );
+
+			[ 'fcc-tabs-nav', 'fcc-search-section', 'fcc-quantity-section', 'fcc-result-actions' ].forEach( function ( cls ) {
+				const el = clone.querySelector( '.' + cls );
+				if ( el ) el.remove();
+			} );
+			clone.querySelectorAll( '.fcc-tab-panel' ).forEach( function ( panel ) {
+				if ( panel.dataset.panel !== 'food' ) panel.remove();
+			} );
+
+			document.body.appendChild( clone );
+
 			const prevTitle = document.title;
-			const foodName  = state.food ? state.food.name : '';
-			document.title  = ( foodName ? foodName + ' – ' : '' ) + 'Food Calorie Calculator';
+			document.title  = ( state.food ? state.food.name + ' – ' : '' ) + 'Food Calorie Calculator';
 			window.print();
 			document.title  = prevTitle;
+
+			document.body.removeChild( clone );
 		} );
 	}
 
