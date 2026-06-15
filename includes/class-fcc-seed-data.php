@@ -109,6 +109,71 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add seafood items added in v1.3.4 to existing installations.
+	// -------------------------------------------------------------------------
+
+	public static function seed_v3(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 3 ) {
+			return;
+		}
+
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) {
+			return;
+		}
+
+		foreach ( self::seafood_v3( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) {
+				Database::insert_food( $food );
+			}
+		}
+
+		update_option( 'fcc_seed_version', 3 );
+	}
+
+	/**
+	 * The 26 new seafood items added in seed v3.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v3( int $fs ): array {
+		return [
+			[ 'name' => 'Scallops (raw)',                    'slug' => 'scallops-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '3 scallops (90g)',     'grams' => 90]  ], 'energy_kcal' => 88,  'energy_kj' => 368,  'protein_g' => 17.0, 'carbohydrate_g' => 2.4, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.8,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.45, 'omega3_total_mg' => 398,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 167,  'omega3_dha_mg' => 193,  'source_notes' => 'USDA FDC #175187 (scallop, raw).' ],
+			[ 'name' => 'Langoustines (cooked)',             'slug' => 'langoustines-cooked',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '5 langoustines (100g)', 'grams' => 100] ], 'energy_kcal' => 90,  'energy_kj' => 377,  'protein_g' => 18.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'source_notes' => 'M&W 8th ed. (Dublin Bay prawns, boiled). Omega-3 left NULL.' ],
+			[ 'name' => 'Cockles (cooked)',                  'slug' => 'cockles-cooked',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 53,  'energy_kj' => 222,  'protein_g' => 12.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 1.20, 'source_notes' => 'M&W 8th ed. Omega-3 left NULL.' ],
+			[ 'name' => 'Whelks (cooked)',                   'slug' => 'whelks-cooked',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 72,  'energy_kj' => 301,  'protein_g' => 16.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.5,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.55, 'source_notes' => 'M&W 8th ed. Omega-3 left NULL.' ],
+			[ 'name' => 'Squid / Calamari (raw)',            'slug' => 'squid-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.4,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.44, 'omega3_total_mg' => 496,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 148,  'omega3_dha_mg' => 256,  'source_notes' => 'USDA FDC #175186 (squid, raw).' ],
+			[ 'name' => 'Calamari (Fried)',                  'slug' => 'calamari-fried',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 175, 'energy_kj' => 732,  'protein_g' => 14.0, 'carbohydrate_g' => 11.0,'of_which_sugars_g' => 0.5, 'fat_g' => 8.0,  'of_which_saturates_g' => 2.0, 'fibre_g' => 0.3, 'salt_g' => 0.60, 'source_notes' => 'M&W 8th ed. estimate (squid in batter, fried). Omega-3 left NULL.' ],
+			[ 'name' => 'Octopus (cooked)',                  'slug' => 'octopus-cooked',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 164, 'energy_kj' => 686,  'protein_g' => 29.8, 'carbohydrate_g' => 4.4, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.1,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 306,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 106,  'omega3_dha_mg' => 145,  'source_notes' => 'USDA FDC #175184 (octopus, cooked).' ],
+			[ 'name' => 'Tuna (Canned, in oil, drained)',    'slug' => 'tuna-canned-in-oil',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tin (112g)',          'grams' => 112] ], 'energy_kcal' => 189, 'energy_kj' => 791,  'protein_g' => 27.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 9.0,  'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 0.93, 'source_notes' => 'M&W 8th ed. (Tuna, canned in oil, drained). Omega-3 left NULL.' ],
+			[ 'name' => 'Salmon (Canned)',                   'slug' => 'salmon-canned',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '½ tin (105g)', 'grams' => 105], ['label' => '1 tin (213g)', 'grams' => 213] ], 'energy_kcal' => 153, 'energy_kj' => 640, 'protein_g' => 20.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 8.0, 'of_which_saturates_g' => 1.9, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'omega3_total_mg' => 1824, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 463, 'omega3_dha_mg' => 895, 'source_notes' => 'USDA FDC #175170 (salmon, sockeye, canned, drained).' ],
+			[ 'name' => 'Sardines (Canned, in brine)',       'slug' => 'sardines-canned-brine',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tin drained (90g)',   'grams' => 90]  ], 'energy_kcal' => 172, 'energy_kj' => 719,  'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 8.8,  'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 1.50, 'omega3_total_mg' => 1200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 380,  'omega3_dha_mg' => 430,  'source_notes' => 'M&W 8th ed. (Sardines, canned in brine, drained).' ],
+			[ 'name' => 'Sardines (Canned, in tomato sauce)','slug' => 'sardines-tomato-sauce',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tin (120g)',          'grams' => 120] ], 'energy_kcal' => 163, 'energy_kj' => 682,  'protein_g' => 17.8, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 2.5, 'fat_g' => 8.5,  'of_which_saturates_g' => 2.0, 'fibre_g' => 0.4, 'salt_g' => 1.20, 'omega3_total_mg' => 1100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 350,  'omega3_dha_mg' => 380,  'source_notes' => 'M&W 8th ed. (Sardines in tomato sauce).' ],
+			[ 'name' => 'Anchovies (Canned, in oil)',        'slug' => 'anchovies-canned',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '5 fillets (20g)',       'grams' => 20]  ], 'energy_kcal' => 210, 'energy_kj' => 879,  'protein_g' => 28.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 9.7,  'of_which_saturates_g' => 2.2, 'fibre_g' => 0.0, 'salt_g' => 9.20, 'omega3_total_mg' => 2113, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 760,  'omega3_dha_mg' => 900,  'source_notes' => 'USDA FDC #1905591 (anchovies, canned in oil, drained). Very high salt from brine preservation.' ],
+			[ 'name' => 'Mackerel (Canned, in brine)',       'slug' => 'mackerel-canned',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tin (125g)',          'grams' => 125] ], 'energy_kcal' => 188, 'energy_kj' => 787,  'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 11.0, 'of_which_saturates_g' => 2.6, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'omega3_total_mg' => 2400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 810,  'omega3_dha_mg' => 1270, 'source_notes' => 'M&W 8th ed. (Mackerel, canned in brine, drained).' ],
+			[ 'name' => 'Smoked Salmon',                     'slug' => 'smoked-salmon',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '2 slices (50g)', 'grams' => 50], ['label' => '100g pack', 'grams' => 100] ], 'energy_kcal' => 142, 'energy_kj' => 594, 'protein_g' => 23.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.5, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 3.00, 'omega3_total_mg' => 1750, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 420, 'omega3_dha_mg' => 1030, 'source_notes' => 'M&W 8th ed.; Omega-3: USDA FDC #175168 (salmon, chinook, smoked).' ],
+			[ 'name' => 'Smoked Haddock (raw)',              'slug' => 'smoked-haddock',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',       'grams' => 150] ], 'energy_kcal' => 101, 'energy_kj' => 423,  'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 2.40, 'source_notes' => 'M&W 8th ed. White fish; omega-3 left NULL.' ],
+			[ 'name' => 'Smoked Mackerel',                   'slug' => 'smoked-mackerel',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (125g)',       'grams' => 125] ], 'energy_kcal' => 354, 'energy_kj' => 1482, 'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 30.9, 'of_which_saturates_g' => 5.9, 'fibre_g' => 0.0, 'salt_g' => 1.70, 'omega3_total_mg' => 3200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1000, 'omega3_dha_mg' => 1800, 'source_notes' => 'M&W 8th ed. Excellent omega-3 source; hot-smoking retains fatty-acid profile.' ],
+			[ 'name' => 'Smoked Trout',                      'slug' => 'smoked-trout',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (100g)',       'grams' => 100] ], 'energy_kcal' => 165, 'energy_kj' => 690,  'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 7.8,  'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 2.00, 'omega3_total_mg' => 1100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 270,  'omega3_dha_mg' => 690,  'source_notes' => 'M&W 8th ed. / USDA FDC #175154 equivalent (trout, rainbow, smoked).' ],
+			[ 'name' => 'Rollmops (pickled herring)',         'slug' => 'rollmops',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 rollmop (60g)',       'grams' => 60]  ], 'energy_kcal' => 162, 'energy_kj' => 678,  'protein_g' => 13.5, 'carbohydrate_g' => 2.7, 'of_which_sugars_g' => 2.0, 'fat_g' => 10.7, 'of_which_saturates_g' => 2.4, 'fibre_g' => 0.0, 'salt_g' => 2.80, 'omega3_total_mg' => 1420, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 480,  'omega3_dha_mg' => 680,  'source_notes' => 'M&W 8th ed. (Herring, pickled/rollmops). Omega-3 retained in pickling.' ],
+			[ 'name' => 'Gravlax (cured salmon)',             'slug' => 'gravlax',                 'category_id' => $fs, 'serving_sizes' => [ ['label' => '3 slices (75g)',        'grams' => 75]  ], 'energy_kcal' => 146, 'energy_kj' => 611,  'protein_g' => 21.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.5, 'fat_g' => 6.5,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 2.40, 'omega3_total_mg' => 1820, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 400,  'omega3_dha_mg' => 980,  'source_notes' => 'M&W / USDA FDC #175168 base (salmon, salt+sugar cured).' ],
+			[ 'name' => 'Cod Roe (raw)',                      'slug' => 'cod-roe',                 'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 107, 'energy_kj' => 448,  'protein_g' => 21.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.1,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.60, 'omega3_total_mg' => 390,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 160,  'omega3_dha_mg' => 200,  'source_notes' => 'M&W 8th ed.' ],
+			[ 'name' => 'Salmon Roe (Ikura)',                 'slug' => 'salmon-roe',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',         'grams' => 16]  ], 'energy_kcal' => 250, 'energy_kj' => 1046, 'protein_g' => 29.2, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 13.6, 'of_which_saturates_g' => 3.1, 'fibre_g' => 0.0, 'salt_g' => 1.90, 'omega3_total_mg' => 3480, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1290, 'omega3_dha_mg' => 1740, 'source_notes' => 'USDA FDC #175172 (fish roe, mixed species, raw). Exceptionally rich omega-3 source.' ],
+			[ 'name' => 'Caviar (black, sturgeon)',           'slug' => 'caviar-black',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',         'grams' => 16]  ], 'energy_kcal' => 264, 'energy_kj' => 1105, 'protein_g' => 24.6, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 17.9, 'of_which_saturates_g' => 4.1, 'fibre_g' => 0.0, 'salt_g' => 5.60, 'omega3_total_mg' => 6789, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 3101, 'omega3_dha_mg' => 2420, 'source_notes' => 'USDA FDC #174219 (Caviar, black and red, granular). One of the most omega-3-dense foods per 100g.' ],
+			[ 'name' => 'Taramasalata',                      'slug' => 'taramasalata',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (30g)', 'grams' => 30], ['label' => '1 portion (60g)', 'grams' => 60] ], 'energy_kcal' => 446, 'energy_kj' => 1847, 'protein_g' => 4.1, 'carbohydrate_g' => 9.3, 'of_which_sugars_g' => 2.5, 'fat_g' => 43.5, 'of_which_saturates_g' => 5.6, 'fibre_g' => 0.3, 'salt_g' => 2.00, 'source_notes' => 'M&W 8th ed. (Taramasalata, retail). Omega-3 diluted by oil; left NULL.' ],
+			[ 'name' => 'Battered Cod (fried)',              'slug' => 'battered-cod',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 piece (180g)',       'grams' => 180] ], 'energy_kcal' => 247, 'energy_kj' => 1034, 'protein_g' => 15.5, 'carbohydrate_g' => 18.0,'of_which_sugars_g' => 0.5, 'fat_g' => 12.5, 'of_which_saturates_g' => 1.8, 'fibre_g' => 0.6, 'salt_g' => 1.00, 'source_notes' => 'M&W 8th ed. (Cod in batter, fried in blended oil). Omega-3 left NULL.' ],
+			[ 'name' => 'Fish Cakes (fried)',                'slug' => 'fish-cakes',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fish cake (70g)', 'grams' => 70], ['label' => '2 fish cakes (140g)', 'grams' => 140] ], 'energy_kcal' => 200, 'energy_kj' => 837, 'protein_g' => 10.0, 'carbohydrate_g' => 19.0, 'of_which_sugars_g' => 1.0, 'fat_g' => 9.5, 'of_which_saturates_g' => 1.2, 'fibre_g' => 1.2, 'salt_g' => 1.10, 'source_notes' => 'M&W 8th ed. Omega-3 left NULL.' ],
+			[ 'name' => 'Fish Fingers (oven baked)',         'slug' => 'fish-fingers',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 finger (28g)', 'grams' => 28], ['label' => '4 fingers (112g)', 'grams' => 112] ], 'energy_kcal' => 200, 'energy_kj' => 837, 'protein_g' => 13.0, 'carbohydrate_g' => 18.5, 'of_which_sugars_g' => 0.5, 'fat_g' => 7.5, 'of_which_saturates_g' => 0.8, 'fibre_g' => 0.8, 'salt_g' => 0.90, 'source_notes' => 'M&W 8th ed. (Fish fingers, cod, oven baked). Omega-3 left NULL.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -746,6 +811,233 @@ class Seed_Data {
 				'fat_g' => 2.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.95,
 				'omega3_total_mg' => 302, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 117, 'omega3_dha_mg' => 146,
 				'source_notes' => 'USDA FDC #174203 (Mollusks, clam, mixed species, cooked, moist heat); Omega-3: same source.',
+			],
+
+			// --- Additional seafood (seed v3) ---
+
+			[
+				'name' => 'Scallops (raw)', 'slug' => 'scallops-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '3 scallops (90g)', 'grams' => 90] ],
+				'energy_kcal' => 88, 'energy_kj' => 368,
+				'protein_g' => 17.0, 'carbohydrate_g' => 2.4, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.8, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.45,
+				'omega3_total_mg' => 398, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 167, 'omega3_dha_mg' => 193,
+				'source_notes' => 'USDA FDC #175187 (Mollusks, scallop, mixed species, raw); Omega-3: same source.',
+			],
+			[
+				'name' => 'Langoustines (cooked)', 'slug' => 'langoustines-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '5 langoustines (100g)', 'grams' => 100] ],
+				'energy_kcal' => 90, 'energy_kj' => 377,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'source_notes' => 'M&W 8th ed. (Dublin Bay prawns/Norway lobster, boiled). Omega-3 not reliably tabulated for this species; left NULL.',
+			],
+			[
+				'name' => 'Cockles (cooked)', 'slug' => 'cockles-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 53, 'energy_kj' => 222,
+				'protein_g' => 12.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 1.20,
+				'source_notes' => 'M&W 8th ed. (Cockles, boiled). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Whelks (cooked)', 'slug' => 'whelks-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 72, 'energy_kj' => 301,
+				'protein_g' => 16.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.5, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.55,
+				'source_notes' => 'M&W 8th ed. (Whelks, boiled). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Squid / Calamari (raw)', 'slug' => 'squid-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.4, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.44,
+				'omega3_total_mg' => 496, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 148, 'omega3_dha_mg' => 256,
+				'source_notes' => 'USDA FDC #175186 (Mollusks, squid, mixed species, raw); Omega-3: same source.',
+			],
+			[
+				'name' => 'Calamari (Fried)', 'slug' => 'calamari-fried', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 175, 'energy_kj' => 732,
+				'protein_g' => 14.0, 'carbohydrate_g' => 11.0, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 8.0, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.3, 'salt_g' => 0.60,
+				'source_notes' => 'M&W 8th ed. estimate (squid in batter, fried). Omega-3 reduced significantly by frying/batter; left NULL.',
+			],
+			[
+				'name' => 'Octopus (cooked)', 'slug' => 'octopus-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 164, 'energy_kj' => 686,
+				'protein_g' => 29.8, 'carbohydrate_g' => 4.4, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.1, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 306, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 106, 'omega3_dha_mg' => 145,
+				'source_notes' => 'USDA FDC #175184 (Mollusks, octopus, common, cooked, moist heat); Omega-3: same source.',
+			],
+			[
+				'name' => 'Tuna (Canned, in oil, drained)', 'slug' => 'tuna-canned-in-oil', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tin (112g)', 'grams' => 112] ],
+				'energy_kcal' => 189, 'energy_kj' => 791,
+				'protein_g' => 27.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 9.0, 'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 0.93,
+				'source_notes' => 'M&W 8th ed. (Tuna, canned in oil, drained). Omega-3 not reliably retained in oil-pack processing; left NULL.',
+			],
+			[
+				'name' => 'Salmon (Canned)', 'slug' => 'salmon-canned', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '½ tin (105g)', 'grams' => 105], ['label' => '1 tin (213g)', 'grams' => 213] ],
+				'energy_kcal' => 153, 'energy_kj' => 640,
+				'protein_g' => 20.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 8.0, 'of_which_saturates_g' => 1.9, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'omega3_total_mg' => 1824, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 463, 'omega3_dha_mg' => 895,
+				'source_notes' => 'USDA FDC #175170 (Fish, salmon, sockeye, canned, drained); Omega-3: same source.',
+			],
+			[
+				'name' => 'Sardines (Canned, in brine)', 'slug' => 'sardines-canned-brine', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tin drained (90g)', 'grams' => 90] ],
+				'energy_kcal' => 172, 'energy_kj' => 719,
+				'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 8.8, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 1.50,
+				'omega3_total_mg' => 1200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 380, 'omega3_dha_mg' => 430,
+				'source_notes' => 'M&W 8th ed. (Sardines, canned in brine, drained); Omega-3: estimated from USDA FDC comparable values.',
+			],
+			[
+				'name' => 'Sardines (Canned, in tomato sauce)', 'slug' => 'sardines-tomato-sauce', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tin (120g)', 'grams' => 120] ],
+				'energy_kcal' => 163, 'energy_kj' => 682,
+				'protein_g' => 17.8, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 2.5,
+				'fat_g' => 8.5, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.4, 'salt_g' => 1.20,
+				'omega3_total_mg' => 1100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 350, 'omega3_dha_mg' => 380,
+				'source_notes' => 'M&W 8th ed. (Sardines in tomato sauce); Omega-3: estimated from USDA FDC comparable values.',
+			],
+			[
+				'name' => 'Anchovies (Canned, in oil)', 'slug' => 'anchovies-canned', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '5 fillets (20g)', 'grams' => 20] ],
+				'energy_kcal' => 210, 'energy_kj' => 879,
+				'protein_g' => 28.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 9.7, 'of_which_saturates_g' => 2.2, 'fibre_g' => 0.0, 'salt_g' => 9.20,
+				'omega3_total_mg' => 2113, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 760, 'omega3_dha_mg' => 900,
+				'source_notes' => 'USDA FDC #1905591 (Anchovies, canned in oil, drained). Very high salt from preservation brine. Omega-3: same source.',
+			],
+			[
+				'name' => 'Mackerel (Canned, in brine)', 'slug' => 'mackerel-canned', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tin (125g)', 'grams' => 125] ],
+				'energy_kcal' => 188, 'energy_kj' => 787,
+				'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 11.0, 'of_which_saturates_g' => 2.6, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'omega3_total_mg' => 2400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 810, 'omega3_dha_mg' => 1270,
+				'source_notes' => 'M&W 8th ed. (Mackerel, canned in brine, drained); Omega-3 well retained in canned form.',
+			],
+			[
+				'name' => 'Smoked Salmon', 'slug' => 'smoked-salmon', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '2 slices (50g)', 'grams' => 50], ['label' => '100g pack', 'grams' => 100] ],
+				'energy_kcal' => 142, 'energy_kj' => 594,
+				'protein_g' => 23.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.5, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 3.00,
+				'omega3_total_mg' => 1750, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 420, 'omega3_dha_mg' => 1030,
+				'source_notes' => 'M&W 8th ed. (Smoked salmon); Omega-3: USDA FDC #175168 (salmon, chinook, smoked).',
+			],
+			[
+				'name' => 'Smoked Haddock (raw)', 'slug' => 'smoked-haddock', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 101, 'energy_kj' => 423,
+				'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 2.40,
+				'source_notes' => 'M&W 8th ed. (Haddock, smoked, raw). White fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Smoked Mackerel', 'slug' => 'smoked-mackerel', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (125g)', 'grams' => 125] ],
+				'energy_kcal' => 354, 'energy_kj' => 1482,
+				'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 30.9, 'of_which_saturates_g' => 5.9, 'fibre_g' => 0.0, 'salt_g' => 1.70,
+				'omega3_total_mg' => 3200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1000, 'omega3_dha_mg' => 1800,
+				'source_notes' => 'M&W 8th ed. (Mackerel, smoked). Excellent omega-3 source; hot-smoking retains fatty-acid profile.',
+			],
+			[
+				'name' => 'Smoked Trout', 'slug' => 'smoked-trout', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (100g)', 'grams' => 100] ],
+				'energy_kcal' => 165, 'energy_kj' => 690,
+				'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 7.8, 'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 2.00,
+				'omega3_total_mg' => 1100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 270, 'omega3_dha_mg' => 690,
+				'source_notes' => 'M&W 8th ed. / USDA FDC #175154 equivalent (trout, rainbow, smoked).',
+			],
+			[
+				'name' => 'Rollmops (pickled herring)', 'slug' => 'rollmops', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 rollmop (60g)', 'grams' => 60] ],
+				'energy_kcal' => 162, 'energy_kj' => 678,
+				'protein_g' => 13.5, 'carbohydrate_g' => 2.7, 'of_which_sugars_g' => 2.0,
+				'fat_g' => 10.7, 'of_which_saturates_g' => 2.4, 'fibre_g' => 0.0, 'salt_g' => 2.80,
+				'omega3_total_mg' => 1420, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 480, 'omega3_dha_mg' => 680,
+				'source_notes' => 'M&W 8th ed. (Herring, pickled/rollmops). Omega-3 largely retained in pickling.',
+			],
+			[
+				'name' => 'Gravlax (cured salmon)', 'slug' => 'gravlax', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '3 slices (75g)', 'grams' => 75] ],
+				'energy_kcal' => 146, 'energy_kj' => 611,
+				'protein_g' => 21.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 6.5, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 2.40,
+				'omega3_total_mg' => 1820, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 400, 'omega3_dha_mg' => 980,
+				'source_notes' => 'M&W 8th ed. / USDA FDC #175168 base (salmon, salt+sugar cured, not smoked). Omega-3 profile mirrors raw salmon.',
+			],
+			[
+				'name' => 'Cod Roe (raw)', 'slug' => 'cod-roe', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 107, 'energy_kj' => 448,
+				'protein_g' => 21.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.1, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.60,
+				'omega3_total_mg' => 390, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 160, 'omega3_dha_mg' => 200,
+				'source_notes' => 'M&W 8th ed. (Cod roe, raw); Omega-3 estimated from USDA FDC mixed roe data.',
+			],
+			[
+				'name' => 'Salmon Roe (Ikura)', 'slug' => 'salmon-roe', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 250, 'energy_kj' => 1046,
+				'protein_g' => 29.2, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 13.6, 'of_which_saturates_g' => 3.1, 'fibre_g' => 0.0, 'salt_g' => 1.90,
+				'omega3_total_mg' => 3480, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1290, 'omega3_dha_mg' => 1740,
+				'source_notes' => 'USDA FDC #175172 (Fish roe, mixed species, raw). Salmon roe is an exceptionally rich omega-3 source.',
+			],
+			[
+				'name' => 'Caviar (black, sturgeon)', 'slug' => 'caviar-black', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 264, 'energy_kj' => 1105,
+				'protein_g' => 24.6, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 17.9, 'of_which_saturates_g' => 4.1, 'fibre_g' => 0.0, 'salt_g' => 5.60,
+				'omega3_total_mg' => 6789, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 3101, 'omega3_dha_mg' => 2420,
+				'source_notes' => 'USDA FDC #174219 (Caviar, black and red, granular). One of the most omega-3-dense foods per 100g.',
+			],
+			[
+				'name' => 'Taramasalata', 'slug' => 'taramasalata', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (30g)', 'grams' => 30], ['label' => '1 portion (60g)', 'grams' => 60] ],
+				'energy_kcal' => 446, 'energy_kj' => 1847,
+				'protein_g' => 4.1, 'carbohydrate_g' => 9.3, 'of_which_sugars_g' => 2.5,
+				'fat_g' => 43.5, 'of_which_saturates_g' => 5.6, 'fibre_g' => 0.3, 'salt_g' => 2.00,
+				'source_notes' => 'M&W 8th ed. (Taramasalata, retail). High fat from oil; cod roe omega-3 diluted by vegetable oil addition; left NULL.',
+			],
+			[
+				'name' => 'Battered Cod (fried)', 'slug' => 'battered-cod', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 piece (180g)', 'grams' => 180] ],
+				'energy_kcal' => 247, 'energy_kj' => 1034,
+				'protein_g' => 15.5, 'carbohydrate_g' => 18.0, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 12.5, 'of_which_saturates_g' => 1.8, 'fibre_g' => 0.6, 'salt_g' => 1.00,
+				'source_notes' => 'M&W 8th ed. (Cod in batter, fried in blended oil). Omega-3 negligible after frying in white fish; left NULL.',
+			],
+			[
+				'name' => 'Fish Cakes (fried)', 'slug' => 'fish-cakes', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fish cake (70g)', 'grams' => 70], ['label' => '2 fish cakes (140g)', 'grams' => 140] ],
+				'energy_kcal' => 200, 'energy_kj' => 837,
+				'protein_g' => 10.0, 'carbohydrate_g' => 19.0, 'of_which_sugars_g' => 1.0,
+				'fat_g' => 9.5, 'of_which_saturates_g' => 1.2, 'fibre_g' => 1.2, 'salt_g' => 1.10,
+				'source_notes' => 'M&W 8th ed. (Fish cakes, fried). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Fish Fingers (oven baked)', 'slug' => 'fish-fingers', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 finger (28g)', 'grams' => 28], ['label' => '4 fingers (112g)', 'grams' => 112] ],
+				'energy_kcal' => 200, 'energy_kj' => 837,
+				'protein_g' => 13.0, 'carbohydrate_g' => 18.5, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 7.5, 'of_which_saturates_g' => 0.8, 'fibre_g' => 0.8, 'salt_g' => 0.90,
+				'source_notes' => 'M&W 8th ed. (Fish fingers, cod, oven baked). Omega-3 left NULL.',
 			],
 
 			// =================================================================
