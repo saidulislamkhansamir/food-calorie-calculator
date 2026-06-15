@@ -19,10 +19,10 @@ jobs:
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: salmoncaviar.co.uk
+          server: ftp.salmoncaviar.co.uk
           username: u591585971.salmoncaviar.co.uk
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftp
           port: 21
           local-dir: ./
           server-dir: /public_html/wp-content/plugins/food-calorie-calculator/
