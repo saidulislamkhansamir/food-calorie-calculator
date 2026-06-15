@@ -588,10 +588,24 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
 								<?php esc_html_e( 'Biological Sex', 'food-calorie-calculator' ); ?>
 							</label>
-							<select id="fcc-bmr-sex" class="fcc-bmr-sex fcc-bmr-input">
+							<select id="fcc-bmr-sex" class="fcc-bmr-sex" hidden aria-hidden="true">
 								<option value="male"><?php esc_html_e( 'Male', 'food-calorie-calculator' ); ?></option>
 								<option value="female"><?php esc_html_e( 'Female', 'food-calorie-calculator' ); ?></option>
 							</select>
+							<div class="fcc-bmr-sex-toggle" role="group" aria-label="<?php esc_attr_e( 'Biological Sex', 'food-calorie-calculator' ); ?>">
+								<button type="button" class="fcc-bmr-sex-btn fcc-bmr-sex-btn--active" data-sex="male">
+									<span class="fcc-bmr-sex-btn__icon" aria-hidden="true">
+										<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6"/><line x1="19" y1="5" x2="14.65" y2="9.35"/><polyline points="15 5 19 5 19 9"/></svg>
+									</span>
+									<?php esc_html_e( 'Male', 'food-calorie-calculator' ); ?>
+								</button>
+								<button type="button" class="fcc-bmr-sex-btn" data-sex="female">
+									<span class="fcc-bmr-sex-btn__icon" aria-hidden="true">
+										<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg>
+									</span>
+									<?php esc_html_e( 'Female', 'food-calorie-calculator' ); ?>
+								</button>
+							</div>
 						</div>
 						<div class="fcc-bmr-row">
 							<label for="fcc-bmr-age" class="fcc-bmr-field-label">

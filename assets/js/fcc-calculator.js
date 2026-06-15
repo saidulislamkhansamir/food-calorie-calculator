@@ -664,14 +664,20 @@
 				}
 			} );
 		} );
-		const sexSel = bmrSection.querySelector( '.fcc-bmr-sex' );
-		if ( sexSel ) {
-			sexSel.addEventListener( 'change', function () {
+		// Sex toggle buttons.
+		bmrSection.querySelectorAll( '.fcc-bmr-sex-btn' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				bmrSection.querySelectorAll( '.fcc-bmr-sex-btn' ).forEach( function ( b ) {
+					b.classList.remove( 'fcc-bmr-sex-btn--active' );
+				} );
+				btn.classList.add( 'fcc-bmr-sex-btn--active' );
+				const sexSel = bmrSection.querySelector( '.fcc-bmr-sex' );
+				if ( sexSel ) sexSel.value = btn.dataset.sex;
 				if ( bmrSection.querySelector( '.fcc-bmr-result' ) && ! bmrSection.querySelector( '.fcc-bmr-result' ).hidden ) {
 					calculateBmr();
 				}
 			} );
-		}
+		} );
 
 		// Height unit toggle (cm ↔ in).
 		const heightInput = bmrSection.querySelector( '.fcc-bmr-height' );
