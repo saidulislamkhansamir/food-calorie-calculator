@@ -2,6 +2,11 @@
 wp-config.php
 wp-content/uploads/
 
+# Never ignore the GitHub Actions workflow
+!.github/
+!.github/workflows/
+!.github/workflows/deploy.yml
+
 # Dependencies
 node_modules/
 vendor/bin/
