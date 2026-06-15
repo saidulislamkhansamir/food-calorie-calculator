@@ -1,0 +1,133 @@
+<?php
+/**
+ * Admin: Import/Export page handler.
+ *
+ * Handles file upload (CSV or XLSX import) and export download triggers.
+ * All file handling uses WP's native upload machinery.
+ *
+ * @package FCC
+ */
+
+namespace FCC\Admin;
+
+defined( 'ABSPATH' ) || exit;
+
+class Import_Export {
+
+	public function register( \FCC\Loader $loader ): void {
+		$loader->add_action( 'admin_post_fcc_import',     $this, 'handle_import' );
+		$loader->add_action( 'admin_post_fcc_export_csv', $this, 'handle_export_csv' );
+		$loader->add_action( 'admin_post_fcc_export_xlsx',$this, 'handle_export_xlsx' );
+	}
+
+	// -------------------------------------------------------------------------
+	// Import.
+	// -------------------------------------------------------------------------
+
+	public function handle_import(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'food-calorie-calculator' ) );
+		}
+
+		check_admin_referer( 'fcc_import' );
+
+		if ( empty( $_FILES['fcc_import_file']['tmp_name'] ) ) {
+			$this->redirect_import( 'error', __( 'No file uploaded.', 'food-calorie-calculator' ) );
+			return;
+		}
+
+		$file     = $_FILES['fcc_import_file'];
+		$tmp_path = $file['tmp_name'];
+		$name     = sanitize_file_name( $file['name'] );
+
+		if ( ! is_uploaded_file( $tmp_path ) ) {
+			$this->redirect_import( 'error', __( 'Invalid file upload.', 'food-calorie-calculator' ) );
+			return;
+		}
+
+		// Server-side file size limit (10 MB — the HTML attribute is easily bypassed via cURL).
+		if ( $file['size'] > 10 * 1024 * 1024 ) {
+			$this->redirect_import( 'error', __( 'File exceeds the 10 MB limit.', 'food-calorie-calculator' ) );
+			return;
+		}
+
+		// Extension allowlist.
+		$ext = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+		if ( ! in_array( $ext, [ 'csv', 'xlsx' ], true ) ) {
+			$this->redirect_import( 'error', __( 'Only CSV and XLSX files are supported.', 'food-calorie-calculator' ) );
+			return;
+		}
+
+		// XLSX must be a ZIP archive — verify magic bytes to reject renamed files.
+		if ( 'xlsx' === $ext ) {
+			$fh    = fopen( $tmp_path, 'rb' );
+			$magic = $fh ? fread( $fh, 4 ) : '';
+			if ( $fh ) {
+				fclose( $fh );
+			}
+			if ( "\x50\x4b\x03\x04" !== $magic ) {
+				$this->redirect_import( 'error', __( 'The uploaded file is not a valid XLSX file.', 'food-calorie-calculator' ) );
+				return;
+			}
+		}
+
+		if ( 'csv' === $ext ) {
+			$result = \FCC\Import_Export::import_csv( $tmp_path );
+		} elseif ( 'xlsx' === $ext ) {
+			$result = \FCC\Import_Export::import_xlsx( $tmp_path );
+		} else {
+			$this->redirect_import( 'error', __( 'Only CSV and XLSX files are supported.', 'food-calorie-calculator' ) );
+			return;
+		}
+
+		$msg = sprintf(
+			// translators: 1: imported count, 2: skipped count.
+			__( 'Import complete: %1$d food(s) imported, %2$d skipped.', 'food-calorie-calculator' ),
+			$result['imported'],
+			$result['skipped']
+		);
+
+		if ( $result['errors'] ) {
+			// Pass errors via transient (can be long).
+			set_transient( 'fcc_import_errors', $result['errors'], 60 );
+		}
+
+		$this->redirect_import( $result['errors'] ? 'warning' : 'success', $msg );
+	}
+
+	// -------------------------------------------------------------------------
+	// Export.
+	// -------------------------------------------------------------------------
+
+	public function handle_export_csv(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'food-calorie-calculator' ) );
+		}
+		check_admin_referer( 'fcc_export_csv' );
+		\FCC\Import_Export::export_csv();
+	}
+
+	public function handle_export_xlsx(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'food-calorie-calculator' ) );
+		}
+		check_admin_referer( 'fcc_export_xlsx' );
+		\FCC\Import_Export::export_xlsx();
+	}
+
+	// -------------------------------------------------------------------------
+	// Helper.
+	// -------------------------------------------------------------------------
+
+	private function redirect_import( string $type, string $msg ): void {
+		wp_safe_redirect( add_query_arg(
+			[
+				'page'       => 'fcc-import-export',
+				'fcc_notice' => rawurlencode( $msg ),
+				'fcc_ntype'  => $type,
+			],
+			admin_url( 'admin.php' )
+		) );
+		exit;
+	}
+}

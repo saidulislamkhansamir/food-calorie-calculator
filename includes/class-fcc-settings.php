@@ -1,0 +1,208 @@
+<?php
+/**
+ * Options API wrapper.
+ *
+ * All plugin settings are stored in a single serialised option `fcc_settings`.
+ * Use Settings::get('section.key') with dot notation, or Settings::get_section('section').
+ *
+ * @package FCC
+ */
+
+namespace FCC;
+
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
+class Settings {
+
+	const OPTION_KEY = 'fcc_settings';
+
+	// ---------------------------------------------------------------------------
+	// Defaults
+	// ---------------------------------------------------------------------------
+
+	public static function defaults(): array {
+		return [
+			'general' => [
+				'default_unit'     => 'metric',    // metric | imperial
+				'default_category' => 0,
+				'decimal_places'   => 1,
+				'show_nutrients'   => [
+					'energy_kcal', 'energy_kj', 'protein_g', 'carbohydrate_g',
+					'of_which_sugars_g', 'fat_g', 'of_which_saturates_g',
+					'fibre_g', 'salt_g',
+				],
+				// UK Reference Intakes — admin-editable.
+				'ri_energy_kcal'        => 2000,
+				'ri_energy_kj'          => 8400,
+				'ri_fat_g'              => 70,
+				'ri_saturates_g'        => 20,
+				'ri_carbohydrate_g'     => 260,
+				'ri_sugars_g'           => 90,
+				'ri_protein_g'          => 50,
+				'ri_fibre_g'            => 30,
+				'ri_salt_g'             => 6,
+				// FSA traffic-light thresholds per 100g (solids) — admin-editable.
+				'fsa_fat_low'           => 3,
+				'fsa_fat_high'          => 17.5,
+				'fsa_saturates_low'     => 1.5,
+				'fsa_saturates_high'    => 5,
+				'fsa_sugars_low'        => 5,
+				'fsa_sugars_high'       => 22.5,
+				'fsa_salt_low'          => 0.3,
+				'fsa_salt_high'         => 1.5,
+			],
+			'features' => [
+				'bmr_tdee'               => true,
+				'daily_needs_comparison' => true,
+				'fsa_traffic_lights'     => true,
+				'ri_display'             => true,
+				'macro_chart'            => true,
+				'omega3_display'         => true,
+				'caffeine_display'       => true,
+				'meal_builder'           => true,
+				'print_pdf'              => true,
+				'share_link'             => true,
+				'add_custom_food'        => false,
+				'json_ld_schema'         => true,
+			],
+			'appearance' => [
+				'primary_colour'    => '#005EB8',
+				'accent_colour'     => '#41B883',
+				'background_colour' => '#F0F4F8',
+				'dark_mode'         => false,
+				'button_radius'     => 8,
+				'font_family'       => 'system',
+				'custom_css'        => '',
+			],
+			'labels' => [
+				'calculator_title'      => __( 'Food Calorie Calculator', 'food-calorie-calculator' ),
+				'search_placeholder'    => __( 'Search for a food…', 'food-calorie-calculator' ),
+				'quantity_label'        => __( 'Quantity', 'food-calorie-calculator' ),
+				'unit_label'            => __( 'Unit', 'food-calorie-calculator' ),
+				'results_title'         => __( 'Nutrition Information', 'food-calorie-calculator' ),
+				'per_label'             => __( 'Per', 'food-calorie-calculator' ),
+				'ri_label'              => __( '% RI*', 'food-calorie-calculator' ),
+				'ri_footnote'           => __( '*Reference Intake of an average adult (8400kJ / 2000kcal)', 'food-calorie-calculator' ),
+				'meal_title'            => __( 'Your Meal', 'food-calorie-calculator' ),
+				'add_to_meal_label'     => __( 'Add to Meal', 'food-calorie-calculator' ),
+				'bmr_title'             => __( 'Daily Calorie Need', 'food-calorie-calculator' ),
+				'omega3_title'          => __( 'Omega-3 Fatty Acids', 'food-calorie-calculator' ),
+				'caffeine_title'        => __( 'Caffeine', 'food-calorie-calculator' ),
+				'no_data_label'         => __( 'Data not available', 'food-calorie-calculator' ),
+				'traffic_light_label'   => __( 'FSA Traffic Lights', 'food-calorie-calculator' ),
+			],
+			'advanced' => [
+				'delete_data_on_uninstall' => false,
+				'cache_enabled'            => true,
+			],
+		];
+	}
+
+	// ---------------------------------------------------------------------------
+	// Read
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Get a setting value by dot-notation key, e.g. "features.bmr_tdee".
+	 * Returns the default if the key doesn't exist.
+	 *
+	 * @param string $key     Dot-notation path (e.g. 'general.decimal_places').
+	 * @param mixed  $default Fallback value.
+	 * @return mixed
+	 */
+	public static function get( string $key, mixed $default = null ): mixed {
+		$all    = self::get_all();
+		$parts  = explode( '.', $key );
+		$cursor = $all;
+
+		foreach ( $parts as $part ) {
+			if ( ! is_array( $cursor ) || ! array_key_exists( $part, $cursor ) ) {
+				return $default;
+			}
+			$cursor = $cursor[ $part ];
+		}
+
+		return $cursor;
+	}
+
+	/**
+	 * Get an entire section, merged with defaults.
+	 */
+	public static function get_section( string $section ): array {
+		$defaults = self::defaults();
+		$all      = self::get_all();
+
+		return array_merge(
+			$defaults[ $section ] ?? [],
+			$all[ $section ]      ?? []
+		);
+	}
+
+	/**
+	 * Return the full settings array merged with defaults.
+	 */
+	public static function get_all(): array {
+		$saved    = get_option( self::OPTION_KEY, [] );
+		$defaults = self::defaults();
+
+		if ( ! is_array( $saved ) ) {
+			return $defaults;
+		}
+
+		// Deep merge: preserve saved values, fill missing with defaults.
+		return self::deep_merge( $defaults, $saved );
+	}
+
+	// ---------------------------------------------------------------------------
+	// Write
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Save the full settings array.
+	 */
+	public static function save( array $data ): bool {
+		return update_option( self::OPTION_KEY, $data );
+	}
+
+	/**
+	 * Update a single section's settings.
+	 */
+	public static function save_section( string $section, array $data ): bool {
+		$all             = self::get_all();
+		$all[ $section ] = $data;
+		return self::save( $all );
+	}
+
+	/**
+	 * Install defaults on first activation (does not overwrite existing values).
+	 */
+	public static function install_defaults(): void {
+		if ( false === get_option( self::OPTION_KEY ) ) {
+			add_option( self::OPTION_KEY, self::defaults() );
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Helpers
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Recursively merge $defaults with $override.
+	 * $override values win; keys missing from $override keep the $defaults value.
+	 */
+	private static function deep_merge( array $defaults, array $override ): array {
+		$merged = $defaults;
+
+		foreach ( $override as $key => $value ) {
+			if ( is_array( $value ) && isset( $merged[ $key ] ) && is_array( $merged[ $key ] ) ) {
+				$merged[ $key ] = self::deep_merge( $merged[ $key ], $value );
+			} else {
+				$merged[ $key ] = $value;
+			}
+		}
+
+		return $merged;
+	}
+}

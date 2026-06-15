@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "food-calorie-calculator/calculator",
+	"version": "1.0.0",
+	"title": "Food Calorie Calculator",
+	"category": "widgets",
+	"icon": "carrot",
+	"description": "Interactive UK food calorie and nutrition calculator with FSA traffic lights, macro chart, meal builder and BMR/TDEE.",
+	"keywords": [ "calorie", "nutrition", "food", "diet", "calculator", "macros" ],
+	"textdomain": "food-calorie-calculator",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"className": true
+	},
+	"attributes": {
+		"align": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"viewScript": [],
+	"editorScript": "file:./index.js"
+}

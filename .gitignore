@@ -1,0 +1,30 @@
+# WordPress
+wp-config.php
+wp-content/uploads/
+
+# Dependencies
+node_modules/
+vendor/bin/
+
+# Build artifacts
+*.min.js.map
+*.min.css.map
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env
+.env
+.env.local
