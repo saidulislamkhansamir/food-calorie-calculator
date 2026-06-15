@@ -1164,6 +1164,7 @@
 .fcc-bmr-input-box {
 	display: flex;
 	align-items: stretch;
+	min-height: 54px;
 	background: #fff;
 	border: 1.5px solid var(--fcc-border);
 	border-radius: 10px;
@@ -1309,11 +1310,13 @@ select.fcc-bmr-input {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
+	min-height: 54px;
 }
 
 .fcc-bmr-sex-btn {
 	all: unset;
 	display: flex !important;
+	min-height: 54px !important;
 	align-items: center !important;
 	justify-content: center !important;
 	gap: 0.45rem !important;
