@@ -49,6 +49,66 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add seafood items added in v1.3.3 to existing installations.
+	// -------------------------------------------------------------------------
+
+	public static function seed_v2(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 2 ) {
+			return;
+		}
+
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) {
+			return; // Category missing — bail to avoid inserting with category_id=0.
+		}
+
+		$new_foods = self::seafood_v2( $fs );
+		foreach ( $new_foods as $food ) {
+			// Skip if slug already in DB (INSERT IGNORE equivalent).
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) {
+				Database::insert_food( $food );
+			}
+		}
+
+		update_option( 'fcc_seed_version', 2 );
+	}
+
+	/**
+	 * The 22 new seafood items added in seed v2.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v2( int $fs ): array {
+		return [
+			[ 'name' => 'Pollock (raw)',       'slug' => 'pollock-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.36, 'source_notes' => 'USDA FDC #175136. White fish; omega-3 left NULL.' ],
+			[ 'name' => 'Halibut (raw)',        'slug' => 'halibut-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (159g)', 'grams' => 159] ], 'energy_kcal' => 91,  'energy_kj' => 380,  'protein_g' => 18.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.3, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.23, 'omega3_total_mg' => 363,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 91,  'omega3_dha_mg' => 247,  'source_notes' => 'M&W 8th ed.; Omega-3: USDA FDC #175137.' ],
+			[ 'name' => 'Plaice (raw)',          'slug' => 'plaice-raw',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (130g)', 'grams' => 130] ], 'energy_kcal' => 79,  'energy_kj' => 331,  'protein_g' => 17.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.4, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.29, 'source_notes' => 'M&W 8th ed. White flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'Dover Sole (raw)',      'slug' => 'dover-sole-raw',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (100g)', 'grams' => 100] ], 'energy_kcal' => 83,  'energy_kj' => 347,  'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'source_notes' => 'M&W 8th ed. White flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'Tilapia (raw)',         'slug' => 'tilapia-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (87g)', 'grams' => 87] ],   'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.7, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'source_notes' => 'USDA FDC #175175. White fish; omega-3 left NULL.' ],
+			[ 'name' => 'Monkfish (raw)',        'slug' => 'monkfish-raw',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],'energy_kcal' => 76,  'energy_kj' => 318,  'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.5, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.22, 'source_notes' => 'M&W 8th ed. Very lean white fish; omega-3 left NULL.' ],
+			[ 'name' => 'Flounder (raw)',        'slug' => 'flounder-raw',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (127g)', 'grams' => 127] ], 'energy_kcal' => 86,  'energy_kj' => 360,  'protein_g' => 17.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.31, 'source_notes' => 'USDA FDC #175117 (flatfish/sole species).' ],
+			[ 'name' => 'Whiting (raw)',         'slug' => 'whiting-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ], 'energy_kcal' => 81,  'energy_kj' => 339,  'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.28, 'source_notes' => 'M&W 8th ed. White fish; omega-3 left NULL.' ],
+			[ 'name' => 'Skate Wing (raw)',      'slug' => 'skate-wing-raw',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 wing (200g)', 'grams' => 200] ],   'energy_kcal' => 73,  'energy_kj' => 305,  'protein_g' => 16.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.30, 'source_notes' => 'M&W 8th ed. Lean white fish; omega-3 left NULL.' ],
+			[ 'name' => 'Anchovy (raw)',         'slug' => 'anchovy-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '5 anchovies (20g)', 'grams' => 20] ],'energy_kcal' => 131, 'energy_kj' => 548,  'protein_g' => 20.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.8, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.30, 'omega3_total_mg' => 2113, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 763,  'omega3_dha_mg' => 911,  'source_notes' => 'USDA FDC #174183 (anchovy, European, raw).' ],
+			[ 'name' => 'Sprats (raw)',          'slug' => 'sprats-raw',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],'energy_kcal' => 158, 'energy_kj' => 661,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 9.0, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 0.26, 'omega3_total_mg' => 1940, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 680,  'omega3_dha_mg' => 960,  'source_notes' => 'M&W 8th ed.; Omega-3 estimated from comparable small oily fish.' ],
+			[ 'name' => 'Sea Bream (raw)',       'slug' => 'sea-bream-raw',    'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (140g)', 'grams' => 140] ], 'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.7, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'source_notes' => 'M&W 8th ed. Semi-oily; omega-3 left NULL.' ],
+			[ 'name' => 'Prawns (cooked)',       'slug' => 'prawns-cooked',    'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],'energy_kcal' => 99,  'energy_kj' => 414,  'protein_g' => 22.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.30, 'source_notes' => 'M&W 8th ed. Omega-3 negligible; left NULL.' ],
+			[ 'name' => 'Lobster (cooked)',      'slug' => 'lobster-cooked',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '½ lobster (150g)', 'grams' => 150] ],'energy_kcal' => 103, 'energy_kj' => 431,  'protein_g' => 20.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.9, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 392,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 163,  'omega3_dha_mg' => 174,  'source_notes' => 'USDA FDC #175180 (lobster, northern, cooked).' ],
+			[ 'name' => 'Crab (cooked)',         'slug' => 'crab-cooked',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],'energy_kcal' => 128, 'energy_kj' => 537,  'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.5, 'of_which_saturates_g' => 0.7, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'omega3_total_mg' => 541,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 241,  'omega3_dha_mg' => 218,  'source_notes' => 'M&W 8th ed.; Omega-3: USDA FDC #174215.' ],
+			[ 'name' => 'Dressed Crab',          'slug' => 'dressed-crab',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 pot (43g)', 'grams' => 43], ['label' => '½ crab (100g)', 'grams' => 100] ], 'energy_kcal' => 133, 'energy_kj' => 558, 'protein_g' => 16.1, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 7.2, 'of_which_saturates_g' => 1.1, 'fibre_g' => 0.0, 'salt_g' => 1.20, 'source_notes' => 'M&W 8th ed. (Crab, dressed).' ],
+			[ 'name' => 'Mussels (cooked)',      'slug' => 'mussels-cooked',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100], ['label' => '1 bag (200g)', 'grams' => 200] ], 'energy_kcal' => 86, 'energy_kj' => 360, 'protein_g' => 11.9, 'carbohydrate_g' => 3.7, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.2, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'omega3_total_mg' => 665, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 276, 'omega3_dha_mg' => 286, 'source_notes' => 'M&W 8th ed.; Omega-3: USDA FDC #175188.' ],
+			[ 'name' => 'Oysters (raw)',         'slug' => 'oysters-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '6 oysters (84g)', 'grams' => 84] ],  'energy_kcal' => 81,  'energy_kj' => 339,  'protein_g' => 9.5,  'carbohydrate_g' => 4.7, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.3, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 740,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 340,  'omega3_dha_mg' => 214,  'source_notes' => 'USDA FDC #175191 (oyster, eastern, wild, raw).' ],
+			[ 'name' => 'Clams (cooked)',        'slug' => 'clams-cooked',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],'energy_kcal' => 148, 'energy_kj' => 619,  'protein_g' => 25.5, 'carbohydrate_g' => 5.2, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.95, 'omega3_total_mg' => 302,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 117,  'omega3_dha_mg' => 146,  'source_notes' => 'USDA FDC #174203 (clam, mixed species, cooked).' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -406,7 +466,7 @@ class Seed_Data {
 			],
 
 			// =================================================================
-			// FISH & SEAFOOD (12 foods — oily fish carry Omega-3)
+			// FISH & SEAFOOD (34 foods — oily fish carry Omega-3)
 			// =================================================================
 
 			[
@@ -523,6 +583,169 @@ class Seed_Data {
 				'fat_g' => 2.0, 'of_which_saturates_g' => 0.5,
 				'fibre_g' => 0.0, 'salt_g' => 0.20,
 				'source_notes' => 'M&W 8th ed. Semi-oily fish; detailed omega-3 fatty-acid profile not available in M&W or USDA for this species; left NULL.',
+			],
+
+			// --- Additional seafood (seed v2) ---
+
+			[
+				'name' => 'Pollock (raw)', 'slug' => 'pollock-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.36,
+				'source_notes' => 'USDA FDC #175136 (Fish, pollock, Alaska, raw). White fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Halibut (raw)', 'slug' => 'halibut-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (159g)', 'grams' => 159] ],
+				'energy_kcal' => 91, 'energy_kj' => 380,
+				'protein_g' => 18.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.3, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.23,
+				'omega3_total_mg' => 363, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 91, 'omega3_dha_mg' => 247,
+				'source_notes' => 'M&W 8th ed.; Omega-3: USDA FDC #175137 (Fish, halibut, Atlantic and Pacific, raw)',
+			],
+			[
+				'name' => 'Plaice (raw)', 'slug' => 'plaice-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (130g)', 'grams' => 130] ],
+				'energy_kcal' => 79, 'energy_kj' => 331,
+				'protein_g' => 17.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.4, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.29,
+				'source_notes' => 'M&W 8th ed. (Plaice, raw). White flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Dover Sole (raw)', 'slug' => 'dover-sole-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (100g)', 'grams' => 100] ],
+				'energy_kcal' => 83, 'energy_kj' => 347,
+				'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'source_notes' => 'M&W 8th ed. (Sole, raw). White flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Tilapia (raw)', 'slug' => 'tilapia-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (87g)', 'grams' => 87] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.7, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'source_notes' => 'USDA FDC #175175 (Fish, tilapia, raw). Low omega-3 lean white fish; left NULL.',
+			],
+			[
+				'name' => 'Monkfish (raw)', 'slug' => 'monkfish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 76, 'energy_kj' => 318,
+				'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.5, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.22,
+				'source_notes' => 'M&W 8th ed. (Monkfish, raw). Very lean white fish; omega-3 negligible; left NULL.',
+			],
+			[
+				'name' => 'Flounder (raw)', 'slug' => 'flounder-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (127g)', 'grams' => 127] ],
+				'energy_kcal' => 86, 'energy_kj' => 360,
+				'protein_g' => 17.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.31,
+				'source_notes' => 'USDA FDC #175117 (Fish, flatfish (flounder and sole species), raw).',
+			],
+			[
+				'name' => 'Whiting (raw)', 'slug' => 'whiting-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ],
+				'energy_kcal' => 81, 'energy_kj' => 339,
+				'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.28,
+				'source_notes' => 'M&W 8th ed. (Whiting, raw). White fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Skate Wing (raw)', 'slug' => 'skate-wing-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 wing (200g)', 'grams' => 200] ],
+				'energy_kcal' => 73, 'energy_kj' => 305,
+				'protein_g' => 16.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.30,
+				'source_notes' => 'M&W 8th ed. (Skate, raw). Lean white fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Anchovy (raw)', 'slug' => 'anchovy-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '5 anchovies (20g)', 'grams' => 20] ],
+				'energy_kcal' => 131, 'energy_kj' => 548,
+				'protein_g' => 20.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.8, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.30,
+				'omega3_total_mg' => 2113, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 763, 'omega3_dha_mg' => 911,
+				'source_notes' => 'USDA FDC #174183 (Fish, anchovy, European, raw); Omega-3: same source.',
+			],
+			[
+				'name' => 'Sprats (raw)', 'slug' => 'sprats-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 158, 'energy_kj' => 661,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 9.0, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 0.26,
+				'omega3_total_mg' => 1940, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 680, 'omega3_dha_mg' => 960,
+				'source_notes' => 'M&W 8th ed. (Sprats, raw); Omega-3: estimated from comparable small oily fish (sprat/herring family, USDA FDC).',
+			],
+			[
+				'name' => 'Sea Bream (raw)', 'slug' => 'sea-bream-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (140g)', 'grams' => 140] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.7, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'source_notes' => 'M&W 8th ed. (Sea bream, raw). Semi-oily; omega-3 not reliably tabulated; left NULL.',
+			],
+			[
+				'name' => 'Prawns (cooked)', 'slug' => 'prawns-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 99, 'energy_kj' => 414,
+				'protein_g' => 22.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.30,
+				'source_notes' => 'M&W 8th ed. (Prawns, boiled). Same nutritional profile as king prawns; omega-3 negligible; left NULL.',
+			],
+			[
+				'name' => 'Lobster (cooked)', 'slug' => 'lobster-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '½ lobster (150g)', 'grams' => 150] ],
+				'energy_kcal' => 103, 'energy_kj' => 431,
+				'protein_g' => 20.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.9, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 392, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 163, 'omega3_dha_mg' => 174,
+				'source_notes' => 'USDA FDC #175180 (Crustaceans, lobster, northern, cooked, moist heat); Omega-3: same source.',
+			],
+			[
+				'name' => 'Crab (cooked)', 'slug' => 'crab-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 128, 'energy_kj' => 537,
+				'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.5, 'of_which_saturates_g' => 0.7, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'omega3_total_mg' => 541, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 241, 'omega3_dha_mg' => 218,
+				'source_notes' => 'M&W 8th ed. (Crab, boiled); Omega-3: USDA FDC #174215 (Crustaceans, crab, Dungeness, cooked).',
+			],
+			[
+				'name' => 'Dressed Crab', 'slug' => 'dressed-crab', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 pot (43g)', 'grams' => 43], ['label' => '½ crab (100g)', 'grams' => 100] ],
+				'energy_kcal' => 133, 'energy_kj' => 558,
+				'protein_g' => 16.1, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 7.2, 'of_which_saturates_g' => 1.1, 'fibre_g' => 0.0, 'salt_g' => 1.20,
+				'source_notes' => 'M&W 8th ed. (Crab, dressed — mixed brown and white meat with oil and seasoning).',
+			],
+			[
+				'name' => 'Mussels (cooked)', 'slug' => 'mussels-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100], ['label' => '1 bag (200g)', 'grams' => 200] ],
+				'energy_kcal' => 86, 'energy_kj' => 360,
+				'protein_g' => 11.9, 'carbohydrate_g' => 3.7, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.2, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'omega3_total_mg' => 665, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 276, 'omega3_dha_mg' => 286,
+				'source_notes' => 'M&W 8th ed. (Mussels, boiled); Omega-3: USDA FDC #175188 (Mollusks, mussel, blue, cooked, moist heat).',
+			],
+			[
+				'name' => 'Oysters (raw)', 'slug' => 'oysters-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '6 oysters (84g)', 'grams' => 84] ],
+				'energy_kcal' => 81, 'energy_kj' => 339,
+				'protein_g' => 9.5, 'carbohydrate_g' => 4.7, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.3, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 740, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 340, 'omega3_dha_mg' => 214,
+				'source_notes' => 'USDA FDC #175191 (Mollusks, oyster, eastern, wild, raw); Omega-3: same source.',
+			],
+			[
+				'name' => 'Clams (cooked)', 'slug' => 'clams-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 148, 'energy_kj' => 619,
+				'protein_g' => 25.5, 'carbohydrate_g' => 5.2, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.95,
+				'omega3_total_mg' => 302, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 117, 'omega3_dha_mg' => 146,
+				'source_notes' => 'USDA FDC #174203 (Mollusks, clam, mixed species, cooked, moist heat); Omega-3: same source.',
 			],
 
 			// =================================================================
