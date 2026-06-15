@@ -883,7 +883,11 @@
 	const printBtn = root.querySelector( '.fcc-print-btn' );
 	if ( printBtn ) {
 		printBtn.addEventListener( 'click', function () {
+			const prevTitle = document.title;
+			const foodName  = state.food ? state.food.name : '';
+			document.title  = ( foodName ? foodName + ' – ' : '' ) + 'Food Calorie Calculator';
 			window.print();
+			document.title  = prevTitle;
 		} );
 	}
 
