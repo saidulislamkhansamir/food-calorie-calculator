@@ -1151,12 +1151,64 @@
 	grid-template-columns: 1fr 1fr;
 	gap: 0.875rem;
 	margin-bottom: 1.25rem;
+	align-items: end;
 }
 
 .fcc-bmr-row {
 	display: flex;
 	flex-direction: column;
 	gap: 0.35rem;
+}
+
+/* Styled number input box with unit badge */
+.fcc-bmr-input-box {
+	display: flex;
+	align-items: stretch;
+	background: #fff;
+	border: 1.5px solid var(--fcc-border);
+	border-radius: 10px;
+	overflow: hidden;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fcc-bmr-input-box:focus-within {
+	border-color: #f97316;
+	box-shadow: 0 0 0 3px rgba(249,115,22,.12);
+}
+
+.fcc-bmr-num-input {
+	all: unset;
+	flex: 1 !important;
+	min-width: 0 !important;
+	padding: 0.7rem 0.5rem 0.7rem 0.875rem !important;
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: var(--fcc-text) !important;
+	background: transparent !important;
+	-moz-appearance: textfield !important;
+	appearance: textfield !important;
+	display: block !important;
+}
+
+.fcc-bmr-num-input::-webkit-outer-spin-button,
+.fcc-bmr-num-input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.fcc-bmr-input-box__unit {
+	display: flex !important;
+	align-items: center !important;
+	padding: 0 0.75rem !important;
+	font-size: 0.72rem !important;
+	font-weight: 700 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.04em !important;
+	color: #fff !important;
+	background: #f97316 !important;
+	flex-shrink: 0 !important;
+	border-left: none !important;
+	white-space: nowrap !important;
 }
 
 .fcc-bmr-field-label {

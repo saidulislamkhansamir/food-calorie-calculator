@@ -610,9 +610,12 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 						<div class="fcc-bmr-row">
 							<label for="fcc-bmr-age" class="fcc-bmr-field-label">
 								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-								<?php esc_html_e( 'Age (years)', 'food-calorie-calculator' ); ?>
+								<?php esc_html_e( 'Age', 'food-calorie-calculator' ); ?>
 							</label>
-							<input type="number" id="fcc-bmr-age" class="fcc-bmr-age fcc-bmr-input" min="15" max="99" value="30" placeholder="30">
+							<div class="fcc-bmr-input-box">
+								<input type="number" id="fcc-bmr-age" class="fcc-bmr-age fcc-bmr-num-input" min="15" max="99" value="30" placeholder="30">
+								<span class="fcc-bmr-input-box__unit"><?php esc_html_e( 'yrs', 'food-calorie-calculator' ); ?></span>
+							</div>
 						</div>
 						<div class="fcc-bmr-row">
 							<div class="fcc-bmr-field-label-wrap">
@@ -625,14 +628,20 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 									<button type="button" class="fcc-bmr-height-unit-btn" data-unit="in">in</button>
 								</span>
 							</div>
-							<input type="number" id="fcc-bmr-height" class="fcc-bmr-height fcc-bmr-input" min="100" max="250" value="170" placeholder="170" step="0.1">
+							<div class="fcc-bmr-input-box">
+								<input type="number" id="fcc-bmr-height" class="fcc-bmr-height fcc-bmr-num-input" min="100" max="250" value="170" placeholder="170" step="0.1">
+								<span class="fcc-bmr-input-box__unit fcc-bmr-height-unit-display">cm</span>
+							</div>
 						</div>
 						<div class="fcc-bmr-row">
 							<label for="fcc-bmr-weight" class="fcc-bmr-field-label">
 								<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l1 7H5L6 3z"/><path d="M5 10v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9"/><path d="M12 10v5m-2-3h4"/></svg>
-								<?php esc_html_e( 'Weight (kg)', 'food-calorie-calculator' ); ?>
+								<?php esc_html_e( 'Weight', 'food-calorie-calculator' ); ?>
 							</label>
-							<input type="number" id="fcc-bmr-weight" class="fcc-bmr-weight fcc-bmr-input" min="30" max="300" value="70" placeholder="70">
+							<div class="fcc-bmr-input-box">
+								<input type="number" id="fcc-bmr-weight" class="fcc-bmr-weight fcc-bmr-num-input" min="30" max="300" value="70" placeholder="70">
+								<span class="fcc-bmr-input-box__unit"><?php esc_html_e( 'kg', 'food-calorie-calculator' ); ?></span>
+							</div>
 						</div>
 					</div>
 

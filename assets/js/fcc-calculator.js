@@ -703,6 +703,9 @@
 
 				bmrHeightUnit = newUnit;
 
+				const heightUnitDisplay = bmrSection.querySelector( '.fcc-bmr-height-unit-display' );
+				if ( heightUnitDisplay ) heightUnitDisplay.textContent = newUnit;
+
 				bmrSection.querySelectorAll( '.fcc-bmr-height-unit-btn' ).forEach( function ( b ) {
 					b.classList.toggle( 'fcc-bmr-height-unit-btn--active', b === btn );
 				} );
