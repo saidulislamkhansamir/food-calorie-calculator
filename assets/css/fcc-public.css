@@ -1,11 +1,16 @@
 /* ==========================================================================
    Food Calorie Calculator — Frontend Styles v2
-   UK Health Aesthetic: modern, clean, trustworthy, accessible.
+   Brand palette — Option 1 "Fresh & Healthy":
+     Primary  Forest Green  #2D7A4F
+     Accent   Lime Pop      #6DBF67
+     CTA      Tangerine     #F47B20
+     BG       Off-White     #F8FAF5
+     Text     Deep Charcoal #1E2A1E
 
    Custom properties injected via PHP (wp_add_inline_style):
-     --fcc-primary      default #005EB8
-     --fcc-accent       default #41B883
-     --fcc-bg           default #F0F4F8
+     --fcc-primary      default #2D7A4F
+     --fcc-accent       default #F47B20
+     --fcc-bg           default #F8FAF5
      --fcc-radius       default 8px
    ========================================================================== */
 
@@ -20,15 +25,15 @@
    Root + custom properties
    -------------------------------------------------------------------------- */
 .fcc-calculator {
-	--fcc-primary:       #005EB8;
-	--fcc-accent:        #007a53;
-	--fcc-bg:            #F0F4F8;
+	--fcc-primary:       #2D7A4F;
+	--fcc-accent:        #F47B20;
+	--fcc-bg:            #F8FAF5;
 	--fcc-radius:        8px;
 	--fcc-surface:       #ffffff;
-	--fcc-border:        #e2e8f0;
-	--fcc-text:          #1e293b;
-	--fcc-text-muted:    #64748b;
-	--fcc-text-light:    #94a3b8;
+	--fcc-border:        #d4e8da;
+	--fcc-text:          #1E2A1E;
+	--fcc-text-muted:    #4a6858;
+	--fcc-text-light:    #7aa88a;
 	--fcc-green:         #15803d;
 	--fcc-green-bg:      #dcfce7;
 	--fcc-green-border:  #86efac;
@@ -80,7 +85,7 @@
    Hero header
    -------------------------------------------------------------------------- */
 .fcc-hero {
-	background: linear-gradient(135deg, #002b5c 0%, var(--fcc-primary) 60%, #0077cc 100%);
+	background: linear-gradient(135deg, #0d3d26 0%, var(--fcc-primary) 55%, #6DBF67 100%);
 	padding: 1.5rem 1.75rem;
 	position: relative;
 	overflow: hidden;
@@ -182,7 +187,7 @@
 
 .fcc-calculator .fcc-tab-btn:hover,
 .fcc-calculator .fcc-tab-btn:focus {
-	background: #eff6ff !important;
+	background: #f0faf4 !important;
 	color: var(--fcc-primary) !important;
 	border-bottom-color: transparent !important;
 }
@@ -271,8 +276,8 @@
 }
 
 .fcc-search-inner {
-	background: linear-gradient(145deg, #e8f0fe 0%, #dbeafe 60%, #eff6ff 100%);
-	border: 1.5px solid #bfdbfe;
+	background: linear-gradient(145deg, #e8f8ef 0%, #dcfce7 60%, #f0faf4 100%);
+	border: 1.5px solid #86efac;
 	border-radius: 14px;
 	padding: 1.75rem 1.75rem 1.25rem;
 }
@@ -304,7 +309,7 @@
 .fcc-search-input {
 	width: 100%;
 	padding: 0.9rem 3rem 0.9rem 3rem !important;
-	border: 2px solid #c7d7f5 !important;
+	border: 2px solid #86c9a1 !important;
 	border-radius: 10px !important;
 	font-size: 1rem !important;
 	font-weight: 400 !important;
@@ -314,13 +319,13 @@
 	outline: none !important;
 	-webkit-appearance: none;
 	appearance: none;
-	box-shadow: 0 2px 8px rgba(0,60,160,.08) !important;
+	box-shadow: 0 2px 8px rgba(20,90,50,.08) !important;
 	line-height: 1.5 !important;
 }
 
 .fcc-search-input:focus {
 	border-color: var(--fcc-primary) !important;
-	box-shadow: 0 0 0 3px rgba(0,94,184,.15), 0 2px 8px rgba(0,60,160,.08) !important;
+	box-shadow: 0 0 0 3px rgba(45,122,79,.15), 0 2px 8px rgba(20,90,50,.08) !important;
 }
 
 .fcc-search-input::placeholder {
@@ -335,7 +340,7 @@
 	bottom: 0;
 	margin: auto;
 	height: 20px;
-	color: #93afd4;
+	color: #6bab88;
 	pointer-events: none;
 	display: flex;
 	align-items: center;
@@ -344,7 +349,7 @@
 .fcc-search-hint {
 	margin: 0.75rem 0 0;
 	font-size: 0.75rem;
-	color: #6b89b8;
+	color: #4a8c6a;
 	display: flex;
 	align-items: center;
 	gap: 0.35rem;
@@ -355,7 +360,7 @@
 	display: inline-block;
 	width: 5px;
 	height: 5px;
-	background: #93afd4;
+	background: #6bab88;
 	border-radius: 50%;
 	flex-shrink: 0;
 }
@@ -415,7 +420,7 @@
 
 .fcc-results-dropdown li:hover,
 .fcc-results-dropdown li[aria-selected="true"] {
-	background: #eff6ff;
+	background: #f0faf4;
 }
 
 .fcc-result-name { font-weight: 500; color: var(--fcc-text); }
@@ -425,7 +430,7 @@
 	color: var(--fcc-primary);
 	font-size: 0.8rem;
 	white-space: nowrap;
-	background: #eff6ff;
+	background: #f0faf4;
 	padding: 0.2rem 0.5rem;
 	border-radius: 20px;
 	margin-left: 0.5rem;
@@ -447,8 +452,8 @@
 	justify-content: space-between;
 	gap: 1rem;
 	padding: 0.875rem 1.125rem;
-	background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-	border: 1px solid #bfdbfe;
+	background: linear-gradient(135deg, #f0faf4 0%, #dcfce7 100%);
+	border: 1px solid #86efac;
 	border-radius: calc(var(--fcc-radius) + 2px);
 	margin-bottom: 1rem;
 }
@@ -520,7 +525,7 @@
 
 .fcc-quantity-controls:focus-within {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(0,94,184,.12);
+	box-shadow: 0 0 0 3px rgba(45,122,79,.12);
 }
 
 .fcc-qty-group {
@@ -670,7 +675,7 @@
 }
 
 .fcc-unit-option:hover {
-	background: #eff6ff;
+	background: #f0faf4;
 	color: var(--fcc-primary);
 }
 
@@ -712,24 +717,24 @@
 .fcc-btn--primary {
 	background: var(--fcc-primary);
 	color: #fff;
-	box-shadow: 0 2px 8px rgba(0,94,184,.3);
+	box-shadow: 0 2px 8px rgba(45,122,79,.3);
 }
 
 .fcc-btn--primary:hover {
-	background: #004f9e;
-	box-shadow: 0 4px 12px rgba(0,94,184,.35);
+	background: #236940;
+	box-shadow: 0 4px 12px rgba(45,122,79,.35);
 }
 
 .fcc-btn--secondary {
 	background: var(--fcc-accent);
 	color: #fff;
-	box-shadow: 0 2px 8px rgba(0,122,83,.3);
+	box-shadow: 0 2px 8px rgba(244,123,32,.3);
 	padding: 0.75rem 1.375rem;
 	border-radius: 12px;
 	font-size: 0.9rem;
 }
 
-.fcc-btn--secondary:hover { background: #005f3d; }
+.fcc-btn--secondary:hover { background: #D96B1A; }
 
 .fcc-btn--ghost {
 	background: transparent;
@@ -740,7 +745,7 @@
 .fcc-btn--ghost:hover {
 	border-color: var(--fcc-primary);
 	color: var(--fcc-primary);
-	background: #eff6ff;
+	background: #f0faf4;
 }
 
 /* --------------------------------------------------------------------------
@@ -875,17 +880,17 @@
 }
 
 .fcc-nutrition-table thead th {
-	background: linear-gradient(to bottom, #eff6ff, #dbeafe);
+	background: linear-gradient(to bottom, #f0faf4, #dcfce7);
 	font-weight: 700;
 	font-size: 0.72rem;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 	color: var(--fcc-primary);
-	border-bottom: 2px solid #bfdbfe;
+	border-bottom: 2px solid #86efac;
 }
 
 .fcc-nutrition-table tbody tr:nth-child(even) { background: #f8fafc; }
-.fcc-nutrition-table tbody tr:hover { background: #eff6ff; }
+.fcc-nutrition-table tbody tr:hover { background: #f0faf4; }
 
 .fcc-col-per,
 .fcc-col-per100,
@@ -927,7 +932,7 @@
 .fcc-row--energy th,
 .fcc-row--energy td {
 	font-weight: 700;
-	background: linear-gradient(to right, #eff6ff 0%, transparent 70%);
+	background: linear-gradient(to right, #f0faf4 0%, transparent 70%);
 }
 
 .fcc-row--sub th { padding-left: 1.75rem; color: var(--fcc-text-muted); font-weight: 400; }
@@ -953,8 +958,8 @@
 	gap: 1.5rem;
 	margin: 1.25rem 0 0;
 	padding: 1.25rem 1.5rem;
-	background: linear-gradient(135deg, #f0f7ff 0%, #e8f0fe 100%);
-	border: 1.5px solid #dbeafe;
+	background: linear-gradient(135deg, #f0faf4 0%, #e8f8ef 100%);
+	border: 1.5px solid #dcfce7;
 	border-radius: 14px;
 	flex-wrap: wrap;
 }
@@ -1076,7 +1081,7 @@
 .fcc-meal-item__kcal {
 	font-weight: 700;
 	color: var(--fcc-primary);
-	background: #eff6ff;
+	background: #f0faf4;
 	padding: 0.15rem 0.5rem;
 	border-radius: 6px;
 	font-size: 0.85rem;
@@ -1108,7 +1113,7 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem 1.25rem;
-	background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+	background: linear-gradient(135deg, #D96B1A 0%, #F47B20 100%);
 	border-radius: 14px 14px 0 0;
 	margin: -1.25rem -1.25rem 1.25rem;
 }
@@ -1173,8 +1178,8 @@
 }
 
 .fcc-bmr-input-box:focus-within {
-	border-color: #f97316;
-	box-shadow: 0 0 0 3px rgba(249,115,22,.12);
+	border-color: #F47B20;
+	box-shadow: 0 0 0 3px rgba(244,123,32,.12);
 }
 
 .fcc-bmr-num-input {
@@ -1206,7 +1211,7 @@
 	text-transform: uppercase !important;
 	letter-spacing: 0.04em !important;
 	color: #fff !important;
-	background: #f97316 !important;
+	background: #F47B20 !important;
 	flex-shrink: 0 !important;
 	border-left: none !important;
 	white-space: nowrap !important;
@@ -1275,7 +1280,7 @@
 }
 
 .fcc-bmr-height-unit-btn--active {
-	background: #f97316 !important;
+	background: #F47B20 !important;
 	color: #fff !important;
 }
 
@@ -1294,8 +1299,8 @@
 }
 
 .fcc-bmr-input:focus {
-	border-color: #f97316;
-	box-shadow: 0 0 0 3px rgba(249,115,22,.14);
+	border-color: #F47B20;
+	box-shadow: 0 0 0 3px rgba(244,123,32,.14);
 }
 
 select.fcc-bmr-input {
@@ -1335,16 +1340,16 @@ select.fcc-bmr-input {
 }
 
 .fcc-bmr-sex-btn:hover {
-	border-color: #f97316 !important;
+	border-color: #F47B20 !important;
 	background: #fff7ed !important;
-	color: #c2410c !important;
+	color: #B85C12 !important;
 }
 
 .fcc-bmr-sex-btn--active {
-	border-color: #f97316 !important;
+	border-color: #F47B20 !important;
 	background: #fff7ed !important;
-	color: #c2410c !important;
-	box-shadow: 0 0 0 3px rgba(249,115,22,.14) !important;
+	color: #B85C12 !important;
+	box-shadow: 0 0 0 3px rgba(244,123,32,.14) !important;
 }
 
 .fcc-bmr-sex-btn__icon {
@@ -1382,14 +1387,14 @@ select.fcc-bmr-input {
 }
 
 .fcc-bmr-act-card:hover {
-	border-color: #f97316;
+	border-color: #F47B20;
 	background: #fff7ed;
 }
 
 .fcc-bmr-act-card--active {
-	border-color: #f97316;
+	border-color: #F47B20;
 	background: #fff7ed;
-	box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+	box-shadow: 0 0 0 3px rgba(244,123,32,.15);
 }
 
 .fcc-bmr-act-card__emoji {
@@ -1403,7 +1408,7 @@ select.fcc-bmr-input {
 	color: var(--fcc-text);
 }
 
-.fcc-bmr-act-card--active .fcc-bmr-act-card__name { color: #c2410c; }
+.fcc-bmr-act-card--active .fcc-bmr-act-card__name { color: #B85C12; }
 
 .fcc-bmr-act-card__desc {
 	font-size: 0.62rem;
@@ -1441,9 +1446,9 @@ select.fcc-bmr-input {
 
 .fcc-bmr-goal-pill--maintain:hover,
 .fcc-bmr-goal-pill--maintain.fcc-bmr-goal-pill--active {
-	border-color: #f97316;
+	border-color: #F47B20;
 	background: #fff7ed;
-	box-shadow: 0 0 0 3px rgba(249,115,22,.12);
+	box-shadow: 0 0 0 3px rgba(244,123,32,.12);
 }
 
 .fcc-bmr-goal-pill--gain:hover,
@@ -1460,7 +1465,7 @@ select.fcc-bmr-input {
 }
 
 .fcc-bmr-goal-pill--lose .fcc-bmr-goal-pill__arrow { color: #ef4444; }
-.fcc-bmr-goal-pill--maintain .fcc-bmr-goal-pill__arrow { color: #f97316; }
+.fcc-bmr-goal-pill--maintain .fcc-bmr-goal-pill__arrow { color: #F47B20; }
 .fcc-bmr-goal-pill--gain .fcc-bmr-goal-pill__arrow { color: #22c55e; }
 
 .fcc-bmr-goal-pill__name {
@@ -1497,7 +1502,7 @@ select.fcc-bmr-input {
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem 1.25rem;
-	background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+	background: linear-gradient(135deg, #D96B1A 0%, #F47B20 100%);
 	gap: 1rem;
 }
 
@@ -1590,7 +1595,7 @@ select.fcc-bmr-input {
 }
 
 .fcc-bmr-stat--lose .fcc-bmr-stat__arrow    { color: #ef4444; }
-.fcc-bmr-stat--maintain .fcc-bmr-stat__arrow { color: #f97316; }
+.fcc-bmr-stat--maintain .fcc-bmr-stat__arrow { color: #F47B20; }
 .fcc-bmr-stat--gain .fcc-bmr-stat__arrow     { color: #22c55e; }
 
 .fcc-bmr-stat__label {
@@ -1607,7 +1612,7 @@ select.fcc-bmr-input {
 	color: var(--fcc-text);
 }
 
-.fcc-bmr-stat--selected .fcc-bmr-stat__val  { color: #c2410c; }
+.fcc-bmr-stat--selected .fcc-bmr-stat__val  { color: #B85C12; }
 
 .fcc-bmr-comparison {
 	font-size: 0.8rem;
@@ -1700,7 +1705,7 @@ select.fcc-bmr-input {
 		print-color-adjust: exact;
 	}
 
-	.fcc-print-clone .fcc-hero { background: #005EB8 !important; }
+	.fcc-print-clone .fcc-hero { background: #2D7A4F !important; }
 
 	.fcc-print-clone .fcc-nutrition-table th,
 	.fcc-print-clone .fcc-nutrition-table td { border: 1px solid #ccc !important; }
@@ -1718,8 +1723,8 @@ select.fcc-bmr-input {
 	align-items: center;
 	gap: 0.875rem;
 	padding: 0.875rem 1.125rem;
-	background: linear-gradient(135deg, #eff6ff 0%, #e8f0fe 100%);
-	border: 1.5px solid #bfdbfe;
+	background: linear-gradient(135deg, #f0faf4 0%, #e8f8ef 100%);
+	border: 1.5px solid #86efac;
 	border-radius: 12px;
 	margin-bottom: 1.25rem;
 }
@@ -1828,7 +1833,7 @@ select.fcc-bmr-input {
 
 .fcc-compare-col:focus-within {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(0,94,184,.1);
+	box-shadow: 0 0 0 3px rgba(45,122,79,.1);
 }
 
 .fcc-compare-col[data-slot="b"]:focus-within {
@@ -1855,7 +1860,7 @@ select.fcc-bmr-input {
 	left: 0.75rem;
 	top: 50%;
 	transform: translateY(-50%);
-	color: #93afd4;
+	color: #6bab88;
 	pointer-events: none;
 }
 
@@ -1877,7 +1882,7 @@ select.fcc-bmr-input {
 
 .fcc-compare-search:focus {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(0,94,184,.12);
+	box-shadow: 0 0 0 3px rgba(45,122,79,.12);
 }
 
 [data-slot="b"] .fcc-compare-search:focus {
@@ -1917,7 +1922,7 @@ select.fcc-bmr-input {
 }
 
 .fcc-compare-dropdown li:hover,
-.fcc-compare-dropdown li[aria-selected="true"] { background: #eff6ff; }
+.fcc-compare-dropdown li[aria-selected="true"] { background: #f0faf4; }
 
 /* ── Selected food pill ────────────────────────────────────────────────── */
 .fcc-compare-food-pill {
@@ -1931,8 +1936,8 @@ select.fcc-bmr-input {
 }
 
 .fcc-compare-food-pill--a {
-	background: #eff6ff;
-	border: 1px solid #bfdbfe;
+	background: #f0faf4;
+	border: 1px solid #86efac;
 	color: var(--fcc-primary);
 }
 
@@ -1961,7 +1966,7 @@ select.fcc-bmr-input {
 	align-items: center;
 	gap: 0.75rem;
 	padding: 1rem 1.25rem;
-	background: linear-gradient(135deg, #f0f7ff 0%, #f0fdf4 100%);
+	background: linear-gradient(135deg, #f0faf4 0%, #f0fdf4 100%);
 	border: 1.5px solid var(--fcc-border);
 	border-radius: 14px;
 	margin-bottom: 1.25rem;
@@ -2054,7 +2059,7 @@ select.fcc-bmr-input {
 }
 
 .fcc-compare-th--a {
-	background: linear-gradient(to bottom, #eff6ff, #dbeafe);
+	background: linear-gradient(to bottom, #f0faf4, #dcfce7);
 	color: var(--fcc-primary);
 }
 
@@ -2087,7 +2092,7 @@ select.fcc-bmr-input {
 .fcc-compare-table tbody tr:nth-child(even) td,
 .fcc-compare-table tbody tr:nth-child(even) th { background: #f8fafc; }
 .fcc-compare-table tbody tr:hover td,
-.fcc-compare-table tbody tr:hover th { background: #eff6ff; }
+.fcc-compare-table tbody tr:hover th { background: #f0faf4; }
 
 .fcc-compare-table td {
 	text-align: right;
@@ -2112,7 +2117,7 @@ select.fcc-bmr-input {
 .fcc-compare-winner--a {
 	font-weight: 700 !important;
 	color: var(--fcc-primary) !important;
-	background: #dbeafe !important;
+	background: #dcfce7 !important;
 }
 
 .fcc-compare-winner--b {
@@ -2243,7 +2248,7 @@ select.fcc-bmr-input {
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem 1.25rem;
-	background: linear-gradient(135deg, var(--fcc-primary) 0%, #0077cc 100%);
+	background: linear-gradient(135deg, var(--fcc-primary) 0%, #6DBF67 100%);
 	border-radius: 14px 14px 0 0;
 	margin: -1.25rem -1.25rem 1.25rem;
 }
@@ -2317,7 +2322,7 @@ select.fcc-bmr-input {
 	border: 1.5px solid var(--fcc-border);
 }
 
-.fcc-meal-macro--protein { border-color: #bfdbfe; background: #eff6ff; }
+.fcc-meal-macro--protein { border-color: #86efac; background: #f0faf4; }
 .fcc-meal-macro--carbs   { border-color: #fde68a; background: #fffbeb; }
 .fcc-meal-macro--fat     { border-color: #fca5a5; background: #fff1f2; }
 .fcc-meal-macro--fibre   { border-color: #6ee7b7; background: #ecfdf5; }
@@ -2356,7 +2361,7 @@ select.fcc-bmr-input {
 
 .fcc-meal-item:hover {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 2px 8px rgba(0,94,184,.08);
+	box-shadow: 0 2px 8px rgba(45,122,79,.08);
 }
 
 .fcc-meal-item__num {
