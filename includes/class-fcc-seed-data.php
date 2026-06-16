@@ -174,6 +174,57 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add seafood items added in v1.3.5 to existing installations.
+	// -------------------------------------------------------------------------
+
+	public static function seed_v4(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 4 ) {
+			return;
+		}
+
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) {
+			return;
+		}
+
+		foreach ( self::seafood_v4( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) {
+				Database::insert_food( $food );
+			}
+		}
+
+		update_option( 'fcc_seed_version', 4 );
+	}
+
+	/**
+	 * The 12 new seafood items added in seed v4.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v4( int $fs ): array {
+		return [
+			[ 'name' => 'Breaded Scampi (fried)',    'slug' => 'breaded-scampi',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '5 pieces (125g)', 'grams' => 125] ],   'energy_kcal' => 237, 'energy_kj' => 992,  'protein_g' => 12.2, 'carbohydrate_g' => 19.8, 'of_which_sugars_g' => 0.5, 'fat_g' => 12.5, 'of_which_saturates_g' => 1.8, 'fibre_g' => 0.8, 'salt_g' => 1.20, 'source_notes' => 'M&W 8th ed. (Scampi, breaded/battered, fried). Omega-3 left NULL.' ],
+			[ 'name' => 'Prawn Toast',               'slug' => 'prawn-toast',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '2 pieces (60g)', 'grams' => 60] ],       'energy_kcal' => 222, 'energy_kj' => 929,  'protein_g' => 11.0, 'carbohydrate_g' => 21.0, 'of_which_sugars_g' => 1.0, 'fat_g' => 10.5, 'of_which_saturates_g' => 1.5, 'fibre_g' => 1.0, 'salt_g' => 1.10, 'source_notes' => 'Estimated from typical UK takeaway/retail data. Omega-3 left NULL.' ],
+			[ 'name' => 'Nori (dried seaweed)',       'slug' => 'nori-dried',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 sheet (3g)', 'grams' => 3], ['label' => '10g', 'grams' => 10] ], 'energy_kcal' => 35, 'energy_kj' => 146, 'protein_g' => 5.8, 'carbohydrate_g' => 5.1, 'of_which_sugars_g' => 0.5, 'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.3, 'salt_g' => 0.55, 'source_notes' => 'USDA FDC #168457 (Seaweed, laver, raw). Values per 100g.' ],
+			[ 'name' => 'Wakame (raw seaweed)',       'slug' => 'wakame-raw',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],      'energy_kcal' => 45,  'energy_kj' => 188,  'protein_g' => 3.0,  'carbohydrate_g' => 9.1,  'of_which_sugars_g' => 0.5, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.5, 'salt_g' => 1.87, 'source_notes' => 'USDA FDC #168456 (Seaweed, wakame, raw). Natural salt from seawater.' ],
+			[ 'name' => 'Arctic Char (raw)',          'slug' => 'arctic-char-raw',  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],      'energy_kcal' => 125, 'energy_kj' => 523,  'protein_g' => 19.9, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 5.0,  'of_which_saturates_g' => 1.1, 'fibre_g' => 0.0, 'salt_g' => 0.08, 'omega3_total_mg' => 600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 180, 'omega3_dha_mg' => 320, 'source_notes' => 'USDA FDC #175138 (Char, arctic, raw).' ],
+			[ 'name' => 'Brill (raw)',                'slug' => 'brill-raw',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],      'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 18.0, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 2.4,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'source_notes' => 'M&W 8th ed. White flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'Barramundi (raw)',           'slug' => 'barramundi-raw',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],      'energy_kcal' => 97,  'energy_kj' => 406,  'protein_g' => 18.9, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 2.0,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 500, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110, 'omega3_dha_mg' => 310, 'source_notes' => 'EFSA / published data (Lates calcarifer, raw). Moderate omega-3 for a lean fish.' ],
+			[ 'name' => 'Carp (raw)',                 'slug' => 'carp-raw',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (140g)', 'grams' => 140] ],      'energy_kcal' => 162, 'energy_kj' => 678,  'protein_g' => 18.0, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 9.5,  'of_which_saturates_g' => 1.8, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'omega3_total_mg' => 520, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 147, 'omega3_dha_mg' => 235, 'source_notes' => 'M&W 8th ed. Freshwater fish, moderate fat; Omega-3: USDA FDC #175088.' ],
+			[ 'name' => 'Cod Cheeks (raw)',           'slug' => 'cod-cheeks-raw',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],     'energy_kcal' => 80,  'energy_kj' => 335,  'protein_g' => 18.3, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 0.7,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.28, 'source_notes' => 'M&W 8th ed. Same nutritional profile as cod fillet. Omega-3 left NULL.' ],
+			[ 'name' => 'Cod Tongue (raw)',           'slug' => 'cod-tongue-raw',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],     'energy_kcal' => 80,  'energy_kj' => 335,  'protein_g' => 18.3, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 0.7,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.28, 'source_notes' => 'M&W 8th ed. Same nutritional profile as cod; distinct gelatinous texture. Omega-3 left NULL.' ],
+			[ 'name' => 'Coley / Saithe (raw)',      'slug' => 'coley-raw',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],      'energy_kcal' => 82,  'energy_kj' => 343,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 0.7,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.28, 'source_notes' => 'M&W 8th ed. (Coley/Saithe, raw). Lean white fish; omega-3 left NULL.' ],
+			[ 'name' => 'Cobia (raw)',                'slug' => 'cobia-raw',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],      'energy_kcal' => 103, 'energy_kj' => 431,  'protein_g' => 20.7, 'carbohydrate_g' => 0.0,  'of_which_sugars_g' => 0.0, 'fat_g' => 2.4,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'omega3_total_mg' => 490, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 260, 'source_notes' => 'USDA FDC / published data (Rachycentron canadum, raw). Omega-3 moderate for a semi-pelagic fish.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -1038,6 +1089,109 @@ class Seed_Data {
 				'protein_g' => 13.0, 'carbohydrate_g' => 18.5, 'of_which_sugars_g' => 0.5,
 				'fat_g' => 7.5, 'of_which_saturates_g' => 0.8, 'fibre_g' => 0.8, 'salt_g' => 0.90,
 				'source_notes' => 'M&W 8th ed. (Fish fingers, cod, oven baked). Omega-3 left NULL.',
+			],
+
+			// --- Additional seafood (seed v4) ---
+
+			[
+				'name' => 'Breaded Scampi (fried)', 'slug' => 'breaded-scampi', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '5 pieces (125g)', 'grams' => 125] ],
+				'energy_kcal' => 237, 'energy_kj' => 992,
+				'protein_g' => 12.2, 'carbohydrate_g' => 19.8, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 12.5, 'of_which_saturates_g' => 1.8, 'fibre_g' => 0.8, 'salt_g' => 1.20,
+				'source_notes' => 'M&W 8th ed. (Scampi, breaded/battered, fried). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Prawn Toast', 'slug' => 'prawn-toast', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '2 pieces (60g)', 'grams' => 60] ],
+				'energy_kcal' => 222, 'energy_kj' => 929,
+				'protein_g' => 11.0, 'carbohydrate_g' => 21.0, 'of_which_sugars_g' => 1.0,
+				'fat_g' => 10.5, 'of_which_saturates_g' => 1.5, 'fibre_g' => 1.0, 'salt_g' => 1.10,
+				'source_notes' => 'Estimated from typical UK takeaway/retail data. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Nori (dried seaweed)', 'slug' => 'nori-dried', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 sheet (3g)', 'grams' => 3], ['label' => '10g', 'grams' => 10] ],
+				'energy_kcal' => 35, 'energy_kj' => 146,
+				'protein_g' => 5.8, 'carbohydrate_g' => 5.1, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.3, 'salt_g' => 0.55,
+				'source_notes' => 'USDA FDC #168457 (Seaweed, laver, raw). Values per 100g.',
+			],
+			[
+				'name' => 'Wakame (raw seaweed)', 'slug' => 'wakame-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 45, 'energy_kj' => 188,
+				'protein_g' => 3.0, 'carbohydrate_g' => 9.1, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.5, 'salt_g' => 1.87,
+				'source_notes' => 'USDA FDC #168456 (Seaweed, wakame, raw). Natural salt from seawater.',
+			],
+			[
+				'name' => 'Arctic Char (raw)', 'slug' => 'arctic-char-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 125, 'energy_kj' => 523,
+				'protein_g' => 19.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.0, 'of_which_saturates_g' => 1.1, 'fibre_g' => 0.0, 'salt_g' => 0.08,
+				'omega3_total_mg' => 600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 180, 'omega3_dha_mg' => 320,
+				'source_notes' => 'USDA FDC #175138 (Char, arctic, raw).',
+			],
+			[
+				'name' => 'Brill (raw)', 'slug' => 'brill-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.4, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'source_notes' => 'M&W 8th ed. White flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Barramundi (raw)', 'slug' => 'barramundi-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 97, 'energy_kj' => 406,
+				'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.0, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 500, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110, 'omega3_dha_mg' => 310,
+				'source_notes' => 'EFSA / published data (Lates calcarifer, raw). Moderate omega-3 for a lean fish.',
+			],
+			[
+				'name' => 'Carp (raw)', 'slug' => 'carp-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (140g)', 'grams' => 140] ],
+				'energy_kcal' => 162, 'energy_kj' => 678,
+				'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 9.5, 'of_which_saturates_g' => 1.8, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'omega3_total_mg' => 520, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 147, 'omega3_dha_mg' => 235,
+				'source_notes' => 'M&W 8th ed. Freshwater fish, moderate fat; Omega-3: USDA FDC #175088.',
+			],
+			[
+				'name' => 'Cod Cheeks (raw)', 'slug' => 'cod-cheeks-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 80, 'energy_kj' => 335,
+				'protein_g' => 18.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.7, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.28,
+				'source_notes' => 'M&W 8th ed. Same nutritional profile as cod fillet. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Cod Tongue (raw)', 'slug' => 'cod-tongue-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 80, 'energy_kj' => 335,
+				'protein_g' => 18.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.7, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.28,
+				'source_notes' => 'M&W 8th ed. Same nutritional profile as cod; distinct gelatinous texture. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Coley / Saithe (raw)', 'slug' => 'coley-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 82, 'energy_kj' => 343,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.7, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.28,
+				'source_notes' => 'M&W 8th ed. (Coley/Saithe, raw). Lean white fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Cobia (raw)', 'slug' => 'cobia-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 103, 'energy_kj' => 431,
+				'protein_g' => 20.7, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.4, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'omega3_total_mg' => 490, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 260,
+				'source_notes' => 'USDA FDC / published data (Rachycentron canadum, raw). Omega-3 moderate for a semi-pelagic fish.',
 			],
 
 			// =================================================================
