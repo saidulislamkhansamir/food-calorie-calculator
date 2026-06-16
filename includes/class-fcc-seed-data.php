@@ -347,6 +347,73 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add seafood items added in v1.3.8 to existing installations.
+	// -------------------------------------------------------------------------
+
+	public static function seed_v7(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 7 ) {
+			return;
+		}
+
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) {
+			return;
+		}
+
+		foreach ( self::seafood_v7( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) {
+				Database::insert_food( $food );
+			}
+		}
+
+		update_option( 'fcc_seed_version', 7 );
+	}
+
+	/**
+	 * The 28 new seafood items added in seed v7.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v7( int $fs ): array {
+		return [
+			[ 'name' => 'Sand Soles Ungraded (raw)',         'slug' => 'sand-soles-ungraded',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 83,  'energy_kj' => 347,  'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'source_notes' => 'M&W 8th ed. (Sole, raw). Same profile as Dover sole; mixed-grade sand soles. Omega-3 left NULL.' ],
+			[ 'name' => 'Sailfish (raw)',                    'slug' => 'sailfish-raw',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 steak (150g)',         'grams' => 150] ], 'energy_kcal' => 110, 'energy_kj' => 460,  'protein_g' => 21.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.5,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 480, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 90,  'omega3_dha_mg' => 360, 'source_notes' => 'Estimated from published billfish data (Istiophorus spp.). Profile close to marlin/swordfish.' ],
+			[ 'name' => 'Salmon Head (raw)',                 'slug' => 'salmon-head-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 salmon head (300g)',   'grams' => 300] ], 'energy_kcal' => 185, 'energy_kj' => 774,  'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 12.5, 'of_which_saturates_g' => 2.8, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'omega3_total_mg' => 1850, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 420, 'omega3_dha_mg' => 1260, 'source_notes' => 'M&W 8th ed. / USDA FDC #175167 base. Head has higher fat than fillet; rich in collagen and omega-3.' ],
+			[ 'name' => 'Wild Salmon (raw)',                 'slug' => 'wild-salmon-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 142, 'energy_kj' => 594,  'protein_g' => 19.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.3,  'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.09, 'omega3_total_mg' => 2018, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 411, 'omega3_dha_mg' => 1429, 'source_notes' => 'USDA FDC #175167 (Salmon, Atlantic, wild, raw). Leaner and higher omega-3 than farmed salmon.' ],
+			[ 'name' => 'Sea Reared Trout (raw)',            'slug' => 'sea-reared-trout-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 150, 'energy_kj' => 628,  'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 7.5,  'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 0.10, 'omega3_total_mg' => 1200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 280, 'omega3_dha_mg' => 720, 'source_notes' => 'M&W 8th ed. / published data (farmed rainbow trout, sea-reared). Higher fat than freshwater farmed trout.' ],
+			[ 'name' => 'Sea Cucumber (raw)',                'slug' => 'sea-cucumber-raw',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 38,  'energy_kj' => 159,  'protein_g' => 6.4,  'carbohydrate_g' => 0.3, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.2,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.50, 'source_notes' => 'Published data (Holothuria spp., raw). Very low calorie marine invertebrate; omega-3 left NULL.' ],
+			[ 'name' => 'Shark Steaks (raw)',                'slug' => 'shark-steaks-raw',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 steak (150g)',         'grams' => 150] ], 'energy_kcal' => 130, 'energy_kj' => 544,  'protein_g' => 21.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.5,  'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.24, 'omega3_total_mg' => 737, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 218, 'omega3_dha_mg' => 485, 'source_notes' => 'USDA FDC #175126 (Shark, mixed species, raw).' ],
+			[ 'name' => 'Tope Shark (raw)',                  'slug' => 'tope-shark-raw',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 130, 'energy_kj' => 544,  'protein_g' => 20.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.0,  'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.22, 'source_notes' => 'M&W 8th ed. (Dogfish/shark, raw). Tope (Galeorhinus galeus) shares similar profile to smaller sharks. Omega-3 left NULL.' ],
+			[ 'name' => 'Skate Knobs / Eyes (raw)',          'slug' => 'skate-knobs-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 73,  'energy_kj' => 305,  'protein_g' => 16.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.30, 'source_notes' => 'M&W 8th ed. (Skate wing, raw). Knobs/eyes are small round cartilage-bordered discs cut from the wing; same profile. Omega-3 left NULL.' ],
+			[ 'name' => 'Squid (Whole, raw)',                'slug' => 'squid-whole-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 whole squid (200g)',   'grams' => 200] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.4,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.44, 'omega3_total_mg' => 496, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 148, 'omega3_dha_mg' => 256, 'source_notes' => 'USDA FDC #175186 (Squid, mixed species, raw). Whole uncleaned squid; same per-100g nutritional profile as cleaned squid rings.' ],
+			[ 'name' => 'Sturgeon (raw)',                    'slug' => 'sturgeon-raw',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 105, 'energy_kj' => 439,  'protein_g' => 16.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.0,  'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'omega3_total_mg' => 597, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 198, 'omega3_dha_mg' => 367, 'source_notes' => 'USDA FDC #175131 (Sturgeon, mixed species, raw).' ],
+			[ 'name' => 'Stone Bass / Meagre (raw)',         'slug' => 'stone-bass-raw',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 88,  'energy_kj' => 368,  'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'source_notes' => 'Published data (Argyrosomus regius / meagre, raw). Large lean white sea fish; omega-3 left NULL.' ],
+			[ 'name' => 'Tilapia (Black, raw)',              'slug' => 'tilapia-black-raw',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (87g)',         'grams' => 87]  ], 'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.7,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'source_notes' => 'USDA FDC #175175 (Tilapia, raw). Black tilapia (O. niloticus) has same nutritional profile. Omega-3 left NULL.' ],
+			[ 'name' => 'Tilapia (Red, raw)',                'slug' => 'tilapia-red-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (87g)',         'grams' => 87]  ], 'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.7,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'source_notes' => 'USDA FDC #175175 (Tilapia, raw). Red tilapia hybrid has same nutritional profile. Omega-3 left NULL.' ],
+			[ 'name' => 'Brown Trout (raw)',                 'slug' => 'brown-trout-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 119, 'energy_kj' => 498,  'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.1,  'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.10, 'omega3_total_mg' => 580, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 180, 'omega3_dha_mg' => 316, 'source_notes' => 'M&W 8th ed. (Brown trout, raw). Omega-3 from USDA FDC #175150 equivalent.' ],
+			[ 'name' => 'Tuna Toro (Fatty Tuna, raw)',       'slug' => 'tuna-toro-raw',             'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (80g)',        'grams' => 80]  ], 'energy_kcal' => 344, 'energy_kj' => 1440, 'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 27.4, 'of_which_saturates_g' => 6.6, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'omega3_total_mg' => 3800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 900, 'omega3_dha_mg' => 2800, 'source_notes' => 'USDA FDC (Bluefin tuna, belly/toro). Fatty belly cut (otoro/chutoro); one of the richest omega-3 sources in sushi.' ],
+			[ 'name' => 'Witch Sole / Torbay Sole (raw)',    'slug' => 'witch-sole-raw',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (120g)',       'grams' => 120] ], 'energy_kcal' => 79,  'energy_kj' => 331,  'protein_g' => 17.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.8,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24, 'source_notes' => 'M&W 8th ed. (Witch sole / Glyptocephalus cynoglossus, raw). White flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'Zander (raw)',                      'slug' => 'zander-raw',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 84,  'energy_kj' => 352,  'protein_g' => 19.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.14, 'source_notes' => 'Published data (Sander lucioperca, raw). Lean freshwater predator; omega-3 left NULL.' ],
+			[ 'name' => 'Clams (Amandes, cooked)',           'slug' => 'clams-amandes',             'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 80,  'energy_kj' => 335,  'protein_g' => 13.5, 'carbohydrate_g' => 3.8, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.8,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'source_notes' => 'Estimated from USDA clam data (Glycymeris spp. / dog cockle). Profile similar to standard clams; omega-3 left NULL.' ],
+			[ 'name' => 'Clams (Palourdes, cooked)',         'slug' => 'clams-palourdes',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 87,  'energy_kj' => 364,  'protein_g' => 14.8, 'carbohydrate_g' => 3.7, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.98, 'source_notes' => 'Estimated from USDA clam data (Ruditapes decussatus / grooved carpet shell). Omega-3 left NULL.' ],
+			[ 'name' => 'Clams (Venus / Surf, cooked)',      'slug' => 'clams-venus-surf',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 85,  'energy_kj' => 356,  'protein_g' => 14.5, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.8,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.95, 'source_notes' => 'Estimated from USDA clam data (Venerupis / surf clam spp.). Omega-3 left NULL.' ],
+			[ 'name' => 'Crab Claws (cooked)',               'slug' => 'crab-claws-cooked',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '4 claws (100g)',         'grams' => 100] ], 'energy_kcal' => 100, 'energy_kj' => 418,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.5,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'omega3_total_mg' => 360, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170, 'source_notes' => 'M&W 8th ed. (Crab, mixed meat, cooked). Claw meat is slightly richer than white meat. Omega-3 estimated.' ],
+			[ 'name' => 'Crab Meat (Brown)',                 'slug' => 'crab-meat-brown',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 128, 'energy_kj' => 536,  'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.5,  'of_which_saturates_g' => 0.8, 'fibre_g' => 0.0, 'salt_g' => 1.20, 'omega3_total_mg' => 720, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 320, 'omega3_dha_mg' => 310, 'source_notes' => 'M&W 8th ed. (Crab, brown meat). Higher fat and stronger flavour than white meat; good omega-3 source.' ],
+			[ 'name' => 'Crab Meat (White)',                 'slug' => 'crab-meat-white',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.0,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.95, 'omega3_total_mg' => 390, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 170, 'omega3_dha_mg' => 180, 'source_notes' => 'M&W 8th ed. (Crab, white meat). Leaner than brown meat; delicate flavour. Omega-3 estimated.' ],
+			[ 'name' => 'Crab Meat (Claw)',                  'slug' => 'crab-meat-claw',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 110, 'energy_kj' => 460,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 3.0,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'omega3_total_mg' => 450, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 190, 'omega3_dha_mg' => 210, 'source_notes' => 'M&W 8th ed. (Crab, claw meat). Darker and stronger-flavoured than body white meat. Omega-3 estimated.' ],
+			[ 'name' => 'Crab Meat (Backfin)',               'slug' => 'crab-meat-backfin',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 87,  'energy_kj' => 364,  'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.1,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.90, 'omega3_total_mg' => 320, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 130, 'omega3_dha_mg' => 160, 'source_notes' => 'USDA FDC (Blue crab, lump/backfin meat, cooked). Very lean pick from the back section. Omega-3 estimated.' ],
+			[ 'name' => 'Velvet Crab (cooked)',              'slug' => 'velvet-crab-cooked',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 95,  'energy_kj' => 397,  'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.5,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.90, 'omega3_total_mg' => 350, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170, 'source_notes' => 'M&W 8th ed. (Crab, cooked). Velvet crab (Necora puber) is a small swimming crab; profile close to edible crab white meat. Omega-3 estimated.' ],
+			[ 'name' => 'Cockles (in Shell, Live)',          'slug' => 'cockles-in-shell-live',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (90g deshelled)', 'grams' => 90] ], 'energy_kcal' => 36,  'energy_kj' => 151,  'protein_g' => 8.5,  'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.3,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.90, 'source_notes' => 'M&W 8th ed. (Cockles, raw). Values per 100g edible meat; ~250g in-shell yields ~90g meat. Omega-3 left NULL.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -1692,6 +1759,248 @@ class Seed_Data {
 				'fat_g' => 1.8, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.25,
 				'omega3_total_mg' => 290, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 104, 'omega3_dha_mg' => 168,
 				'source_notes' => 'USDA FDC #175120 (Ocean perch/Atlantic redfish, Sebastes marinus, raw).',
+			],
+
+			// --- Additional seafood (seed v7) ---
+
+			[
+				'name' => 'Sand Soles Ungraded (raw)', 'slug' => 'sand-soles-ungraded', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 83, 'energy_kj' => 347,
+				'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'source_notes' => 'M&W 8th ed. (Sole, raw). Same profile as Dover sole; mixed-grade sand soles. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Sailfish (raw)', 'slug' => 'sailfish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 steak (150g)', 'grams' => 150] ],
+				'energy_kcal' => 110, 'energy_kj' => 460,
+				'protein_g' => 21.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.5, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 480, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 90, 'omega3_dha_mg' => 360,
+				'source_notes' => 'Estimated from published billfish data (Istiophorus spp.). Profile close to marlin/swordfish.',
+			],
+			[
+				'name' => 'Salmon Head (raw)', 'slug' => 'salmon-head-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 salmon head (300g)', 'grams' => 300] ],
+				'energy_kcal' => 185, 'energy_kj' => 774,
+				'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 12.5, 'of_which_saturates_g' => 2.8, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'omega3_total_mg' => 1850, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 420, 'omega3_dha_mg' => 1260,
+				'source_notes' => 'M&W 8th ed. / USDA FDC #175167 base. Head has higher fat than fillet; rich in collagen and omega-3.',
+			],
+			[
+				'name' => 'Wild Salmon (raw)', 'slug' => 'wild-salmon-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 142, 'energy_kj' => 594,
+				'protein_g' => 19.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.3, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.09,
+				'omega3_total_mg' => 2018, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 411, 'omega3_dha_mg' => 1429,
+				'source_notes' => 'USDA FDC #175167 (Salmon, Atlantic, wild, raw). Leaner and higher omega-3 than farmed salmon.',
+			],
+			[
+				'name' => 'Sea Reared Trout (raw)', 'slug' => 'sea-reared-trout-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 150, 'energy_kj' => 628,
+				'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 7.5, 'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 0.10,
+				'omega3_total_mg' => 1200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 280, 'omega3_dha_mg' => 720,
+				'source_notes' => 'M&W 8th ed. / published data (farmed rainbow trout, sea-reared). Higher fat than freshwater farmed trout.',
+			],
+			[
+				'name' => 'Sea Cucumber (raw)', 'slug' => 'sea-cucumber-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 38, 'energy_kj' => 159,
+				'protein_g' => 6.4, 'carbohydrate_g' => 0.3, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.2, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.50,
+				'source_notes' => 'Published data (Holothuria spp., raw). Very low calorie marine invertebrate; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Shark Steaks (raw)', 'slug' => 'shark-steaks-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 steak (150g)', 'grams' => 150] ],
+				'energy_kcal' => 130, 'energy_kj' => 544,
+				'protein_g' => 21.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.5, 'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.24,
+				'omega3_total_mg' => 737, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 218, 'omega3_dha_mg' => 485,
+				'source_notes' => 'USDA FDC #175126 (Shark, mixed species, raw).',
+			],
+			[
+				'name' => 'Tope Shark (raw)', 'slug' => 'tope-shark-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 130, 'energy_kj' => 544,
+				'protein_g' => 20.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.0, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.22,
+				'source_notes' => 'M&W 8th ed. (Dogfish/shark, raw). Tope (Galeorhinus galeus) shares similar profile to smaller sharks. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Skate Knobs / Eyes (raw)', 'slug' => 'skate-knobs-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 73, 'energy_kj' => 305,
+				'protein_g' => 16.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.30,
+				'source_notes' => 'M&W 8th ed. (Skate wing, raw). Knobs/eyes are small cartilage-bordered discs from the wing; same profile. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Squid (Whole, raw)', 'slug' => 'squid-whole-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 whole squid (200g)', 'grams' => 200] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.4, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.44,
+				'omega3_total_mg' => 496, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 148, 'omega3_dha_mg' => 256,
+				'source_notes' => 'USDA FDC #175186 (Squid, mixed species, raw). Whole uncleaned squid; same per-100g profile as cleaned squid rings.',
+			],
+			[
+				'name' => 'Sturgeon (raw)', 'slug' => 'sturgeon-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 105, 'energy_kj' => 439,
+				'protein_g' => 16.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.0, 'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'omega3_total_mg' => 597, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 198, 'omega3_dha_mg' => 367,
+				'source_notes' => 'USDA FDC #175131 (Sturgeon, mixed species, raw).',
+			],
+			[
+				'name' => 'Stone Bass / Meagre (raw)', 'slug' => 'stone-bass-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 88, 'energy_kj' => 368,
+				'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'source_notes' => 'Published data (Argyrosomus regius / meagre, raw). Large lean white sea fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Tilapia (Black, raw)', 'slug' => 'tilapia-black-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (87g)', 'grams' => 87] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.7, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'source_notes' => 'USDA FDC #175175 (Tilapia, raw). Black tilapia (O. niloticus) has same nutritional profile. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Tilapia (Red, raw)', 'slug' => 'tilapia-red-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (87g)', 'grams' => 87] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.7, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'source_notes' => 'USDA FDC #175175 (Tilapia, raw). Red tilapia hybrid has same nutritional profile. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Brown Trout (raw)', 'slug' => 'brown-trout-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 119, 'energy_kj' => 498,
+				'protein_g' => 20.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.1, 'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.10,
+				'omega3_total_mg' => 580, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 180, 'omega3_dha_mg' => 316,
+				'source_notes' => 'M&W 8th ed. (Brown trout, raw). Omega-3 from USDA FDC #175150 equivalent.',
+			],
+			[
+				'name' => 'Tuna Toro (Fatty Tuna, raw)', 'slug' => 'tuna-toro-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (80g)', 'grams' => 80] ],
+				'energy_kcal' => 344, 'energy_kj' => 1440,
+				'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 27.4, 'of_which_saturates_g' => 6.6, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'omega3_total_mg' => 3800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 900, 'omega3_dha_mg' => 2800,
+				'source_notes' => 'USDA FDC (Bluefin tuna, belly/toro). Fatty belly cut (otoro/chutoro); one of the richest omega-3 sources in sushi.',
+			],
+			[
+				'name' => 'Witch Sole / Torbay Sole (raw)', 'slug' => 'witch-sole-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ],
+				'energy_kcal' => 79, 'energy_kj' => 331,
+				'protein_g' => 17.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.8, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24,
+				'source_notes' => 'M&W 8th ed. (Witch sole / Glyptocephalus cynoglossus, raw). White flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Zander (raw)', 'slug' => 'zander-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 84, 'energy_kj' => 352,
+				'protein_g' => 19.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.14,
+				'source_notes' => 'Published data (Sander lucioperca, raw). Lean freshwater predator; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Clams (Amandes, cooked)', 'slug' => 'clams-amandes', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 80, 'energy_kj' => 335,
+				'protein_g' => 13.5, 'carbohydrate_g' => 3.8, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.8, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'source_notes' => 'Estimated from USDA clam data (Glycymeris spp. / dog cockle). Profile similar to standard clams; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Clams (Palourdes, cooked)', 'slug' => 'clams-palourdes', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 87, 'energy_kj' => 364,
+				'protein_g' => 14.8, 'carbohydrate_g' => 3.7, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.98,
+				'source_notes' => 'Estimated from USDA clam data (Ruditapes decussatus / grooved carpet shell). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Clams (Venus / Surf, cooked)', 'slug' => 'clams-venus-surf', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 85, 'energy_kj' => 356,
+				'protein_g' => 14.5, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.8, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.95,
+				'source_notes' => 'Estimated from USDA clam data (Venerupis / surf clam spp.). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Crab Claws (cooked)', 'slug' => 'crab-claws-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '4 claws (100g)', 'grams' => 100] ],
+				'energy_kcal' => 100, 'energy_kj' => 418,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.5, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'omega3_total_mg' => 360, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170,
+				'source_notes' => 'M&W 8th ed. (Crab, mixed meat, cooked). Claw meat is slightly richer than white meat. Omega-3 estimated.',
+			],
+			[
+				'name' => 'Crab Meat (Brown)', 'slug' => 'crab-meat-brown', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 128, 'energy_kj' => 536,
+				'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.5, 'of_which_saturates_g' => 0.8, 'fibre_g' => 0.0, 'salt_g' => 1.20,
+				'omega3_total_mg' => 720, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 320, 'omega3_dha_mg' => 310,
+				'source_notes' => 'M&W 8th ed. (Crab, brown meat). Higher fat and stronger flavour than white meat; good omega-3 source.',
+			],
+			[
+				'name' => 'Crab Meat (White)', 'slug' => 'crab-meat-white', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.0, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.95,
+				'omega3_total_mg' => 390, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 170, 'omega3_dha_mg' => 180,
+				'source_notes' => 'M&W 8th ed. (Crab, white meat). Leaner than brown meat; delicate flavour. Omega-3 estimated.',
+			],
+			[
+				'name' => 'Crab Meat (Claw)', 'slug' => 'crab-meat-claw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 110, 'energy_kj' => 460,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 3.0, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'omega3_total_mg' => 450, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 190, 'omega3_dha_mg' => 210,
+				'source_notes' => 'M&W 8th ed. (Crab, claw meat). Darker and stronger-flavoured than body white meat. Omega-3 estimated.',
+			],
+			[
+				'name' => 'Crab Meat (Backfin)', 'slug' => 'crab-meat-backfin', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 87, 'energy_kj' => 364,
+				'protein_g' => 18.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.1, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.90,
+				'omega3_total_mg' => 320, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 130, 'omega3_dha_mg' => 160,
+				'source_notes' => 'USDA FDC (Blue crab, lump/backfin meat, cooked). Very lean pick from the back section. Omega-3 estimated.',
+			],
+			[
+				'name' => 'Velvet Crab (cooked)', 'slug' => 'velvet-crab-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 95, 'energy_kj' => 397,
+				'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.5, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.90,
+				'omega3_total_mg' => 350, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170,
+				'source_notes' => 'M&W 8th ed. (Crab, cooked). Velvet crab (Necora puber) is a small swimming crab; profile close to edible crab white meat. Omega-3 estimated.',
+			],
+			[
+				'name' => 'Cockles (in Shell, Live)', 'slug' => 'cockles-in-shell-live', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (90g deshelled)', 'grams' => 90] ],
+				'energy_kcal' => 36, 'energy_kj' => 151,
+				'protein_g' => 8.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.90,
+				'source_notes' => 'M&W 8th ed. (Cockles, raw). Values per 100g edible meat; ~250g in-shell yields ~90g meat. Omega-3 left NULL.',
 			],
 
 			// =================================================================
