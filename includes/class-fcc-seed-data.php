@@ -480,6 +480,61 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+
+	public static function seed_v9(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 9 ) { return; }
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) { return; }
+		foreach ( self::seafood_v9( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) { Database::insert_food( $food ); }
+		}
+		update_option( 'fcc_seed_version', 9 );
+	}
+
+	/**
+	 * The 27 new seafood items added in seed v9.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v9( int $fs ): array {
+		return [
+			[ 'name' => 'Jellied Eels',                   'slug' => 'jellied-eels',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (150g)',    'grams' => 150] ], 'energy_kcal' => 98,  'energy_kj' => 410,  'protein_g' => 8.4,  'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.5, 'fat_g' => 6.5,  'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 0.90, 'source_notes' => 'M&W 8th ed. (Eels, jellied). Traditional London dish; eel in lightly seasoned aspic jelly. Omega-3 left NULL.' ],
+			[ 'name' => 'Lumpfish Roe (Black)',            'slug' => 'lumpfish-roe-black',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 163, 'energy_kj' => 682,  'protein_g' => 21.0, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.0,  'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 5.00, 'omega3_total_mg' => 2200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 800,  'omega3_dha_mg' => 1200, 'source_notes' => 'Published data (Cyclopterus lumpus roe, black). Budget caviar substitute; dyed black. High salt from preservation.' ],
+			[ 'name' => 'Lumpfish Roe (Red)',              'slug' => 'lumpfish-roe-red',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 163, 'energy_kj' => 682,  'protein_g' => 21.0, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.0,  'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 5.00, 'omega3_total_mg' => 2200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 800,  'omega3_dha_mg' => 1200, 'source_notes' => 'Same base as black lumpfish roe; dyed red. Identical nutritional profile.' ],
+			[ 'name' => 'Octopus Salad (in Oil)',          'slug' => 'octopus-salad-oil',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 152, 'energy_kj' => 636,  'protein_g' => 15.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.5, 'fat_g' => 9.0,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 1.50, 'source_notes' => 'Estimated: cooked octopus pieces marinated in olive oil, vinegar, herbs. Omega-3 left NULL.' ],
+			[ 'name' => 'Squid Ink',                       'slug' => 'squid-ink',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 sachet (4g)',        'grams' => 4]   ], 'energy_kcal' => 60,  'energy_kj' => 251,  'protein_g' => 10.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'source_notes' => 'Per 100g cephalopod ink. Used as flavouring in pasta/rice; typical sachet 4g provides ~2.4 kcal. Omega-3 left NULL.' ],
+			[ 'name' => 'Samphire (Farmed)',               'slug' => 'samphire-farmed',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (80g)',     'grams' => 80]  ], 'energy_kcal' => 18,  'energy_kj' => 75,   'protein_g' => 1.5,  'carbohydrate_g' => 1.5, 'of_which_sugars_g' => 0.5, 'fat_g' => 0.3,  'of_which_saturates_g' => 0.1, 'fibre_g' => 1.5, 'salt_g' => 2.00, 'source_notes' => 'Published data (Salicornia europaea, farmed marsh samphire). Naturally salty halophyte; rinse before cooking. Omega-3 left NULL.' ],
+			[ 'name' => 'Samphire (Wild)',                 'slug' => 'samphire-wild',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (80g)',     'grams' => 80]  ], 'energy_kcal' => 20,  'energy_kj' => 84,   'protein_g' => 1.5,  'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.5, 'fat_g' => 0.4,  'of_which_saturates_g' => 0.1, 'fibre_g' => 1.8, 'salt_g' => 2.50, 'source_notes' => 'Published data (wild-foraged marsh or rock samphire). Slightly higher mineral content than farmed. Omega-3 left NULL.' ],
+			[ 'name' => 'Sea Purslane',                    'slug' => 'sea-purslane',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)',     'grams' => 50]  ], 'energy_kcal' => 16,  'energy_kj' => 67,   'protein_g' => 1.2,  'carbohydrate_g' => 1.8, 'of_which_sugars_g' => 0.3, 'fat_g' => 0.3,  'of_which_saturates_g' => 0.1, 'fibre_g' => 1.5, 'salt_g' => 2.20, 'source_notes' => 'Published data (Halimione portulacoides). Coastal succulent; strongly saline from habitat. Omega-3 left NULL.' ],
+			[ 'name' => 'Fish Soup (Perard)',              'slug' => 'fish-soup-perard',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 bowl (250g)',      'grams' => 250] ], 'energy_kcal' => 48,  'energy_kj' => 201,  'protein_g' => 3.2,  'carbohydrate_g' => 4.5, 'of_which_sugars_g' => 0.8, 'fat_g' => 1.4,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.5, 'salt_g' => 1.20, 'source_notes' => 'Perard Soupe de Poissons (product label est.). Classic Provençal fish soup; typically served with rouille and croutons.' ],
+			[ 'name' => 'Crab Soup (Perard)',              'slug' => 'crab-soup-perard',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 bowl (250g)',      'grams' => 250] ], 'energy_kcal' => 53,  'energy_kj' => 222,  'protein_g' => 2.8,  'carbohydrate_g' => 5.8, 'of_which_sugars_g' => 1.2, 'fat_g' => 1.7,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.3, 'salt_g' => 1.00, 'source_notes' => 'Perard Bisque de Crabe (product label est.). Creamy crab bisque; richer in carbohydrate than fish soup from cream and starch.' ],
+			[ 'name' => 'Lobster Soup (Perard)',           'slug' => 'lobster-soup-perard',    'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 bowl (250g)',      'grams' => 250] ], 'energy_kcal' => 57,  'energy_kj' => 238,  'protein_g' => 3.2,  'carbohydrate_g' => 6.1, 'of_which_sugars_g' => 1.5, 'fat_g' => 2.2,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.3, 'salt_g' => 1.10, 'source_notes' => 'Perard Bisque de Homard (product label est.). Premium lobster bisque; slightly higher fat than crab version.' ],
+			[ 'name' => 'Salmon Roe (Keta)',               'slug' => 'salmon-roe-keta',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 250, 'energy_kj' => 1046, 'protein_g' => 29.2, 'carbohydrate_g' => 1.9, 'of_which_sugars_g' => 0.5, 'fat_g' => 14.0, 'of_which_saturates_g' => 3.2, 'fibre_g' => 0.0, 'salt_g' => 1.60, 'omega3_total_mg' => 5600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2100, 'omega3_dha_mg' => 3300, 'source_notes' => 'USDA FDC #175194 (Salmon roe/ikura, raw). Chum/keta salmon roe; exceptional omega-3 source.' ],
+			[ 'name' => 'Seafood Salad (in Oil)',          'slug' => 'seafood-salad-oil',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 140, 'energy_kj' => 586,  'protein_g' => 13.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.5, 'fat_g' => 8.0,  'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 1.80, 'omega3_total_mg' => 400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 130, 'omega3_dha_mg' => 200, 'source_notes' => 'Estimated: mixed octopus, squid and mussels in sunflower/olive oil. Omega-3 from squid and mussel components.' ],
+			[ 'name' => 'Sweet Cure Herring',              'slug' => 'sweet-cure-herring',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '2 fillets (80g)',     'grams' => 80]  ], 'energy_kcal' => 165, 'energy_kj' => 690,  'protein_g' => 13.5, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 6.5, 'fat_g' => 9.0,  'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 2.50, 'omega3_total_mg' => 1300, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 500,  'omega3_dha_mg' => 700,  'source_notes' => 'Estimated (sweet/sugar-cured marinated herring). High sugar from sweet brine marinade; retains good omega-3 despite processing.' ],
+			[ 'name' => 'Tobiko (Wasabi/Green)',           'slug' => 'tobiko-wasabi-green',    'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 220, 'energy_kj' => 920,  'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0, 'fat_g' => 7.0,  'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 3.50, 'omega3_total_mg' => 2000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 750,  'omega3_dha_mg' => 1100, 'source_notes' => 'Estimated from flying fish roe (Cypselurus agoo). Wasabi/green-dyed variety; same nutritional base as orange tobiko.' ],
+			[ 'name' => 'Tobiko (Orange)',                 'slug' => 'tobiko-orange',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 225, 'energy_kj' => 942,  'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0, 'fat_g' => 7.5,  'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 3.50, 'omega3_total_mg' => 2100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 780,  'omega3_dha_mg' => 1150, 'source_notes' => 'Published data (flying fish roe, natural orange). Standard tobiko; used extensively in sushi garnish.' ],
+			[ 'name' => 'Tobiko (Yellow)',                 'slug' => 'tobiko-yellow',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 220, 'energy_kj' => 920,  'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0, 'fat_g' => 7.0,  'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 3.50, 'omega3_total_mg' => 2000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 750,  'omega3_dha_mg' => 1100, 'source_notes' => 'Yuzu-infused yellow tobiko (flying fish roe). Flavour differs; nutritional profile mirrors wasabi/green variety.' ],
+			[ 'name' => 'Tuna (Chunks)',                   'slug' => 'tuna-chunks',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 can drained (145g)', 'grams' => 145] ], 'energy_kcal' => 109, 'energy_kj' => 456,  'protein_g' => 25.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 350, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100,  'omega3_dha_mg' => 210,  'source_notes' => 'M&W 8th ed. (Tuna, canned in brine, drained). Chunk-style skipjack; lower omega-3 than fresh tuna owing to processing.' ],
+			[ 'name' => 'Terrine (Salmon & Cream)',        'slug' => 'terrine-salmon-cream',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (80g)',     'grams' => 80]  ], 'energy_kcal' => 200, 'energy_kj' => 837,  'protein_g' => 13.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 1.0, 'fat_g' => 16.0, 'of_which_saturates_g' => 6.0, 'fibre_g' => 0.0, 'salt_g' => 1.50, 'omega3_total_mg' => 1100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 300,  'omega3_dha_mg' => 700,  'source_notes' => 'Estimated (salmon terrine with cream cheese/crème fraîche). High sat fat from dairy; omega-3 from salmon component.' ],
+			[ 'name' => 'King Prawns (Seawater)',          'slug' => 'king-prawns-seawater',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '6 prawns (100g)',     'grams' => 100] ], 'energy_kcal' => 99,  'energy_kj' => 414,  'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.80, 'source_notes' => 'M&W 8th ed. / USDA base (cooked king prawn). Sold live-preserved in seawater; higher salt than plain cooked. Omega-3 left NULL.' ],
+			[ 'name' => 'Crevettes',                       'slug' => 'crevettes',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (150g)',    'grams' => 150] ], 'energy_kcal' => 98,  'energy_kj' => 410,  'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.90, 'source_notes' => 'M&W 8th ed. equivalent. Large pink/grey shrimps (Palaemon serratus or Crangon crangon); often sold whole, head-on.' ],
+			[ 'name' => 'Cocktail Prawns',                 'slug' => 'cocktail-prawns',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 99,  'energy_kj' => 414,  'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'source_notes' => 'M&W 8th ed. (Prawns, cooked). Small peeled cooked prawns; as used in prawn cocktail. Omega-3 left NULL.' ],
+			[ 'name' => 'Prawns (Cooked, Tail On)',        'slug' => 'prawns-cooked-tail-on',  'category_id' => $fs, 'serving_sizes' => [ ['label' => '4 prawns (80g)',      'grams' => 80]  ], 'energy_kcal' => 99,  'energy_kj' => 414,  'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'source_notes' => 'M&W 8th ed. (Prawns, cooked). Values per 100g edible meat; shell-on tail portion. Omega-3 left NULL.' ],
+			[ 'name' => 'Prawns (Raw, Wild)',              'slug' => 'prawns-raw-wild',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 72,  'energy_kj' => 301,  'protein_g' => 16.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.40, 'source_notes' => 'USDA FDC #175177 (Shrimp, raw). Wild-caught; lower sodium than cooked/processed. Omega-3 left NULL.' ],
+			[ 'name' => 'Red Argentine Shrimps',           'slug' => 'red-argentine-shrimps',  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 82,  'energy_kj' => 343,  'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.5,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.40, 'omega3_total_mg' => 440, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 130,  'omega3_dha_mg' => 270,  'source_notes' => 'Published data (Pleoticus muelleri, raw). Wild deep-water Patagonian shrimp; ultra-lean, slightly sweet flavour.' ],
+			[ 'name' => 'Langoustine (Whole, Raw)',        'slug' => 'langoustine-whole-raw',  'category_id' => $fs, 'serving_sizes' => [ ['label' => '2 whole (yields ~100g meat)', 'grams' => 100] ], 'energy_kcal' => 75,  'energy_kj' => 314,  'protein_g' => 16.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.8,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.40, 'omega3_total_mg' => 300, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110,  'omega3_dha_mg' => 160,  'source_notes' => 'M&W equivalent (Nephrops norvegicus, raw). Per 100g edible meat; ~35% yield from whole shell-on weight.' ],
+			[ 'name' => 'Soft Shell Crab',                 'slug' => 'soft-shell-crab',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 medium crab (80g)', 'grams' => 80]  ], 'energy_kcal' => 90,  'energy_kj' => 377,  'protein_g' => 15.1, 'carbohydrate_g' => 3.3, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.8,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 310, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100,  'omega3_dha_mg' => 185,  'source_notes' => 'USDA FDC #174204 base (blue crab, raw). Soft shell = moulted crab eaten whole including shell; carbohydrate from chitin.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -2302,6 +2357,238 @@ class Seed_Data {
 				'fat_g' => 17.5, 'of_which_saturates_g' => 4.0, 'fibre_g' => 0.0, 'salt_g' => 5.50,
 				'omega3_total_mg' => 6400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2900, 'omega3_dha_mg' => 2700,
 				'source_notes' => 'Published data (Acipenser stellatus roe). Smallest and most strongly flavoured of the classic caviars.',
+			],
+
+			// --- Additional seafood (seed v9) ---
+
+			[
+				'name' => 'Jellied Eels', 'slug' => 'jellied-eels', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 98, 'energy_kj' => 410,
+				'protein_g' => 8.4, 'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 6.5, 'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 0.90,
+				'source_notes' => 'M&W 8th ed. (Eels, jellied). Traditional London dish; eel in lightly seasoned aspic jelly. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Lumpfish Roe (Black)', 'slug' => 'lumpfish-roe-black', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 163, 'energy_kj' => 682,
+				'protein_g' => 21.0, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.0, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 5.00,
+				'omega3_total_mg' => 2200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 800, 'omega3_dha_mg' => 1200,
+				'source_notes' => 'Published data (Cyclopterus lumpus roe, black). Budget caviar substitute; dyed black. High salt from preservation.',
+			],
+			[
+				'name' => 'Lumpfish Roe (Red)', 'slug' => 'lumpfish-roe-red', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 163, 'energy_kj' => 682,
+				'protein_g' => 21.0, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.0, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 5.00,
+				'omega3_total_mg' => 2200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 800, 'omega3_dha_mg' => 1200,
+				'source_notes' => 'Same base as black lumpfish roe; dyed red. Identical nutritional profile.',
+			],
+			[
+				'name' => 'Octopus Salad (in Oil)', 'slug' => 'octopus-salad-oil', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 152, 'energy_kj' => 636,
+				'protein_g' => 15.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 9.0, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 1.50,
+				'source_notes' => 'Estimated: cooked octopus pieces marinated in olive oil, vinegar, herbs. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Squid Ink', 'slug' => 'squid-ink', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 sachet (4g)', 'grams' => 4] ],
+				'energy_kcal' => 60, 'energy_kj' => 251,
+				'protein_g' => 10.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'source_notes' => 'Per 100g cephalopod ink. Used as flavouring in pasta/rice; typical sachet 4g provides ~2.4 kcal. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Samphire (Farmed)', 'slug' => 'samphire-farmed', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (80g)', 'grams' => 80] ],
+				'energy_kcal' => 18, 'energy_kj' => 75,
+				'protein_g' => 1.5, 'carbohydrate_g' => 1.5, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 1.5, 'salt_g' => 2.00,
+				'source_notes' => 'Published data (Salicornia europaea, farmed marsh samphire). Naturally salty halophyte; rinse before cooking. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Samphire (Wild)', 'slug' => 'samphire-wild', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (80g)', 'grams' => 80] ],
+				'energy_kcal' => 20, 'energy_kj' => 84,
+				'protein_g' => 1.5, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 0.4, 'of_which_saturates_g' => 0.1, 'fibre_g' => 1.8, 'salt_g' => 2.50,
+				'source_notes' => 'Published data (wild-foraged marsh or rock samphire). Slightly higher mineral content than farmed. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Sea Purslane', 'slug' => 'sea-purslane', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 16, 'energy_kj' => 67,
+				'protein_g' => 1.2, 'carbohydrate_g' => 1.8, 'of_which_sugars_g' => 0.3,
+				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 1.5, 'salt_g' => 2.20,
+				'source_notes' => 'Published data (Halimione portulacoides). Coastal succulent; strongly saline from habitat. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Fish Soup (Perard)', 'slug' => 'fish-soup-perard', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 bowl (250g)', 'grams' => 250] ],
+				'energy_kcal' => 48, 'energy_kj' => 201,
+				'protein_g' => 3.2, 'carbohydrate_g' => 4.5, 'of_which_sugars_g' => 0.8,
+				'fat_g' => 1.4, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.5, 'salt_g' => 1.20,
+				'source_notes' => 'Perard Soupe de Poissons (product label est.). Classic Provençal fish soup; typically served with rouille and croutons.',
+			],
+			[
+				'name' => 'Crab Soup (Perard)', 'slug' => 'crab-soup-perard', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 bowl (250g)', 'grams' => 250] ],
+				'energy_kcal' => 53, 'energy_kj' => 222,
+				'protein_g' => 2.8, 'carbohydrate_g' => 5.8, 'of_which_sugars_g' => 1.2,
+				'fat_g' => 1.7, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.3, 'salt_g' => 1.00,
+				'source_notes' => 'Perard Bisque de Crabe (product label est.). Creamy crab bisque; richer in carbohydrate than fish soup from cream and starch.',
+			],
+			[
+				'name' => 'Lobster Soup (Perard)', 'slug' => 'lobster-soup-perard', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 bowl (250g)', 'grams' => 250] ],
+				'energy_kcal' => 57, 'energy_kj' => 238,
+				'protein_g' => 3.2, 'carbohydrate_g' => 6.1, 'of_which_sugars_g' => 1.5,
+				'fat_g' => 2.2, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.3, 'salt_g' => 1.10,
+				'source_notes' => 'Perard Bisque de Homard (product label est.). Premium lobster bisque; slightly higher fat than crab version.',
+			],
+			[
+				'name' => 'Salmon Roe (Keta)', 'slug' => 'salmon-roe-keta', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 250, 'energy_kj' => 1046,
+				'protein_g' => 29.2, 'carbohydrate_g' => 1.9, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 14.0, 'of_which_saturates_g' => 3.2, 'fibre_g' => 0.0, 'salt_g' => 1.60,
+				'omega3_total_mg' => 5600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2100, 'omega3_dha_mg' => 3300,
+				'source_notes' => 'USDA FDC #175194 (Salmon roe/ikura, raw). Chum/keta salmon roe; exceptional omega-3 source.',
+			],
+			[
+				'name' => 'Seafood Salad (in Oil)', 'slug' => 'seafood-salad-oil', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 140, 'energy_kj' => 586,
+				'protein_g' => 13.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 8.0, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 1.80,
+				'omega3_total_mg' => 400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 130, 'omega3_dha_mg' => 200,
+				'source_notes' => 'Estimated: mixed octopus, squid and mussels in sunflower/olive oil. Omega-3 from squid and mussel components.',
+			],
+			[
+				'name' => 'Sweet Cure Herring', 'slug' => 'sweet-cure-herring', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '2 fillets (80g)', 'grams' => 80] ],
+				'energy_kcal' => 165, 'energy_kj' => 690,
+				'protein_g' => 13.5, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 6.5,
+				'fat_g' => 9.0, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 2.50,
+				'omega3_total_mg' => 1300, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 500, 'omega3_dha_mg' => 700,
+				'source_notes' => 'Estimated (sweet/sugar-cured marinated herring). High sugar from sweet brine marinade; retains good omega-3 despite processing.',
+			],
+			[
+				'name' => 'Tobiko (Wasabi/Green)', 'slug' => 'tobiko-wasabi-green', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 220, 'energy_kj' => 920,
+				'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0,
+				'fat_g' => 7.0, 'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 3.50,
+				'omega3_total_mg' => 2000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 750, 'omega3_dha_mg' => 1100,
+				'source_notes' => 'Estimated from flying fish roe (Cypselurus agoo). Wasabi/green-dyed variety; same nutritional base as orange tobiko.',
+			],
+			[
+				'name' => 'Tobiko (Orange)', 'slug' => 'tobiko-orange', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 225, 'energy_kj' => 942,
+				'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0,
+				'fat_g' => 7.5, 'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 3.50,
+				'omega3_total_mg' => 2100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 780, 'omega3_dha_mg' => 1150,
+				'source_notes' => 'Published data (flying fish roe, natural orange). Standard tobiko; used extensively in sushi garnish.',
+			],
+			[
+				'name' => 'Tobiko (Yellow)', 'slug' => 'tobiko-yellow', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 220, 'energy_kj' => 920,
+				'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0,
+				'fat_g' => 7.0, 'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 3.50,
+				'omega3_total_mg' => 2000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 750, 'omega3_dha_mg' => 1100,
+				'source_notes' => 'Yuzu-infused yellow tobiko (flying fish roe). Flavour differs; nutritional profile mirrors wasabi/green variety.',
+			],
+			[
+				'name' => 'Tuna (Chunks)', 'slug' => 'tuna-chunks', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 can drained (145g)', 'grams' => 145] ],
+				'energy_kcal' => 109, 'energy_kj' => 456,
+				'protein_g' => 25.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 350, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 210,
+				'source_notes' => 'M&W 8th ed. (Tuna, canned in brine, drained). Chunk-style skipjack; lower omega-3 than fresh tuna owing to processing.',
+			],
+			[
+				'name' => 'Terrine (Salmon & Cream)', 'slug' => 'terrine-salmon-cream', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (80g)', 'grams' => 80] ],
+				'energy_kcal' => 200, 'energy_kj' => 837,
+				'protein_g' => 13.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 1.0,
+				'fat_g' => 16.0, 'of_which_saturates_g' => 6.0, 'fibre_g' => 0.0, 'salt_g' => 1.50,
+				'omega3_total_mg' => 1100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 300, 'omega3_dha_mg' => 700,
+				'source_notes' => 'Estimated (salmon terrine with cream cheese/crème fraîche). High sat fat from dairy; omega-3 from salmon component.',
+			],
+			[
+				'name' => 'King Prawns (Seawater)', 'slug' => 'king-prawns-seawater', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '6 prawns (100g)', 'grams' => 100] ],
+				'energy_kcal' => 99, 'energy_kj' => 414,
+				'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.80,
+				'source_notes' => 'M&W 8th ed. / USDA base (cooked king prawn). Sold live-preserved in seawater; higher salt than plain cooked. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Crevettes', 'slug' => 'crevettes', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 98, 'energy_kj' => 410,
+				'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.90,
+				'source_notes' => 'M&W 8th ed. equivalent. Large pink/grey shrimps (Palaemon serratus or Crangon crangon); often sold whole, head-on.',
+			],
+			[
+				'name' => 'Cocktail Prawns', 'slug' => 'cocktail-prawns', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 99, 'energy_kj' => 414,
+				'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'source_notes' => 'M&W 8th ed. (Prawns, cooked). Small peeled cooked prawns; as used in prawn cocktail. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Prawns (Cooked, Tail On)', 'slug' => 'prawns-cooked-tail-on', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '4 prawns (80g)', 'grams' => 80] ],
+				'energy_kcal' => 99, 'energy_kj' => 414,
+				'protein_g' => 22.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'source_notes' => 'M&W 8th ed. (Prawns, cooked). Values per 100g edible meat; shell-on tail portion. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Prawns (Raw, Wild)', 'slug' => 'prawns-raw-wild', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 72, 'energy_kj' => 301,
+				'protein_g' => 16.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.40,
+				'source_notes' => 'USDA FDC #175177 (Shrimp, raw). Wild-caught; lower sodium than cooked/processed. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Red Argentine Shrimps', 'slug' => 'red-argentine-shrimps', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 82, 'energy_kj' => 343,
+				'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.5, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.40,
+				'omega3_total_mg' => 440, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 130, 'omega3_dha_mg' => 270,
+				'source_notes' => 'Published data (Pleoticus muelleri, raw). Wild deep-water Patagonian shrimp; ultra-lean, slightly sweet flavour.',
+			],
+			[
+				'name' => 'Langoustine (Whole, Raw)', 'slug' => 'langoustine-whole-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '2 whole (yields ~100g meat)', 'grams' => 100] ],
+				'energy_kcal' => 75, 'energy_kj' => 314,
+				'protein_g' => 16.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.8, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.40,
+				'omega3_total_mg' => 300, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110, 'omega3_dha_mg' => 160,
+				'source_notes' => 'M&W equivalent (Nephrops norvegicus, raw). Per 100g edible meat; ~35% yield from whole shell-on weight.',
+			],
+			[
+				'name' => 'Soft Shell Crab', 'slug' => 'soft-shell-crab', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 medium crab (80g)', 'grams' => 80] ],
+				'energy_kcal' => 90, 'energy_kj' => 377,
+				'protein_g' => 15.1, 'carbohydrate_g' => 3.3, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.8, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 310, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 185,
+				'source_notes' => 'USDA FDC #174204 base (blue crab, raw). Soft shell = moulted crab eaten whole including shell; carbohydrate from chitin.',
 			],
 
 			// =================================================================
