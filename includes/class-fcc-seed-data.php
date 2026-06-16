@@ -535,6 +535,58 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+
+	public static function seed_v10(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 10 ) { return; }
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) { return; }
+		foreach ( self::seafood_v10( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) { Database::insert_food( $food ); }
+		}
+		update_option( 'fcc_seed_version', 10 );
+	}
+
+	/**
+	 * The 24 new seafood items added in seed v10.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v10( int $fs ): array {
+		return [
+			[ 'name' => 'King Crab (Clusters)',         'slug' => 'king-crab-clusters',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 cluster (200g)',    'grams' => 200] ], 'energy_kcal' => 97,  'energy_kj' => 406,  'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.40, 'omega3_total_mg' => 530,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 204, 'omega3_dha_mg' => 275, 'source_notes' => 'USDA FDC #174208 (Crustaceans, king crab, cooked). Clusters = legs + knuckles; meat extracted per 100g.' ],
+			[ 'name' => 'Squid Tubes (raw)',             'slug' => 'squid-tubes',             'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tube (120g)',       'grams' => 120] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.4,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.35, 'omega3_total_mg' => 440,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 240, 'source_notes' => 'M&W 8th ed. / USDA (Squid, raw). Cleaned mantle only; tentacles excluded. Same composition as whole cleaned squid.' ],
+			[ 'name' => 'Baby Squid (raw)',              'slug' => 'baby-squid',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.4,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.35, 'omega3_total_mg' => 440,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 240, 'source_notes' => 'M&W 8th ed. (Squid, raw). Small whole squid (<10cm mantle). Nutritional profile identical to larger squid.' ],
+			[ 'name' => 'Baby Squid (Chipirones, raw)', 'slug' => 'baby-squid-chipirones',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.4,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.35, 'omega3_total_mg' => 440,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 240, 'source_notes' => 'Chipirones = Spanish name for very small squid (Sepiola atlantica / Alloteuthis spp.), raw. Same profile as baby squid.' ],
+			[ 'name' => 'Baby Cuttlefish (raw)',         'slug' => 'baby-cuttlefish',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 79,  'energy_kj' => 331,  'protein_g' => 16.1, 'carbohydrate_g' => 0.8, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.7,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.40, 'omega3_total_mg' => 280,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 90,  'omega3_dha_mg' => 160, 'source_notes' => 'M&W 8th ed. (Cuttlefish, raw). Small Sepia officinalis; leaner than squid with less carbohydrate.' ],
+			[ 'name' => 'Baby Octopus (raw)',            'slug' => 'baby-octopus',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 82,  'energy_kj' => 343,  'protein_g' => 14.9, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.50, 'omega3_total_mg' => 310,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 170, 'source_notes' => 'USDA FDC #175171 base (Octopus, raw). Moscardino/horned octopus (<15cm); same composition as larger octopus.' ],
+			[ 'name' => 'Black Cod (Sablefish)',         'slug' => 'black-cod-sablefish',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (120g)',     'grams' => 120] ], 'energy_kcal' => 250, 'energy_kj' => 1046, 'protein_g' => 13.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 21.5, 'of_which_saturates_g' => 5.2, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'omega3_total_mg' => 2400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 870, 'omega3_dha_mg' => 1500, 'source_notes' => 'USDA FDC #175172 (Sablefish/black cod, raw). One of the richest omega-3 fish; buttery texture owing to high fat content.' ],
+			[ 'name' => 'Chilean Sea Bass',              'slug' => 'chilean-sea-bass',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',     'grams' => 150] ], 'energy_kcal' => 221, 'energy_kj' => 925,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 16.3, 'of_which_saturates_g' => 4.5, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 1800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 570, 'omega3_dha_mg' => 1160, 'source_notes' => 'USDA FDC (Dissostichus eleginoides / Patagonian toothfish, raw). Marketed as "Chilean sea bass"; very high fat, excellent omega-3.' ],
+			[ 'name' => 'Pangasius / Basa (raw)',        'slug' => 'pangasius-basa',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (120g)',     'grams' => 120] ], 'energy_kcal' => 89,  'energy_kj' => 373,  'protein_g' => 12.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.2,  'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'omega3_total_mg' => 90,   'omega3_ala_mg' => null, 'omega3_epa_mg' => 35,  'omega3_dha_mg' => 48,  'source_notes' => 'USDA FDC (Pangasius hypophthalmus, farmed). Mild white fish from Vietnamese aquaculture; very low omega-3 due to grain-based feed.' ],
+			[ 'name' => 'Whitebait (Blanched)',          'slug' => 'whitebait-blanched',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 125, 'energy_kj' => 523,  'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.5,  'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.30, 'omega3_total_mg' => 1700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 700, 'omega3_dha_mg' => 900,  'source_notes' => 'M&W 8th ed. (Whitebait, whole, boiled). Immature sprats/herring eaten whole; good omega-3 from oily juveniles.' ],
+			[ 'name' => 'Whitebait (Plain, raw)',        'slug' => 'whitebait-plain',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 125, 'energy_kj' => 523,  'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.5,  'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'omega3_total_mg' => 1700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 700, 'omega3_dha_mg' => 900,  'source_notes' => 'M&W 8th ed. base (Whitebait, raw). Uncoated uncooked juvenile sprats/herring; values match blanched but lower salt.' ],
+			[ 'name' => 'Bahamas Lobster Tails',         'slug' => 'bahamas-lobster-tails',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tail (150g)',       'grams' => 150] ], 'energy_kcal' => 112, 'energy_kj' => 469,  'protein_g' => 20.6, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.85, 'omega3_total_mg' => 350,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170, 'source_notes' => 'USDA FDC #175181 base (Panulirus argus, Caribbean/Bahamas spiny lobster, cooked). Same profile as spiny lobster tail.' ],
+			[ 'name' => 'Tobiko (Black)',                'slug' => 'tobiko-black',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 225, 'energy_kj' => 942,  'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0, 'fat_g' => 7.5,  'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 3.50, 'omega3_total_mg' => 2100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 780, 'omega3_dha_mg' => 1150, 'source_notes' => 'Flying fish roe (Cypselurus agoo) dyed black with squid ink. Same nutritional base as orange tobiko.' ],
+			[ 'name' => 'Masago (Orange)',               'slug' => 'masago-orange',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 195, 'energy_kj' => 816,  'protein_g' => 26.5, 'carbohydrate_g' => 8.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.5,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 3.20, 'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 600, 'omega3_dha_mg' => 900,  'source_notes' => 'Published data (capelin roe, Mallotus villosus, natural orange). Smaller and less firm than tobiko; slightly sweeter.' ],
+			[ 'name' => 'Masago (Black)',                'slug' => 'masago-black',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 195, 'energy_kj' => 816,  'protein_g' => 26.5, 'carbohydrate_g' => 8.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.5,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 3.20, 'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 600, 'omega3_dha_mg' => 900,  'source_notes' => 'Capelin roe (Mallotus villosus) dyed black with squid ink. Nutritional profile identical to orange masago.' ],
+			[ 'name' => 'Sushi Ebi (cooked prawn)',      'slug' => 'sushi-ebi',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '2 pieces (50g)',      'grams' => 50]  ], 'energy_kcal' => 99,  'energy_kj' => 414,  'protein_g' => 22.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.70, 'source_notes' => 'M&W 8th ed. (Prawns, cooked). Vannamei/tiger prawn, butterflied and poached for nigiri/sushi. Omega-3 left NULL.' ],
+			[ 'name' => 'Snow Crab Meat',                'slug' => 'snow-crab-meat',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 90,  'energy_kj' => 377,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 1.10, 'omega3_total_mg' => 700,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 300, 'omega3_dha_mg' => 350,  'source_notes' => 'USDA FDC #174209 (Chionoecetes opilio, cooked). Cluster/leg meat; sweet flavour, lower fat than brown crab.' ],
+			[ 'name' => 'Pouting / Bib (raw)',           'slug' => 'pouting-bib',             'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (120g)',     'grams' => 120] ], 'energy_kcal' => 75,  'energy_kj' => 314,  'protein_g' => 17.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.5,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'source_notes' => 'M&W 8th ed. equivalent (Trisopterus luscus, raw). UK inshore gadoid similar to whiting; very lean, underutilised. Omega-3 left NULL.' ],
+			[ 'name' => 'Black Sea Bream (raw)',         'slug' => 'black-sea-bream',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',     'grams' => 150] ], 'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.7,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.12, 'omega3_total_mg' => 640,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 180, 'omega3_dha_mg' => 420,  'source_notes' => 'Published data (Spondyliosoma cantharus, raw). UK inshore species; slightly fattier than gilt-head sea bream.' ],
+			[ 'name' => 'Garfish (raw)',                 'slug' => 'garfish',                 'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (100g)',     'grams' => 100] ], 'energy_kcal' => 84,  'energy_kj' => 352,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.12, 'omega3_total_mg' => 420,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 120, 'omega3_dha_mg' => 280,  'source_notes' => 'Published data (Belone belone, raw). Flesh is naturally green-tinged due to biliverdin; safe and delicious. Lean spring fish.' ],
+			[ 'name' => 'Smelt (raw)',                   'slug' => 'smelt',                   'category_id' => $fs, 'serving_sizes' => [ ['label' => '4 fish (100g)',       'grams' => 100] ], 'energy_kcal' => 97,  'energy_kj' => 406,  'protein_g' => 17.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.4,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'omega3_total_mg' => 650,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 220, 'omega3_dha_mg' => 400,  'source_notes' => 'USDA FDC #175161 (Smelt, rainbow, raw). European smelt (Osmerus eperlanus) and rainbow smelt have near-identical profiles.' ],
+			[ 'name' => 'Pilchards (Cornish, raw)',      'slug' => 'pilchards-cornish',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '2 pilchards (120g)',  'grams' => 120] ], 'energy_kcal' => 139, 'energy_kj' => 582,  'protein_g' => 20.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.5,  'of_which_saturates_g' => 1.7, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'omega3_total_mg' => 1900, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 670, 'omega3_dha_mg' => 1080, 'source_notes' => 'M&W 8th ed. / Published data (Sardina pilchardus, raw). Adult sardine; Cornish-landed pilchards have same profile as Mediterranean sardine.' ],
+			[ 'name' => 'Albacore Tuna (raw)',           'slug' => 'albacore-tuna',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 steak (150g)',      'grams' => 150] ], 'energy_kcal' => 144, 'energy_kj' => 602,  'protein_g' => 23.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.9,  'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.12, 'omega3_total_mg' => 1280, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 300, 'omega3_dha_mg' => 890,  'source_notes' => 'USDA FDC #175167 (Thunnus alalunga, raw). White tuna; higher fat and omega-3 than skipjack or yellowfin.' ],
+			[ 'name' => 'Yellowfin Tuna (raw)',          'slug' => 'yellowfin-tuna',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 steak (150g)',      'grams' => 150] ], 'energy_kcal' => 109, 'energy_kj' => 456,  'protein_g' => 23.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.12, 'omega3_total_mg' => 360,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 90,  'omega3_dha_mg' => 220,  'source_notes' => 'USDA FDC #175168 (Thunnus albacares, raw). Lean, mild-flavoured tuna; lower omega-3 than albacore or bluefin.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -2589,6 +2641,223 @@ class Seed_Data {
 				'fat_g' => 1.8, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.80,
 				'omega3_total_mg' => 310, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 185,
 				'source_notes' => 'USDA FDC #174204 base (blue crab, raw). Soft shell = moulted crab eaten whole including shell; carbohydrate from chitin.',
+			],
+
+			// --- Additional seafood (seed v10) ---
+
+			[
+				'name' => 'King Crab (Clusters)', 'slug' => 'king-crab-clusters', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 cluster (200g)', 'grams' => 200] ],
+				'energy_kcal' => 97, 'energy_kj' => 406,
+				'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.40,
+				'omega3_total_mg' => 530, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 204, 'omega3_dha_mg' => 275,
+				'source_notes' => 'USDA FDC #174208 (Crustaceans, king crab, cooked). Clusters = legs + knuckles; meat extracted per 100g.',
+			],
+			[
+				'name' => 'Squid Tubes (raw)', 'slug' => 'squid-tubes', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tube (120g)', 'grams' => 120] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.4, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.35,
+				'omega3_total_mg' => 440, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 240,
+				'source_notes' => 'M&W 8th ed. / USDA (Squid, raw). Cleaned mantle only; tentacles excluded. Same composition as whole cleaned squid.',
+			],
+			[
+				'name' => 'Baby Squid (raw)', 'slug' => 'baby-squid', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.4, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.35,
+				'omega3_total_mg' => 440, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 240,
+				'source_notes' => 'M&W 8th ed. (Squid, raw). Small whole squid (<10cm mantle). Nutritional profile identical to larger squid.',
+			],
+			[
+				'name' => 'Baby Squid (Chipirones, raw)', 'slug' => 'baby-squid-chipirones', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 15.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.4, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.35,
+				'omega3_total_mg' => 440, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 240,
+				'source_notes' => 'Chipirones = Spanish name for very small squid (Sepiola atlantica / Alloteuthis spp.), raw. Same profile as baby squid.',
+			],
+			[
+				'name' => 'Baby Cuttlefish (raw)', 'slug' => 'baby-cuttlefish', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 79, 'energy_kj' => 331,
+				'protein_g' => 16.1, 'carbohydrate_g' => 0.8, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.7, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.40,
+				'omega3_total_mg' => 280, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 90, 'omega3_dha_mg' => 160,
+				'source_notes' => 'M&W 8th ed. (Cuttlefish, raw). Small Sepia officinalis; leaner than squid with less carbohydrate.',
+			],
+			[
+				'name' => 'Baby Octopus (raw)', 'slug' => 'baby-octopus', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 82, 'energy_kj' => 343,
+				'protein_g' => 14.9, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.50,
+				'omega3_total_mg' => 310, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 170,
+				'source_notes' => 'USDA FDC #175171 base (Octopus, raw). Moscardino/horned octopus (<15cm); same composition as larger octopus.',
+			],
+			[
+				'name' => 'Black Cod (Sablefish)', 'slug' => 'black-cod-sablefish', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ],
+				'energy_kcal' => 250, 'energy_kj' => 1046,
+				'protein_g' => 13.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 21.5, 'of_which_saturates_g' => 5.2, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'omega3_total_mg' => 2400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 870, 'omega3_dha_mg' => 1500,
+				'source_notes' => 'USDA FDC #175172 (Sablefish/black cod, raw). One of the richest omega-3 fish; buttery texture owing to high fat content.',
+			],
+			[
+				'name' => 'Chilean Sea Bass', 'slug' => 'chilean-sea-bass', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 221, 'energy_kj' => 925,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 16.3, 'of_which_saturates_g' => 4.5, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 1800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 570, 'omega3_dha_mg' => 1160,
+				'source_notes' => 'USDA FDC (Dissostichus eleginoides / Patagonian toothfish, raw). Marketed as "Chilean sea bass"; very high fat, excellent omega-3.',
+			],
+			[
+				'name' => 'Pangasius / Basa (raw)', 'slug' => 'pangasius-basa', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ],
+				'energy_kcal' => 89, 'energy_kj' => 373,
+				'protein_g' => 12.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.2, 'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'omega3_total_mg' => 90, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 35, 'omega3_dha_mg' => 48,
+				'source_notes' => 'USDA FDC (Pangasius hypophthalmus, farmed). Mild white fish from Vietnamese aquaculture; very low omega-3 due to grain-based feed.',
+			],
+			[
+				'name' => 'Whitebait (Blanched)', 'slug' => 'whitebait-blanched', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 125, 'energy_kj' => 523,
+				'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.5, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.30,
+				'omega3_total_mg' => 1700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 700, 'omega3_dha_mg' => 900,
+				'source_notes' => 'M&W 8th ed. (Whitebait, whole, boiled). Immature sprats/herring eaten whole; good omega-3 from oily juveniles.',
+			],
+			[
+				'name' => 'Whitebait (Plain, raw)', 'slug' => 'whitebait-plain', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 125, 'energy_kj' => 523,
+				'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.5, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'omega3_total_mg' => 1700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 700, 'omega3_dha_mg' => 900,
+				'source_notes' => 'M&W 8th ed. base (Whitebait, raw). Uncoated uncooked juvenile sprats/herring; values match blanched but lower salt.',
+			],
+			[
+				'name' => 'Bahamas Lobster Tails', 'slug' => 'bahamas-lobster-tails', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tail (150g)', 'grams' => 150] ],
+				'energy_kcal' => 112, 'energy_kj' => 469,
+				'protein_g' => 20.6, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.85,
+				'omega3_total_mg' => 350, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170,
+				'source_notes' => 'USDA FDC #175181 base (Panulirus argus, Caribbean/Bahamas spiny lobster, cooked). Same profile as spiny lobster tail.',
+			],
+			[
+				'name' => 'Tobiko (Black)', 'slug' => 'tobiko-black', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 225, 'energy_kj' => 942,
+				'protein_g' => 31.0, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 2.0,
+				'fat_g' => 7.5, 'of_which_saturates_g' => 1.6, 'fibre_g' => 0.0, 'salt_g' => 3.50,
+				'omega3_total_mg' => 2100, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 780, 'omega3_dha_mg' => 1150,
+				'source_notes' => 'Flying fish roe (Cypselurus agoo) dyed black with squid ink. Same nutritional base as orange tobiko.',
+			],
+			[
+				'name' => 'Masago (Orange)', 'slug' => 'masago-orange', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 195, 'energy_kj' => 816,
+				'protein_g' => 26.5, 'carbohydrate_g' => 8.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.5, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 3.20,
+				'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 600, 'omega3_dha_mg' => 900,
+				'source_notes' => 'Published data (capelin roe, Mallotus villosus, natural orange). Smaller and less firm than tobiko; slightly sweeter.',
+			],
+			[
+				'name' => 'Masago (Black)', 'slug' => 'masago-black', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 195, 'energy_kj' => 816,
+				'protein_g' => 26.5, 'carbohydrate_g' => 8.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.5, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 3.20,
+				'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 600, 'omega3_dha_mg' => 900,
+				'source_notes' => 'Capelin roe (Mallotus villosus) dyed black with squid ink. Nutritional profile identical to orange masago.',
+			],
+			[
+				'name' => 'Sushi Ebi (cooked prawn)', 'slug' => 'sushi-ebi', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '2 pieces (50g)', 'grams' => 50] ],
+				'energy_kcal' => 99, 'energy_kj' => 414,
+				'protein_g' => 22.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.70,
+				'source_notes' => 'M&W 8th ed. (Prawns, cooked). Vannamei/tiger prawn, butterflied and poached for nigiri/sushi. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Snow Crab Meat', 'slug' => 'snow-crab-meat', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 90, 'energy_kj' => 377,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 1.10,
+				'omega3_total_mg' => 700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 300, 'omega3_dha_mg' => 350,
+				'source_notes' => 'USDA FDC #174209 (Chionoecetes opilio, cooked). Cluster/leg meat; sweet flavour, lower fat than brown crab.',
+			],
+			[
+				'name' => 'Pouting / Bib (raw)', 'slug' => 'pouting-bib', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ],
+				'energy_kcal' => 75, 'energy_kj' => 314,
+				'protein_g' => 17.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.5, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'source_notes' => 'M&W 8th ed. equivalent (Trisopterus luscus, raw). UK inshore gadoid similar to whiting; very lean, underutilised. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Black Sea Bream (raw)', 'slug' => 'black-sea-bream', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.7, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.12,
+				'omega3_total_mg' => 640, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 180, 'omega3_dha_mg' => 420,
+				'source_notes' => 'Published data (Spondyliosoma cantharus, raw). UK inshore species; slightly fattier than gilt-head sea bream.',
+			],
+			[
+				'name' => 'Garfish (raw)', 'slug' => 'garfish', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (100g)', 'grams' => 100] ],
+				'energy_kcal' => 84, 'energy_kj' => 352,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.12,
+				'omega3_total_mg' => 420, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 120, 'omega3_dha_mg' => 280,
+				'source_notes' => 'Published data (Belone belone, raw). Flesh is naturally green-tinged due to biliverdin; safe and delicious. Lean spring fish.',
+			],
+			[
+				'name' => 'Smelt (raw)', 'slug' => 'smelt', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '4 fish (100g)', 'grams' => 100] ],
+				'energy_kcal' => 97, 'energy_kj' => 406,
+				'protein_g' => 17.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.4, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'omega3_total_mg' => 650, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 220, 'omega3_dha_mg' => 400,
+				'source_notes' => 'USDA FDC #175161 (Smelt, rainbow, raw). European smelt (Osmerus eperlanus) and rainbow smelt have near-identical profiles.',
+			],
+			[
+				'name' => 'Pilchards (Cornish, raw)', 'slug' => 'pilchards-cornish', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '2 pilchards (120g)', 'grams' => 120] ],
+				'energy_kcal' => 139, 'energy_kj' => 582,
+				'protein_g' => 20.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.5, 'of_which_saturates_g' => 1.7, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'omega3_total_mg' => 1900, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 670, 'omega3_dha_mg' => 1080,
+				'source_notes' => 'M&W 8th ed. / Published data (Sardina pilchardus, raw). Adult sardine; Cornish-landed pilchards same profile as Mediterranean sardine.',
+			],
+			[
+				'name' => 'Albacore Tuna (raw)', 'slug' => 'albacore-tuna', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 steak (150g)', 'grams' => 150] ],
+				'energy_kcal' => 144, 'energy_kj' => 602,
+				'protein_g' => 23.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.9, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.0, 'salt_g' => 0.12,
+				'omega3_total_mg' => 1280, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 300, 'omega3_dha_mg' => 890,
+				'source_notes' => 'USDA FDC #175167 (Thunnus alalunga, raw). White tuna; higher fat and omega-3 than skipjack or yellowfin.',
+			],
+			[
+				'name' => 'Yellowfin Tuna (raw)', 'slug' => 'yellowfin-tuna', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 steak (150g)', 'grams' => 150] ],
+				'energy_kcal' => 109, 'energy_kj' => 456,
+				'protein_g' => 23.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.12,
+				'omega3_total_mg' => 360, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 90, 'omega3_dha_mg' => 220,
+				'source_notes' => 'USDA FDC #175168 (Thunnus albacares, raw). Lean, mild-flavoured tuna; lower omega-3 than albacore or bluefin.',
 			],
 
 			// =================================================================
