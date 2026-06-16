@@ -225,6 +225,66 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add seafood items added in v1.3.6 to existing installations.
+	// -------------------------------------------------------------------------
+
+	public static function seed_v5(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 5 ) {
+			return;
+		}
+
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) {
+			return;
+		}
+
+		foreach ( self::seafood_v5( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) {
+				Database::insert_food( $food );
+			}
+		}
+
+		update_option( 'fcc_seed_version', 5 );
+	}
+
+	/**
+	 * The 21 new seafood items added in seed v5.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v5( int $fs ): array {
+		return [
+			[ 'name' => 'Dabs (raw)',                   'slug' => 'dabs-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fish (100g)',         'grams' => 100] ], 'energy_kcal' => 76,  'energy_kj' => 318,  'protein_g' => 16.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.26, 'source_notes' => 'M&W 8th ed. (Dab, raw). Small flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'Dogfish / Rock Salmon (raw)',  'slug' => 'dogfish-raw',             'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 130, 'energy_kj' => 544,  'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.8,  'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.22, 'source_notes' => 'M&W 8th ed. (Dogfish/rock salmon, raw). Semi-oily small shark; omega-3 left NULL.' ],
+			[ 'name' => 'Dorade / Wild Pink Sea Bream (raw)', 'slug' => 'dorade-sea-bream-raw', 'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (140g)',   'grams' => 140] ], 'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.7,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'source_notes' => 'M&W 8th ed. (Sea bream, raw). Wild dorade/pink sea bream has same profile. Omega-3 left NULL.' ],
+			[ 'name' => 'Conger Eel (raw)',             'slug' => 'conger-eel-raw',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (150g)',      'grams' => 150] ], 'energy_kcal' => 121, 'energy_kj' => 506,  'protein_g' => 19.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.0,  'of_which_saturates_g' => 1.2, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 430, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110, 'omega3_dha_mg' => 240, 'source_notes' => 'M&W 8th ed. Omega-3 estimated from USDA comparable eel data.' ],
+			[ 'name' => 'Eels (raw)',                   'slug' => 'eels-raw',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 184, 'energy_kj' => 770,  'protein_g' => 18.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 11.7, 'of_which_saturates_g' => 2.4, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'omega3_total_mg' => 741, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 149, 'omega3_dha_mg' => 392, 'source_notes' => 'USDA FDC #175189 (Eel, mixed species, raw). Rich in fat and omega-3.' ],
+			[ 'name' => 'Cuttlefish (raw)',             'slug' => 'cuttlefish-raw',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 79,  'energy_kj' => 331,  'protein_g' => 16.2, 'carbohydrate_g' => 0.8, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.7,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.65, 'omega3_total_mg' => 310, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110, 'omega3_dha_mg' => 182, 'source_notes' => 'USDA FDC #175183 (Cuttlefish, mixed species, raw).' ],
+			[ 'name' => 'Fish Bones (edible, soft)',    'slug' => 'fish-bones-edible',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (20g)',       'grams' => 20]  ], 'energy_kcal' => 184, 'energy_kj' => 770,  'protein_g' => 20.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 10.0, 'of_which_saturates_g' => 2.5, 'fibre_g' => 0.0, 'salt_g' => 1.20, 'source_notes' => 'Estimated from canned sardine/salmon bone composition (M&W 8th ed. / USDA). Very high calcium; omega-3 retained from host fish.' ],
+			[ 'name' => 'Fish Mix (Smoked Blend)',      'slug' => 'fish-mix-smoked',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (150g)',      'grams' => 150] ], 'energy_kcal' => 180, 'energy_kj' => 753,  'protein_g' => 21.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 10.0, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 2.50, 'omega3_total_mg' => 800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 240, 'omega3_dha_mg' => 440, 'source_notes' => 'Estimated average from typical UK smoked fish blend (salmon, haddock, mackerel). Omega-3 varies by mix.' ],
+			[ 'name' => 'Fish Mix (Classic)',           'slug' => 'fish-mix-classic',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (150g)',      'grams' => 150] ], 'energy_kcal' => 90,  'energy_kj' => 377,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.8,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'source_notes' => 'Estimated average from typical UK white fish blend (cod, haddock, pollock). Omega-3 left NULL.' ],
+			[ 'name' => 'Fish Soup Mix (Bouillabaisse)','slug' => 'fish-soup-mix',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (200g)',      'grams' => 200] ], 'energy_kcal' => 85,  'energy_kj' => 356,  'protein_g' => 16.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.40, 'source_notes' => 'Estimated from typical bouillabaisse-style raw fish/shellfish mix (white fish, shellfish, rockfish). Omega-3 left NULL.' ],
+			[ 'name' => 'Turbot (raw)',                 'slug' => 'turbot-raw',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (200g)',       'grams' => 200] ], 'energy_kcal' => 95,  'energy_kj' => 397,  'protein_g' => 19.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.5,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.23, 'source_notes' => 'M&W 8th ed. (Turbot, raw). Premium white flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'John Dory (raw)',              'slug' => 'john-dory-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',       'grams' => 150] ], 'energy_kcal' => 83,  'energy_kj' => 347,  'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'source_notes' => 'M&W 8th ed. (John Dory, raw). Lean white fish; omega-3 left NULL.' ],
+			[ 'name' => 'Red Gurnard (raw)',            'slug' => 'red-gurnard-raw',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (120g)',       'grams' => 120] ], 'energy_kcal' => 83,  'energy_kj' => 347,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24, 'source_notes' => 'M&W 8th ed. (Gurnard, raw). Lean white fish; omega-3 left NULL.' ],
+			[ 'name' => 'Lemon Sole (raw)',             'slug' => 'lemon-sole-raw',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (130g)',       'grams' => 130] ], 'energy_kcal' => 83,  'energy_kj' => 347,  'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.24, 'source_notes' => 'M&W 8th ed. (Lemon sole, raw). White flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'Sea Trout (raw)',              'slug' => 'sea-trout-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',       'grams' => 150] ], 'energy_kcal' => 135, 'energy_kj' => 565,  'protein_g' => 20.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.0,  'of_which_saturates_g' => 1.2, 'fibre_g' => 0.0, 'salt_g' => 0.10, 'omega3_total_mg' => 720, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 190, 'omega3_dha_mg' => 395, 'source_notes' => 'M&W 8th ed. (Sea/salmon trout, raw). Omega-3 from USDA FDC #175150 equivalent.' ],
+			[ 'name' => 'Swordfish (raw)',              'slug' => 'swordfish-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 steak (150g)',        'grams' => 150] ], 'energy_kcal' => 144, 'energy_kj' => 602,  'protein_g' => 19.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.7,  'of_which_saturates_g' => 1.8, 'fibre_g' => 0.0, 'salt_g' => 0.37, 'omega3_total_mg' => 738, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 148, 'omega3_dha_mg' => 543, 'source_notes' => 'USDA FDC #175132 (Swordfish, raw).' ],
+			[ 'name' => 'Brown Shrimp (cooked)',        'slug' => 'brown-shrimp-cooked',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (60g)',       'grams' => 60]  ], 'energy_kcal' => 98,  'energy_kj' => 410,  'protein_g' => 22.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 1.50, 'source_notes' => 'M&W 8th ed. (Brown shrimps, boiled). Very lean; omega-3 left NULL.' ],
+			[ 'name' => 'Spider Crab (cooked)',         'slug' => 'spider-crab-cooked',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 111, 'energy_kj' => 464,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 3.5,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.90, 'omega3_total_mg' => 400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 160, 'omega3_dha_mg' => 190, 'source_notes' => 'M&W 8th ed. (Crab, white meat, cooked). Omega-3 estimated from USDA FDC #174215.' ],
+			[ 'name' => 'Razor Clams (cooked)',         'slug' => 'razor-clams-cooked',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '3 razor clams (100g)', 'grams' => 100] ], 'energy_kcal' => 85,  'energy_kj' => 356,  'protein_g' => 14.5, 'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.95, 'omega3_total_mg' => 250, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 85,  'omega3_dha_mg' => 130, 'source_notes' => 'Estimated from USDA clam data (FDC #174203). Omega-3 lower than blue/surf clams.' ],
+			[ 'name' => 'Red Mullet (raw)',             'slug' => 'red-mullet-raw',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (120g)',       'grams' => 120] ], 'energy_kcal' => 109, 'energy_kj' => 456,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.0,  'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.22, 'source_notes' => 'M&W 8th ed. (Red mullet, raw). Semi-oily fish; omega-3 left NULL.' ],
+			[ 'name' => 'Periwinkles (cooked)',         'slug' => 'periwinkles-cooked',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',      'grams' => 100] ], 'energy_kcal' => 64,  'energy_kj' => 268,  'protein_g' => 13.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'source_notes' => 'M&W 8th ed. (Periwinkles/winkles, boiled). Omega-3 left NULL.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -1192,6 +1252,185 @@ class Seed_Data {
 				'fat_g' => 2.4, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.18,
 				'omega3_total_mg' => 490, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 100, 'omega3_dha_mg' => 260,
 				'source_notes' => 'USDA FDC / published data (Rachycentron canadum, raw). Omega-3 moderate for a semi-pelagic fish.',
+			],
+
+			// --- Additional seafood (seed v5) ---
+
+			[
+				'name' => 'Dabs (raw)', 'slug' => 'dabs-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fish (100g)', 'grams' => 100] ],
+				'energy_kcal' => 76, 'energy_kj' => 318,
+				'protein_g' => 16.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.26,
+				'source_notes' => 'M&W 8th ed. (Dab, raw). Small flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Dogfish / Rock Salmon (raw)', 'slug' => 'dogfish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 130, 'energy_kj' => 544,
+				'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.8, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.22,
+				'source_notes' => 'M&W 8th ed. (Dogfish/rock salmon, raw). Semi-oily small shark; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Dorade / Wild Pink Sea Bream (raw)', 'slug' => 'dorade-sea-bream-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (140g)', 'grams' => 140] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.7, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'source_notes' => 'M&W 8th ed. (Sea bream, raw). Wild dorade/pink sea bream has same profile. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Conger Eel (raw)', 'slug' => 'conger-eel-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 121, 'energy_kj' => 506,
+				'protein_g' => 19.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.0, 'of_which_saturates_g' => 1.2, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 430, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110, 'omega3_dha_mg' => 240,
+				'source_notes' => 'M&W 8th ed. Omega-3 estimated from USDA comparable eel data.',
+			],
+			[
+				'name' => 'Eels (raw)', 'slug' => 'eels-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 184, 'energy_kj' => 770,
+				'protein_g' => 18.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 11.7, 'of_which_saturates_g' => 2.4, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'omega3_total_mg' => 741, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 149, 'omega3_dha_mg' => 392,
+				'source_notes' => 'USDA FDC #175189 (Eel, mixed species, raw). Rich in fat and omega-3.',
+			],
+			[
+				'name' => 'Cuttlefish (raw)', 'slug' => 'cuttlefish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 79, 'energy_kj' => 331,
+				'protein_g' => 16.2, 'carbohydrate_g' => 0.8, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.7, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.65,
+				'omega3_total_mg' => 310, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 110, 'omega3_dha_mg' => 182,
+				'source_notes' => 'USDA FDC #175183 (Cuttlefish, mixed species, raw).',
+			],
+			[
+				'name' => 'Fish Bones (edible, soft)', 'slug' => 'fish-bones-edible', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (20g)', 'grams' => 20] ],
+				'energy_kcal' => 184, 'energy_kj' => 770,
+				'protein_g' => 20.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 10.0, 'of_which_saturates_g' => 2.5, 'fibre_g' => 0.0, 'salt_g' => 1.20,
+				'source_notes' => 'Estimated from canned sardine/salmon bone composition (M&W 8th ed. / USDA). Very high calcium; omega-3 retained from host fish.',
+			],
+			[
+				'name' => 'Fish Mix (Smoked Blend)', 'slug' => 'fish-mix-smoked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 180, 'energy_kj' => 753,
+				'protein_g' => 21.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 10.0, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 2.50,
+				'omega3_total_mg' => 800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 240, 'omega3_dha_mg' => 440,
+				'source_notes' => 'Estimated average from typical UK smoked fish blend (salmon, haddock, mackerel). Omega-3 varies by mix.',
+			],
+			[
+				'name' => 'Fish Mix (Classic)', 'slug' => 'fish-mix-classic', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 90, 'energy_kj' => 377,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.8, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'source_notes' => 'Estimated average from typical UK white fish blend (cod, haddock, pollock). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Fish Soup Mix (Bouillabaisse)', 'slug' => 'fish-soup-mix', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (200g)', 'grams' => 200] ],
+				'energy_kcal' => 85, 'energy_kj' => 356,
+				'protein_g' => 16.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.40,
+				'source_notes' => 'Estimated from typical bouillabaisse-style raw fish/shellfish mix (white fish, shellfish, rockfish). Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Turbot (raw)', 'slug' => 'turbot-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (200g)', 'grams' => 200] ],
+				'energy_kcal' => 95, 'energy_kj' => 397,
+				'protein_g' => 19.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.5, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.23,
+				'source_notes' => 'M&W 8th ed. (Turbot, raw). Premium white flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'John Dory (raw)', 'slug' => 'john-dory-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 83, 'energy_kj' => 347,
+				'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'source_notes' => 'M&W 8th ed. (John Dory, raw). Lean white fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Red Gurnard (raw)', 'slug' => 'red-gurnard-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ],
+				'energy_kcal' => 83, 'energy_kj' => 347,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24,
+				'source_notes' => 'M&W 8th ed. (Gurnard, raw). Lean white fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Lemon Sole (raw)', 'slug' => 'lemon-sole-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (130g)', 'grams' => 130] ],
+				'energy_kcal' => 83, 'energy_kj' => 347,
+				'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.24,
+				'source_notes' => 'M&W 8th ed. (Lemon sole, raw). White flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Sea Trout (raw)', 'slug' => 'sea-trout-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 135, 'energy_kj' => 565,
+				'protein_g' => 20.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.0, 'of_which_saturates_g' => 1.2, 'fibre_g' => 0.0, 'salt_g' => 0.10,
+				'omega3_total_mg' => 720, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 190, 'omega3_dha_mg' => 395,
+				'source_notes' => 'M&W 8th ed. (Sea/salmon trout, raw). Omega-3 from USDA FDC #175150 equivalent.',
+			],
+			[
+				'name' => 'Swordfish (raw)', 'slug' => 'swordfish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 steak (150g)', 'grams' => 150] ],
+				'energy_kcal' => 144, 'energy_kj' => 602,
+				'protein_g' => 19.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.7, 'of_which_saturates_g' => 1.8, 'fibre_g' => 0.0, 'salt_g' => 0.37,
+				'omega3_total_mg' => 738, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 148, 'omega3_dha_mg' => 543,
+				'source_notes' => 'USDA FDC #175132 (Swordfish, raw).',
+			],
+			[
+				'name' => 'Brown Shrimp (cooked)', 'slug' => 'brown-shrimp-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (60g)', 'grams' => 60] ],
+				'energy_kcal' => 98, 'energy_kj' => 410,
+				'protein_g' => 22.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 1.50,
+				'source_notes' => 'M&W 8th ed. (Brown shrimps, boiled). Very lean; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Spider Crab (cooked)', 'slug' => 'spider-crab-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 111, 'energy_kj' => 464,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 3.5, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.90,
+				'omega3_total_mg' => 400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 160, 'omega3_dha_mg' => 190,
+				'source_notes' => 'M&W 8th ed. (Crab, white meat, cooked). Omega-3 estimated from USDA FDC #174215.',
+			],
+			[
+				'name' => 'Razor Clams (cooked)', 'slug' => 'razor-clams-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '3 razor clams (100g)', 'grams' => 100] ],
+				'energy_kcal' => 85, 'energy_kj' => 356,
+				'protein_g' => 14.5, 'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.95,
+				'omega3_total_mg' => 250, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 85, 'omega3_dha_mg' => 130,
+				'source_notes' => 'Estimated from USDA clam data (FDC #174203). Omega-3 lower than blue/surf clams.',
+			],
+			[
+				'name' => 'Red Mullet (raw)', 'slug' => 'red-mullet-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (120g)', 'grams' => 120] ],
+				'energy_kcal' => 109, 'energy_kj' => 456,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.0, 'of_which_saturates_g' => 0.9, 'fibre_g' => 0.0, 'salt_g' => 0.22,
+				'source_notes' => 'M&W 8th ed. (Red mullet, raw). Semi-oily fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Periwinkles (cooked)', 'slug' => 'periwinkles-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 64, 'energy_kj' => 268,
+				'protein_g' => 13.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'source_notes' => 'M&W 8th ed. (Periwinkles/winkles, boiled). Omega-3 left NULL.',
 			],
 
 			// =================================================================
