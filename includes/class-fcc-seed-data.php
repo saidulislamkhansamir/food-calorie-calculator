@@ -587,6 +587,51 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+
+	public static function seed_v11(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 11 ) { return; }
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) { return; }
+		foreach ( self::seafood_v11( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) { Database::insert_food( $food ); }
+		}
+		update_option( 'fcc_seed_version', 11 );
+	}
+
+	/**
+	 * The 16 new seafood items added in seed v11.
+	 * Note: Smoked Mackerel was already present; excluded here.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v11( int $fs ): array {
+		return [
+			[ 'name' => 'Wahoo (raw)',                          'slug' => 'wahoo',                          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 steak (150g)',      'grams' => 150] ], 'energy_kcal' => 109, 'energy_kj' => 456,  'protein_g' => 21.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.2,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.12, 'omega3_total_mg' => 490,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 130, 'omega3_dha_mg' => 320,  'source_notes' => 'USDA FDC equivalent (Acanthocybium solandri, raw). Firm-fleshed pelagic fish; popular in Atlantic and Pacific sport fishing.' ],
+			[ 'name' => 'Scallops (Queen Meat, raw)',           'slug' => 'scallops-queen-meat',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 86,  'energy_kj' => 360,  'protein_g' => 17.0, 'carbohydrate_g' => 2.4, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.8,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.40, 'omega3_total_mg' => 370,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 200,  'source_notes' => 'Published data (Aequipecten opercularis, raw). Smaller and sweeter than king scallops; no roe in commercial supply.' ],
+			[ 'name' => 'Mussel Meat (Shucked, raw)',           'slug' => 'mussel-meat-shucked',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 74,  'energy_kj' => 310,  'protein_g' => 11.9, 'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.8,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.60, 'omega3_total_mg' => 700,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 260, 'omega3_dha_mg' => 400,  'source_notes' => 'M&W 8th ed. (Mussels, raw). Shucked/prepared weight (no shell); same composition as in-shell cooked but raw.' ],
+			[ 'name' => 'Goose Barnacles (Percebes)',           'slug' => 'goose-barnacles-percebes',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 120, 'energy_kj' => 502,  'protein_g' => 20.0, 'carbohydrate_g' => 2.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 3.0,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 1.50, 'omega3_total_mg' => 550,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 200, 'omega3_dha_mg' => 300,  'source_notes' => 'Published data (Pollicipes pollicipes, cooked). Values per 100g edible peduncle meat; shell/plate discarded. Atlantic/Iberian delicacy.' ],
+			[ 'name' => 'Mantis Shrimp (cooked)',               'slug' => 'mantis-shrimp',                  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 90,  'energy_kj' => 377,  'protein_g' => 19.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 430,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 250,  'source_notes' => 'Published data (Squilla mantis / Stomatopoda, cooked). Mediterranean stomatopod; values per 100g edible tail meat.' ],
+			[ 'name' => 'Smoked Eel',                          'slug' => 'smoked-eel',                     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (80g)',     'grams' => 80]  ], 'energy_kcal' => 290, 'energy_kj' => 1213, 'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 22.0, 'of_which_saturates_g' => 4.5, 'fibre_g' => 0.0, 'salt_g' => 2.20, 'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 600, 'omega3_dha_mg' => 850,  'source_notes' => 'M&W 8th ed. (Eel, smoked). Hot-smoked European eel; very rich; high salt from brining before smoking.' ],
+			[ 'name' => 'Smoked Sprats',                       'slug' => 'smoked-sprats',                  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)',     'grams' => 50]  ], 'energy_kcal' => 285, 'energy_kj' => 1193, 'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 23.0, 'of_which_saturates_g' => 5.4, 'fibre_g' => 0.0, 'salt_g' => 2.80, 'omega3_total_mg' => 2700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1100, 'omega3_dha_mg' => 1400, 'source_notes' => 'M&W 8th ed. (Sprats, smoked). Very high fat from both the fish and smoking process; exceptional omega-3 density.' ],
+			[ 'name' => 'Smoked Halibut',                      'slug' => 'smoked-halibut',                 'category_id' => $fs, 'serving_sizes' => [ ['label' => '3 slices (60g)',      'grams' => 60]  ], 'energy_kcal' => 136, 'energy_kj' => 569,  'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.2,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 2.50, 'omega3_total_mg' => 980,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 350, 'omega3_dha_mg' => 580,  'source_notes' => 'Published data (Hippoglossus hippoglossus, cold-smoked). Milder and fattier than smoked haddock; sliced and served cold.' ],
+			[ 'name' => 'Herring Roe (Soft, raw)',             'slug' => 'herring-roe-soft',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (80g)',     'grams' => 80]  ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.5,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 680,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 250, 'omega3_dha_mg' => 380,  'source_notes' => 'M&W 8th ed. (Herring, soft roe/milt, raw). Sperm sac (milt); distinct from hard roe. Often pan-fried on toast.' ],
+			[ 'name' => 'Fish Pie Mix (raw)',                   'slug' => 'fish-pie-mix',                   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (150g)',    'grams' => 150] ], 'energy_kcal' => 97,  'energy_kj' => 406,  'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.8,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 630,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 200, 'omega3_dha_mg' => 380,  'source_notes' => 'Estimated average of salmon, cod and smoked haddock (typical UK retail mix). Omega-3 weighted average across components.' ],
+			[ 'name' => 'Prawn Cocktail',                       'slug' => 'prawn-cocktail',                 'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 starter (150g)',   'grams' => 150] ], 'energy_kcal' => 140, 'energy_kj' => 586,  'protein_g' => 11.0, 'carbohydrate_g' => 6.0, 'of_which_sugars_g' => 5.5, 'fat_g' => 8.0,  'of_which_saturates_g' => 1.0, 'fibre_g' => 0.3, 'salt_g' => 1.20, 'source_notes' => 'Estimated (cooked prawns + Marie Rose / thousand island sauce on lettuce). Fat from mayo base; sugars from ketchup component. Omega-3 left NULL.' ],
+			[ 'name' => 'Dressed Lobster',                      'slug' => 'dressed-lobster',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '½ lobster (200g)',   'grams' => 200] ], 'energy_kcal' => 160, 'energy_kj' => 670,  'protein_g' => 17.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.5, 'fat_g' => 10.0, 'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 1.50, 'omega3_total_mg' => 280,  'omega3_ala_mg' => null, 'omega3_epa_mg' => 120, 'omega3_dha_mg' => 130,  'source_notes' => 'Estimated: cooked lobster served in shell with mayonnaise dressing. Fat and salt elevated by mayo component.' ],
+			[ 'name' => 'Marinated Anchovies (Boquerones)',     'slug' => 'marinated-anchovies-boquerones', 'category_id' => $fs, 'serving_sizes' => [ ['label' => '6 fillets (50g)',    'grams' => 50]  ], 'energy_kcal' => 110, 'energy_kj' => 460,  'protein_g' => 17.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.0,  'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 1.00, 'omega3_total_mg' => 1400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 550, 'omega3_dha_mg' => 750,  'source_notes' => 'Published data (Engraulis encrasicolus, vinegar/oil cured). White anchovies; much lower salt than salt-packed; mild, firm texture.' ],
+			[ 'name' => 'Mussels (Smoked, in Oil)',             'slug' => 'mussels-smoked-oil',             'category_id' => $fs, 'serving_sizes' => [ ['label' => '½ tin (60g)',        'grams' => 60]  ], 'energy_kcal' => 200, 'energy_kj' => 837,  'protein_g' => 20.0, 'carbohydrate_g' => 3.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 11.5, 'of_which_saturates_g' => 2.2, 'fibre_g' => 0.0, 'salt_g' => 1.80, 'omega3_total_mg' => 1200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 450, 'omega3_dha_mg' => 680,  'source_notes' => 'Published data (Mytilus edulis, hot-smoked, in sunflower oil). Canned; fat elevated by oil packing.' ],
+			[ 'name' => 'Carrageen (Irish Moss, fresh)',        'slug' => 'carrageen-irish-moss',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (30g)',     'grams' => 30]  ], 'energy_kcal' => 30,  'energy_kj' => 126,  'protein_g' => 1.5,  'carbohydrate_g' => 5.0, 'of_which_sugars_g' => 0.5, 'fat_g' => 0.3,  'of_which_saturates_g' => 0.1, 'fibre_g' => 2.0, 'salt_g' => 1.80, 'source_notes' => 'Published data (Chondrus crispus, fresh/reconstituted). Red seaweed used as natural thickener in puddings and jellies. Omega-3 left NULL.' ],
+			[ 'name' => 'Hijiki (dried)',                       'slug' => 'hijiki',                         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion dry (10g)', 'grams' => 10]  ], 'energy_kcal' => 150, 'energy_kj' => 628,  'protein_g' => 10.6, 'carbohydrate_g' => 14.4, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.3, 'of_which_saturates_g' => 0.3, 'fibre_g' => 43.3, 'salt_g' => 4.60, 'source_notes' => 'USDA FDC #168456 (Seaweed, hijiki, raw). Values per 100g dry. Note: FSA advises against consumption due to high inorganic arsenic content. Omega-3 left NULL.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -2858,6 +2903,150 @@ class Seed_Data {
 				'fat_g' => 1.0, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.12,
 				'omega3_total_mg' => 360, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 90, 'omega3_dha_mg' => 220,
 				'source_notes' => 'USDA FDC #175168 (Thunnus albacares, raw). Lean, mild-flavoured tuna; lower omega-3 than albacore or bluefin.',
+			],
+
+			// --- Additional seafood (seed v11) ---
+
+			[
+				'name' => 'Wahoo (raw)', 'slug' => 'wahoo', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 steak (150g)', 'grams' => 150] ],
+				'energy_kcal' => 109, 'energy_kj' => 456,
+				'protein_g' => 21.6, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.2, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.12,
+				'omega3_total_mg' => 490, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 130, 'omega3_dha_mg' => 320,
+				'source_notes' => 'USDA FDC equivalent (Acanthocybium solandri, raw). Firm-fleshed pelagic fish; popular in Atlantic and Pacific sport fishing.',
+			],
+			[
+				'name' => 'Scallops (Queen Meat, raw)', 'slug' => 'scallops-queen-meat', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 86, 'energy_kj' => 360,
+				'protein_g' => 17.0, 'carbohydrate_g' => 2.4, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.8, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.40,
+				'omega3_total_mg' => 370, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 200,
+				'source_notes' => 'Published data (Aequipecten opercularis, raw). Smaller and sweeter than king scallops; no roe in commercial supply.',
+			],
+			[
+				'name' => 'Mussel Meat (Shucked, raw)', 'slug' => 'mussel-meat-shucked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 74, 'energy_kj' => 310,
+				'protein_g' => 11.9, 'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.8, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.60,
+				'omega3_total_mg' => 700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 260, 'omega3_dha_mg' => 400,
+				'source_notes' => 'M&W 8th ed. (Mussels, raw). Shucked/prepared weight (no shell); same composition as in-shell cooked but raw.',
+			],
+			[
+				'name' => 'Goose Barnacles (Percebes)', 'slug' => 'goose-barnacles-percebes', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 120, 'energy_kj' => 502,
+				'protein_g' => 20.0, 'carbohydrate_g' => 2.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 3.0, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 1.50,
+				'omega3_total_mg' => 550, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 200, 'omega3_dha_mg' => 300,
+				'source_notes' => 'Published data (Pollicipes pollicipes, cooked). Values per 100g edible peduncle meat; shell/plate discarded. Atlantic/Iberian delicacy.',
+			],
+			[
+				'name' => 'Mantis Shrimp (cooked)', 'slug' => 'mantis-shrimp', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 90, 'energy_kj' => 377,
+				'protein_g' => 19.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 430, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 150, 'omega3_dha_mg' => 250,
+				'source_notes' => 'Published data (Squilla mantis / Stomatopoda, cooked). Mediterranean stomatopod; values per 100g edible tail meat.',
+			],
+			[
+				'name' => 'Smoked Eel', 'slug' => 'smoked-eel', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (80g)', 'grams' => 80] ],
+				'energy_kcal' => 290, 'energy_kj' => 1213,
+				'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 22.0, 'of_which_saturates_g' => 4.5, 'fibre_g' => 0.0, 'salt_g' => 2.20,
+				'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 600, 'omega3_dha_mg' => 850,
+				'source_notes' => 'M&W 8th ed. (Eel, smoked). Hot-smoked European eel; very rich; high salt from brining before smoking.',
+			],
+			[
+				'name' => 'Smoked Sprats', 'slug' => 'smoked-sprats', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 285, 'energy_kj' => 1193,
+				'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 23.0, 'of_which_saturates_g' => 5.4, 'fibre_g' => 0.0, 'salt_g' => 2.80,
+				'omega3_total_mg' => 2700, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1100, 'omega3_dha_mg' => 1400,
+				'source_notes' => 'M&W 8th ed. (Sprats, smoked). Very high fat from both the fish and smoking process; exceptional omega-3 density.',
+			],
+			[
+				'name' => 'Smoked Halibut', 'slug' => 'smoked-halibut', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '3 slices (60g)', 'grams' => 60] ],
+				'energy_kcal' => 136, 'energy_kj' => 569,
+				'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.2, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 2.50,
+				'omega3_total_mg' => 980, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 350, 'omega3_dha_mg' => 580,
+				'source_notes' => 'Published data (Hippoglossus hippoglossus, cold-smoked). Milder and fattier than smoked haddock; sliced and served cold.',
+			],
+			[
+				'name' => 'Herring Roe (Soft, raw)', 'slug' => 'herring-roe-soft', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (80g)', 'grams' => 80] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 17.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.5, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 680, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 250, 'omega3_dha_mg' => 380,
+				'source_notes' => 'M&W 8th ed. (Herring, soft roe/milt, raw). Sperm sac (milt); distinct from hard roe. Often pan-fried on toast.',
+			],
+			[
+				'name' => 'Fish Pie Mix (raw)', 'slug' => 'fish-pie-mix', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 97, 'energy_kj' => 406,
+				'protein_g' => 18.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.8, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 630, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 200, 'omega3_dha_mg' => 380,
+				'source_notes' => 'Estimated average of salmon, cod and smoked haddock (typical UK retail mix). Omega-3 weighted average across components.',
+			],
+			[
+				'name' => 'Prawn Cocktail', 'slug' => 'prawn-cocktail', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 starter (150g)', 'grams' => 150] ],
+				'energy_kcal' => 140, 'energy_kj' => 586,
+				'protein_g' => 11.0, 'carbohydrate_g' => 6.0, 'of_which_sugars_g' => 5.5,
+				'fat_g' => 8.0, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.3, 'salt_g' => 1.20,
+				'source_notes' => 'Estimated (cooked prawns + Marie Rose / thousand island sauce on lettuce). Fat from mayo base; sugars from ketchup component. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Dressed Lobster', 'slug' => 'dressed-lobster', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '½ lobster (200g)', 'grams' => 200] ],
+				'energy_kcal' => 160, 'energy_kj' => 670,
+				'protein_g' => 17.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 10.0, 'of_which_saturates_g' => 1.5, 'fibre_g' => 0.0, 'salt_g' => 1.50,
+				'omega3_total_mg' => 280, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 120, 'omega3_dha_mg' => 130,
+				'source_notes' => 'Estimated: cooked lobster served in shell with mayonnaise dressing. Fat and salt elevated by mayo component.',
+			],
+			[
+				'name' => 'Marinated Anchovies (Boquerones)', 'slug' => 'marinated-anchovies-boquerones', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '6 fillets (50g)', 'grams' => 50] ],
+				'energy_kcal' => 110, 'energy_kj' => 460,
+				'protein_g' => 17.0, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.0, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 1.00,
+				'omega3_total_mg' => 1400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 550, 'omega3_dha_mg' => 750,
+				'source_notes' => 'Published data (Engraulis encrasicolus, vinegar/oil cured). White anchovies; much lower salt than salt-packed; mild, firm texture.',
+			],
+			[
+				'name' => 'Mussels (Smoked, in Oil)', 'slug' => 'mussels-smoked-oil', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '½ tin (60g)', 'grams' => 60] ],
+				'energy_kcal' => 200, 'energy_kj' => 837,
+				'protein_g' => 20.0, 'carbohydrate_g' => 3.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 11.5, 'of_which_saturates_g' => 2.2, 'fibre_g' => 0.0, 'salt_g' => 1.80,
+				'omega3_total_mg' => 1200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 450, 'omega3_dha_mg' => 680,
+				'source_notes' => 'Published data (Mytilus edulis, hot-smoked, in sunflower oil). Canned; fat elevated by oil packing.',
+			],
+			[
+				'name' => 'Carrageen (Irish Moss, fresh)', 'slug' => 'carrageen-irish-moss', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (30g)', 'grams' => 30] ],
+				'energy_kcal' => 30, 'energy_kj' => 126,
+				'protein_g' => 1.5, 'carbohydrate_g' => 5.0, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 2.0, 'salt_g' => 1.80,
+				'source_notes' => 'Published data (Chondrus crispus, fresh/reconstituted). Red seaweed used as natural thickener in puddings and jellies. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Hijiki (dried)', 'slug' => 'hijiki', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion dry (10g)', 'grams' => 10] ],
+				'energy_kcal' => 150, 'energy_kj' => 628,
+				'protein_g' => 10.6, 'carbohydrate_g' => 14.4, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.3, 'of_which_saturates_g' => 0.3, 'fibre_g' => 43.3, 'salt_g' => 4.60,
+				'source_notes' => 'USDA FDC #168456 (Seaweed, hijiki, raw). Values per 100g dry. Note: FSA advises against consumption due to high inorganic arsenic content. Omega-3 left NULL.',
 			],
 
 			// =================================================================
