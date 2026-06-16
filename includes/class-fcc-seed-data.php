@@ -285,6 +285,68 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add seafood items added in v1.3.7 to existing installations.
+	// -------------------------------------------------------------------------
+
+	public static function seed_v6(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 6 ) {
+			return;
+		}
+
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) {
+			return;
+		}
+
+		foreach ( self::seafood_v6( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) {
+				Database::insert_food( $food );
+			}
+		}
+
+		update_option( 'fcc_seed_version', 6 );
+	}
+
+	/**
+	 * The 23 new seafood items added in seed v6.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v6( int $fs ): array {
+		return [
+			[ 'name' => 'Bloater',                         'slug' => 'bloater',                   'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 bloater (150g)',      'grams' => 150] ], 'energy_kcal' => 189, 'energy_kj' => 791,  'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 13.0, 'of_which_saturates_g' => 3.0, 'fibre_g' => 0.0, 'salt_g' => 1.80, 'omega3_total_mg' => 1800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 580, 'omega3_dha_mg' => 870, 'source_notes' => 'M&W 8th ed. (Herring, bloater — lightly cold-smoked whole herring). Omega-3 comparable to fresh herring.' ],
+			[ 'name' => 'Hake (raw)',                       'slug' => 'hake-raw',                  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 19.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.2,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'source_notes' => 'M&W 8th ed. (Hake, raw). Lean white fish; omega-3 left NULL.' ],
+			[ 'name' => 'Red Snapper (raw)',                'slug' => 'red-snapper-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 100, 'energy_kj' => 418,  'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.3,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 315, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 54,  'omega3_dha_mg' => 237, 'source_notes' => 'USDA FDC #175121 (Snapper, mixed species, raw).' ],
+			[ 'name' => 'Gurnards Ungraded (raw)',          'slug' => 'gurnards-ungraded',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 83,  'energy_kj' => 347,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24, 'source_notes' => 'M&W 8th ed. (Gurnard, raw). Mixed/ungraded species; same profile as red gurnard. Omega-3 left NULL.' ],
+			[ 'name' => 'Grouper (raw)',                    'slug' => 'grouper-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 92,  'energy_kj' => 385,  'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.17, 'omega3_total_mg' => 243, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 47,  'omega3_dha_mg' => 170, 'source_notes' => 'USDA FDC #175108 (Grouper, mixed species, raw).' ],
+			[ 'name' => 'Grey Mullet (raw)',                'slug' => 'grey-mullet-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 122, 'energy_kj' => 510,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.5,  'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'source_notes' => 'M&W 8th ed. (Grey mullet, raw). Semi-oily fish; omega-3 left NULL.' ],
+			[ 'name' => 'Hamachi (raw)',                    'slug' => 'hamachi-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 146, 'energy_kj' => 611,  'protein_g' => 23.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 6.1,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'omega3_total_mg' => 1720, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 170, 'omega3_dha_mg' => 1380, 'source_notes' => 'USDA FDC #175118 (Yellowtail/Hamachi, Seriola spp., raw). Exceptional DHA content.' ],
+			[ 'name' => 'Kebab (Salmon, Ling + Cod)',       'slug' => 'fish-kebab-salmon-ling-cod','category_id' => $fs, 'serving_sizes' => [ ['label' => '1 skewer (150g)',        'grams' => 150] ], 'energy_kcal' => 115, 'energy_kj' => 481,  'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.0,  'of_which_saturates_g' => 0.8, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 620, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 160, 'omega3_dha_mg' => 370, 'source_notes' => 'Estimated average of salmon (~⅓), ling (~⅓) and cod (~⅓). Omega-3 weighted from salmon component.' ],
+			[ 'name' => 'Kingfish (raw)',                   'slug' => 'kingfish-raw',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 116, 'energy_kj' => 485,  'protein_g' => 20.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 3.2,  'of_which_saturates_g' => 0.7, 'fibre_g' => 0.0, 'salt_g' => 0.24, 'omega3_total_mg' => 401, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 128, 'omega3_dha_mg' => 231, 'source_notes' => 'USDA FDC #175109 (Mackerel, king/kingfish, raw).' ],
+			[ 'name' => 'Ling (raw)',                       'slug' => 'ling-raw',                  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 82,  'energy_kj' => 343,  'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.7,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'source_notes' => 'M&W 8th ed. (Ling, raw). Lean white cod-family fish; omega-3 left NULL.' ],
+			[ 'name' => 'Mahi Mahi (raw)',                  'slug' => 'mahi-mahi-raw',             'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 85,  'energy_kj' => 356,  'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.7,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.31, 'omega3_total_mg' => 189, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 42,  'omega3_dha_mg' => 133, 'source_notes' => 'USDA FDC #175110 (Dolphinfish/Mahi-mahi, raw).' ],
+			[ 'name' => 'Marlin (raw)',                     'slug' => 'marlin-raw',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 steak (150g)',         'grams' => 150] ], 'energy_kcal' => 122, 'energy_kj' => 510,  'protein_g' => 21.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 4.0,  'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'omega3_total_mg' => 541, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 83,  'omega3_dha_mg' => 424, 'source_notes' => 'USDA FDC #175119 (Marlin, striped, raw).' ],
+			[ 'name' => 'Megrim (raw)',                     'slug' => 'megrim-raw',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (130g)',        'grams' => 130] ], 'energy_kcal' => 79,  'energy_kj' => 331,  'protein_g' => 17.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24, 'source_notes' => 'M&W 8th ed. (Megrim/whiff flatfish, raw). White flatfish; omega-3 left NULL.' ],
+			[ 'name' => 'Monkfish Tail (raw)',              'slug' => 'monkfish-tail-raw',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tail portion (150g)', 'grams' => 150] ], 'energy_kcal' => 76,  'energy_kj' => 318,  'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.5,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.22, 'source_notes' => 'M&W 8th ed. (Monkfish, raw). Tail is the primary edible cut; same profile as whole monkfish. Omega-3 left NULL.' ],
+			[ 'name' => 'Monkfish Cheeks (raw)',            'slug' => 'monkfish-cheeks-raw',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 76,  'energy_kj' => 318,  'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.5,  'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.22, 'source_notes' => 'M&W 8th ed. (Monkfish, raw). Cheeks share the same lean profile as the tail. Omega-3 left NULL.' ],
+			[ 'name' => 'Monkfish Livers',                  'slug' => 'monkfish-livers',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)',        'grams' => 50]  ], 'energy_kcal' => 150, 'energy_kj' => 628,  'protein_g' => 14.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 9.5,  'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 0.50, 'omega3_total_mg' => 450, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 120, 'omega3_dha_mg' => 260, 'source_notes' => 'Estimated from published monkfish liver (ankimo) data. High fat relative to flesh; omega-3 estimated.' ],
+			[ 'name' => 'Nile Perch (raw)',                 'slug' => 'nile-perch-raw',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 91,  'energy_kj' => 381,  'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.7,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'source_notes' => 'USDA FDC #175113 (Perch, mixed species, raw) approximate for Lates niloticus. Omega-3 left NULL.' ],
+			[ 'name' => 'Octopus (Mediterranean, cooked)', 'slug' => 'octopus-mediterranean',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 164, 'energy_kj' => 686,  'protein_g' => 29.8, 'carbohydrate_g' => 4.4, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.1,  'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 306, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 106, 'omega3_dha_mg' => 145, 'source_notes' => 'USDA FDC #175184 (Octopus, common, cooked). Mediterranean-sourced; same profile as standard cooked octopus.' ],
+			[ 'name' => 'Octopus (U.K., raw)',             'slug' => 'octopus-uk-raw',            'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',       'grams' => 100] ], 'energy_kcal' => 82,  'energy_kj' => 343,  'protein_g' => 15.3, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.55, 'omega3_total_mg' => 200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 65,  'omega3_dha_mg' => 115, 'source_notes' => 'USDA FDC #175184 (Octopus, raw equivalent). UK-caught specimens; values lower than cooked due to water content.' ],
+			[ 'name' => 'Parrot Fish (raw)',                'slug' => 'parrot-fish-raw',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (140g)',        'grams' => 140] ], 'energy_kcal' => 88,  'energy_kj' => 368,  'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.18, 'source_notes' => 'Estimated from USDA tropical reef fish data. Lean white fish; omega-3 left NULL.' ],
+			[ 'name' => 'Pomfret (raw)',                    'slug' => 'pomfret-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fish (200g)',          'grams' => 200] ], 'energy_kcal' => 121, 'energy_kj' => 506,  'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 5.2,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 0.20, 'source_notes' => 'Published data (Pampus argenteus/silver pomfret). Semi-oily; omega-3 left NULL.' ],
+			[ 'name' => 'Pike (raw)',                       'slug' => 'pike-raw',                  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 88,  'energy_kj' => 368,  'protein_g' => 19.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.1,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.15, 'source_notes' => 'M&W 8th ed. (Pike, raw). Freshwater predator; lean white fish. Omega-3 left NULL.' ],
+			[ 'name' => 'Redfish (raw)',                    'slug' => 'redfish-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',        'grams' => 150] ], 'energy_kcal' => 94,  'energy_kj' => 393,  'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.8,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.25, 'omega3_total_mg' => 290, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 104, 'omega3_dha_mg' => 168, 'source_notes' => 'USDA FDC #175120 (Ocean perch/Atlantic redfish, Sebastes marinus, raw).' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -1431,6 +1493,205 @@ class Seed_Data {
 				'protein_g' => 13.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
 				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80,
 				'source_notes' => 'M&W 8th ed. (Periwinkles/winkles, boiled). Omega-3 left NULL.',
+			],
+
+			// --- Additional seafood (seed v6) ---
+
+			[
+				'name' => 'Bloater', 'slug' => 'bloater', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 bloater (150g)', 'grams' => 150] ],
+				'energy_kcal' => 189, 'energy_kj' => 791,
+				'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 13.0, 'of_which_saturates_g' => 3.0, 'fibre_g' => 0.0, 'salt_g' => 1.80,
+				'omega3_total_mg' => 1800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 580, 'omega3_dha_mg' => 870,
+				'source_notes' => 'M&W 8th ed. (Herring, bloater — lightly cold-smoked whole herring). Omega-3 comparable to fresh herring.',
+			],
+			[
+				'name' => 'Hake (raw)', 'slug' => 'hake-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 19.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.2, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'source_notes' => 'M&W 8th ed. (Hake, raw). Lean white fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Red Snapper (raw)', 'slug' => 'red-snapper-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 100, 'energy_kj' => 418,
+				'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.3, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 315, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 54, 'omega3_dha_mg' => 237,
+				'source_notes' => 'USDA FDC #175121 (Snapper, mixed species, raw).',
+			],
+			[
+				'name' => 'Gurnards Ungraded (raw)', 'slug' => 'gurnards-ungraded', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 83, 'energy_kj' => 347,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24,
+				'source_notes' => 'M&W 8th ed. (Gurnard, raw). Mixed/ungraded species; same profile as red gurnard. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Grouper (raw)', 'slug' => 'grouper-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 92, 'energy_kj' => 385,
+				'protein_g' => 19.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.17,
+				'omega3_total_mg' => 243, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 47, 'omega3_dha_mg' => 170,
+				'source_notes' => 'USDA FDC #175108 (Grouper, mixed species, raw).',
+			],
+			[
+				'name' => 'Grey Mullet (raw)', 'slug' => 'grey-mullet-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 122, 'energy_kj' => 510,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.5, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'source_notes' => 'M&W 8th ed. (Grey mullet, raw). Semi-oily fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Hamachi (raw)', 'slug' => 'hamachi-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 146, 'energy_kj' => 611,
+				'protein_g' => 23.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 6.1, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'omega3_total_mg' => 1720, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 170, 'omega3_dha_mg' => 1380,
+				'source_notes' => 'USDA FDC #175118 (Yellowtail/Hamachi, Seriola spp., raw). Exceptional DHA content.',
+			],
+			[
+				'name' => 'Kebab (Salmon, Ling + Cod)', 'slug' => 'fish-kebab-salmon-ling-cod', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 skewer (150g)', 'grams' => 150] ],
+				'energy_kcal' => 115, 'energy_kj' => 481,
+				'protein_g' => 19.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.0, 'of_which_saturates_g' => 0.8, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 620, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 160, 'omega3_dha_mg' => 370,
+				'source_notes' => 'Estimated average of salmon (~⅓), ling (~⅓) and cod (~⅓). Omega-3 weighted from salmon component.',
+			],
+			[
+				'name' => 'Kingfish (raw)', 'slug' => 'kingfish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 116, 'energy_kj' => 485,
+				'protein_g' => 20.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 3.2, 'of_which_saturates_g' => 0.7, 'fibre_g' => 0.0, 'salt_g' => 0.24,
+				'omega3_total_mg' => 401, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 128, 'omega3_dha_mg' => 231,
+				'source_notes' => 'USDA FDC #175109 (Mackerel, king/kingfish, raw).',
+			],
+			[
+				'name' => 'Ling (raw)', 'slug' => 'ling-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 82, 'energy_kj' => 343,
+				'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.7, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'source_notes' => 'M&W 8th ed. (Ling, raw). Lean white cod-family fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Mahi Mahi (raw)', 'slug' => 'mahi-mahi-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 85, 'energy_kj' => 356,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.7, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.31,
+				'omega3_total_mg' => 189, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 42, 'omega3_dha_mg' => 133,
+				'source_notes' => 'USDA FDC #175110 (Dolphinfish/Mahi-mahi, raw).',
+			],
+			[
+				'name' => 'Marlin (raw)', 'slug' => 'marlin-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 steak (150g)', 'grams' => 150] ],
+				'energy_kcal' => 122, 'energy_kj' => 510,
+				'protein_g' => 21.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 4.0, 'of_which_saturates_g' => 1.0, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'omega3_total_mg' => 541, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 83, 'omega3_dha_mg' => 424,
+				'source_notes' => 'USDA FDC #175119 (Marlin, striped, raw).',
+			],
+			[
+				'name' => 'Megrim (raw)', 'slug' => 'megrim-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (130g)', 'grams' => 130] ],
+				'energy_kcal' => 79, 'energy_kj' => 331,
+				'protein_g' => 17.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.24,
+				'source_notes' => 'M&W 8th ed. (Megrim/whiff flatfish, raw). White flatfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Monkfish Tail (raw)', 'slug' => 'monkfish-tail-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tail portion (150g)', 'grams' => 150] ],
+				'energy_kcal' => 76, 'energy_kj' => 318,
+				'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.5, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.22,
+				'source_notes' => 'M&W 8th ed. (Monkfish, raw). Tail is the primary edible cut; same profile as whole monkfish. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Monkfish Cheeks (raw)', 'slug' => 'monkfish-cheeks-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 76, 'energy_kj' => 318,
+				'protein_g' => 17.1, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.5, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.22,
+				'source_notes' => 'M&W 8th ed. (Monkfish, raw). Cheeks share the same lean profile as the tail. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Monkfish Livers', 'slug' => 'monkfish-livers', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 150, 'energy_kj' => 628,
+				'protein_g' => 14.0, 'carbohydrate_g' => 2.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 9.5, 'of_which_saturates_g' => 2.0, 'fibre_g' => 0.0, 'salt_g' => 0.50,
+				'omega3_total_mg' => 450, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 120, 'omega3_dha_mg' => 260,
+				'source_notes' => 'Estimated from published monkfish liver (ankimo) data. High fat relative to flesh; omega-3 estimated.',
+			],
+			[
+				'name' => 'Nile Perch (raw)', 'slug' => 'nile-perch-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 91, 'energy_kj' => 381,
+				'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.7, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'source_notes' => 'USDA FDC #175113 (Perch, mixed species, raw) approximate for Lates niloticus. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Octopus (Mediterranean, cooked)', 'slug' => 'octopus-mediterranean', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 164, 'energy_kj' => 686,
+				'protein_g' => 29.8, 'carbohydrate_g' => 4.4, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.1, 'of_which_saturates_g' => 0.5, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 306, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 106, 'omega3_dha_mg' => 145,
+				'source_notes' => 'USDA FDC #175184 (Octopus, common, cooked). Mediterranean-sourced; same profile as standard cooked octopus.',
+			],
+			[
+				'name' => 'Octopus (U.K., raw)', 'slug' => 'octopus-uk-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 82, 'energy_kj' => 343,
+				'protein_g' => 15.3, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.55,
+				'omega3_total_mg' => 200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 65, 'omega3_dha_mg' => 115,
+				'source_notes' => 'USDA FDC #175184 (Octopus, raw equivalent). UK-caught specimens; values lower than cooked due to water content.',
+			],
+			[
+				'name' => 'Parrot Fish (raw)', 'slug' => 'parrot-fish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (140g)', 'grams' => 140] ],
+				'energy_kcal' => 88, 'energy_kj' => 368,
+				'protein_g' => 18.9, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.18,
+				'source_notes' => 'Estimated from USDA tropical reef fish data. Lean white fish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Pomfret (raw)', 'slug' => 'pomfret-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fish (200g)', 'grams' => 200] ],
+				'energy_kcal' => 121, 'energy_kj' => 506,
+				'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 5.2, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 0.20,
+				'source_notes' => 'Published data (Pampus argenteus/silver pomfret). Semi-oily; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Pike (raw)', 'slug' => 'pike-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 88, 'energy_kj' => 368,
+				'protein_g' => 19.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.1, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.15,
+				'source_notes' => 'M&W 8th ed. (Pike, raw). Freshwater predator; lean white fish. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Redfish (raw)', 'slug' => 'redfish-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 94, 'energy_kj' => 393,
+				'protein_g' => 18.8, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.8, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.25,
+				'omega3_total_mg' => 290, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 104, 'omega3_dha_mg' => 168,
+				'source_notes' => 'USDA FDC #175120 (Ocean perch/Atlantic redfish, Sebastes marinus, raw).',
 			],
 
 			// =================================================================
