@@ -414,6 +414,72 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add seafood items added in v1.3.9 to existing installations.
+	// -------------------------------------------------------------------------
+
+	public static function seed_v8(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 8 ) {
+			return;
+		}
+
+		global $wpdb;
+		$cats_table = Database::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$fs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$cats_table} WHERE slug = %s LIMIT 1", 'fish-seafood' ) );
+		if ( ! $fs ) {
+			return;
+		}
+
+		foreach ( self::seafood_v8( $fs ) as $food ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM " . Database::foods_table() . " WHERE slug = %s LIMIT 1", $food['slug'] ) );
+			if ( ! $exists ) {
+				Database::insert_food( $food );
+			}
+		}
+
+		update_option( 'fcc_seed_version', 8 );
+	}
+
+	/**
+	 * The 27 new seafood items added in seed v8.
+	 *
+	 * @param int $fs  Fish & Seafood category ID from the live DB.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function seafood_v8( int $fs ): array {
+		return [
+			[ 'name' => 'Crayfish (English, cooked)',      'slug' => 'crayfish-english-cooked', 'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 72,  'energy_kj' => 301,  'protein_g' => 15.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.0,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.35, 'source_notes' => 'M&W 8th ed. equivalent (freshwater crayfish, boiled). White Clawed/signal crayfish; omega-3 left NULL.' ],
+			[ 'name' => 'Crayfish (Import, cooked)',        'slug' => 'crayfish-import-cooked',  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',    'grams' => 100] ], 'energy_kcal' => 77,  'energy_kj' => 322,  'protein_g' => 16.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.1,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.38, 'source_notes' => 'USDA FDC #175178 (Crayfish, mixed species, farmed, cooked). Imported farmed variety; omega-3 left NULL.' ],
+			[ 'name' => 'Lobster (Native, cooked)',         'slug' => 'lobster-native-cooked',   'category_id' => $fs, 'serving_sizes' => [ ['label' => '½ lobster (150g)',    'grams' => 150] ], 'energy_kcal' => 103, 'energy_kj' => 431,  'protein_g' => 20.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.9,  'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 392, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 163, 'omega3_dha_mg' => 174, 'source_notes' => 'USDA FDC #175180 (Lobster, northern, cooked). Native European lobster (Homarus gammarus) has same profile.' ],
+			[ 'name' => 'Spiny Lobster (cooked)',           'slug' => 'spiny-lobster-cooked',    'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tail (150g)',       'grams' => 150] ], 'energy_kcal' => 112, 'energy_kj' => 469,  'protein_g' => 20.6, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.85, 'omega3_total_mg' => 350, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170, 'source_notes' => 'USDA FDC #175181 (Spiny lobster, mixed, cooked). Rock lobster/crawfish (Palinuridae); no claws, tail-only meat.' ],
+			[ 'name' => 'Oysters (Native, raw)',            'slug' => 'oysters-native-raw',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '6 oysters (84g)',     'grams' => 84]  ], 'energy_kcal' => 81,  'energy_kj' => 339,  'protein_g' => 9.5,  'carbohydrate_g' => 4.7, 'of_which_sugars_g' => 0.0, 'fat_g' => 2.3,  'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 740, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 340, 'omega3_dha_mg' => 214, 'source_notes' => 'M&W 8th ed. (Oysters, raw). Native flat oyster (Ostrea edulis) has same profile as Pacific/rock oyster.' ],
+			[ 'name' => 'Sea Urchin (raw)',                 'slug' => 'sea-urchin-raw',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)',     'grams' => 50]  ], 'energy_kcal' => 103, 'energy_kj' => 431,  'protein_g' => 13.0, 'carbohydrate_g' => 3.4, 'of_which_sugars_g' => 0.0, 'fat_g' => 3.5,  'of_which_saturates_g' => 0.8, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'omega3_total_mg' => 480, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 196, 'omega3_dha_mg' => 224, 'source_notes' => 'USDA FDC #175193 (Sea urchin, raw). Roe/gonads only (uni); omega-3 from USDA equivalent.' ],
+			[ 'name' => 'Sea Lettuce (raw)',                'slug' => 'sea-lettuce-raw',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)',     'grams' => 50]  ], 'energy_kcal' => 25,  'energy_kj' => 105,  'protein_g' => 2.6,  'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.5, 'fat_g' => 0.3,  'of_which_saturates_g' => 0.1, 'fibre_g' => 2.0, 'salt_g' => 1.20, 'source_notes' => 'Published data (Ulva lactuca, fresh/raw). Bright green seaweed; omega-3 negligible in green algae, left NULL.' ],
+			[ 'name' => 'Sea Spaghetti (raw)',              'slug' => 'sea-spaghetti-raw',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)',     'grams' => 50]  ], 'energy_kcal' => 27,  'energy_kj' => 113,  'protein_g' => 1.5,  'carbohydrate_g' => 4.5, 'of_which_sugars_g' => 0.3, 'fat_g' => 0.2,  'of_which_saturates_g' => 0.1, 'fibre_g' => 2.2, 'salt_g' => 1.50, 'source_notes' => 'Published data (Himanthalia elongata / thongweed, fresh). Brown seaweed; omega-3 left NULL.' ],
+			[ 'name' => 'Dulse (raw)',                      'slug' => 'dulse-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (30g)',     'grams' => 30]  ], 'energy_kcal' => 43,  'energy_kj' => 180,  'protein_g' => 3.5,  'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 1.0, 'fat_g' => 0.3,  'of_which_saturates_g' => 0.1, 'fibre_g' => 1.5, 'salt_g' => 1.80, 'source_notes' => 'Published data (Palmaria palmata, fresh/raw). Red seaweed; high natural salt from seawater. Omega-3 left NULL.' ],
+			[ 'name' => 'Kombu (raw)',                      'slug' => 'kombu-raw',               'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 strip (10g)',      'grams' => 10]  ], 'energy_kcal' => 43,  'energy_kj' => 180,  'protein_g' => 1.7,  'carbohydrate_g' => 9.6, 'of_which_sugars_g' => 0.6, 'fat_g' => 0.6,  'of_which_saturates_g' => 0.1, 'fibre_g' => 1.3, 'salt_g' => 2.30, 'source_notes' => 'USDA FDC #168455 (Seaweed, kelp, raw). Kombu/kelp (Saccharina/Laminaria spp.); iodine-rich. Omega-3 left NULL.' ],
+			[ 'name' => 'Scampi Tails (cooked)',            'slug' => 'scampi-tails-cooked',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',   'grams' => 100] ], 'energy_kcal' => 90,  'energy_kj' => 377,  'protein_g' => 18.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.2,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80, 'source_notes' => 'M&W 8th ed. (Dublin Bay prawns/scampi, boiled). Unbreaded langoustine tails; omega-3 left NULL.' ],
+			[ 'name' => 'Scallops (King, Roe On, raw)',     'slug' => 'scallops-king-roe-on',    'category_id' => $fs, 'serving_sizes' => [ ['label' => '3 scallops (120g)',  'grams' => 120] ], 'energy_kcal' => 96,  'energy_kj' => 402,  'protein_g' => 17.5, 'carbohydrate_g' => 3.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.45, 'omega3_total_mg' => 450, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 185, 'omega3_dha_mg' => 220, 'source_notes' => 'USDA FDC #175187 base. Includes orange roe/coral which adds fat and omega-3 relative to roe-off scallops.' ],
+			[ 'name' => 'Tiger Prawns (cooked)',            'slug' => 'tiger-prawns-cooked',     'category_id' => $fs, 'serving_sizes' => [ ['label' => '6 prawns (100g)',    'grams' => 100] ], 'energy_kcal' => 105, 'energy_kj' => 439,  'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 1.5,  'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 1.20, 'source_notes' => 'USDA FDC #175177 (Shrimp, mixed species, cooked) / M&W. Tiger prawn (Penaeus monodon) profile. Omega-3 left NULL.' ],
+			[ 'name' => 'Arbroath Smokies',                 'slug' => 'arbroath-smokies',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 smokie (180g)',    'grams' => 180] ], 'energy_kcal' => 101, 'energy_kj' => 423,  'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 2.40, 'source_notes' => 'M&W 8th ed. (Haddock, smoked). Arbroath Smokie is a PGI hot-smoked whole haddock on the bone; same nutritional profile. Omega-3 left NULL.' ],
+			[ 'name' => 'Buckling',                         'slug' => 'buckling',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 buckling (150g)',  'grams' => 150] ], 'energy_kcal' => 250, 'energy_kj' => 1046, 'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 18.5, 'of_which_saturates_g' => 4.2, 'fibre_g' => 0.0, 'salt_g' => 2.50, 'omega3_total_mg' => 2200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 700, 'omega3_dha_mg' => 1050, 'source_notes' => 'M&W 8th ed. (Herring, hot-smoked / buckling). Richer than bloater as hot-smoking renders more fat. Excellent omega-3 source.' ],
+			[ 'name' => 'Smoked Cod Roe (Natural)',         'slug' => 'smoked-cod-roe',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (50g)',     'grams' => 50]  ], 'energy_kcal' => 156, 'energy_kj' => 653,  'protein_g' => 22.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 7.5,  'of_which_saturates_g' => 1.8, 'fibre_g' => 0.0, 'salt_g' => 2.80, 'omega3_total_mg' => 600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 240, 'omega3_dha_mg' => 305, 'source_notes' => 'M&W 8th ed. (Cod roe, smoked). Distinct from blended taramasalata; eaten sliced on bread.' ],
+			[ 'name' => 'Smoked Cod',                       'slug' => 'smoked-cod',              'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 fillet (150g)',     'grams' => 150] ], 'energy_kcal' => 101, 'energy_kj' => 423,  'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.9,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 2.80, 'source_notes' => 'M&W 8th ed. (Cod, smoked). Lean white fish; high salt from brining. Omega-3 left NULL.' ],
+			[ 'name' => 'Cured Salmon Trio',                'slug' => 'cured-salmon-trio',       'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (100g)',   'grams' => 100] ], 'energy_kcal' => 155, 'energy_kj' => 649,  'protein_g' => 23.0, 'carbohydrate_g' => 0.2, 'of_which_sugars_g' => 0.2, 'fat_g' => 6.5,  'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 2.50, 'omega3_total_mg' => 1500, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 350, 'omega3_dha_mg' => 950, 'source_notes' => 'Estimated average of smoked, gravlax and hot-smoked salmon portions. Omega-3 weighted average.' ],
+			[ 'name' => 'Gravadlax (Beetroot)',             'slug' => 'gravadlax-beetroot',      'category_id' => $fs, 'serving_sizes' => [ ['label' => '3 slices (75g)',      'grams' => 75]  ], 'energy_kcal' => 150, 'energy_kj' => 628,  'protein_g' => 21.0, 'carbohydrate_g' => 2.5, 'of_which_sugars_g' => 2.0, 'fat_g' => 6.0,  'of_which_saturates_g' => 1.3, 'fibre_g' => 0.1, 'salt_g' => 2.40, 'omega3_total_mg' => 1750, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 400, 'omega3_dha_mg' => 1050, 'source_notes' => 'M&W 8th ed. / USDA FDC #175168 base (salmon, beetroot-cured). Small carbohydrate from beetroot marinade; omega-3 mirrors raw salmon.' ],
+			[ 'name' => 'Hot Roast Salmon',                 'slug' => 'hot-roast-salmon',        'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 portion (120g)',   'grams' => 120] ], 'energy_kcal' => 195, 'energy_kj' => 816,  'protein_g' => 24.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 11.0, 'of_which_saturates_g' => 2.2, 'fibre_g' => 0.0, 'salt_g' => 0.90, 'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 380, 'omega3_dha_mg' => 980, 'source_notes' => 'M&W 8th ed. (Salmon, baked/roasted). Hot-roasted or hot-smoked; fat slightly reduced by cooking vs raw fillet.' ],
+			[ 'name' => 'Kipper',                           'slug' => 'kipper',                  'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 kipper (170g)',     'grams' => 170] ], 'energy_kcal' => 205, 'energy_kj' => 858,  'protein_g' => 18.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 14.5, 'of_which_saturates_g' => 3.4, 'fibre_g' => 0.0, 'salt_g' => 3.00, 'omega3_total_mg' => 1800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 575, 'omega3_dha_mg' => 870, 'source_notes' => 'M&W 8th ed. (Kipper, cold-smoked split herring). Very high salt from brining; excellent omega-3 source.' ],
+			[ 'name' => 'Bottarga',                         'slug' => 'bottarga',                'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp shaved (15g)','grams' => 15]  ], 'energy_kcal' => 330, 'energy_kj' => 1381, 'protein_g' => 40.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 20.0, 'of_which_saturates_g' => 5.0, 'fibre_g' => 0.0, 'salt_g' => 5.80, 'omega3_total_mg' => 4000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1200, 'omega3_dha_mg' => 2400, 'source_notes' => 'Published data (dried/salt-cured grey mullet or tuna roe). Concentrated omega-3; extremely high salt from preservation.' ],
+			[ 'name' => 'Avruga / Arenkha',                 'slug' => 'avruga-arenkha',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 180, 'energy_kj' => 753,  'protein_g' => 14.0, 'carbohydrate_g' => 3.0, 'of_which_sugars_g' => 0.5, 'fat_g' => 12.5, 'of_which_saturates_g' => 2.8, 'fibre_g' => 0.0, 'salt_g' => 3.50, 'omega3_total_mg' => 2000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 620, 'omega3_dha_mg' => 980, 'source_notes' => 'Estimated from herring roe composition. Avruga/Arenkha is a caviar substitute made from smoked herring roe.' ],
+			[ 'name' => 'Crayfish Tails (in Brine)',        'slug' => 'crayfish-tails-brine',    'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 pot (100g)',        'grams' => 100] ], 'energy_kcal' => 72,  'energy_kj' => 301,  'protein_g' => 15.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 0.8,  'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.20, 'source_notes' => 'USDA FDC #175178 base. Brine-packed crayfish tails; higher salt than plain cooked. Omega-3 left NULL.' ],
+			[ 'name' => 'Beluga Caviar',                    'slug' => 'beluga-caviar',           'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 264, 'energy_kj' => 1105, 'protein_g' => 26.9, 'carbohydrate_g' => 3.3, 'of_which_sugars_g' => 0.0, 'fat_g' => 17.0, 'of_which_saturates_g' => 3.8, 'fibre_g' => 0.0, 'salt_g' => 5.20, 'omega3_total_mg' => 6200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2800, 'omega3_dha_mg' => 2600, 'source_notes' => 'USDA FDC #174219 / published data (Huso huso roe). Largest sturgeon eggs; one of the most omega-3-dense foods.' ],
+			[ 'name' => 'Oscietra Caviar',                  'slug' => 'oscietra-caviar',         'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 258, 'energy_kj' => 1080, 'protein_g' => 25.5, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0, 'fat_g' => 17.0, 'of_which_saturates_g' => 3.9, 'fibre_g' => 0.0, 'salt_g' => 5.40, 'omega3_total_mg' => 5800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2600, 'omega3_dha_mg' => 2400, 'source_notes' => 'Published data (Acipenser gueldenstaedtii roe). Nutty-flavoured medium-grade sturgeon caviar.' ],
+			[ 'name' => 'Sevruga Caviar',                   'slug' => 'sevruga-caviar',          'category_id' => $fs, 'serving_sizes' => [ ['label' => '1 tbsp (16g)',        'grams' => 16]  ], 'energy_kcal' => 260, 'energy_kj' => 1088, 'protein_g' => 26.5, 'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.0, 'fat_g' => 17.5, 'of_which_saturates_g' => 4.0, 'fibre_g' => 0.0, 'salt_g' => 5.50, 'omega3_total_mg' => 6400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2900, 'omega3_dha_mg' => 2700, 'source_notes' => 'Published data (Acipenser stellatus roe). Smallest and most strongly flavoured of the classic caviars.' ],
+		];
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 
@@ -2001,6 +2067,241 @@ class Seed_Data {
 				'protein_g' => 8.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
 				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 0.0, 'salt_g' => 0.90,
 				'source_notes' => 'M&W 8th ed. (Cockles, raw). Values per 100g edible meat; ~250g in-shell yields ~90g meat. Omega-3 left NULL.',
+			],
+
+			// --- Additional seafood (seed v8) ---
+
+			[
+				'name' => 'Crayfish (English, cooked)', 'slug' => 'crayfish-english-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 72, 'energy_kj' => 301,
+				'protein_g' => 15.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.0, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.35,
+				'source_notes' => 'M&W 8th ed. equivalent (freshwater crayfish, boiled). White Clawed/signal crayfish; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Crayfish (Import, cooked)', 'slug' => 'crayfish-import-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 77, 'energy_kj' => 322,
+				'protein_g' => 16.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.1, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.38,
+				'source_notes' => 'USDA FDC #175178 (Crayfish, mixed species, farmed, cooked). Imported farmed variety; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Lobster (Native, cooked)', 'slug' => 'lobster-native-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '½ lobster (150g)', 'grams' => 150] ],
+				'energy_kcal' => 103, 'energy_kj' => 431,
+				'protein_g' => 20.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.9, 'of_which_saturates_g' => 0.4, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 392, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 163, 'omega3_dha_mg' => 174,
+				'source_notes' => 'USDA FDC #175180 (Lobster, northern, cooked). Native European lobster (Homarus gammarus) has same profile.',
+			],
+			[
+				'name' => 'Spiny Lobster (cooked)', 'slug' => 'spiny-lobster-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tail (150g)', 'grams' => 150] ],
+				'energy_kcal' => 112, 'energy_kj' => 469,
+				'protein_g' => 20.6, 'carbohydrate_g' => 2.2, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.85,
+				'omega3_total_mg' => 350, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 140, 'omega3_dha_mg' => 170,
+				'source_notes' => 'USDA FDC #175181 (Spiny lobster, mixed, cooked). Rock lobster/crawfish (Palinuridae); no claws, tail-only meat.',
+			],
+			[
+				'name' => 'Oysters (Native, raw)', 'slug' => 'oysters-native-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '6 oysters (84g)', 'grams' => 84] ],
+				'energy_kcal' => 81, 'energy_kj' => 339,
+				'protein_g' => 9.5, 'carbohydrate_g' => 4.7, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 2.3, 'of_which_saturates_g' => 0.6, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 740, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 340, 'omega3_dha_mg' => 214,
+				'source_notes' => 'M&W 8th ed. (Oysters, raw). Native flat oyster (Ostrea edulis) has same profile as Pacific/rock oyster.',
+			],
+			[
+				'name' => 'Sea Urchin (raw)', 'slug' => 'sea-urchin-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 103, 'energy_kj' => 431,
+				'protein_g' => 13.0, 'carbohydrate_g' => 3.4, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 3.5, 'of_which_saturates_g' => 0.8, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'omega3_total_mg' => 480, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 196, 'omega3_dha_mg' => 224,
+				'source_notes' => 'USDA FDC #175193 (Sea urchin, raw). Roe/gonads only (uni); omega-3 from USDA equivalent.',
+			],
+			[
+				'name' => 'Sea Lettuce (raw)', 'slug' => 'sea-lettuce-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 25, 'energy_kj' => 105,
+				'protein_g' => 2.6, 'carbohydrate_g' => 3.1, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 2.0, 'salt_g' => 1.20,
+				'source_notes' => 'Published data (Ulva lactuca, fresh/raw). Bright green seaweed; omega-3 negligible in green algae, left NULL.',
+			],
+			[
+				'name' => 'Sea Spaghetti (raw)', 'slug' => 'sea-spaghetti-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 27, 'energy_kj' => 113,
+				'protein_g' => 1.5, 'carbohydrate_g' => 4.5, 'of_which_sugars_g' => 0.3,
+				'fat_g' => 0.2, 'of_which_saturates_g' => 0.1, 'fibre_g' => 2.2, 'salt_g' => 1.50,
+				'source_notes' => 'Published data (Himanthalia elongata / thongweed, fresh). Brown seaweed; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Dulse (raw)', 'slug' => 'dulse-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (30g)', 'grams' => 30] ],
+				'energy_kcal' => 43, 'energy_kj' => 180,
+				'protein_g' => 3.5, 'carbohydrate_g' => 7.0, 'of_which_sugars_g' => 1.0,
+				'fat_g' => 0.3, 'of_which_saturates_g' => 0.1, 'fibre_g' => 1.5, 'salt_g' => 1.80,
+				'source_notes' => 'Published data (Palmaria palmata, fresh/raw). Red seaweed; high natural salt from seawater. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Kombu (raw)', 'slug' => 'kombu-raw', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 strip (10g)', 'grams' => 10] ],
+				'energy_kcal' => 43, 'energy_kj' => 180,
+				'protein_g' => 1.7, 'carbohydrate_g' => 9.6, 'of_which_sugars_g' => 0.6,
+				'fat_g' => 0.6, 'of_which_saturates_g' => 0.1, 'fibre_g' => 1.3, 'salt_g' => 2.30,
+				'source_notes' => 'USDA FDC #168455 (Seaweed, kelp, raw). Kombu/kelp (Saccharina/Laminaria spp.); iodine-rich. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Scampi Tails (cooked)', 'slug' => 'scampi-tails-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 90, 'energy_kj' => 377,
+				'protein_g' => 18.5, 'carbohydrate_g' => 0.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.2, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 0.80,
+				'source_notes' => 'M&W 8th ed. (Dublin Bay prawns/scampi, boiled). Unbreaded langoustine tails; omega-3 left NULL.',
+			],
+			[
+				'name' => 'Scallops (King, Roe On, raw)', 'slug' => 'scallops-king-roe-on', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '3 scallops (120g)', 'grams' => 120] ],
+				'energy_kcal' => 96, 'energy_kj' => 402,
+				'protein_g' => 17.5, 'carbohydrate_g' => 3.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 0.45,
+				'omega3_total_mg' => 450, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 185, 'omega3_dha_mg' => 220,
+				'source_notes' => 'USDA FDC #175187 base. Includes orange roe/coral which adds fat and omega-3 relative to roe-off scallops.',
+			],
+			[
+				'name' => 'Tiger Prawns (cooked)', 'slug' => 'tiger-prawns-cooked', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '6 prawns (100g)', 'grams' => 100] ],
+				'energy_kcal' => 105, 'energy_kj' => 439,
+				'protein_g' => 23.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 1.5, 'of_which_saturates_g' => 0.3, 'fibre_g' => 0.0, 'salt_g' => 1.20,
+				'source_notes' => 'USDA FDC #175177 / M&W. Tiger prawn (Penaeus monodon) profile. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Arbroath Smokies', 'slug' => 'arbroath-smokies', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 smokie (180g)', 'grams' => 180] ],
+				'energy_kcal' => 101, 'energy_kj' => 423,
+				'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 2.40,
+				'source_notes' => 'M&W 8th ed. (Haddock, smoked). Arbroath Smokie is a PGI hot-smoked whole haddock on the bone; same nutritional profile. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Buckling', 'slug' => 'buckling', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 buckling (150g)', 'grams' => 150] ],
+				'energy_kcal' => 250, 'energy_kj' => 1046,
+				'protein_g' => 20.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 18.5, 'of_which_saturates_g' => 4.2, 'fibre_g' => 0.0, 'salt_g' => 2.50,
+				'omega3_total_mg' => 2200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 700, 'omega3_dha_mg' => 1050,
+				'source_notes' => 'M&W 8th ed. (Herring, hot-smoked / buckling). Richer than bloater as hot-smoking renders more fat. Excellent omega-3 source.',
+			],
+			[
+				'name' => 'Smoked Cod Roe (Natural)', 'slug' => 'smoked-cod-roe', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (50g)', 'grams' => 50] ],
+				'energy_kcal' => 156, 'energy_kj' => 653,
+				'protein_g' => 22.5, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 7.5, 'of_which_saturates_g' => 1.8, 'fibre_g' => 0.0, 'salt_g' => 2.80,
+				'omega3_total_mg' => 600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 240, 'omega3_dha_mg' => 305,
+				'source_notes' => 'M&W 8th ed. (Cod roe, smoked). Distinct from blended taramasalata; eaten sliced on bread.',
+			],
+			[
+				'name' => 'Smoked Cod', 'slug' => 'smoked-cod', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 fillet (150g)', 'grams' => 150] ],
+				'energy_kcal' => 101, 'energy_kj' => 423,
+				'protein_g' => 23.3, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.9, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 2.80,
+				'source_notes' => 'M&W 8th ed. (Cod, smoked). Lean white fish; high salt from brining. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Cured Salmon Trio', 'slug' => 'cured-salmon-trio', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (100g)', 'grams' => 100] ],
+				'energy_kcal' => 155, 'energy_kj' => 649,
+				'protein_g' => 23.0, 'carbohydrate_g' => 0.2, 'of_which_sugars_g' => 0.2,
+				'fat_g' => 6.5, 'of_which_saturates_g' => 1.4, 'fibre_g' => 0.0, 'salt_g' => 2.50,
+				'omega3_total_mg' => 1500, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 350, 'omega3_dha_mg' => 950,
+				'source_notes' => 'Estimated average of smoked, gravlax and hot-smoked salmon portions. Omega-3 weighted average.',
+			],
+			[
+				'name' => 'Gravadlax (Beetroot)', 'slug' => 'gravadlax-beetroot', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '3 slices (75g)', 'grams' => 75] ],
+				'energy_kcal' => 150, 'energy_kj' => 628,
+				'protein_g' => 21.0, 'carbohydrate_g' => 2.5, 'of_which_sugars_g' => 2.0,
+				'fat_g' => 6.0, 'of_which_saturates_g' => 1.3, 'fibre_g' => 0.1, 'salt_g' => 2.40,
+				'omega3_total_mg' => 1750, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 400, 'omega3_dha_mg' => 1050,
+				'source_notes' => 'M&W 8th ed. / USDA FDC #175168 base (salmon, beetroot-cured). Small carbohydrate from beetroot marinade; omega-3 mirrors raw salmon.',
+			],
+			[
+				'name' => 'Hot Roast Salmon', 'slug' => 'hot-roast-salmon', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 portion (120g)', 'grams' => 120] ],
+				'energy_kcal' => 195, 'energy_kj' => 816,
+				'protein_g' => 24.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 11.0, 'of_which_saturates_g' => 2.2, 'fibre_g' => 0.0, 'salt_g' => 0.90,
+				'omega3_total_mg' => 1600, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 380, 'omega3_dha_mg' => 980,
+				'source_notes' => 'M&W 8th ed. (Salmon, baked/roasted). Hot-roasted or hot-smoked; fat slightly reduced by cooking vs raw fillet.',
+			],
+			[
+				'name' => 'Kipper', 'slug' => 'kipper', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 kipper (170g)', 'grams' => 170] ],
+				'energy_kcal' => 205, 'energy_kj' => 858,
+				'protein_g' => 18.4, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 14.5, 'of_which_saturates_g' => 3.4, 'fibre_g' => 0.0, 'salt_g' => 3.00,
+				'omega3_total_mg' => 1800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 575, 'omega3_dha_mg' => 870,
+				'source_notes' => 'M&W 8th ed. (Kipper, cold-smoked split herring). Very high salt from brining; excellent omega-3 source.',
+			],
+			[
+				'name' => 'Bottarga', 'slug' => 'bottarga', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp shaved (15g)', 'grams' => 15] ],
+				'energy_kcal' => 330, 'energy_kj' => 1381,
+				'protein_g' => 40.0, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 20.0, 'of_which_saturates_g' => 5.0, 'fibre_g' => 0.0, 'salt_g' => 5.80,
+				'omega3_total_mg' => 4000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 1200, 'omega3_dha_mg' => 2400,
+				'source_notes' => 'Published data (dried/salt-cured grey mullet or tuna roe). Concentrated omega-3; extremely high salt from preservation.',
+			],
+			[
+				'name' => 'Avruga / Arenkha', 'slug' => 'avruga-arenkha', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 180, 'energy_kj' => 753,
+				'protein_g' => 14.0, 'carbohydrate_g' => 3.0, 'of_which_sugars_g' => 0.5,
+				'fat_g' => 12.5, 'of_which_saturates_g' => 2.8, 'fibre_g' => 0.0, 'salt_g' => 3.50,
+				'omega3_total_mg' => 2000, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 620, 'omega3_dha_mg' => 980,
+				'source_notes' => 'Estimated from herring roe composition. Avruga/Arenkha is a caviar substitute made from smoked herring roe.',
+			],
+			[
+				'name' => 'Crayfish Tails (in Brine)', 'slug' => 'crayfish-tails-brine', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 pot (100g)', 'grams' => 100] ],
+				'energy_kcal' => 72, 'energy_kj' => 301,
+				'protein_g' => 15.2, 'carbohydrate_g' => 0.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 0.8, 'of_which_saturates_g' => 0.2, 'fibre_g' => 0.0, 'salt_g' => 1.20,
+				'source_notes' => 'USDA FDC #175178 base. Brine-packed crayfish tails; higher salt than plain cooked. Omega-3 left NULL.',
+			],
+			[
+				'name' => 'Beluga Caviar', 'slug' => 'beluga-caviar', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 264, 'energy_kj' => 1105,
+				'protein_g' => 26.9, 'carbohydrate_g' => 3.3, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 17.0, 'of_which_saturates_g' => 3.8, 'fibre_g' => 0.0, 'salt_g' => 5.20,
+				'omega3_total_mg' => 6200, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2800, 'omega3_dha_mg' => 2600,
+				'source_notes' => 'USDA FDC #174219 / published data (Huso huso roe). Largest sturgeon eggs; one of the most omega-3-dense foods.',
+			],
+			[
+				'name' => 'Oscietra Caviar', 'slug' => 'oscietra-caviar', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 258, 'energy_kj' => 1080,
+				'protein_g' => 25.5, 'carbohydrate_g' => 4.0, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 17.0, 'of_which_saturates_g' => 3.9, 'fibre_g' => 0.0, 'salt_g' => 5.40,
+				'omega3_total_mg' => 5800, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2600, 'omega3_dha_mg' => 2400,
+				'source_notes' => 'Published data (Acipenser gueldenstaedtii roe). Nutty-flavoured medium-grade sturgeon caviar.',
+			],
+			[
+				'name' => 'Sevruga Caviar', 'slug' => 'sevruga-caviar', 'category_id' => $fs,
+				'serving_sizes' => [ ['label' => '1 tbsp (16g)', 'grams' => 16] ],
+				'energy_kcal' => 260, 'energy_kj' => 1088,
+				'protein_g' => 26.5, 'carbohydrate_g' => 3.5, 'of_which_sugars_g' => 0.0,
+				'fat_g' => 17.5, 'of_which_saturates_g' => 4.0, 'fibre_g' => 0.0, 'salt_g' => 5.50,
+				'omega3_total_mg' => 6400, 'omega3_ala_mg' => null, 'omega3_epa_mg' => 2900, 'omega3_dha_mg' => 2700,
+				'source_notes' => 'Published data (Acipenser stellatus roe). Smallest and most strongly flavoured of the classic caviars.',
 			],
 
 			// =================================================================
