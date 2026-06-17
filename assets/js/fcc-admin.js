@@ -86,11 +86,9 @@
 			orderby:     orderby,
 			order:       order,
 		}, function ( response ) {
+			$list.removeClass( 'fcc-loading' );
 			if ( response.success ) {
 				$list.html( response.data.html );
-				// Sync data attribute so the next paginate click uses correct page.
-				// (search/cat/orderby stay the same — user didn't touch the toolbar)
-				// Scroll table into view smoothly.
 				$list[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 			}
 		} ).fail( function () {
