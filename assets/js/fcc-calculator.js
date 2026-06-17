@@ -48,9 +48,10 @@
 	const root         = document.getElementById( 'fcc-calculator' );
 	if ( ! root ) return;
 
-	const searchInput  = root.querySelector( '.fcc-search-input' );
-	const dropdown     = root.querySelector( '.fcc-results-dropdown' );
-	const spinner      = root.querySelector( '.fcc-search-spinner' );
+	const searchInput    = root.querySelector( '.fcc-search-input' );
+	const searchClearBtn = root.querySelector( '.fcc-search-clear' );
+	const dropdown       = root.querySelector( '.fcc-results-dropdown' );
+	const spinner        = root.querySelector( '.fcc-search-spinner' );
 	const qtySection   = root.querySelector( '.fcc-quantity-section' );
 	const resultsSection = root.querySelector( '.fcc-results-section' );
 	const mealSection  = features.meal_builder ? root.querySelector( '.fcc-meal-section' ) : null;
@@ -89,9 +90,32 @@
 	// -------------------------------------------------------------------------
 	// Autocomplete
 	// -------------------------------------------------------------------------
+	function updateClearBtn() {
+		if ( ! searchClearBtn ) return;
+		searchClearBtn.hidden = ! ( searchInput && searchInput.value.length );
+	}
+
+	function clearFoodSelection() {
+		state.food     = null;
+		state.quantity = 100;
+		state.unit     = 'g';
+		if ( searchInput    ) { searchInput.value = ''; searchInput.focus(); }
+		if ( searchClearBtn ) searchClearBtn.hidden = true;
+		hideDropdown();
+		if ( qtySection     ) qtySection.hidden    = true;
+		if ( resultsSection ) resultsSection.hidden = true;
+		if ( addToMealBtn   ) addToMealBtn.hidden   = true;
+		history.replaceState( null, '', window.location.pathname );
+	}
+
+	if ( searchClearBtn ) {
+		searchClearBtn.addEventListener( 'click', clearFoodSelection );
+	}
+
 	if ( searchInput ) {
 		searchInput.addEventListener( 'input', function () {
 			clearTimeout( debounceTimer );
+			updateClearBtn();
 			const q = this.value.trim();
 			if ( q.length < 2 ) { hideDropdown(); return; }
 			debounceTimer = setTimeout( function () { doSearch( q ); }, 280 );
@@ -187,6 +211,7 @@
 		state.unit     = 'g';
 
 		searchInput.value = food.name;
+		updateClearBtn();
 		hideDropdown();
 
 		// Populate unit selector with serving sizes.
@@ -995,6 +1020,7 @@
 
 	function setSpinner( on ) {
 		if ( spinner ) spinner.classList.toggle( 'fcc-spinning', on );
+		if ( searchClearBtn ) searchClearBtn.hidden = on || ! ( searchInput && searchInput.value.length );
 	}
 
 	// -------------------------------------------------------------------------

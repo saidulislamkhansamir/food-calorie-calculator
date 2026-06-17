@@ -387,6 +387,34 @@
 
 @keyframes fcc-spin { to { transform: rotate(360deg); } }
 
+.fcc-search-clear {
+	position: absolute;
+	right: 0.75rem;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	width: 26px;
+	height: 26px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--fcc-border);
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	color: var(--fcc-text-muted);
+	padding: 0;
+	transition: background var(--fcc-transition), color var(--fcc-transition);
+	flex-shrink: 0;
+}
+
+.fcc-search-clear:hover {
+	background: var(--fcc-red-bg);
+	color: var(--fcc-red);
+}
+
+.fcc-search-clear[hidden] { display: none; }
+
 .fcc-results-dropdown {
 	position: absolute;
 	top: calc(100% + 6px);

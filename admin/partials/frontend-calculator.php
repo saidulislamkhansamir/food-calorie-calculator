@@ -108,6 +108,9 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 						</span>
 						<span class="fcc-search-spinner" aria-hidden="true"></span>
+						<button type="button" class="fcc-search-clear" hidden aria-label="<?php esc_attr_e( 'Clear search', 'food-calorie-calculator' ); ?>">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+						</button>
 						<ul id="fcc-search-results" class="fcc-results-dropdown" role="listbox" aria-label="<?php esc_attr_e( 'Search results', 'food-calorie-calculator' ); ?>"></ul>
 					</div>
 					<p class="fcc-search-hint"><?php esc_html_e( 'Type at least 2 characters to search from our UK foods database', 'food-calorie-calculator' ); ?></p>
