@@ -3321,3 +3321,179 @@ button.fcc-reqs-tab {
 	.fcc-reqs-toolbar { flex-direction: column; align-items: flex-start; }
 	.fcc-reqs-searchbox { width: 100%; }
 }
+
+/* =============================================================================
+   Food Requests — Email Export panel (v1.6.1)
+   ============================================================================= */
+
+.fcc-reqs-export {
+	padding: 1rem 1.25rem;
+	margin-bottom: 1rem;
+}
+
+.fcc-reqs-export__title {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.9375rem;
+	font-weight: 600;
+	color: #1e2a1e;
+	margin-bottom: 0.875rem;
+}
+
+.fcc-reqs-export__row {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	margin-bottom: 0.625rem;
+}
+
+.fcc-reqs-export__label {
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: #374151;
+	white-space: nowrap;
+}
+
+.fcc-reqs-export__optin-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: #374151;
+	cursor: pointer;
+}
+
+/* Radio presets as pill toggles */
+.fcc-reqs-export__presets {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	flex-wrap: wrap;
+}
+
+.fcc-reqs-export__preset {
+	position: relative;
+}
+
+.fcc-reqs-export__preset input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+}
+
+.fcc-reqs-export__preset label {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.3rem 0.8rem;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: #374151;
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	border-radius: 9999px;
+	cursor: pointer;
+	transition: background 0.15s, color 0.15s, border-color 0.15s;
+	white-space: nowrap;
+	line-height: 1.5;
+}
+
+.fcc-reqs-export__preset input[type="radio"]:checked + label {
+	background: #2D7A4F;
+	border-color: #2D7A4F;
+	color: #fff;
+}
+
+.fcc-reqs-export__preset label:hover {
+	background: #e9f5ee;
+	border-color: #a8d5b5;
+}
+
+.fcc-reqs-export__preset input[type="radio"]:checked + label:hover {
+	background: #245f3f;
+}
+
+/* Custom days input */
+.fcc-reqs-export__custom-wrap {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	margin-left: 0.25rem;
+}
+
+.fcc-reqs-export__custom-input {
+	width: 70px;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.8125rem;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	text-align: center;
+}
+
+.fcc-reqs-export__custom-unit {
+	font-size: 0.8125rem;
+	color: #6b7280;
+}
+
+/* Status select */
+.fcc-reqs-export__select {
+	padding: 0.3rem 0.6rem;
+	font-size: 0.8125rem;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	background: #fff;
+	color: #374151;
+}
+
+/* Download buttons */
+.fcc-reqs-export__btns {
+	display: flex;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	margin-top: 0.875rem;
+	padding-top: 0.875rem;
+	border-top: 1px solid #f0f0f0;
+}
+
+.fcc-reqs-export-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.45rem 1rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: #2D7A4F;
+	background: #fff;
+	border: 1.5px solid #2D7A4F;
+	border-radius: 7px;
+	cursor: pointer;
+	font-family: inherit;
+	transition: background 0.15s, color 0.15s;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.fcc-reqs-export-btn:hover {
+	background: #2D7A4F;
+	color: #fff;
+}
+
+.fcc-reqs-export-btn--xlsx {
+	color: #166534;
+	border-color: #166534;
+}
+
+.fcc-reqs-export-btn--xlsx:hover {
+	background: #166534;
+	color: #fff;
+}
+
+@media screen and (max-width: 700px) {
+	.fcc-reqs-export__row { flex-direction: column; align-items: flex-start; }
+	.fcc-reqs-export__btns { flex-direction: column; }
+	.fcc-reqs-export-btn { width: 100%; justify-content: center; }
+}

@@ -660,6 +660,51 @@ class Database {
 		return [ $where, $vals ];
 	}
 
+	/**
+	 * Fetch all matching requests for file export (no pagination).
+	 *
+	 * @param array{optin_only?:bool,days?:int,status?:string} $args
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_requests_for_export( array $args = [] ): array {
+		global $wpdb;
+		$table = self::requests_table();
+
+		$defaults = [
+			'optin_only' => true,
+			'days'       => 0,
+			'status'     => '',
+		];
+		$args = wp_parse_args( $args, $defaults );
+
+		$parts = [];
+		$vals  = [];
+
+		if ( $args['optin_only'] ) {
+			$parts[] = "marketing_optin = 1 AND requester_email != ''";
+		}
+		if ( (int) $args['days'] > 0 ) {
+			$parts[] = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
+			$vals[]  = (int) $args['days'];
+		}
+		if ( ! empty( $args['status'] ) ) {
+			$parts[] = 'status = %s';
+			$vals[]  = $args['status'];
+		}
+
+		$where = $parts ? ' WHERE ' . implode( ' AND ', $parts ) : '';
+
+		if ( $vals ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$sql = $wpdb->prepare( "SELECT id, food_name, note, requester_email, marketing_optin, status, created_at FROM {$table}{$where} ORDER BY created_at DESC", $vals );
+		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$sql = "SELECT id, food_name, note, requester_email, marketing_optin, status, created_at FROM {$table} ORDER BY created_at DESC";
+		}
+
+		return $wpdb->get_results( $sql, ARRAY_A ) ?: []; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	}
+
 	public static function count_opted_in_requests(): int {
 		global $wpdb;
 		$table = self::requests_table();

@@ -8,6 +8,7 @@
 namespace FCC\Admin;
 
 use FCC\Database;
+use FCC\Import_Export;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,6 +19,40 @@ class Food_Requests {
 		$loader->add_action( 'wp_ajax_fcc_ajax_delete_request',      $this, 'ajax_delete' );
 		$loader->add_action( 'wp_ajax_fcc_ajax_dismiss_request',     $this, 'ajax_dismiss' );
 		$loader->add_action( 'wp_ajax_fcc_reqs_page',                $this, 'ajax_reqs_page' );
+		$loader->add_action( 'admin_post_fcc_export_requests',       $this, 'handle_export_requests' );
+	}
+
+	public function handle_export_requests(): void {
+		check_admin_referer( 'fcc_export_requests' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'food-calorie-calculator' ) );
+		}
+
+		$args   = $this->parse_export_args();
+		$format = sanitize_key( $_POST['format'] ?? 'csv' );
+
+		if ( 'xlsx' === $format ) {
+			Import_Export::export_requests_xlsx( $args );
+		} else {
+			Import_Export::export_requests_csv( $args );
+		}
+	}
+
+	/** @return array{optin_only:bool,days:int,status:string} */
+	private function parse_export_args(): array {
+		$optin_only = (bool) absint( $_POST['optin_only'] ?? 1 );
+
+		$days_raw    = (int) ( $_POST['days'] ?? 0 );
+		$days_custom = absint( $_POST['days_custom'] ?? 0 );
+		$days        = ( -1 === $days_raw ) ? $days_custom : max( 0, $days_raw );
+
+		$allowed_statuses = [ '', 'pending', 'done', 'dismissed' ];
+		$status           = sanitize_key( $_POST['req_status'] ?? '' );
+		if ( ! in_array( $status, $allowed_statuses, true ) ) {
+			$status = '';
+		}
+
+		return compact( 'optin_only', 'days', 'status' );
 	}
 
 	public function ajax_reqs_page(): void {

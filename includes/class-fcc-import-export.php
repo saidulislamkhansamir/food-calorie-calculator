@@ -110,6 +110,94 @@ class Import_Export {
 	}
 
 	// -------------------------------------------------------------------------
+	// Food Requests export.
+	// -------------------------------------------------------------------------
+
+	/** @param array{optin_only?:bool,days?:int,status?:string} $args */
+	public static function export_requests_csv( array $args ): void {
+		$rows     = self::requests_export_rows( $args );
+		$headers  = self::requests_export_headers();
+		$filename = self::requests_export_filename( $args, 'csv' );
+
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		$out = fopen( 'php://output', 'wb' );
+		if ( false === $out ) {
+			wp_die( esc_html__( 'Could not open output stream.', 'food-calorie-calculator' ) );
+		}
+
+		fwrite( $out, "\xEF\xBB\xBF" ); // UTF-8 BOM for Excel.
+		fputcsv( $out, $headers );
+		foreach ( $rows as $row ) {
+			fputcsv( $out, $row );
+		}
+		fclose( $out );
+		exit;
+	}
+
+	/** @param array{optin_only?:bool,days?:int,status?:string} $args */
+	public static function export_requests_xlsx( array $args ): void {
+		require_once FCC_PLUGIN_DIR . 'vendor/SimpleXLSXGen.php';
+
+		$rows    = self::requests_export_rows( $args );
+		$headers = self::requests_export_headers();
+		$data    = array_merge( [ $headers ], $rows );
+
+		$xlsx = \Shuchkin\SimpleXLSXGen::fromArray( $data );
+		$xlsx->downloadAs( self::requests_export_filename( $args, 'xlsx' ) );
+		exit;
+	}
+
+	/** @return array<int,string> */
+	private static function requests_export_headers(): array {
+		return [
+			__( 'Food Name', 'food-calorie-calculator' ),
+			__( 'Email', 'food-calorie-calculator' ),
+			__( 'Note', 'food-calorie-calculator' ),
+			__( 'Newsletter Opt-in', 'food-calorie-calculator' ),
+			__( 'Status', 'food-calorie-calculator' ),
+			__( 'Date Requested', 'food-calorie-calculator' ),
+		];
+	}
+
+	/**
+	 * @param array{optin_only?:bool,days?:int,status?:string} $args
+	 * @return array<int,array<int,string>>
+	 */
+	private static function requests_export_rows( array $args ): array {
+		$data = Database::get_requests_for_export( $args );
+		$out  = [];
+		foreach ( $data as $r ) {
+			$out[] = [
+				$r['food_name'],
+				$r['requester_email'] ?? '',
+				$r['note'] ?? '',
+				$r['marketing_optin'] ? 'Yes' : 'No',
+				$r['status'],
+				$r['created_at'] ? gmdate( 'Y-m-d', strtotime( $r['created_at'] ) ) : '',
+			];
+		}
+		return $out;
+	}
+
+	/** @param array{days?:int} $args */
+	private static function requests_export_filename( array $args, string $ext ): string {
+		$days = (int) ( $args['days'] ?? 0 );
+		if ( $days > 0 ) {
+			$from = gmdate( 'Y-m-d', strtotime( "-{$days} days" ) );
+			$to   = gmdate( 'Y-m-d' );
+			$range = "{$from}-to-{$to}";
+		} else {
+			$range = 'all-time';
+		}
+		return "food-requests-emails-{$range}.{$ext}";
+	}
+
+	// -------------------------------------------------------------------------
 	// Import.
 	// -------------------------------------------------------------------------
 

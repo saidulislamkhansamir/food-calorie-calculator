@@ -113,6 +113,98 @@ $nonce = wp_create_nonce( 'fcc_ajax_reqs' );
 	</div><!-- .fcc-reqs-toolbar -->
 
 	<!-- ======================================================================
+	     Export panel
+	     ====================================================================== -->
+	<div class="fcc-card fcc-reqs-export">
+		<div class="fcc-reqs-export__title">
+			<span aria-hidden="true">📤</span>
+			<?php esc_html_e( 'Export Emails', 'food-calorie-calculator' ); ?>
+		</div>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="fcc_export_requests">
+			<?php wp_nonce_field( 'fcc_export_requests' ); ?>
+
+			<!-- Opt-in toggle -->
+			<div class="fcc-reqs-export__row">
+				<label class="fcc-reqs-export__optin-label">
+					<input type="checkbox" name="optin_only" value="1" checked>
+					<?php esc_html_e( 'Newsletter opt-in only', 'food-calorie-calculator' ); ?>
+				</label>
+			</div>
+
+			<!-- Period presets -->
+			<div class="fcc-reqs-export__row">
+				<span class="fcc-reqs-export__label"><?php esc_html_e( 'Period:', 'food-calorie-calculator' ); ?></span>
+				<div class="fcc-reqs-export__presets" role="group">
+					<?php
+					$presets = [
+						0  => __( 'All time', 'food-calorie-calculator' ),
+						7  => __( 'Last 7 days', 'food-calorie-calculator' ),
+						14 => __( 'Last 14 days', 'food-calorie-calculator' ),
+						30 => __( 'Last 30 days', 'food-calorie-calculator' ),
+						-1 => __( 'Custom', 'food-calorie-calculator' ),
+					];
+					foreach ( $presets as $val => $label ) :
+						$id = 'fcc-reqs-days-' . ( $val < 0 ? 'custom' : $val );
+					?>
+						<label class="fcc-reqs-export__preset" for="<?php echo esc_attr( $id ); ?>">
+							<input type="radio" name="days" id="<?php echo esc_attr( $id ); ?>"
+								value="<?php echo esc_attr( $val ); ?>"
+								<?php checked( $val, 0 ); ?>>
+							<?php echo esc_html( $label ); ?>
+						</label>
+					<?php endforeach; ?>
+
+					<span class="fcc-reqs-export__custom-wrap" id="fcc-reqs-custom-days-wrap" hidden>
+						<input type="number" name="days_custom" id="fcc-reqs-days-custom-val"
+							class="fcc-reqs-export__custom-input"
+							min="1" max="3650" value="120"
+							aria-label="<?php esc_attr_e( 'Number of days', 'food-calorie-calculator' ); ?>">
+						<span class="fcc-reqs-export__custom-unit"><?php esc_html_e( 'days', 'food-calorie-calculator' ); ?></span>
+					</span>
+				</div>
+			</div>
+
+			<!-- Status filter -->
+			<div class="fcc-reqs-export__row">
+				<label class="fcc-reqs-export__label" for="fcc-reqs-export-status"><?php esc_html_e( 'Status:', 'food-calorie-calculator' ); ?></label>
+				<select name="req_status" id="fcc-reqs-export-status" class="fcc-reqs-export__select">
+					<option value=""><?php esc_html_e( 'All statuses', 'food-calorie-calculator' ); ?></option>
+					<option value="pending"><?php esc_html_e( 'Pending', 'food-calorie-calculator' ); ?></option>
+					<option value="done"><?php esc_html_e( 'Done', 'food-calorie-calculator' ); ?></option>
+					<option value="dismissed"><?php esc_html_e( 'Dismissed', 'food-calorie-calculator' ); ?></option>
+				</select>
+			</div>
+
+			<!-- Download buttons -->
+			<div class="fcc-reqs-export__btns">
+				<button type="submit" name="format" value="csv" class="fcc-reqs-export-btn">
+					<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					<?php esc_html_e( 'Download CSV', 'food-calorie-calculator' ); ?>
+				</button>
+				<button type="submit" name="format" value="xlsx" class="fcc-reqs-export-btn fcc-reqs-export-btn--xlsx">
+					<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					<?php esc_html_e( 'Download Excel', 'food-calorie-calculator' ); ?>
+				</button>
+			</div>
+		</form>
+	</div><!-- .fcc-reqs-export -->
+
+	<script>
+	( function () {
+		var radios = document.querySelectorAll( 'input[name="days"]' );
+		var wrap   = document.getElementById( 'fcc-reqs-custom-days-wrap' );
+		function toggle() {
+			var custom = document.querySelector( 'input[name="days"]:checked' );
+			if ( wrap ) wrap.hidden = ! custom || custom.value !== '-1';
+		}
+		radios.forEach( function ( r ) { r.addEventListener( 'change', toggle ); } );
+		toggle();
+	}() );
+	</script>
+
+	<!-- ======================================================================
 	     AJAX region — table + pagination
 	     ====================================================================== -->
 	<div id="fcc-reqs-list"
