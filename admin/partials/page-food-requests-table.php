@@ -79,6 +79,18 @@ endif;
 	</div>
 <?php else : ?>
 	<div class="fcc-card fcc-reqs-card">
+		<div class="fcc-reqs-table-footer fcc-reqs-table-header">
+			<p class="fcc-reqs-count">
+				<?php if ( $total > $per_page ) :
+					$from = ( $paged - 1 ) * $per_page + 1;
+					$to   = min( $paged * $per_page, $total );
+					printf( esc_html__( 'Showing %1$d–%2$d of %3$d', 'food-calorie-calculator' ), $from, $to, $total );
+				else :
+					printf( esc_html( _n( '%d request', '%d requests', $total, 'food-calorie-calculator' ) ), $total );
+				endif; ?>
+			</p>
+			<?php echo fcc_build_reqs_pagination( $paged, $total_pages ); ?>
+		</div>
 		<table class="fcc-reqs-table">
 			<thead>
 				<tr>
