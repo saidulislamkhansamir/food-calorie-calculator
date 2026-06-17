@@ -221,6 +221,7 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 			data-date-to=""
 			data-paged="<?php echo (int) $reqs_paged; ?>">
 			<?php
+			$paged       = $reqs_paged;
 			$total       = $reqs_total;
 			$total_pages = $reqs_pages;
 			include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests-table.php';
@@ -334,6 +335,7 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 			data-date-to=""
 			data-paged="<?php echo (int) $ms_paged; ?>">
 			<?php
+			$paged       = $ms_paged;
 			$total       = $ms_total;
 			$total_pages = $ms_pages;
 			include FCC_PLUGIN_DIR . 'admin/partials/page-missed-searches-table.php';
