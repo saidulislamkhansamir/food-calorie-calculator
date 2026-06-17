@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Database {
 
-	const SCHEMA_VERSION = '1.0';
+	const SCHEMA_VERSION = '1.1';
 
 	// -------------------------------------------------------------------------
 	// Table name helpers.
@@ -39,6 +39,11 @@ class Database {
 	public static function missed_searches_table(): string {
 		global $wpdb;
 		return $wpdb->prefix . 'fcc_missed_searches';
+	}
+
+	public static function search_log_table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'fcc_search_log';
 	}
 
 	// -------------------------------------------------------------------------
@@ -135,10 +140,25 @@ class Database {
 ) {$charset_collate};";
 		// phpcs:enable
 
+		$search_log = self::search_log_table();
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql_search_log = "CREATE TABLE {$search_log} (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  query varchar(200) NOT NULL,
+  has_results tinyint(1) NOT NULL DEFAULT 0,
+  log_date date NOT NULL,
+  count int(11) UNSIGNED NOT NULL DEFAULT 1,
+  PRIMARY KEY  (id),
+  UNIQUE KEY fcc_sl_uniq (query(100), log_date, has_results),
+  KEY log_date (log_date)
+) {$charset_collate};";
+		// phpcs:enable
+
 		dbDelta( $sql_cats );
 		dbDelta( $sql_foods );
 		dbDelta( $sql_requests );
 		dbDelta( $sql_missed );
+		dbDelta( $sql_search_log );
 
 		update_option( 'fcc_db_version', self::SCHEMA_VERSION );
 	}
@@ -1030,6 +1050,280 @@ class Database {
 	public static function delete_missed_search( int $id ): void {
 		global $wpdb;
 		$wpdb->delete( self::missed_searches_table(), [ 'id' => $id ], [ '%d' ] );
+	}
+
+	// -------------------------------------------------------------------------
+	// Search Log — time-series analytics table.
+	// -------------------------------------------------------------------------
+
+	public static function create_search_log_table(): void {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$table           = self::search_log_table();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql = "CREATE TABLE {$table} (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  query varchar(200) NOT NULL,
+  has_results tinyint(1) NOT NULL DEFAULT 0,
+  log_date date NOT NULL,
+  count int(11) UNSIGNED NOT NULL DEFAULT 1,
+  PRIMARY KEY  (id),
+  UNIQUE KEY fcc_sl_uniq (query(100), log_date, has_results),
+  KEY log_date (log_date)
+) {$charset_collate};";
+		// phpcs:enable
+		dbDelta( $sql );
+	}
+
+	/** Log any search query (successful or not) — upserts a daily aggregate row. */
+	public static function log_search( string $query, bool $has_results ): void {
+		global $wpdb;
+		$query = mb_strtolower( trim( $query ), 'UTF-8' );
+		if ( strlen( $query ) < 2 ) {
+			return;
+		}
+		$table = self::search_log_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query(
+			$wpdb->prepare(
+				"INSERT INTO {$table} (query, has_results, log_date, count)
+				 VALUES (%s, %d, CURDATE(), 1)
+				 ON DUPLICATE KEY UPDATE count = count + 1",
+				$query,
+				(int) $has_results
+			)
+		);
+	}
+
+	/** Total search count for a period (0 = all time). */
+	public static function count_total_searches( int $days = 0 ): int {
+		global $wpdb;
+		$table = self::search_log_table();
+		if ( $days > 0 ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			return (int) $wpdb->get_var(
+				$wpdb->prepare( "SELECT SUM(count) FROM {$table} WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)", $days )
+			);
+		}
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( "SELECT SUM(count) FROM {$table}" );
+	}
+
+	/** Search success rate 0–100 for a period (0 = all time). */
+	public static function get_search_success_rate( int $days = 0 ): float {
+		global $wpdb;
+		$table = self::search_log_table();
+		$where = $days > 0
+			? $wpdb->prepare( 'WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)', $days )
+			: '';
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		$row = $wpdb->get_row(
+			"SELECT SUM(count) AS total, SUM(CASE WHEN has_results=1 THEN count ELSE 0 END) AS hits FROM {$table} {$where}",
+			ARRAY_A
+		);
+		if ( ! $row || (int) $row['total'] === 0 ) {
+			return 0.0;
+		}
+		return round( ( (int) $row['hits'] / (int) $row['total'] ) * 100, 1 );
+	}
+
+	/**
+	 * Daily search volume for charts.
+	 *
+	 * @return array<int,array{log_date:string,count:int}>
+	 */
+	public static function get_search_volume_by_day( int $days = 30 ): array {
+		global $wpdb;
+		$table = self::search_log_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT log_date, SUM(count) AS count FROM {$table}
+				 WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)
+				 GROUP BY log_date ORDER BY log_date ASC",
+				$days
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Top N foods by hit count.
+	 *
+	 * @return array<int,array{name:string,search_count:int}>
+	 */
+	public static function get_top_foods_by_hits( int $limit = 10 ): array {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT name, search_count FROM {$table} WHERE search_count > 0 ORDER BY search_count DESC LIMIT %d",
+				$limit
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Top N active missed searches (content gaps).
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_top_content_gaps( int $limit = 15 ): array {
+		global $wpdb;
+		$table = self::missed_searches_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, query, search_count, last_searched_at, status FROM {$table}
+				 WHERE status = 'active' ORDER BY search_count DESC LIMIT %d",
+				$limit
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Top N requested foods (grouped by food_name).
+	 *
+	 * @return array<int,array{food_name:string,request_count:int,last_requested:string}>
+	 */
+	public static function get_top_requested_foods( int $limit = 10 ): array {
+		global $wpdb;
+		$table = self::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT food_name, COUNT(*) AS request_count, MAX(created_at) AS last_requested
+				 FROM {$table} GROUP BY LOWER(food_name)
+				 ORDER BY request_count DESC, last_requested DESC LIMIT %d",
+				$limit
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Recent marketing opt-ins.
+	 *
+	 * @return array<int,array{requester_email:string,food_name:string,created_at:string}>
+	 */
+	public static function get_recent_optins( int $limit = 5 ): array {
+		global $wpdb;
+		$table = self::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT requester_email, food_name, created_at FROM {$table}
+				 WHERE marketing_optin = 1 AND requester_email != ''
+				 ORDER BY created_at DESC LIMIT %d",
+				$limit
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Paginated opted-in subscribers for the Email Hub.
+	 *
+	 * @param array{food_name?:string,per_page?:int,page?:int} $args
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_email_subscribers( array $args = [] ): array {
+		global $wpdb;
+		$table = self::requests_table();
+		$args  = wp_parse_args( $args, [ 'food_name' => '', 'per_page' => 20, 'page' => 1 ] );
+
+		$parts = [ "marketing_optin = 1 AND requester_email != ''" ];
+		$vals  = [];
+		if ( ! empty( $args['food_name'] ) ) {
+			$parts[] = 'LOWER(food_name) = LOWER(%s)';
+			$vals[]  = $args['food_name'];
+		}
+		$where  = ' WHERE ' . implode( ' AND ', $parts );
+		$offset = ( max( 1, (int) $args['page'] ) - 1 ) * (int) $args['per_page'];
+		$vals[] = (int) $args['per_page'];
+		$vals[] = $offset;
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, food_name, note, requester_email, status, created_at FROM {$table}{$where} ORDER BY created_at DESC LIMIT %d OFFSET %d",
+				$vals
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/** Count opted-in subscribers (with optional food_name filter). */
+	public static function count_email_subscribers( array $args = [] ): int {
+		global $wpdb;
+		$table  = self::requests_table();
+		$parts  = [ "marketing_optin = 1 AND requester_email != ''" ];
+		$vals   = [];
+		if ( ! empty( $args['food_name'] ) ) {
+			$parts[] = 'LOWER(food_name) = LOWER(%s)';
+			$vals[]  = $args['food_name'];
+		}
+		$where = ' WHERE ' . implode( ' AND ', $parts );
+		if ( $vals ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table}{$where}", $vals ) );
+		}
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}{$where}" );
+	}
+
+	/**
+	 * Content planner: combine missed searches + food requests into a priority list.
+	 * priority_score = (missed_search_count × 2) + request_count
+	 *
+	 * @return array<int,array{item:string,missed_count:int,request_count:int,priority_score:int}>
+	 */
+	public static function get_content_planner_items( int $limit = 50 ): array {
+		global $wpdb;
+		$ms_table  = self::missed_searches_table();
+		$req_table = self::requests_table();
+
+		// MySQL doesn't support FULL OUTER JOIN — use LEFT JOIN UNION RIGHT JOIN.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$sql = "
+			SELECT
+				COALESCE(ms.query, fr.food_name) AS item,
+				COALESCE(ms.search_count, 0)     AS missed_count,
+				COALESCE(fr.req_count, 0)        AS request_count,
+				(COALESCE(ms.search_count, 0) * 2 + COALESCE(fr.req_count, 0)) AS priority_score,
+				ms.id AS ms_id
+			FROM (
+				SELECT query, search_count, id FROM {$ms_table} WHERE status = 'active'
+			) ms
+			LEFT JOIN (
+				SELECT LOWER(food_name) AS food_name, COUNT(*) AS req_count FROM {$req_table} GROUP BY LOWER(food_name)
+			) fr ON LOWER(ms.query) = fr.food_name
+
+			UNION
+
+			SELECT
+				COALESCE(ms.query, fr.food_name) AS item,
+				COALESCE(ms.search_count, 0)     AS missed_count,
+				COALESCE(fr.req_count, 0)        AS request_count,
+				(COALESCE(ms.search_count, 0) * 2 + COALESCE(fr.req_count, 0)) AS priority_score,
+				ms.id AS ms_id
+			FROM (
+				SELECT LOWER(food_name) AS food_name, COUNT(*) AS req_count FROM {$req_table} GROUP BY LOWER(food_name)
+			) fr
+			LEFT JOIN (
+				SELECT query, search_count, id FROM {$ms_table} WHERE status = 'active'
+			) ms ON LOWER(ms.query) = fr.food_name
+			WHERE ms.query IS NULL
+
+			ORDER BY priority_score DESC, item ASC
+			LIMIT %d";
+		// phpcs:enable
+
+		return $wpdb->get_results( $wpdb->prepare( $sql, $limit ), ARRAY_A ) ?: []; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/** @return array{0:string,1:array<int,mixed>} */

@@ -4130,3 +4130,262 @@ button.fcc-reqs-tab {
 	.fcc-reqs-sortbar { flex-direction: column; align-items: flex-start; }
 	.fcc-reqs-unified__header { flex-direction: column; align-items: stretch; }
 }
+
+/* =============================================================================
+   Analytics page (.fcc-an-*)
+   ============================================================================= */
+
+.fcc-an-hero {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
+	border-radius: 18px;
+	padding: 2rem 2.5rem;
+	margin-bottom: 1.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.fcc-an-hero h1 {
+	color: #fff;
+	font-size: 1.6rem;
+	font-weight: 700;
+	margin: 0;
+	text-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+
+.fcc-an-hero p {
+	color: rgba(255,255,255,.85);
+	margin: .25rem 0 0;
+	font-size: .9rem;
+}
+
+.fcc-an-range-pills {
+	display: flex;
+	gap: .5rem;
+	flex-wrap: wrap;
+}
+
+.fcc-an-range-pill {
+	display: inline-block;
+	padding: .35rem .9rem;
+	border-radius: 20px;
+	background: rgba(255,255,255,.15);
+	color: #fff;
+	font-size: .82rem;
+	font-weight: 600;
+	text-decoration: none;
+	border: 1.5px solid rgba(255,255,255,.3);
+	transition: background .15s, border-color .15s;
+}
+
+.fcc-an-range-pill:hover,
+.fcc-an-range-pill--active {
+	background: rgba(255,255,255,.3);
+	border-color: #fff;
+	color: #fff;
+}
+
+.fcc-an-kpi-row {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 1rem;
+	margin-bottom: 1.75rem;
+}
+
+.fcc-an-kpi-card {
+	background: #fff;
+	border-radius: 12px;
+	padding: 1.25rem 1rem;
+	box-shadow: 0 2px 8px rgba(0,0,0,.07);
+	text-align: center;
+	border-top: 3px solid #2D7A4F;
+}
+
+.fcc-an-kpi-value {
+	font-size: 2rem;
+	font-weight: 700;
+	color: #2D7A4F;
+	line-height: 1.1;
+	display: block;
+}
+
+.fcc-an-kpi-label {
+	font-size: .78rem;
+	color: #666;
+	margin-top: .35rem;
+	display: block;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+}
+
+.fcc-an-charts-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+	margin-bottom: 1.75rem;
+}
+
+.fcc-an-chart-card {
+	background: #fff;
+	border-radius: 12px;
+	padding: 1.5rem;
+	box-shadow: 0 2px 8px rgba(0,0,0,.07);
+}
+
+.fcc-an-chart-card h3 {
+	margin: 0 0 1rem;
+	font-size: 1rem;
+	color: #1E2A1E;
+}
+
+.fcc-an-chart-card canvas {
+	max-height: 300px;
+}
+
+.fcc-an-section {
+	background: #fff;
+	border-radius: 12px;
+	padding: 1.5rem;
+	box-shadow: 0 2px 8px rgba(0,0,0,.07);
+	margin-bottom: 1.5rem;
+}
+
+.fcc-an-section h2 {
+	margin: 0 0 1rem;
+	font-size: 1.1rem;
+	color: #1E2A1E;
+	border-bottom: 1px solid #eee;
+	padding-bottom: .6rem;
+}
+
+.fcc-an-loading {
+	text-align: center;
+	padding: 2rem;
+	color: #999;
+	font-style: italic;
+}
+
+/* =============================================================================
+   Email Hub page (.fcc-eh-*)
+   ============================================================================= */
+
+.fcc-eh-hero {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
+	border-radius: 18px;
+	padding: 1.75rem 2.5rem;
+	margin-bottom: 1.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.fcc-eh-hero h1 {
+	color: #fff;
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin: 0 0 .25rem;
+}
+
+.fcc-eh-hero p {
+	color: rgba(255,255,255,.85);
+	margin: 0;
+	font-size: .9rem;
+}
+
+.fcc-eh-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 1rem;
+	flex-wrap: wrap;
+}
+
+.fcc-eh-filter-input {
+	padding: .45rem .75rem;
+	border: 1.5px solid #ccc;
+	border-radius: 6px;
+	font-size: .875rem;
+	min-width: 220px;
+}
+
+.fcc-eh-filter-input:focus {
+	border-color: #2D7A4F;
+	outline: none;
+}
+
+/* =============================================================================
+   Content Planner page (.fcc-cp-*)
+   ============================================================================= */
+
+.fcc-cp-hero {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
+	border-radius: 18px;
+	padding: 1.75rem 2.5rem;
+	margin-bottom: 1.75rem;
+}
+
+.fcc-cp-hero h1 {
+	color: #fff;
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin: 0 0 .4rem;
+}
+
+.fcc-cp-hero p {
+	color: rgba(255,255,255,.85);
+	margin: 0;
+	font-size: .9rem;
+}
+
+.fcc-cp-score {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: #2D7A4F;
+	color: #fff;
+	font-size: .8rem;
+	font-weight: 700;
+}
+
+.fcc-cp-score--high { background: #c0392b; }
+.fcc-cp-score--med  { background: #e67e22; }
+
+.fcc-cp-dismiss-btn {
+	background: none;
+	border: 1.5px solid #ccc;
+	border-radius: 6px;
+	padding: .3rem .65rem;
+	cursor: pointer;
+	font-size: .78rem;
+	color: #888;
+	transition: border-color .15s, color .15s;
+}
+
+.fcc-cp-dismiss-btn:hover {
+	border-color: #c0392b;
+	color: #c0392b;
+}
+
+/* Responsive — analytics / hub / planner */
+@media screen and (max-width: 1200px) {
+	.fcc-an-kpi-row { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media screen and (max-width: 900px) {
+	.fcc-an-kpi-row    { grid-template-columns: repeat(2, 1fr); }
+	.fcc-an-charts-row { grid-template-columns: 1fr; }
+}
+
+@media screen and (max-width: 600px) {
+	.fcc-an-kpi-row { grid-template-columns: 1fr; }
+	.fcc-an-hero    { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
+	.fcc-eh-hero    { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
+	.fcc-cp-hero    { padding: 1.25rem; }
+}

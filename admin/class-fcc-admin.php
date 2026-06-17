@@ -102,6 +102,33 @@ class Admin {
 			'fcc-food-requests',
 			[ $this, 'page_food_requests' ]
 		);
+
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'Analytics', 'food-calorie-calculator' ),
+			__( 'Analytics', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-analytics',
+			[ $this, 'page_analytics' ]
+		);
+
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'Email Hub', 'food-calorie-calculator' ),
+			__( 'Email Hub', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-email-hub',
+			[ $this, 'page_email_hub' ]
+		);
+
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'Content Planner', 'food-calorie-calculator' ),
+			__( 'Content Planner', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-content-planner',
+			[ $this, 'page_content_planner' ]
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -150,6 +177,18 @@ class Admin {
 		include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests.php';
 	}
 
+	public function page_analytics(): void {
+		( new Analytics() )->page_analytics();
+	}
+
+	public function page_email_hub(): void {
+		( new Email_Hub() )->page_email_hub();
+	}
+
+	public function page_content_planner(): void {
+		( new Content_Planner() )->page_content_planner();
+	}
+
 	// -------------------------------------------------------------------------
 	// Assets.
 	// -------------------------------------------------------------------------
@@ -183,6 +222,17 @@ class Admin {
 			$ver,
 			true
 		);
+
+		if ( false !== strpos( $hook, 'fcc-analytics' ) ) {
+			wp_register_script( 'chartjs', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js', [], '4.4.4', true );
+			wp_enqueue_script( 'chartjs' );
+			wp_enqueue_script( 'fcc-analytics', FCC_PLUGIN_URL . 'assets/js/fcc-analytics.js', [ 'chartjs' ], $ver, true );
+			wp_localize_script( 'fcc-analytics', 'fccAnalytics', [
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'fcc_analytics_nonce' ),
+				'range'   => absint( $_GET['range'] ?? 30 ),
+			] );
+		}
 
 		wp_localize_script(
 			'fcc-admin',

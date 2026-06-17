@@ -642,6 +642,26 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: create fcc_search_log table, backfill from missed_searches (v1.8.0).
+	// -------------------------------------------------------------------------
+
+	public static function seed_v16(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 16 ) { return; }
+		Database::create_search_log_table();
+		// Backfill existing zero-result queries as historical has_results=0 rows.
+		global $wpdb;
+		$ms = Database::missed_searches_table();
+		$sl = Database::search_log_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query(
+			"INSERT INTO {$sl} (query, has_results, log_date, count)
+			 SELECT query, 0, DATE(created_at), search_count FROM {$ms}
+			 ON DUPLICATE KEY UPDATE count = count + VALUES(count)"
+		);
+		update_option( 'fcc_seed_version', 16 );
+	}
+
+	// -------------------------------------------------------------------------
 	// Migration: add marketing_optin column to fcc_food_requests (v1.5.9).
 	// -------------------------------------------------------------------------
 

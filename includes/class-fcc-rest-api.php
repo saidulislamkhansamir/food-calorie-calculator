@@ -190,6 +190,9 @@ class Rest_Api {
 
 		$foods = Database::search_foods( $query, $category_id, $limit );
 
+		// Log to search_log for analytics time-series (fire-and-forget).
+		Database::log_search( $query, ! empty( $foods ) );
+
 		return new \WP_REST_Response(
 			array_map( [ $this, 'format_food' ], $foods ),
 			200
