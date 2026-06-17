@@ -15,15 +15,18 @@
 
 	if ( typeof fccData === 'undefined' ) return;
 
-	const cfg       = fccData;
-	const features  = cfg.features  || {};
-	const general   = cfg.general   || {};
-	const ri        = general.ri    || {};
-	const fsa       = general.fsa   || {};
-	const i18n      = cfg.i18n      || {};
-	const labels    = cfg.labels    || {};
-	const decimals  = general.decimalPlaces !== undefined ? Number( general.decimalPlaces ) : 1;
-	const OZ_TO_G   = 28.3495;
+	const cfg        = fccData;
+	const features   = cfg.features   || {};
+	const general    = cfg.general    || {};
+	const ri         = general.ri     || {};
+	const fsa        = general.fsa    || {};
+	const i18n       = cfg.i18n       || {};
+	const labels     = cfg.labels     || {};
+	const appearance = cfg.appearance || {};
+	const advanced   = cfg.advanced   || {};
+	const ht         = advanced.healthThresholds || {};
+	const decimals   = general.decimalPlaces !== undefined ? Number( general.decimalPlaces ) : 1;
+	const OZ_TO_G    = 28.3495;
 
 	// -------------------------------------------------------------------------
 	// State
@@ -118,7 +121,7 @@
 
 	function clearFoodSelection() {
 		state.food     = null;
-		state.quantity = 100;
+		state.quantity = general.defaultQuantity || 100;
 		state.unit     = 'g';
 		if ( searchInput    ) { searchInput.value = ''; searchInput.focus(); }
 		if ( searchClearBtn ) searchClearBtn.hidden = true;
@@ -217,7 +220,9 @@
 
 	function loadPopularFoods() {
 		if ( ! popularSection || ! popularChips ) return;
-		apiFetch( '/foods/popular?limit=8' ).then( function ( foods ) {
+		var popLimit = general.popularFoodsCount || 8;
+	if ( popLimit === 0 || features.popular_foods === false ) return;
+	apiFetch( '/foods/popular?limit=' + popLimit ).then( function ( foods ) {
 			if ( ! foods || ! foods.length ) return;
 			popularChips.innerHTML = '';
 			foods.forEach( function ( food ) {
@@ -246,9 +251,9 @@
 			clearTimeout( debounceTimer );
 			updateClearBtn();
 			const q = this.value.trim();
-			if ( q.length < 2 ) { hideDropdown(); showPopular(); return; }
+			if ( q.length < ( advanced.searchMinChars || 2 ) ) { hideDropdown(); showPopular(); return; }
 			hidePopular();
-			debounceTimer = setTimeout( function () { doSearch( q ); }, 280 );
+			debounceTimer = setTimeout( function () { doSearch( q ); }, general.searchDebounce || 280 );
 		} );
 
 		searchInput.addEventListener( 'keydown', handleDropdownKeys );
@@ -273,7 +278,7 @@
 	function doSearch( q ) {
 		setSpinner( true );
 		const cat = Number( general.defaultCategory || 0 );
-		let url = '/foods/search?q=' + encodeURIComponent( q ) + '&limit=10';
+		let url = '/foods/search?q=' + encodeURIComponent( q ) + '&limit=' + ( general.searchResultLimit || 10 );
 		if ( cat > 0 ) url += '&category=' + cat;
 
 		apiFetch( url )
@@ -362,7 +367,7 @@
 	// -------------------------------------------------------------------------
 	function selectFood( food ) {
 		state.food     = food;
-		state.quantity = 100;
+		state.quantity = general.defaultQuantity || 100;
 		state.unit     = 'g';
 
 		searchInput.value = food.name;
@@ -375,7 +380,7 @@
 		// Populate unit selector with serving sizes.
 		rebuildUnitSelect( food );
 
-		if ( qtyInput  ) qtyInput.value = 100;
+		if ( qtyInput  ) qtyInput.value = general.defaultQuantity || 100;
 		if ( foodNameEl ) {
 			foodNameEl.textContent = food.name;
 			// Remove any previous sponsor bar.
@@ -530,7 +535,12 @@
 				macroCanvas,
 				{ protein: protein_kcal, carbs: carbs_kcal, fat: fat_kcal },
 				macroLegend,
-				{ protein: 'Protein', carbs: 'Carbs', fat: 'Fat' }
+				{ protein: 'Protein', carbs: 'Carbs', fat: 'Fat' },
+				{
+					protein: appearance.chartProteinColour || '#3b82f6',
+					carbs:   appearance.chartCarbsColour   || '#f59e0b',
+					fat:     appearance.chartFatColour     || '#ef4444',
+				}
 			);
 			macroWrapper.hidden = false;
 		}
@@ -811,17 +821,17 @@
 		const positive = [];
 		const warnings = [];
 
-		if ( food.protein_g             != null && food.protein_g             >= 15   ) positive.push( { label: 'High Protein',    type: 'positive', icon: ICON_CHECK } );
-		if ( food.fat_g                 != null && food.fat_g                 <= 3    ) positive.push( { label: 'Low Fat',          type: 'positive', icon: ICON_CHECK } );
-		if ( food.energy_kcal           != null && food.energy_kcal           <= 100  ) positive.push( { label: 'Low Calorie',      type: 'positive', icon: ICON_CHECK } );
-		if ( food.of_which_sugars_g     != null && food.of_which_sugars_g     <= 5    ) positive.push( { label: 'Low Sugar',        type: 'positive', icon: ICON_CHECK } );
-		if ( food.fibre_g               != null && food.fibre_g               >= 6    ) positive.push( { label: 'High Fibre',       type: 'positive', icon: ICON_CHECK } );
-		if ( food.salt_g                != null && food.salt_g                <= 0.3  ) positive.push( { label: 'Low Salt',         type: 'positive', icon: ICON_CHECK } );
-		if ( food.omega3_total_mg       != null && food.omega3_total_mg       >= 500  ) positive.push( { label: 'Rich in Omega-3',  type: 'omega3',   icon: ICON_OMEGA } );
+		if ( food.protein_g             != null && food.protein_g             >= ( ht.highProtein || 15 )    ) positive.push( { label: 'High Protein',    type: 'positive', icon: ICON_CHECK } );
+		if ( food.fat_g                 != null && food.fat_g                 <= ( ht.lowFat || 3 )         ) positive.push( { label: 'Low Fat',          type: 'positive', icon: ICON_CHECK } );
+		if ( food.energy_kcal           != null && food.energy_kcal           <= ( ht.lowCalorie || 100 )   ) positive.push( { label: 'Low Calorie',      type: 'positive', icon: ICON_CHECK } );
+		if ( food.of_which_sugars_g     != null && food.of_which_sugars_g     <= ( ht.lowSugar || 5 )       ) positive.push( { label: 'Low Sugar',        type: 'positive', icon: ICON_CHECK } );
+		if ( food.fibre_g               != null && food.fibre_g               >= ( ht.highFibre || 6 )      ) positive.push( { label: 'High Fibre',       type: 'positive', icon: ICON_CHECK } );
+		if ( food.salt_g                != null && food.salt_g                <= ( ht.lowSalt || 0.3 )      ) positive.push( { label: 'Low Salt',         type: 'positive', icon: ICON_CHECK } );
+		if ( food.omega3_total_mg       != null && food.omega3_total_mg       >= ( ht.omega3Rich || 500 )   ) positive.push( { label: 'Rich in Omega-3',  type: 'omega3',   icon: ICON_OMEGA } );
 
-		if ( food.salt_g                != null && food.salt_g                >= 1.5  ) warnings.push( { label: 'High in Salt',     type: 'danger',   icon: ICON_WARN  } );
-		if ( food.of_which_saturates_g  != null && food.of_which_saturates_g  >= 5    ) warnings.push( { label: 'High Saturates',   type: 'warning',  icon: ICON_WARN  } );
-		if ( food.of_which_sugars_g     != null && food.of_which_sugars_g     >= 22.5 ) warnings.push( { label: 'High Sugar',       type: 'warning',  icon: ICON_WARN  } );
+		if ( food.salt_g                != null && food.salt_g                >= ( ht.warnHighSalt || 1.5 )       ) warnings.push( { label: 'High in Salt',     type: 'danger',   icon: ICON_WARN  } );
+		if ( food.of_which_saturates_g  != null && food.of_which_saturates_g  >= ( ht.warnHighSaturates || 5 )    ) warnings.push( { label: 'High Saturates',   type: 'warning',  icon: ICON_WARN  } );
+		if ( food.of_which_sugars_g     != null && food.of_which_sugars_g     >= ( ht.warnHighSugar || 22.5 )     ) warnings.push( { label: 'High Sugar',       type: 'warning',  icon: ICON_WARN  } );
 
 		const all = positive.slice( 0, 3 ).concat( warnings );
 
@@ -1185,18 +1195,26 @@
 		const activity = parseFloat( bmrSection.querySelector( '.fcc-bmr-activity' ).value ) || 1.55;
 		const goal     = bmrSection.querySelector( '.fcc-bmr-goal' ).value;
 
-		// Mifflin-St Jeor BMR.
+		const formula = advanced.bmrFormula || 'mifflin';
+		const goalAdj = advanced.calorieGoalAdjustment || 500;
 		let bmr;
-		if ( sex === 'male' ) {
-			bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+		if ( formula === 'harris_benedict' ) {
+			bmr = sex === 'male'
+				? 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age
+				: 447.593 + 9.247 * weight + 3.098 * height - 4.330 * age;
+		} else if ( formula === 'katch_mcardle' ) {
+			var lbm = weight * 0.8;
+			bmr = 370 + 21.6 * lbm;
 		} else {
-			bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+			bmr = sex === 'male'
+				? 10 * weight + 6.25 * height - 5 * age + 5
+				: 10 * weight + 6.25 * height - 5 * age - 161;
 		}
 
 		const tdeeMaintain = Math.round( bmr * activity );
 		let tdee = tdeeMaintain;
-		if ( goal === 'lose' ) tdee -= 500;
-		if ( goal === 'gain' ) tdee += 500;
+		if ( goal === 'lose' ) tdee -= goalAdj;
+		if ( goal === 'gain' ) tdee += goalAdj;
 
 		state.bmrTdee = tdee;
 
@@ -1209,9 +1227,9 @@
 
 		if ( tdeeEl )     tdeeEl.textContent     = fmt( tdee, 0 );
 		if ( bmrValEl )   bmrValEl.textContent   = fmt( Math.round( bmr ), 0 );
-		if ( loseEl )     loseEl.textContent     = fmt( tdeeMaintain - 500, 0 );
+		if ( loseEl )     loseEl.textContent     = fmt( tdeeMaintain - goalAdj, 0 );
 		if ( maintainEl ) maintainEl.textContent = fmt( tdeeMaintain, 0 );
-		if ( gainEl )     gainEl.textContent     = fmt( tdeeMaintain + 500, 0 );
+		if ( gainEl )     gainEl.textContent     = fmt( tdeeMaintain + goalAdj, 0 );
 
 		// Highlight the active goal stat box.
 		bmrSection.querySelectorAll( '.fcc-bmr-stat' ).forEach( function ( s ) {
@@ -1889,15 +1907,15 @@
 		sl.search.addEventListener( 'input', function () {
 			clearTimeout( cTimer );
 			var q = this.value.trim();
-			if ( q.length < 2 ) { hideCompareDropdown( s ); return; }
+			if ( q.length < ( advanced.searchMinChars || 2 ) ) { hideCompareDropdown( s ); return; }
 			cTimer = setTimeout( function () {
 				var cat = Number( general.defaultCategory || 0 );
-				var url = '/foods/search?q=' + encodeURIComponent( q ) + '&limit=8';
+				var url = '/foods/search?q=' + encodeURIComponent( q ) + '&limit=' + ( general.searchResultLimit || 10 );
 				if ( cat > 0 ) url += '&category=' + cat;
 				apiFetch( url )
 					.then( function ( foods ) { renderCompareDropdown( s, foods ); } )
 					.catch( function () { renderCompareDropdown( s, [] ); } );
-			}, 280 );
+			}, general.searchDebounce || 280 );
 		} );
 
 		sl.search.addEventListener( 'keydown', function ( e ) {

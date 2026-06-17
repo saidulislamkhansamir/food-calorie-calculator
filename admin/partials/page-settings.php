@@ -164,6 +164,66 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 				</div>
 			</div>
 
+			<!-- Search & Quantity -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Search & Quantity', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Control search behaviour and quantity input constraints.', 'food-calorie-calculator' ); ?></p>
+				</div>
+				<div class="fcc-stg-rows">
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="default_quantity"><?php esc_html_e( 'Default Quantity', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Pre-filled when a food is selected.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="default_quantity" name="default_quantity" min="1" max="9999"
+								value="<?php echo absint( $general['default_quantity'] ?? 100 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="max_quantity"><?php esc_html_e( 'Max Quantity', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Maximum value a visitor can enter.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="max_quantity" name="max_quantity" min="100" max="99999"
+								value="<?php echo absint( $general['max_quantity'] ?? 9999 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="search_result_limit"><?php esc_html_e( 'Search Result Limit', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Max autocomplete results (5–20).', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="search_result_limit" name="search_result_limit" min="5" max="20"
+								value="<?php echo absint( $general['search_result_limit'] ?? 10 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="popular_foods_count"><?php esc_html_e( 'Popular Foods Count', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Shown below search. Set 0 to hide entirely.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="popular_foods_count" name="popular_foods_count" min="0" max="12"
+								value="<?php echo absint( $general['popular_foods_count'] ?? 8 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="search_debounce"><?php esc_html_e( 'Search Debounce (ms)', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Delay before search fires (100–500). Lower = faster.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="search_debounce" name="search_debounce" min="100" max="500" step="10"
+								value="<?php echo absint( $general['search_debounce'] ?? 280 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<!-- Show nutrients -->
 			<div class="fcc-stg-section">
 				<div class="fcc-stg-section__hd">
@@ -277,6 +337,11 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						'share_link'             => [ 'label' => __( 'Shareable Link',                   'food-calorie-calculator' ), 'hint' => __( 'URL with food + qty',      'food-calorie-calculator' ) ],
 						'add_custom_food'        => [ 'label' => __( 'Add Custom Food (Frontend)',       'food-calorie-calculator' ), 'hint' => __( 'Visitor-submitted foods',  'food-calorie-calculator' ) ],
 						'json_ld_schema'         => [ 'label' => __( 'JSON-LD Schema (SEO)',             'food-calorie-calculator' ), 'hint' => __( 'Structured data output',   'food-calorie-calculator' ) ],
+						'compare_foods'          => [ 'label' => __( 'Compare Foods',                    'food-calorie-calculator' ), 'hint' => __( 'Side-by-side comparison tab', 'food-calorie-calculator' ) ],
+						'health_highlights'      => [ 'label' => __( 'Health Highlights',                'food-calorie-calculator' ), 'hint' => __( 'Green/amber nutrient chips', 'food-calorie-calculator' ) ],
+						'popular_foods'          => [ 'label' => __( 'Popular Foods',                    'food-calorie-calculator' ), 'hint' => __( 'Popular searches below input', 'food-calorie-calculator' ) ],
+						'food_request_form'      => [ 'label' => __( 'Food Request Form',               'food-calorie-calculator' ), 'hint' => __('"Can\'t find your food?" form', 'food-calorie-calculator' ) ],
+						'powered_by_footer'      => [ 'label' => __( 'Powered-by Footer',               'food-calorie-calculator' ), 'hint' => __( 'Attribution footer link',   'food-calorie-calculator' ) ],
 					];
 					foreach ( $feature_labels as $key => $data ) : ?>
 						<div class="fcc-stg-feature <?php echo ! empty( $features[ $key ] ) ? 'fcc-stg-feature--on' : ''; ?>">
@@ -337,6 +402,44 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 				</div>
 			</div>
 
+			<!-- Chart Colours -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Chart Colours', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Customise the macro breakdown donut chart segments.', 'food-calorie-calculator' ); ?></p>
+				</div>
+				<div class="fcc-stg-rows">
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label"><label for="chart_protein_colour"><?php esc_html_e( 'Protein', 'food-calorie-calculator' ); ?></label></div>
+						<div class="fcc-stg-row__control">
+							<input type="text" id="chart_protein_colour" name="chart_protein_colour" class="fcc-color-picker"
+								value="<?php echo esc_attr( $appearance['chart_protein_colour'] ?? '#3b82f6' ); ?>">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label"><label for="chart_carbs_colour"><?php esc_html_e( 'Carbohydrates', 'food-calorie-calculator' ); ?></label></div>
+						<div class="fcc-stg-row__control">
+							<input type="text" id="chart_carbs_colour" name="chart_carbs_colour" class="fcc-color-picker"
+								value="<?php echo esc_attr( $appearance['chart_carbs_colour'] ?? '#f59e0b' ); ?>">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label"><label for="chart_fat_colour"><?php esc_html_e( 'Fat', 'food-calorie-calculator' ); ?></label></div>
+						<div class="fcc-stg-row__control">
+							<input type="text" id="chart_fat_colour" name="chart_fat_colour" class="fcc-color-picker"
+								value="<?php echo esc_attr( $appearance['chart_fat_colour'] ?? '#ef4444' ); ?>">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label"><label for="chart_other_colour"><?php esc_html_e( 'Other', 'food-calorie-calculator' ); ?></label></div>
+						<div class="fcc-stg-row__control">
+							<input type="text" id="chart_other_colour" name="chart_other_colour" class="fcc-color-picker"
+								value="<?php echo esc_attr( $appearance['chart_other_colour'] ?? '#94a3b8' ); ?>">
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="fcc-stg-section">
 				<div class="fcc-stg-section__hd">
 					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Layout & Typography', 'food-calorie-calculator' ); ?></h2>
@@ -373,6 +476,45 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 							<label class="fcc-stg-toggle">
 								<input type="checkbox" name="dark_mode" value="1"
 									<?php checked( ! empty( $appearance['dark_mode'] ) ); ?>>
+								<span class="fcc-stg-toggle__track"></span>
+							</label>
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="layout"><?php esc_html_e( 'Layout', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Controls calculator max-width.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<select id="layout" name="layout" class="fcc-stg-select">
+								<option value="standard" <?php selected( $appearance['layout'] ?? '', 'standard' ); ?>><?php esc_html_e( 'Standard (720px)', 'food-calorie-calculator' ); ?></option>
+								<option value="compact"  <?php selected( $appearance['layout'] ?? '', 'compact' ); ?>><?php esc_html_e( 'Compact (480px)', 'food-calorie-calculator' ); ?></option>
+								<option value="wide"     <?php selected( $appearance['layout'] ?? '', 'wide' ); ?>><?php esc_html_e( 'Wide (960px)', 'food-calorie-calculator' ); ?></option>
+							</select>
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="card_style"><?php esc_html_e( 'Card Style', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Visual treatment for content sections.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<select id="card_style" name="card_style" class="fcc-stg-select">
+								<option value="elevated" <?php selected( $appearance['card_style'] ?? '', 'elevated' ); ?>><?php esc_html_e( 'Elevated (shadow)', 'food-calorie-calculator' ); ?></option>
+								<option value="flat"     <?php selected( $appearance['card_style'] ?? '', 'flat' ); ?>><?php esc_html_e( 'Flat (no border)', 'food-calorie-calculator' ); ?></option>
+								<option value="outlined" <?php selected( $appearance['card_style'] ?? '', 'outlined' ); ?>><?php esc_html_e( 'Outlined (border)', 'food-calorie-calculator' ); ?></option>
+							</select>
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label><?php esc_html_e( 'Results Animation', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Fade-in effect when results appear.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<label class="fcc-stg-toggle">
+								<input type="checkbox" name="results_animation" value="1"
+									<?php checked( ! empty( $appearance['results_animation'] ?? true ) ); ?>>
 								<span class="fcc-stg-toggle__track"></span>
 							</label>
 						</div>
@@ -438,21 +580,107 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 		<!-- ============================================================
 		     ADVANCED TAB
 		     ============================================================ -->
+			<!-- Health Highlights Thresholds -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Health Highlight Thresholds (per 100g)', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Configure what triggers positive (green) and warning (amber) badges on food results.', 'food-calorie-calculator' ); ?></p>
+				</div>
+				<div class="fcc-stg-numgrid">
+					<?php
+					$hl_fields = [
+						'hl_high_protein'        => [ '🟢', __( 'High Protein (g ≥)',      'food-calorie-calculator' ) ],
+						'hl_low_fat'             => [ '🟢', __( 'Low Fat (g ≤)',            'food-calorie-calculator' ) ],
+						'hl_low_calorie'         => [ '🟢', __( 'Low Calorie (kcal ≤)',     'food-calorie-calculator' ) ],
+						'hl_low_sugar'           => [ '🟢', __( 'Low Sugar (g ≤)',          'food-calorie-calculator' ) ],
+						'hl_high_fibre'          => [ '🟢', __( 'High Fibre (g ≥)',         'food-calorie-calculator' ) ],
+						'hl_low_salt'            => [ '🟢', __( 'Low Salt (g ≤)',           'food-calorie-calculator' ) ],
+						'hl_omega3_rich'         => [ '🟢', __( 'Rich in Omega-3 (mg ≥)',   'food-calorie-calculator' ) ],
+						'hl_warn_high_salt'      => [ '🟠', __( 'High Salt Warning (g ≥)', 'food-calorie-calculator' ) ],
+						'hl_warn_high_saturates' => [ '🟠', __( 'High Saturates Warning (g ≥)', 'food-calorie-calculator' ) ],
+						'hl_warn_high_sugar'     => [ '🟠', __( 'High Sugar Warning (g ≥)',     'food-calorie-calculator' ) ],
+					];
+					foreach ( $hl_fields as $field => $meta ) : ?>
+						<div class="fcc-stg-numfield">
+							<label class="fcc-stg-numfield__label" for="<?php echo esc_attr( $field ); ?>"><?php echo $meta[0] . ' ' . esc_html( $meta[1] ); ?></label>
+							<input type="number" id="<?php echo esc_attr( $field ); ?>" name="<?php echo esc_attr( $field ); ?>"
+								step="0.1" min="0" value="<?php echo esc_attr( $advanced[ $field ] ?? '' ); ?>"
+								class="fcc-stg-numfield__input">
+						</div>
+					<?php endforeach; ?>
+				</div>
+			</div>
+
+			<!-- BMR Configuration -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'BMR / TDEE Configuration', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Controls the daily calorie calculator formula and weight goal adjustments.', 'food-calorie-calculator' ); ?></p>
+				</div>
+				<div class="fcc-stg-rows">
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="bmr_formula"><?php esc_html_e( 'BMR Formula', 'food-calorie-calculator' ); ?></label>
+						</div>
+						<div class="fcc-stg-row__control">
+							<select id="bmr_formula" name="bmr_formula" class="fcc-stg-select">
+								<option value="mifflin"          <?php selected( $advanced['bmr_formula'] ?? '', 'mifflin' ); ?>><?php esc_html_e( 'Mifflin-St Jeor (recommended)', 'food-calorie-calculator' ); ?></option>
+								<option value="harris_benedict"  <?php selected( $advanced['bmr_formula'] ?? '', 'harris_benedict' ); ?>><?php esc_html_e( 'Harris-Benedict (revised)', 'food-calorie-calculator' ); ?></option>
+								<option value="katch_mcardle"    <?php selected( $advanced['bmr_formula'] ?? '', 'katch_mcardle' ); ?>><?php esc_html_e( 'Katch-McArdle (est. body fat)', 'food-calorie-calculator' ); ?></option>
+							</select>
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="calorie_goal_adjustment"><?php esc_html_e( 'Goal Calorie Adjustment (kcal)', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Added/subtracted for gain/lose weight goals.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="calorie_goal_adjustment" name="calorie_goal_adjustment" min="100" max="2000" step="50"
+								value="<?php echo absint( $advanced['calorie_goal_adjustment'] ?? 500 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Performance -->
 			<div class="fcc-stg-section">
 				<div class="fcc-stg-section__hd">
 					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Performance', 'food-calorie-calculator' ); ?></h2>
 				</div>
-				<div class="fcc-stg-features-grid">
-					<div class="fcc-stg-feature <?php echo ! empty( $advanced['cache_enabled'] ) ? 'fcc-stg-feature--on' : ''; ?>">
-						<div class="fcc-stg-feature__info">
-							<strong class="fcc-stg-feature__name"><?php esc_html_e( 'REST API Cache', 'food-calorie-calculator' ); ?></strong>
-							<span class="fcc-stg-feature__hint"><?php esc_html_e( 'Transient cache for food search results', 'food-calorie-calculator' ); ?></span>
+				<div class="fcc-stg-rows">
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label><?php esc_html_e( 'REST API Cache', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Transient cache for food search results.', 'food-calorie-calculator' ); ?></p>
 						</div>
-						<label class="fcc-stg-toggle">
-							<input type="checkbox" name="cache_enabled" value="1"
-								<?php checked( ! empty( $advanced['cache_enabled'] ) ); ?>>
-							<span class="fcc-stg-toggle__track"></span>
-						</label>
+						<div class="fcc-stg-row__control">
+							<label class="fcc-stg-toggle">
+								<input type="checkbox" name="cache_enabled" value="1"
+									<?php checked( ! empty( $advanced['cache_enabled'] ) ); ?>>
+								<span class="fcc-stg-toggle__track"></span>
+							</label>
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="cache_duration"><?php esc_html_e( 'Cache Duration (seconds)', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( '3600 = 1 hour. Range: 60–86400.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="cache_duration" name="cache_duration" min="60" max="86400"
+								value="<?php echo absint( $advanced['cache_duration'] ?? 3600 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="search_min_chars"><?php esc_html_e( 'Search Min Characters', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Minimum characters before search fires (1–5).', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="search_min_chars" name="search_min_chars" min="1" max="5"
+								value="<?php echo absint( $advanced['search_min_chars'] ?? 2 ); ?>" class="fcc-stg-number">
+						</div>
 					</div>
 				</div>
 			</div>

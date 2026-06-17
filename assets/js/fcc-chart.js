@@ -21,9 +21,11 @@
 	 * @param {HTMLElement}       legendEl  Element to populate with a legend
 	 * @param {Object}            i18n      { protein, carbs, fat } labels
 	 */
-	function draw( canvas, data, legendEl, i18n ) {
+	function draw( canvas, data, legendEl, i18n, colors ) {
 		const total = data.protein + data.carbs + data.fat;
 		if ( ! canvas || total <= 0 ) return;
+
+		const C = Object.assign( {}, COLORS, colors || {} );
 
 		const ctx = canvas.getContext( '2d' );
 		const dpr = window.devicePixelRatio || 1;
@@ -43,9 +45,9 @@
 		ctx.clearRect( 0, 0, size, size );
 
 		const segments = [
-			{ key: 'protein', value: data.protein, color: COLORS.protein, label: i18n.protein },
-			{ key: 'carbs',   value: data.carbs,   color: COLORS.carbs,   label: i18n.carbs   },
-			{ key: 'fat',     value: data.fat,      color: COLORS.fat,     label: i18n.fat     },
+			{ key: 'protein', value: data.protein, color: C.protein, label: i18n.protein },
+			{ key: 'carbs',   value: data.carbs,   color: C.carbs,   label: i18n.carbs   },
+			{ key: 'fat',     value: data.fat,      color: C.fat,     label: i18n.fat     },
 		].filter( s => s.value > 0 );
 
 		let startAngle = -Math.PI / 2;

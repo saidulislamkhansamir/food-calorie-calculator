@@ -25,9 +25,14 @@ class Settings {
 	public static function defaults(): array {
 		return [
 			'general' => [
-				'default_unit'     => 'metric',    // metric | imperial
-				'default_category' => 0,
-				'decimal_places'   => 1,
+				'default_unit'         => 'metric',    // metric | imperial
+				'default_category'     => 0,
+				'decimal_places'       => 1,
+				'default_quantity'     => 100,
+				'max_quantity'         => 9999,
+				'search_result_limit'  => 10,
+				'popular_foods_count'  => 8,
+				'search_debounce'      => 280,
 				'show_nutrients'   => [
 					'energy_kcal', 'energy_kj', 'protein_g', 'carbohydrate_g',
 					'of_which_sugars_g', 'fat_g', 'of_which_saturates_g',
@@ -66,6 +71,11 @@ class Settings {
 				'share_link'             => true,
 				'add_custom_food'        => false,
 				'json_ld_schema'         => true,
+				'compare_foods'          => true,
+				'health_highlights'      => true,
+				'popular_foods'          => true,
+				'food_request_form'      => true,
+				'powered_by_footer'      => true,
 			],
 			'appearance' => [
 				'primary_colour'    => '#005EB8',
@@ -74,6 +84,13 @@ class Settings {
 				'dark_mode'         => false,
 				'button_radius'     => 8,
 				'font_family'       => 'system',
+				'chart_protein_colour' => '#3b82f6',
+				'chart_carbs_colour'   => '#f59e0b',
+				'chart_fat_colour'     => '#ef4444',
+				'chart_other_colour'   => '#94a3b8',
+				'layout'               => 'standard',
+				'results_animation'    => true,
+				'card_style'           => 'elevated',
 				'custom_css'        => '',
 			],
 			'labels' => [
@@ -96,6 +113,20 @@ class Settings {
 			'advanced' => [
 				'delete_data_on_uninstall' => false,
 				'cache_enabled'            => true,
+				'cache_duration'           => 3600,
+				'search_min_chars'         => 2,
+				'hl_high_protein'          => 15,
+				'hl_low_fat'               => 3,
+				'hl_low_calorie'           => 100,
+				'hl_low_sugar'             => 5,
+				'hl_high_fibre'            => 6,
+				'hl_low_salt'              => 0.3,
+				'hl_omega3_rich'           => 500,
+				'hl_warn_high_salt'        => 1.5,
+				'hl_warn_high_saturates'   => 5,
+				'hl_warn_high_sugar'       => 22.5,
+				'bmr_formula'              => 'mifflin',
+				'calorie_goal_adjustment'  => 500,
 			],
 		];
 	}

@@ -145,6 +145,12 @@ class Settings_Page {
 			$sanitised[ $field ] = (float) ( $post[ $field ] ?? $defaults[ $field ] );
 		}
 
+		$sanitised['default_quantity']    = max( 1, min( 9999, absint( $post['default_quantity'] ?? 100 ) ) );
+		$sanitised['max_quantity']        = max( 100, min( 99999, absint( $post['max_quantity'] ?? 9999 ) ) );
+		$sanitised['search_result_limit'] = max( 5, min( 20, absint( $post['search_result_limit'] ?? 10 ) ) );
+		$sanitised['popular_foods_count'] = max( 0, min( 12, absint( $post['popular_foods_count'] ?? 8 ) ) );
+		$sanitised['search_debounce']     = max( 100, min( 500, absint( $post['search_debounce'] ?? 280 ) ) );
+
 		return $sanitised;
 	}
 
@@ -154,6 +160,8 @@ class Settings_Page {
 			'bmr_tdee', 'daily_needs_comparison', 'fsa_traffic_lights',
 			'ri_display', 'macro_chart', 'omega3_display', 'caffeine_display',
 			'meal_builder', 'print_pdf', 'share_link', 'add_custom_food', 'json_ld_schema',
+			'compare_foods', 'health_highlights', 'popular_foods',
+			'food_request_form', 'powered_by_footer',
 		];
 
 		$sanitised = [];
@@ -172,6 +180,15 @@ class Settings_Page {
 			'dark_mode'         => ! empty( $post['dark_mode'] ),
 			'button_radius'     => min( 50, max( 0, absint( $post['button_radius'] ?? 8 ) ) ),
 			'font_family'       => sanitize_key( $post['font_family'] ?? 'system' ),
+			'chart_protein_colour' => $this->sanitise_hex_colour( $post['chart_protein_colour'] ?? '#3b82f6', '#3b82f6' ),
+			'chart_carbs_colour'   => $this->sanitise_hex_colour( $post['chart_carbs_colour']   ?? '#f59e0b', '#f59e0b' ),
+			'chart_fat_colour'     => $this->sanitise_hex_colour( $post['chart_fat_colour']     ?? '#ef4444', '#ef4444' ),
+			'chart_other_colour'   => $this->sanitise_hex_colour( $post['chart_other_colour']   ?? '#94a3b8', '#94a3b8' ),
+			'layout'            => in_array( $post['layout'] ?? '', [ 'standard', 'compact', 'wide' ], true )
+									? sanitize_key( $post['layout'] ) : 'standard',
+			'results_animation' => ! empty( $post['results_animation'] ),
+			'card_style'        => in_array( $post['card_style'] ?? '', [ 'elevated', 'flat', 'outlined' ], true )
+									? sanitize_key( $post['card_style'] ) : 'elevated',
 			// Allow limited CSS; strip script tags but permit valid CSS.
 			'custom_css'        => self::sanitise_custom_css( wp_strip_all_tags( $post['custom_css'] ?? '' ) ),
 		];
@@ -195,15 +212,34 @@ class Settings_Page {
 
 	/** @param array<string,mixed> $post */
 	private function sanitise_advanced( array $post ): array {
-		return [
+		$defaults = \FCC\Settings::defaults()['advanced'];
+
+		$hl_fields = [
+			'hl_high_protein', 'hl_low_fat', 'hl_low_calorie', 'hl_low_sugar',
+			'hl_high_fibre', 'hl_low_salt', 'hl_omega3_rich',
+			'hl_warn_high_salt', 'hl_warn_high_saturates', 'hl_warn_high_sugar',
+		];
+
+		$sanitised = [
 			'delete_data_on_uninstall' => ! empty( $post['delete_data_on_uninstall'] ),
 			'cache_enabled'            => ! empty( $post['cache_enabled'] ),
+			'cache_duration'           => max( 60, min( 86400, absint( $post['cache_duration'] ?? 3600 ) ) ),
+			'search_min_chars'         => max( 1, min( 5, absint( $post['search_min_chars'] ?? 2 ) ) ),
+			'bmr_formula'              => in_array( $post['bmr_formula'] ?? '', [ 'mifflin', 'harris_benedict', 'katch_mcardle' ], true )
+											? sanitize_key( $post['bmr_formula'] ) : 'mifflin',
+			'calorie_goal_adjustment'  => max( 100, min( 2000, absint( $post['calorie_goal_adjustment'] ?? 500 ) ) ),
 		];
+
+		foreach ( $hl_fields as $field ) {
+			$sanitised[ $field ] = max( 0, (float) ( $post[ $field ] ?? $defaults[ $field ] ?? 0 ) );
+		}
+
+		return $sanitised;
 	}
 
-	private function sanitise_hex_colour( string $colour ): string {
+	private function sanitise_hex_colour( string $colour, string $fallback = '#005EB8' ): string {
 		$colour = sanitize_hex_color( $colour );
-		return $colour ?: '#005EB8';
+		return $colour ?: $fallback;
 	}
 
 	private static function sanitise_custom_css( string $css ): string {

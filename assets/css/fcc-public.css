@@ -3171,3 +3171,19 @@ select.fcc-bmr-input {
 	color: #2D7A4F;
 	margin-left: auto;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT & CARD STYLE VARIANTS (Settings → Appearance)
+   ─────────────────────────────────────────────────────────────── */
+[data-fcc-layout="compact"] { max-width: 480px !important; }
+[data-fcc-layout="wide"]    { max-width: 960px !important; }
+
+[data-fcc-card-style="flat"] .fcc-section     { box-shadow: none !important; border: none !important; }
+[data-fcc-card-style="outlined"] .fcc-section { box-shadow: none !important; border: 1px solid var(--fcc-border, #e2e8f0) !important; }
+
+[data-fcc-animate="true"] .fcc-results-section { animation: fcc-fadeIn 0.3s ease-out; }
+@keyframes fcc-fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+

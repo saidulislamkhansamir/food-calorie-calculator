@@ -26,10 +26,14 @@ if ( 'system' !== $font ) {
 	$font_style = ' style="font-family:' . esc_attr( $font ) . ';"';
 }
 $has_bmr     = ! empty( $features['bmr_tdee'] );
-$has_compare = true; // Compare is always available.
+$has_compare = ! isset( $features['compare_foods'] ) || ! empty( $features['compare_foods'] );
 $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
+
+$layout_attr    = ' data-fcc-layout="' . esc_attr( $appearance['layout'] ?? 'standard' ) . '"';
+$card_attr      = ' data-fcc-card-style="' . esc_attr( $appearance['card_style'] ?? 'elevated' ) . '"';
+$animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-fcc-animate="true"' : '';
 ?>
-<div class="fcc-calculator" id="fcc-calculator" <?php echo $dark_mode_attr; // phpcs:ignore ?><?php echo $font_style; // phpcs:ignore ?> role="main" aria-label="<?php echo esc_attr( $title ); ?>">
+<div class="fcc-calculator" id="fcc-calculator" <?php echo $dark_mode_attr; // phpcs:ignore ?><?php echo $font_style; // phpcs:ignore ?><?php echo $layout_attr . $card_attr . $animate_attr; // phpcs:ignore ?> role="main" aria-label="<?php echo esc_attr( $title ); ?>">
 
 	<!-- ======================================================================
 	     Hero header
@@ -118,11 +122,14 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 						<ul id="fcc-search-results" class="fcc-results-dropdown" role="listbox" aria-label="<?php esc_attr_e( 'Search results', 'food-calorie-calculator' ); ?>"></ul>
 					</div>
 					<p class="fcc-search-hint"><?php esc_html_e( 'Type at least 2 characters to search from our UK foods database', 'food-calorie-calculator' ); ?></p>
+					<?php if ( ! isset( $features['popular_foods'] ) || ! empty( $features['popular_foods'] ) ) : ?>
 					<div id="fcc-popular-section" class="fcc-popular-section" hidden>
 						<p class="fcc-popular-label"><?php esc_html_e( 'Popular searches', 'food-calorie-calculator' ); ?></p>
 						<div id="fcc-popular-chips" class="fcc-popular-chips" aria-label="<?php esc_attr_e( 'Popular foods', 'food-calorie-calculator' ); ?>"></div>
 					</div>
+					<?php endif; ?>
 
+					<?php if ( ! isset( $features['food_request_form'] ) || ! empty( $features['food_request_form'] ) ) : ?>
 					<!-- Food request panel (shown when search returns no results) -->
 					<div id="fcc-request-panel" class="fcc-request-panel" hidden>
 						<div class="fcc-request-panel__head">
@@ -167,6 +174,7 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 						</div>
 					</div>
 				</div>
+				<?php endif; ?>
 			</section>
 
 			<!-- ============================================================
@@ -197,9 +205,9 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 								type="number"
 								id="fcc-quantity"
 								class="fcc-quantity-input"
-								value="100"
+								value="<?php echo absint( $general['default_quantity'] ?? 100 ); ?>"
 								min="1"
-								max="9999"
+								max="<?php echo absint( $general['max_quantity'] ?? 9999 ); ?>"
 								step="1"
 								aria-label="<?php esc_attr_e( 'Quantity', 'food-calorie-calculator' ); ?>"
 							>
@@ -247,8 +255,10 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 			<section class="fcc-section fcc-results-section" aria-label="<?php esc_attr_e( 'Nutrition results', 'food-calorie-calculator' ); ?>" hidden aria-live="polite">
 				<h3 class="fcc-section-title"><?php echo esc_html( $labels['results_title'] ?? __( 'Nutrition Information', 'food-calorie-calculator' ) ); ?></h3>
 
+				<?php if ( ! isset( $features['health_highlights'] ) || ! empty( $features['health_highlights'] ) ) : ?>
 				<!-- Health Highlights -->
 				<div class="fcc-health-highlights" hidden aria-label="<?php esc_attr_e( 'Health highlights', 'food-calorie-calculator' ); ?>"></div>
+				<?php endif; ?>
 
 				<!-- FSA Traffic Lights -->
 				<?php if ( ! empty( $features['fsa_traffic_lights'] ) ) : ?>

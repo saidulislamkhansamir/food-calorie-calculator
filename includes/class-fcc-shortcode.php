@@ -116,8 +116,9 @@ class Shortcode {
 		include FCC_PLUGIN_DIR . 'admin/partials/frontend-calculator.php';
 		$html = (string) ob_get_clean();
 
-		// Powered-by footer — hidden via CSS when hidePoweredBy is active.
-		$html .= '<div class="fcc-powered-by"><span>Powered by <a href="https://foodcaloriecalculator.co.uk" target="_blank" rel="noopener">Food Calorie Calculator</a></span></div>';
+		if ( ! isset( $features['powered_by_footer'] ) || ! empty( $features['powered_by_footer'] ) ) {
+			$html .= '<div class="fcc-powered-by"><span>Powered by <a href="https://foodcaloriecalculator.co.uk" target="_blank" rel="noopener">Food Calorie Calculator</a></span></div>';
+		}
 
 		// Below-calculator ad slot (outside the widget wrapper).
 		if ( ! empty( $ad_slot_below_calculator ) ) {
@@ -154,6 +155,7 @@ class Shortcode {
 		$appearance = $settings['appearance'] ?? [];
 		$general    = $settings['general'] ?? [];
 		$labels     = $settings['labels'] ?? [];
+		$advanced   = $settings['advanced'] ?? [];
 
 		$ver = FCC_VERSION;
 
@@ -203,9 +205,14 @@ class Shortcode {
 				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 				'features'   => $features,
 				'general'    => [
-					'defaultUnit'    => $general['default_unit']    ?? 'metric',
-					'decimalPlaces'  => absint( $general['decimal_places'] ?? 1 ),
-					'showNutrients'  => $general['show_nutrients']  ?? [],
+					'defaultUnit'       => $general['default_unit']    ?? 'metric',
+					'decimalPlaces'     => absint( $general['decimal_places'] ?? 1 ),
+					'showNutrients'     => $general['show_nutrients']  ?? [],
+					'defaultQuantity'   => absint( $general['default_quantity']    ?? 100 ),
+					'maxQuantity'       => absint( $general['max_quantity']        ?? 9999 ),
+					'searchResultLimit' => absint( $general['search_result_limit'] ?? 10 ),
+					'popularFoodsCount' => absint( $general['popular_foods_count'] ?? 8 ),
+					'searchDebounce'    => absint( $general['search_debounce']     ?? 280 ),
 					// UK Reference Intakes.
 					'ri' => [
 						'energy_kcal'    => (float) ( $general['ri_energy_kcal']    ?? 2000 ),
@@ -256,6 +263,32 @@ class Shortcode {
 					'lose'              => esc_html__( 'Lose weight', 'food-calorie-calculator' ),
 					'maintain'          => esc_html__( 'Maintain weight', 'food-calorie-calculator' ),
 					'gain'              => esc_html__( 'Gain weight', 'food-calorie-calculator' ),
+				],
+				'appearance'  => [
+					'chartProteinColour' => esc_attr( $appearance['chart_protein_colour'] ?? '#3b82f6' ),
+					'chartCarbsColour'   => esc_attr( $appearance['chart_carbs_colour']   ?? '#f59e0b' ),
+					'chartFatColour'     => esc_attr( $appearance['chart_fat_colour']     ?? '#ef4444' ),
+					'chartOtherColour'   => esc_attr( $appearance['chart_other_colour']   ?? '#94a3b8' ),
+					'layout'             => sanitize_key( $appearance['layout']           ?? 'standard' ),
+					'resultsAnimation'   => ! empty( $appearance['results_animation'] ?? true ),
+					'cardStyle'          => sanitize_key( $appearance['card_style']       ?? 'elevated' ),
+				],
+				'advanced'    => [
+					'healthThresholds' => [
+						'highProtein'       => (float) ( $advanced['hl_high_protein']        ?? 15 ),
+						'lowFat'            => (float) ( $advanced['hl_low_fat']             ?? 3 ),
+						'lowCalorie'        => (float) ( $advanced['hl_low_calorie']         ?? 100 ),
+						'lowSugar'          => (float) ( $advanced['hl_low_sugar']           ?? 5 ),
+						'highFibre'         => (float) ( $advanced['hl_high_fibre']          ?? 6 ),
+						'lowSalt'           => (float) ( $advanced['hl_low_salt']            ?? 0.3 ),
+						'omega3Rich'        => (float) ( $advanced['hl_omega3_rich']         ?? 500 ),
+						'warnHighSalt'      => (float) ( $advanced['hl_warn_high_salt']      ?? 1.5 ),
+						'warnHighSaturates' => (float) ( $advanced['hl_warn_high_saturates'] ?? 5 ),
+						'warnHighSugar'     => (float) ( $advanced['hl_warn_high_sugar']     ?? 22.5 ),
+					],
+					'bmrFormula'            => sanitize_key( $advanced['bmr_formula'] ?? 'mifflin' ),
+					'calorieGoalAdjustment' => absint( $advanced['calorie_goal_adjustment'] ?? 500 ),
+					'searchMinChars'        => absint( $advanced['search_min_chars'] ?? 2 ),
 				],
 				'wl'          => $wl_active ? $wl_active['wl_data'] : null,
 				'affiliates'  => \FCC\Admin\Affiliates::get_enabled_for_frontend(),
