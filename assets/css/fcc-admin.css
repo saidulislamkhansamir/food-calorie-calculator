@@ -605,7 +605,8 @@
 
 /* Highlighted card (currently being edited) */
 .fcc-cat-card--active {
-	box-shadow: 0 0 0 3px #f97316, 0 4px 14px rgba(249,115,22,.2);
+	box-shadow: 0 0 0 2.5px #2D7A4F, 0 6px 20px rgba(45,122,79,.18);
+	transform: translateY(-2px);
 }
 
 .fcc-cat-card__accent {
@@ -614,7 +615,7 @@
 	flex-shrink: 0;
 }
 
-.fcc-cat-card--active .fcc-cat-card__accent { height: 6px; background: #f97316; }
+.fcc-cat-card--active .fcc-cat-card__accent { height: 6px; background: #2D7A4F; }
 
 .fcc-cat-card__body { padding: 1rem; flex: 1; }
 
@@ -670,8 +671,9 @@
 
 .fcc-cat-card__footer {
 	display: flex;
-	border-top: 1px solid #f3f4f6;
+	border-top: 1px solid #eef0f2;
 	margin-top: auto;
+	background: #fafafa;
 }
 
 .fcc-cat-card__btn {
@@ -679,17 +681,20 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 0.3rem;
-	padding: 0.6rem 0.5rem;
+	gap: 0.35rem;
+	padding: 0.75rem 0.5rem;
 	font-size: 0.78rem;
 	font-weight: 600;
 	text-decoration: none;
+	background: transparent;
+	border: none;
+	cursor: pointer;
 	transition: background .15s, color .15s;
-	color: #4b5563;
+	color: #6b7280;
 }
 
-.fcc-cat-card__btn--edit:hover  { background: #f0f7f3; color: #2D7A4F; }
-.fcc-cat-card__btn--delete      { border-left: 1px solid #f3f4f6; }
+.fcc-cat-card__btn--edit:hover  { background: #ecf7f0; color: #2D7A4F; }
+.fcc-cat-card__btn--delete      { border-left: 1px solid #eef0f2; }
 .fcc-cat-card__btn--delete:hover { background: #fef2f2; color: #dc2626; }
 
 /* --------------------------------------------------------------------------
@@ -2979,11 +2984,6 @@
 #fcc-cats-region.fcc-loading {
 	opacity: 0.45;
 	pointer-events: none;
-}
-
-.fcc-cat-card--active {
-	outline: 2px solid #2D7A4F;
-	outline-offset: 2px;
 }
 
 /* --------------------------------------------------------------------------
