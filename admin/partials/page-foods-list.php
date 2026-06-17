@@ -47,13 +47,6 @@ global $wpdb;
 $total_all = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_foods" );
 
 $list_url = admin_url( 'admin.php?page=fcc-foods' );
-
-if ( ! function_exists( 'fcc_sort_url' ) ) {
-	function fcc_sort_url( string $col, string $current_col, string $current_order ): string {
-		$new_order = ( $col === $current_col && 'ASC' === $current_order ) ? 'desc' : 'asc';
-		return add_query_arg( [ 'orderby' => $col, 'order' => $new_order ], admin_url( 'admin.php?page=fcc-foods' ) );
-	}
-}
 ?>
 <div class="wrap fcc-admin-wrap fcc-foods-page">
 
@@ -143,194 +136,18 @@ if ( ! function_exists( 'fcc_sort_url' ) ) {
 
 	</div><!-- .fcc-foods-toolbar -->
 
-	<!-- Result count + pagination (top) -->
-	<?php if ( $total > 0 ) : ?>
-	<div class="fcc-foods-tablenav fcc-foods-tablenav--top">
-		<span class="fcc-foods-count">
-			<?php printf(
-				/* translators: %1$d = from, %2$d = to, %3$d = total */
-				esc_html__( 'Showing %1$d–%2$d of %3$d foods', 'food-calorie-calculator' ),
-				( ( $paged - 1 ) * $per_page ) + 1,
-				min( $paged * $per_page, $total ),
-				$total
-			); ?>
-		</span>
-		<?php if ( $total_pages > 1 ) : ?>
-		<div class="fcc-foods-pagination">
-			<?php for ( $p = 1; $p <= $total_pages; $p++ ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( 'paged', $p, $list_url ) ); ?>"
-					class="fcc-foods-page-btn <?php echo $p === $paged ? 'fcc-foods-page-btn--active' : ''; ?>">
-					<?php echo esc_html( $p ); ?>
-				</a>
-			<?php endfor; ?>
-		</div>
-		<?php endif; ?>
-	</div>
-	<?php endif; ?>
-
 	<!-- ======================================================================
-	     Bulk form wrapping the table
+	     AJAX-refreshable table region
 	     ====================================================================== -->
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
-		id="fcc-bulk-form">
-		<input type="hidden" name="action" value="fcc_bulk_foods">
-		<?php wp_nonce_field( 'fcc_bulk_foods' ); ?>
+	<div id="fcc-foods-list"
+		data-nonce="<?php echo esc_attr( wp_create_nonce( 'fcc_foods_page' ) ); ?>"
+		data-search="<?php echo esc_attr( $search ); ?>"
+		data-cat="<?php echo esc_attr( $cat_filter ); ?>"
+		data-orderby="<?php echo esc_attr( $orderby ); ?>"
+		data-order="<?php echo esc_attr( strtolower( $order ) ); ?>">
 
-		<div class="fcc-foods-table-wrap">
-			<table class="fcc-foods-table">
-				<thead>
-					<tr>
-						<th class="fcc-foods-th fcc-foods-th--check">
-							<input type="checkbox" id="fcc-select-all"
-								aria-label="<?php esc_attr_e( 'Select all', 'food-calorie-calculator' ); ?>">
-						</th>
-						<th class="fcc-foods-th fcc-foods-th--name">
-							<a href="<?php echo esc_url( fcc_sort_url( 'name', $orderby, $order ) ); ?>"
-								class="fcc-foods-sort <?php echo 'name' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
-								<?php esc_html_e( 'Name', 'food-calorie-calculator' ); ?>
-								<span class="fcc-foods-sort__arrow" aria-hidden="true">
-									<?php echo 'name' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
-								</span>
-							</a>
-						</th>
-						<th class="fcc-foods-th"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-foods-th fcc-foods-th--num">
-							<a href="<?php echo esc_url( fcc_sort_url( 'energy_kcal', $orderby, $order ) ); ?>"
-								class="fcc-foods-sort <?php echo 'energy_kcal' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
-								<?php esc_html_e( 'kcal', 'food-calorie-calculator' ); ?>
-								<span class="fcc-foods-sort__arrow" aria-hidden="true">
-									<?php echo 'energy_kcal' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
-								</span>
-							</a>
-						</th>
-						<th class="fcc-foods-th fcc-foods-th--num"><?php esc_html_e( 'Protein', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-foods-th fcc-foods-th--num"><?php esc_html_e( 'Carbs', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-foods-th fcc-foods-th--num"><?php esc_html_e( 'Fat', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-foods-th fcc-foods-th--badge">Ω-3</th>
-						<th class="fcc-foods-th fcc-foods-th--badge"><?php esc_html_e( 'Caff.', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-foods-th fcc-foods-th--actions"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if ( empty( $foods ) ) : ?>
-						<tr>
-							<td colspan="10" class="fcc-foods-empty-row">
-								<div class="fcc-foods-empty">
-									<span class="fcc-foods-empty__icon" aria-hidden="true">🔍</span>
-									<p><?php esc_html_e( 'No foods found. Try a different search or filter.', 'food-calorie-calculator' ); ?></p>
-								</div>
-							</td>
-						</tr>
-					<?php else : ?>
-						<?php foreach ( $foods as $food ) :
-							$edit_url   = esc_url( add_query_arg( [ 'action' => 'edit', 'food_id' => $food['id'] ], $list_url ) );
-							$delete_url = esc_url( wp_nonce_url(
-								add_query_arg( [ 'action' => 'fcc_delete_food', 'food_id' => $food['id'] ], admin_url( 'admin-post.php' ) ),
-								'fcc_delete_food_' . $food['id']
-							) );
-						?>
-							<tr class="fcc-foods-row">
-								<td class="fcc-foods-td fcc-foods-td--check">
-									<input type="checkbox" name="food_ids[]" value="<?php echo absint( $food['id'] ); ?>"
-										aria-label="<?php echo esc_attr( $food['name'] ); ?>">
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--name">
-									<a href="<?php echo $edit_url; ?>" class="fcc-foods-name-link">
-										<?php echo esc_html( $food['name'] ); ?>
-									</a>
-								</td>
-								<td class="fcc-foods-td">
-									<?php if ( isset( $cat_map[ (int) $food['category_id'] ] ) ) : ?>
-										<span class="fcc-foods-cat-badge"><?php echo $cat_map[ (int) $food['category_id'] ]; ?></span>
-									<?php else : ?>
-										<span class="fcc-foods-null">—</span>
-									<?php endif; ?>
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--num">
-									<span class="fcc-foods-kcal"><?php echo esc_html( number_format( (float) $food['energy_kcal'], 0 ) ); ?></span>
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--num fcc-foods-td--protein">
-									<?php echo esc_html( number_format( (float) $food['protein_g'], 1 ) ); ?>g
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--num fcc-foods-td--carbs">
-									<?php echo esc_html( number_format( (float) $food['carbohydrate_g'], 1 ) ); ?>g
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--num fcc-foods-td--fat">
-									<?php echo esc_html( number_format( (float) $food['fat_g'], 1 ) ); ?>g
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--badge">
-									<?php if ( null !== $food['omega3_total_mg'] ) : ?>
-										<span class="fcc-foods-dot fcc-foods-dot--green"
-											title="<?php echo esc_attr( number_format( (float) $food['omega3_total_mg'], 0 ) . ' mg' ); ?>">✓</span>
-									<?php else : ?>
-										<span class="fcc-foods-null">—</span>
-									<?php endif; ?>
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--badge">
-									<?php if ( null !== $food['caffeine_mg'] ) : ?>
-										<span class="fcc-foods-dot fcc-foods-dot--amber"
-											title="<?php echo esc_attr( number_format( (float) $food['caffeine_mg'], 0 ) . ' mg' ); ?>">✓</span>
-									<?php else : ?>
-										<span class="fcc-foods-null">—</span>
-									<?php endif; ?>
-								</td>
-								<td class="fcc-foods-td fcc-foods-td--actions">
-									<div class="fcc-foods-action-group">
-										<a href="<?php echo $edit_url; ?>" class="fcc-foods-action-btn fcc-foods-action-btn--edit">
-											<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-											<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
-										</a>
-										<a href="<?php echo $delete_url; ?>"
-											class="fcc-foods-action-btn fcc-foods-action-btn--delete fcc-confirm-delete"
-											data-confirm="<?php esc_attr_e( 'Delete this food permanently?', 'food-calorie-calculator' ); ?>">
-											<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-											<?php esc_html_e( 'Delete', 'food-calorie-calculator' ); ?>
-										</a>
-									</div>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-					<?php endif; ?>
-				</tbody>
-			</table>
-		</div><!-- .fcc-foods-table-wrap -->
+		<?php include FCC_PLUGIN_DIR . 'admin/partials/page-foods-table.php'; ?>
 
-	</form><!-- #fcc-bulk-form -->
-
-	<!-- Bottom pagination -->
-	<?php if ( $total_pages > 1 ) : ?>
-	<div class="fcc-foods-tablenav fcc-foods-tablenav--bottom">
-		<span class="fcc-foods-count">
-			<?php printf(
-				/* translators: %d = total */
-				esc_html__( '%d foods total', 'food-calorie-calculator' ),
-				$total
-			); ?>
-		</span>
-		<div class="fcc-foods-pagination">
-			<?php for ( $p = 1; $p <= $total_pages; $p++ ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( 'paged', $p, $list_url ) ); ?>"
-					class="fcc-foods-page-btn <?php echo $p === $paged ? 'fcc-foods-page-btn--active' : ''; ?>">
-					<?php echo esc_html( $p ); ?>
-				</a>
-			<?php endfor; ?>
-		</div>
-	</div>
-	<?php endif; ?>
+	</div><!-- #fcc-foods-list -->
 
 </div><!-- .wrap -->
-
-<script>
-( function () {
-	'use strict';
-
-	const selectAll = document.getElementById( 'fcc-select-all' );
-	if ( selectAll ) {
-		selectAll.addEventListener( 'change', function () {
-			document.querySelectorAll( 'input[name="food_ids[]"]' ).forEach( function ( cb ) {
-				cb.checked = selectAll.checked;
-			} );
-		} );
-	}
-} )();
-</script>

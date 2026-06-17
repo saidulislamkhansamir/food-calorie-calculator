@@ -62,6 +62,43 @@
 	} );
 
 	// -------------------------------------------------------------------------
+	// AJAX pagination — Foods list table
+	// -------------------------------------------------------------------------
+	$( document ).on( 'click', '#fcc-foods-list .fcc-foods-page-btn[data-page]', function ( e ) {
+		e.preventDefault();
+
+		const $list  = $( '#fcc-foods-list' );
+		const page   = parseInt( $( this ).data( 'page' ), 10 );
+		const nonce  = $list.data( 'nonce' );
+		const search = $list.data( 'search' );
+		const cat    = $list.data( 'cat' );
+		const orderby = $list.data( 'orderby' );
+		const order   = $list.data( 'order' );
+
+		$list.addClass( 'fcc-loading' );
+
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_foods_page',
+			_ajax_nonce: nonce,
+			paged:       page,
+			s:           search,
+			category_id: cat,
+			orderby:     orderby,
+			order:       order,
+		}, function ( response ) {
+			if ( response.success ) {
+				$list.html( response.data.html );
+				// Sync data attribute so the next paginate click uses correct page.
+				// (search/cat/orderby stay the same — user didn't touch the toolbar)
+				// Scroll table into view smoothly.
+				$list[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+			}
+		} ).fail( function () {
+			$list.removeClass( 'fcc-loading' );
+		} );
+	} );
+
+	// -------------------------------------------------------------------------
 	// Copy shortcode to clipboard
 	// -------------------------------------------------------------------------
 	$( document ).on( 'click', '.fcc-copy-shortcode', function () {

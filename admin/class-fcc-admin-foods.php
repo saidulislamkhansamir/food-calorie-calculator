@@ -19,6 +19,7 @@ class Foods {
 		$loader->add_action( 'admin_post_fcc_save_food',   $this, 'handle_save_food' );
 		$loader->add_action( 'admin_post_fcc_delete_food', $this, 'handle_delete_food' );
 		$loader->add_action( 'admin_post_fcc_bulk_foods',  $this, 'handle_bulk_foods' );
+		$loader->add_action( 'wp_ajax_fcc_foods_page',     $this, 'ajax_foods_page' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -108,6 +109,50 @@ class Foods {
 		}
 
 		$this->redirect_with_notice( 'fcc-foods', 'info', __( 'No action taken.', 'food-calorie-calculator' ) );
+	}
+
+	// -------------------------------------------------------------------------
+	// AJAX: paginate foods table without a full page reload.
+	// -------------------------------------------------------------------------
+
+	public function ajax_foods_page(): void {
+		check_ajax_referer( 'fcc_foods_page' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Permission denied', 403 );
+		}
+
+		$search     = isset( $_POST['s'] )           ? sanitize_text_field( wp_unslash( $_POST['s'] ) ) : '';
+		$cat_filter = isset( $_POST['category_id'] ) ? absint( $_POST['category_id'] )                  : 0;
+		$orderby    = isset( $_POST['orderby'] )     ? sanitize_key( $_POST['orderby'] )                : 'name';
+		$order      = isset( $_POST['order'] ) && 'desc' === strtolower( sanitize_key( $_POST['order'] ) ) ? 'DESC' : 'ASC';
+		$paged      = isset( $_POST['paged'] )       ? max( 1, absint( $_POST['paged'] ) )              : 1;
+		$per_page   = 20;
+
+		$result = \FCC\Database::get_foods( [
+			'search'      => $search,
+			'category_id' => $cat_filter,
+			'orderby'     => $orderby,
+			'order'       => $order,
+			'per_page'    => $per_page,
+			'page'        => $paged,
+		] );
+
+		$total       = $result['total'];
+		$foods       = $result['rows'];
+		$total_pages = (int) ceil( $total / $per_page );
+		$list_url    = admin_url( 'admin.php?page=fcc-foods' );
+
+		$categories = \FCC\Database::get_all_categories();
+		$cat_map    = [];
+		foreach ( $categories as $cat ) {
+			$cat_map[ (int) $cat['id'] ] = esc_html( $cat['name'] );
+		}
+
+		ob_start();
+		include FCC_PLUGIN_DIR . 'admin/partials/page-foods-table.php';
+		$html = ob_get_clean();
+
+		wp_send_json_success( [ 'html' => $html, 'paged' => $paged ] );
 	}
 
 	// -------------------------------------------------------------------------

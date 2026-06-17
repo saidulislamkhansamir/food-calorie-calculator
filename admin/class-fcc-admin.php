@@ -167,9 +167,10 @@ class Admin {
 			'fcc-admin',
 			'fccAdmin',
 			[
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'fcc_admin_nonce' ),
-				'i18n'    => [
+				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+				'nonce'      => wp_create_nonce( 'fcc_admin_nonce' ),
+				'foodsNonce' => wp_create_nonce( 'fcc_foods_page' ),
+				'i18n'       => [
 					'confirmDelete'     => __( 'Are you sure you want to delete this food?', 'food-calorie-calculator' ),
 					'confirmBulkDelete' => __( 'Are you sure you want to delete the selected foods?', 'food-calorie-calculator' ),
 					'selectItems'       => __( 'Please select at least one item.', 'food-calorie-calculator' ),
