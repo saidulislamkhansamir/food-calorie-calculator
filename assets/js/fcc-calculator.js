@@ -860,6 +860,15 @@
 		if ( state.food.protein_g != null ) {
 			url.searchParams.set( 'fcc_protein', Number( state.food.protein_g ).toFixed( 1 ) );
 		}
+		if ( state.food.omega3_total_mg != null ) {
+			url.searchParams.set( 'fcc_o3',  Math.round( state.food.omega3_total_mg ) );
+		}
+		if ( state.food.omega3_epa_mg != null ) {
+			url.searchParams.set( 'fcc_epa', Math.round( state.food.omega3_epa_mg ) );
+		}
+		if ( state.food.omega3_dha_mg != null ) {
+			url.searchParams.set( 'fcc_dha', Math.round( state.food.omega3_dha_mg ) );
+		}
 		url.searchParams.set( 'fcc_qty',  state.quantity );
 		url.searchParams.set( 'fcc_unit', state.unit );
 		return url.toString();
@@ -911,6 +920,14 @@
 		var unit = p.get( 'fcc_unit' ) || 'g';
 
 		apiFetch( '/foods/' + encodeURIComponent( foodId ) ).then( function ( food ) {
+			// Patch omega-3 values from URL params if the DB record lacks them.
+			var o3  = p.get( 'fcc_o3'  );
+			var epa = p.get( 'fcc_epa' );
+			var dha = p.get( 'fcc_dha' );
+			if ( food.omega3_total_mg == null && o3  != null ) food.omega3_total_mg = parseFloat( o3  );
+			if ( food.omega3_epa_mg   == null && epa != null ) food.omega3_epa_mg   = parseFloat( epa );
+			if ( food.omega3_dha_mg   == null && dha != null ) food.omega3_dha_mg   = parseFloat( dha );
+
 			selectFood( food );
 			state.quantity = qty;
 			state.unit     = unit;
