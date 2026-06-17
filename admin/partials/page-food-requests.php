@@ -5,197 +5,122 @@
  * @package FCC
  */
 
-use FCC\Database;
-
 defined( 'ABSPATH' ) || exit;
 
-$filter    = sanitize_key( $_GET['status'] ?? 'all' );
-$allowed   = [ 'all', 'pending', 'done', 'dismissed' ];
-$filter    = in_array( $filter, $allowed, true ) ? $filter : 'all';
-$requests  = Database::get_food_requests( 'all' === $filter ? '' : $filter );
-$pending   = Database::count_pending_requests();
-$total     = count( Database::get_food_requests() );
+$allowed_statuses = [ '', 'pending', 'done', 'dismissed' ];
+$status_filter    = sanitize_key( $_GET['status'] ?? '' );
+if ( ! in_array( $status_filter, $allowed_statuses, true ) ) {
+	$status_filter = '';
+}
+$search   = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
+$paged    = max( 1, absint( $_GET['paged'] ?? 1 ) );
+$per_page = 20;
 
-$palette = [
-	'primary' => '#2D7A4F',
-	'tangerine' => '#F47B20',
-	'lime'    => '#6DBF67',
-	'bg'      => '#F8FAF5',
-	'dark'    => '#1E2A1E',
-];
+// Hero stats.
+$total_all     = \FCC\Database::count_food_requests();
+$total_pending = \FCC\Database::count_food_requests( [ 'status' => 'pending' ] );
+$total_done    = \FCC\Database::count_food_requests( [ 'status' => 'done' ] );
+$total_optin   = \FCC\Database::count_opted_in_requests();
+
+// Initial table data.
+$total       = \FCC\Database::count_food_requests( [ 'status' => $status_filter, 'search' => $search ] );
+$total_pages = (int) ceil( $total / $per_page );
+$requests    = \FCC\Database::get_food_requests( [
+	'status'   => $status_filter,
+	'search'   => $search,
+	'per_page' => $per_page,
+	'page'     => $paged,
+] );
+
+$nonce = wp_create_nonce( 'fcc_ajax_reqs' );
 ?>
-<div class="wrap fcc-admin-wrap">
+<div class="wrap fcc-admin-wrap fcc-reqs-page">
 
-	<!-- Page header -->
-	<div class="fcc-page-header">
-		<div class="fcc-page-header__title">
-			<h1><?php esc_html_e( 'Food Requests', 'food-calorie-calculator' ); ?></h1>
-			<p class="fcc-page-header__sub"><?php esc_html_e( 'Foods users have requested to be added to the database.', 'food-calorie-calculator' ); ?></p>
-		</div>
-		<div class="fcc-page-header__meta">
-			<?php if ( $pending > 0 ) : ?>
-				<span class="fcc-reqs-badge fcc-reqs-badge--pending"><?php echo esc_html( $pending ); ?> <?php esc_html_e( 'pending', 'food-calorie-calculator' ); ?></span>
-			<?php else : ?>
-				<span class="fcc-reqs-badge fcc-reqs-badge--clear"><?php esc_html_e( 'All clear', 'food-calorie-calculator' ); ?></span>
-			<?php endif; ?>
-		</div>
-	</div>
+	<h1 class="screen-reader-text"><?php esc_html_e( 'Food Requests', 'food-calorie-calculator' ); ?></h1>
 
-	<!-- Filter tabs -->
-	<div class="fcc-reqs-filters">
-		<?php
-		$tabs = [
-			'all'       => __( 'All', 'food-calorie-calculator' ),
-			'pending'   => __( 'Pending', 'food-calorie-calculator' ),
-			'done'      => __( 'Done', 'food-calorie-calculator' ),
-			'dismissed' => __( 'Dismissed', 'food-calorie-calculator' ),
-		];
-		foreach ( $tabs as $key => $label ) :
-			$active = $filter === $key ? ' fcc-reqs-tab--active' : '';
-			$url    = admin_url( 'admin.php?page=fcc-food-requests&status=' . $key );
-		?>
-			<a href="<?php echo esc_url( $url ); ?>" class="fcc-reqs-tab<?php echo esc_attr( $active ); ?>"><?php echo esc_html( $label ); ?></a>
-		<?php endforeach; ?>
-	</div>
+	<!-- ======================================================================
+	     Hero header card
+	     ====================================================================== -->
+	<div class="fcc-foods-hero">
+		<div class="fcc-foods-hero__inner">
 
-	<!-- Requests table -->
-	<div class="fcc-card fcc-reqs-card">
-		<?php if ( empty( $requests ) ) : ?>
-			<div class="fcc-reqs-empty">
-				<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="<?php echo esc_attr( $palette['primary'] ); ?>" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-				<p><?php esc_html_e( 'No requests found.', 'food-calorie-calculator' ); ?></p>
+			<div class="fcc-foods-hero__content">
+				<div class="fcc-foods-hero__icon" aria-hidden="true">📥</div>
+				<div>
+					<div class="fcc-foods-hero__title"><?php esc_html_e( 'Food Requests', 'food-calorie-calculator' ); ?></div>
+					<p class="fcc-foods-hero__sub">
+						<?php esc_html_e( 'Foods users have requested to be added to the database. Review and action each request.', 'food-calorie-calculator' ); ?>
+					</p>
+				</div>
 			</div>
-		<?php else : ?>
-			<table class="fcc-reqs-table">
-				<thead>
-					<tr>
-						<th class="fcc-reqs-th--name"><?php esc_html_e( 'Food Name', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-reqs-th--note"><?php esc_html_e( 'Note', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-reqs-th--email"><?php esc_html_e( 'Email', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-reqs-th--optin"><?php esc_html_e( 'Newsletter', 'food-calorie-calculator' ); ?></th>
-					<th class="fcc-reqs-th--status"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-reqs-th--date"><?php esc_html_e( 'Date', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-reqs-th--actions"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
-					</tr>
-				</thead>
-				<tbody id="fcc-reqs-tbody">
-					<?php foreach ( $requests as $req ) :
-						$is_pending = 'pending' === $req['status'];
-					?>
-					<tr class="fcc-reqs-row<?php echo $is_pending ? ' fcc-reqs-row--pending' : ''; ?>" id="fcc-req-row-<?php echo (int) $req['id']; ?>">
-						<td class="fcc-reqs-td--name">
-							<strong><?php echo esc_html( $req['food_name'] ); ?></strong>
-						</td>
-						<td class="fcc-reqs-td--note">
-							<?php echo esc_html( $req['note'] ?: '—' ); ?>
-						</td>
-						<td class="fcc-reqs-td--email">
-							<?php if ( ! empty( $req['requester_email'] ) ) : ?>
-								<a href="mailto:<?php echo esc_attr( $req['requester_email'] ); ?>"><?php echo esc_html( $req['requester_email'] ); ?></a>
-							<?php else : ?>
-								<span class="fcc-reqs-muted">—</span>
-							<?php endif; ?>
-						</td>
-						<td class="fcc-reqs-td--optin">
-							<?php if ( ! empty( $req['marketing_optin'] ) ) : ?>
-								<span class="fcc-reqs-optin-yes" title="<?php esc_attr_e( 'Opted in', 'food-calorie-calculator' ); ?>">&#10003;</span>
-							<?php else : ?>
-								<span class="fcc-reqs-muted">—</span>
-							<?php endif; ?>
-						</td>
-						<td class="fcc-reqs-td--status">
-							<?php
-							$status_map = [
-								'pending'   => [ 'label' => __( 'Pending', 'food-calorie-calculator' ),   'cls' => 'fcc-reqs-status--pending' ],
-								'done'      => [ 'label' => __( 'Done', 'food-calorie-calculator' ),      'cls' => 'fcc-reqs-status--done' ],
-								'dismissed' => [ 'label' => __( 'Dismissed', 'food-calorie-calculator' ), 'cls' => 'fcc-reqs-status--dismissed' ],
-							];
-							$s = $status_map[ $req['status'] ] ?? $status_map['pending'];
-							?>
-							<span class="fcc-reqs-status <?php echo esc_attr( $s['cls'] ); ?>"><?php echo esc_html( $s['label'] ); ?></span>
-						</td>
-						<td class="fcc-reqs-td--date">
-							<?php echo esc_html( date_i18n( 'd M Y', strtotime( $req['created_at'] ) ) ); ?>
-						</td>
-						<td class="fcc-reqs-td--actions">
-							<div class="fcc-reqs-actions">
-								<?php if ( $is_pending ) : ?>
-									<button type="button"
-										class="fcc-reqs-btn fcc-reqs-btn--done"
-										data-action="done"
-										data-id="<?php echo (int) $req['id']; ?>"
-										title="<?php esc_attr_e( 'Mark as done', 'food-calorie-calculator' ); ?>">
-										<?php esc_html_e( 'Done', 'food-calorie-calculator' ); ?>
-									</button>
-									<button type="button"
-										class="fcc-reqs-btn fcc-reqs-btn--dismiss"
-										data-action="dismiss"
-										data-id="<?php echo (int) $req['id']; ?>"
-										title="<?php esc_attr_e( 'Dismiss', 'food-calorie-calculator' ); ?>">
-										<?php esc_html_e( 'Dismiss', 'food-calorie-calculator' ); ?>
-									</button>
-								<?php endif; ?>
-								<button type="button"
-									class="fcc-reqs-btn fcc-reqs-btn--delete"
-									data-action="delete"
-									data-id="<?php echo (int) $req['id']; ?>"
-									title="<?php esc_attr_e( 'Delete', 'food-calorie-calculator' ); ?>">
-									<?php esc_html_e( 'Delete', 'food-calorie-calculator' ); ?>
-								</button>
-							</div>
-						</td>
-					</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		<?php endif; ?>
-	</div>
 
-</div>
+			<div class="fcc-foods-hero__stats">
+				<div class="fcc-foods-hero-stat">
+					<span class="fcc-foods-hero-stat__value"><?php echo (int) $total_all; ?></span>
+					<span class="fcc-foods-hero-stat__label"><?php esc_html_e( 'Total', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-foods-hero-stat">
+					<span class="fcc-foods-hero-stat__value fcc-reqs-stat--pending"><?php echo (int) $total_pending; ?></span>
+					<span class="fcc-foods-hero-stat__label"><?php esc_html_e( 'Pending', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-foods-hero-stat">
+					<span class="fcc-foods-hero-stat__value fcc-reqs-stat--optin"><?php echo (int) $total_optin; ?></span>
+					<span class="fcc-foods-hero-stat__label"><?php esc_html_e( 'Newsletter', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-foods-hero-stat">
+					<span class="fcc-foods-hero-stat__value"><?php echo (int) $total_done; ?></span>
+					<span class="fcc-foods-hero-stat__label"><?php esc_html_e( 'Done', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
 
-<script>
-( function ( $ ) {
-	'use strict';
+		</div>
+	</div><!-- .fcc-foods-hero -->
 
-	$( document ).on( 'click', '.fcc-reqs-btn', function () {
-		const $btn    = $( this );
-		const action  = $btn.data( 'action' );
-		const id      = $btn.data( 'id' );
-		const $row    = $( '#fcc-req-row-' + id );
+	<!-- ======================================================================
+	     Toolbar: search + filter tabs
+	     ====================================================================== -->
+	<div class="fcc-reqs-toolbar">
 
-		if ( action === 'delete' ) {
-			if ( ! window.confirm( fccAdmin.i18n.confirmDelete ) ) return;
-		}
+		<div class="fcc-foods-searchbox fcc-reqs-searchbox">
+			<svg class="fcc-foods-searchbox__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+			</svg>
+			<input type="search" id="fcc-reqs-search"
+				value="<?php echo esc_attr( $search ); ?>"
+				placeholder="<?php esc_attr_e( 'Search by food name or email…', 'food-calorie-calculator' ); ?>"
+				class="fcc-foods-searchbox__input">
+		</div>
 
-		const ajaxAction = {
-			done:    'fcc_ajax_mark_request_done',
-			dismiss: 'fcc_ajax_dismiss_request',
-			delete:  'fcc_ajax_delete_request',
-		}[ action ];
+		<div class="fcc-reqs-tabs">
+			<?php
+			$tabs = [
+				''          => __( 'All', 'food-calorie-calculator' ),
+				'pending'   => __( 'Pending', 'food-calorie-calculator' ),
+				'done'      => __( 'Done', 'food-calorie-calculator' ),
+				'dismissed' => __( 'Dismissed', 'food-calorie-calculator' ),
+			];
+			foreach ( $tabs as $key => $label ) :
+				$active = $status_filter === $key ? ' fcc-reqs-tab--active' : '';
+			?>
+				<button type="button"
+					class="fcc-reqs-tab fcc-reqs-tab-btn<?php echo esc_attr( $active ); ?>"
+					data-status="<?php echo esc_attr( $key ); ?>">
+					<?php echo esc_html( $label ); ?>
+				</button>
+			<?php endforeach; ?>
+		</div>
 
-		if ( ! ajaxAction ) return;
+	</div><!-- .fcc-reqs-toolbar -->
 
-		$btn.prop( 'disabled', true );
+	<!-- ======================================================================
+	     AJAX region — table + pagination
+	     ====================================================================== -->
+	<div id="fcc-reqs-list"
+		data-nonce="<?php echo esc_attr( $nonce ); ?>"
+		data-status="<?php echo esc_attr( $status_filter ); ?>"
+		data-search="<?php echo esc_attr( $search ); ?>"
+		data-paged="<?php echo (int) $paged; ?>">
+		<?php include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests-table.php'; ?>
+	</div><!-- #fcc-reqs-list -->
 
-		$.post( fccAdmin.ajaxUrl, {
-			action:      ajaxAction,
-			request_id:  id,
-			_ajax_nonce: fccAdmin.reqsNonce,
-		}, function ( response ) {
-			if ( response.success ) {
-				if ( action === 'delete' ) {
-					$row.fadeOut( 250, function () { $row.remove(); } );
-				} else {
-					// Reload to reflect new status + badge count.
-					window.location.reload();
-				}
-			} else {
-				$btn.prop( 'disabled', false );
-				alert( ( response.data && response.data.message ) || fccAdmin.i18n.error );
-			}
-		} ).fail( function () {
-			$btn.prop( 'disabled', false );
-		} );
-	} );
-}( window.jQuery ) );
-</script>
+</div><!-- .wrap -->

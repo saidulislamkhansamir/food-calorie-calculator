@@ -595,20 +595,76 @@ class Database {
 	}
 
 	/**
+	 * Get food requests with optional filtering, search and pagination.
+	 *
+	 * @param array{status?:string,search?:string,per_page?:int,page?:int} $args
 	 * @return array<int,array<string,mixed>>
 	 */
-	public static function get_food_requests( string $status = '' ): array {
+	public static function get_food_requests( array $args = [] ): array {
 		global $wpdb;
 		$table = self::requests_table();
-		if ( $status ) {
+
+		$args = wp_parse_args( $args, [
+			'status'   => '',
+			'search'   => '',
+			'per_page' => 20,
+			'page'     => 1,
+		] );
+
+		[ $where, $vals ] = self::reqs_where( $args );
+		$offset = ( max( 1, (int) $args['page'] ) - 1 ) * (int) $args['per_page'];
+
+		$vals[] = (int) $args['per_page'];
+		$vals[] = $offset;
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare( "SELECT * FROM {$table}{$where} ORDER BY created_at DESC LIMIT %d OFFSET %d", $vals ),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Count food requests with the same filtering as get_food_requests().
+	 *
+	 * @param array{status?:string,search?:string} $args
+	 */
+	public static function count_food_requests( array $args = [] ): int {
+		global $wpdb;
+		$table = self::requests_table();
+		[ $where, $vals ] = self::reqs_where( $args );
+		if ( $vals ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			return $wpdb->get_results(
-				$wpdb->prepare( "SELECT * FROM {$table} WHERE status = %s ORDER BY created_at DESC", $status ),
-				ARRAY_A
-			) ?: [];
+			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table}{$where}", $vals ) );
 		}
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		return $wpdb->get_results( "SELECT * FROM {$table} ORDER BY created_at DESC", ARRAY_A ) ?: [];
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
+	}
+
+	/** @return array{0:string,1:array<int,mixed>} */
+	private static function reqs_where( array $args ): array {
+		$parts = [];
+		$vals  = [];
+		if ( ! empty( $args['status'] ) ) {
+			$parts[] = 'status = %s';
+			$vals[]  = $args['status'];
+		}
+		if ( ! empty( $args['search'] ) ) {
+			global $wpdb;
+			$like    = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$parts[] = '(food_name LIKE %s OR requester_email LIKE %s)';
+			$vals[]  = $like;
+			$vals[]  = $like;
+		}
+		$where = $parts ? ' WHERE ' . implode( ' AND ', $parts ) : '';
+		return [ $where, $vals ];
+	}
+
+	public static function count_opted_in_requests(): int {
+		global $wpdb;
+		$table = self::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE marketing_optin = 1 AND requester_email != ''" );
 	}
 
 	public static function update_request_status( int $id, string $status ): void {

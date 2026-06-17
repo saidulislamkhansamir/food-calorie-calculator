@@ -394,6 +394,99 @@
 	}
 
 	// -------------------------------------------------------------------------
+	// Food Requests page — AJAX
+	// -------------------------------------------------------------------------
+	let reqsSearchTimer;
+
+	function loadReqsPage( page ) {
+		const $list = $( '#fcc-reqs-list' );
+		if ( ! $list.length ) return;
+		const nonce  = $list.data( 'nonce' );
+		const status = $list.data( 'status' ) || '';
+		const search = $list.data( 'search' ) || '';
+		$list.data( 'paged', page ).addClass( 'fcc-loading' );
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_reqs_page',
+			_ajax_nonce: nonce,
+			paged:       page,
+			status:      status,
+			s:           search,
+		}, function ( response ) {
+			$list.removeClass( 'fcc-loading' );
+			if ( response.success ) {
+				$list.html( response.data.html );
+				$list[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+			}
+		} ).fail( function () {
+			$list.removeClass( 'fcc-loading' );
+		} );
+	}
+
+	// Filter tabs.
+	$( document ).on( 'click', '.fcc-reqs-tab-btn', function () {
+		const $btn   = $( this );
+		const status = $btn.data( 'status' ) !== undefined ? String( $btn.data( 'status' ) ) : '';
+		$( '#fcc-reqs-list' ).data( 'status', status );
+		$( '.fcc-reqs-tab-btn' ).removeClass( 'fcc-reqs-tab--active' );
+		$btn.addClass( 'fcc-reqs-tab--active' );
+		loadReqsPage( 1 );
+	} );
+
+	// Search box — debounced.
+	$( document ).on( 'input', '#fcc-reqs-search', function () {
+		clearTimeout( reqsSearchTimer );
+		const val = $( this ).val();
+		reqsSearchTimer = setTimeout( function () {
+			$( '#fcc-reqs-list' ).data( 'search', val );
+			loadReqsPage( 1 );
+		}, 350 );
+	} );
+
+	// Pagination inside the AJAX region.
+	$( document ).on( 'click', '#fcc-reqs-list .fcc-reqs-page-btn[data-page]', function ( e ) {
+		e.preventDefault();
+		loadReqsPage( parseInt( $( this ).data( 'page' ), 10 ) );
+	} );
+
+	// Action buttons: Done / Dismiss / Delete.
+	$( document ).on( 'click', '#fcc-reqs-list .fcc-reqs-btn', function () {
+		const $btn   = $( this );
+		const action = $btn.data( 'action' );
+		const id     = $btn.data( 'id' );
+		const $list  = $( '#fcc-reqs-list' );
+
+		if ( 'delete' === action ) {
+			const msg = fccAdmin.i18n.confirmDeleteReq || fccAdmin.i18n.confirmDelete;
+			if ( ! window.confirm( msg ) ) return;
+		}
+
+		const ajaxAction = {
+			done:    'fcc_ajax_mark_request_done',
+			dismiss: 'fcc_ajax_dismiss_request',
+			delete:  'fcc_ajax_delete_request',
+		}[ action ];
+
+		if ( ! ajaxAction ) return;
+
+		$btn.prop( 'disabled', true );
+
+		$.post( fccAdmin.ajaxUrl, {
+			action:      ajaxAction,
+			request_id:  id,
+			_ajax_nonce: $list.data( 'nonce' ),
+		}, function ( response ) {
+			if ( response.success ) {
+				loadReqsPage( $list.data( 'paged' ) || 1 );
+			} else {
+				$btn.prop( 'disabled', false );
+				showToast( ( response.data && response.data.message ) || fccAdmin.i18n.error );
+			}
+		} ).fail( function () {
+			$btn.prop( 'disabled', false );
+		} );
+	} );
+
+	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
 	function escAttr( s ) {

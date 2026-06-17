@@ -17,6 +17,38 @@ class Food_Requests {
 		$loader->add_action( 'wp_ajax_fcc_ajax_mark_request_done',   $this, 'ajax_mark_done' );
 		$loader->add_action( 'wp_ajax_fcc_ajax_delete_request',      $this, 'ajax_delete' );
 		$loader->add_action( 'wp_ajax_fcc_ajax_dismiss_request',     $this, 'ajax_dismiss' );
+		$loader->add_action( 'wp_ajax_fcc_reqs_page',                $this, 'ajax_reqs_page' );
+	}
+
+	public function ajax_reqs_page(): void {
+		check_ajax_referer( 'fcc_ajax_reqs' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => 'Unauthorized' ], 403 );
+		}
+
+		$allowed_statuses = [ '', 'pending', 'done', 'dismissed' ];
+		$status           = sanitize_key( wp_unslash( $_POST['status'] ?? '' ) );
+		if ( ! in_array( $status, $allowed_statuses, true ) ) {
+			$status = '';
+		}
+		$search   = sanitize_text_field( wp_unslash( $_POST['s'] ?? '' ) );
+		$paged    = max( 1, absint( $_POST['paged'] ?? 1 ) );
+		$per_page = 20;
+
+		$total       = Database::count_food_requests( [ 'status' => $status, 'search' => $search ] );
+		$total_pages = (int) ceil( $total / $per_page );
+		$requests    = Database::get_food_requests( [
+			'status'   => $status,
+			'search'   => $search,
+			'per_page' => $per_page,
+			'page'     => $paged,
+		] );
+
+		ob_start();
+		include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests-table.php';
+		$html = ob_get_clean();
+
+		wp_send_json_success( [ 'html' => $html ] );
 	}
 
 	public function ajax_mark_done(): void {

@@ -195,6 +195,7 @@ class Admin {
 				'reqsNonce'  => wp_create_nonce( 'fcc_ajax_reqs' ),
 				'i18n'       => [
 					'confirmDelete'     => __( 'Are you sure you want to delete this food?', 'food-calorie-calculator' ),
+					'confirmDeleteReq'  => __( 'Are you sure you want to delete this request?', 'food-calorie-calculator' ),
 					'confirmBulkDelete' => __( 'Are you sure you want to delete the selected foods?', 'food-calorie-calculator' ),
 					'selectItems'       => __( 'Please select at least one item.', 'food-calorie-calculator' ),
 					'saved'             => __( 'Saved!', 'food-calorie-calculator' ),
