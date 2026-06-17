@@ -4845,3 +4845,268 @@ button.fcc-reqs-tab {
 	word-break: break-all;
 	white-space: pre-wrap;
 }
+
+/* ==========================================================================
+   Affiliate Links Admin Styles
+   ========================================================================== */
+
+/* ---- Hero ---- */
+.fcc-aff-hero {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
+	border-radius: 12px;
+	padding: 1.75rem 2rem;
+	color: #fff;
+	margin-bottom: 1.5rem;
+}
+.fcc-aff-hero__inner {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+}
+.fcc-aff-hero__title {
+	color: #fff;
+	font-size: 1.4rem;
+	margin: 0 0 0.3rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.fcc-aff-hero__sub {
+	color: rgba(255,255,255,0.82);
+	margin: 0;
+	font-size: 0.88rem;
+	max-width: 560px;
+}
+.fcc-aff-hero__meta {
+	display: flex;
+	gap: 1.5rem;
+	flex-shrink: 0;
+}
+.fcc-aff-stat {
+	text-align: center;
+}
+.fcc-aff-stat__val {
+	display: block;
+	font-size: 2rem;
+	font-weight: 700;
+	color: #fff;
+	line-height: 1;
+}
+.fcc-aff-stat__val--green { color: #a8f0c6; }
+.fcc-aff-stat__lbl {
+	font-size: 0.72rem;
+	color: rgba(255,255,255,0.65);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* ---- General card ---- */
+.fcc-aff-card {
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+	margin-bottom: 1.5rem;
+	overflow: hidden;
+}
+.fcc-aff-card--general { padding: 1.5rem; }
+.fcc-aff-card__title {
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: #1e2a1e;
+	margin: 0 0 1rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.fcc-aff-general-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1rem 1.5rem;
+	margin-bottom: 1.25rem;
+}
+@media screen and (max-width: 700px) { .fcc-aff-general-grid { grid-template-columns: 1fr; } }
+
+/* ---- Preview ---- */
+.fcc-aff-preview {
+	border-top: 1px solid #e8eef2;
+	padding-top: 1rem;
+}
+.fcc-aff-preview__label {
+	font-size: 0.78rem;
+	color: #888;
+	margin: 0 0 0.5rem;
+}
+.fcc-aff-preview__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+.fcc-aff-chip--preview {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.3rem 0.75rem;
+	border-radius: 999px;
+	font-size: 0.78rem;
+	font-weight: 500;
+}
+
+/* ---- Section ---- */
+.fcc-aff-section {
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+	margin-bottom: 1.5rem;
+	overflow: hidden;
+}
+.fcc-aff-section__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.85rem 1.5rem;
+	border-bottom: 1px solid #e8eef2;
+	background: #f9fbfc;
+}
+.fcc-aff-section__title {
+	margin: 0;
+	font-size: 0.88rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #555;
+}
+.fcc-aff-section__count {
+	font-size: 0.78rem;
+	color: #888;
+}
+
+/* ---- Retailer grid ---- */
+.fcc-aff-retailer-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 1rem;
+	padding: 1.25rem;
+}
+
+/* ---- Retailer card ---- */
+.fcc-aff-retailer-card {
+	border: 1.5px solid #e0e8ed;
+	border-radius: 8px;
+	background: #fafcfd;
+	transition: border-color 0.15s, box-shadow 0.15s;
+	overflow: hidden;
+}
+.fcc-aff-retailer-card--active {
+	border-color: #2D7A4F;
+	background: #f4fbf7;
+	box-shadow: 0 0 0 3px rgba(45,122,79,0.08);
+}
+.fcc-aff-retailer-card__header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid #e8eef2;
+	background: #fff;
+}
+.fcc-aff-retailer-dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+.fcc-aff-retailer-card__name {
+	font-weight: 600;
+	font-size: 0.85rem;
+	color: #1e2a1e;
+	flex: 1;
+}
+.fcc-aff-retailer-card__body {
+	padding: 0.85rem 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.65rem;
+}
+
+/* ---- Toggle switch ---- */
+.fcc-aff-toggle {
+	position: relative;
+	display: inline-block;
+	width: 40px;
+	height: 22px;
+	flex-shrink: 0;
+	cursor: pointer;
+}
+.fcc-aff-toggle__cb {
+	opacity: 0;
+	width: 0;
+	height: 0;
+	position: absolute;
+}
+.fcc-aff-toggle__slider {
+	position: absolute;
+	inset: 0;
+	background: #ccc;
+	border-radius: 22px;
+	transition: background 0.2s;
+}
+.fcc-aff-toggle__slider::before {
+	content: '';
+	position: absolute;
+	left: 3px;
+	top: 3px;
+	width: 16px;
+	height: 16px;
+	background: #fff;
+	border-radius: 50%;
+	transition: transform 0.2s;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.fcc-aff-toggle__cb:checked + .fcc-aff-toggle__slider { background: #2D7A4F; }
+.fcc-aff-toggle__cb:checked + .fcc-aff-toggle__slider::before { transform: translateX(18px); }
+
+/* ---- Fields ---- */
+.fcc-aff-field { display: flex; flex-direction: column; gap: 0.2rem; }
+.fcc-aff-field label { font-size: 0.78rem; font-weight: 600; color: #444; }
+.fcc-aff-field .regular-text,
+.fcc-aff-field .large-text { font-size: 0.82rem !important; }
+.fcc-aff-field--checkbox label { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+.fcc-aff-hint { font-size: 0.72rem; color: #888; }
+.fcc-aff-optional { font-weight: 400; color: #aaa; font-size: 0.73rem; }
+
+.fcc-aff-advanced summary {
+	font-size: 0.72rem;
+	color: #999;
+	cursor: pointer;
+	padding: 0.25rem 0;
+}
+.fcc-aff-advanced summary:hover { color: #555; }
+.fcc-aff-advanced[open] { padding-top: 0.4rem; }
+
+/* ---- Save bar ---- */
+.fcc-aff-save-bar {
+	position: sticky;
+	bottom: 0;
+	background: #fff;
+	border-top: 1px solid #e0e8ed;
+	padding: 0.85rem 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+	z-index: 100;
+	border-radius: 0 0 10px 10px;
+}
+.fcc-aff-save-msg { font-size: 0.85rem; font-weight: 600; }
+
+/* ---- Toggle label ---- */
+.fcc-aff-toggle-label {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	cursor: pointer;
+	font-size: 0.85rem;
+	color: #333;
+}

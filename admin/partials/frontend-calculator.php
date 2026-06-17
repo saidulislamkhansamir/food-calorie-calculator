@@ -356,6 +356,12 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 				</div>
 				<?php endif; ?>
 
+				<!-- Affiliate buy buttons (populated by JS from cfg.affiliates) -->
+				<div class="fcc-affiliate-links" hidden aria-label="<?php esc_attr_e( 'Buy this food online', 'food-calorie-calculator' ); ?>">
+					<p class="fcc-affiliate-links__label"><?php esc_html_e( 'Buy online:', 'food-calorie-calculator' ); ?></p>
+					<div class="fcc-affiliate-links__chips"></div>
+				</div>
+
 				<!-- Action buttons -->
 				<div class="fcc-result-actions">
 					<?php if ( ! empty( $features['print_pdf'] ) ) : ?>

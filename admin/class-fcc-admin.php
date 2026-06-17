@@ -147,6 +147,15 @@ class Admin {
 			'fcc-white-label',
 			[ $this, 'page_white_label' ]
 		);
+
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'Affiliate Links', 'food-calorie-calculator' ),
+			__( 'Affiliate Links', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-affiliates',
+			[ $this, 'page_affiliates' ]
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -213,6 +222,10 @@ class Admin {
 
 	public function page_white_label(): void {
 		( new White_Label() )->page_white_label();
+	}
+
+	public function page_affiliates(): void {
+		( new Affiliates() )->page_affiliates();
 	}
 
 	// -------------------------------------------------------------------------

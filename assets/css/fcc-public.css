@@ -2891,6 +2891,73 @@ select.fcc-bmr-input {
 	display: none;
 }
 
+/* ==========================================================================
+   Affiliate Buy Buttons
+   ========================================================================== */
+
+.fcc-affiliate-links {
+	padding: 0.75rem 0 0.25rem;
+	border-top: 1px solid var(--fcc-border, #e4eaf0);
+	margin-top: 0.75rem;
+}
+
+.fcc-affiliate-links__label {
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--fcc-text-muted, #8a9aad);
+	margin: 0 0 0.5rem;
+	font-weight: 600;
+}
+
+.fcc-affiliate-links__chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.fcc-aff-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.3rem 0.7rem;
+	border-radius: 999px;
+	font-size: 0.78rem;
+	font-weight: 500;
+	text-decoration: none;
+	border: 1.5px solid var(--aff-colour, #888);
+	color: var(--aff-colour, #333);
+	background: transparent;
+	transition: background 0.15s, color 0.15s;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+.fcc-aff-chip:hover {
+	background: var(--aff-colour, #888);
+	color: #fff;
+}
+
+.fcc-aff-chip__icon {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+	transition: color 0.15s;
+}
+
+.fcc-aff-chip:hover .fcc-aff-chip__icon {
+	color: #fff !important;
+}
+
+.fcc-aff-chip__ext {
+	opacity: 0.5;
+	flex-shrink: 0;
+}
+
+.fcc-aff-chip:hover .fcc-aff-chip__ext {
+	opacity: 0.8;
+}
+
 /* White-label brand logo above search */
 .fcc-wl-logo {
 	display: block;

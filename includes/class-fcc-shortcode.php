@@ -240,7 +240,8 @@ class Shortcode {
 					'maintain'          => esc_html__( 'Maintain weight', 'food-calorie-calculator' ),
 					'gain'              => esc_html__( 'Gain weight', 'food-calorie-calculator' ),
 				],
-				'wl' => $wl_active ? $wl_active['wl_data'] : null,
+				'wl'        => $wl_active ? $wl_active['wl_data'] : null,
+				'affiliates' => \FCC\Admin\Affiliates::get_enabled_for_frontend(),
 			]
 		);
 

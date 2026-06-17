@@ -76,8 +76,10 @@
 	const trafficLights    = features.fsa_traffic_lights ? root.querySelector( '.fcc-traffic-lights' ) : null;
 	const healthHighlights = root.querySelector( '.fcc-health-highlights' );
 	const bmrSection    = features.bmr_tdee ? root.querySelector( '.fcc-bmr-section' ) : null;
-	const mealTabBadge  = root.querySelector( '.fcc-tab-badge' );
+	const mealTabBadge   = root.querySelector( '.fcc-tab-badge' );
 	const mealEmptyState = root.querySelector( '.fcc-meal-empty' );
+	const affiliateSec   = root.querySelector( '.fcc-affiliate-links' );
+	const affiliateChips = root.querySelector( '.fcc-affiliate-links__chips' );
 
 	// -------------------------------------------------------------------------
 	// REST helpers
@@ -128,6 +130,7 @@
 			const bar = foodNameEl.parentNode.querySelector( '.fcc-sponsor-bar' );
 			if ( bar ) bar.remove();
 		}
+		if ( affiliateSec ) affiliateSec.hidden = true;
 	}
 
 	function showPopular() {
@@ -546,6 +549,47 @@
 		if ( state.bmrTdee && features.daily_needs_comparison ) {
 			updateBmrComparison( food, factor );
 		}
+
+		// Affiliate buy buttons.
+		renderAffiliateLinks( food );
+	}
+
+	// -------------------------------------------------------------------------
+	// Affiliate buy buttons
+	// -------------------------------------------------------------------------
+	function renderAffiliateLinks( food ) {
+		if ( ! affiliateSec || ! affiliateChips ) return;
+		var affiliates = cfg.affiliates;
+		if ( ! affiliates || ! affiliates.length ) {
+			affiliateSec.hidden = true;
+			return;
+		}
+
+		var query  = encodeURIComponent( food.name );
+		var html   = '';
+		var target = ( cfg.affiliates_open_new_tab !== false ) ? ' target="_blank" rel="noopener sponsored"' : '';
+
+		affiliates.forEach( function ( aff ) {
+			var url = aff.url
+				.replace( /\{QUERY\}/g, query )
+				.replace( /\{ID\}/g, encodeURIComponent( aff.id || '' ) );
+
+			var iconHtml = aff.icon
+				? '<span class="fcc-aff-chip__icon" style="color:' + escHtml( aff.colour ) + ';">' + aff.icon + '</span>'
+				: '';
+
+			html += '<a href="' + escHtml( url ) + '" class="fcc-aff-chip"'
+				+ target
+				+ ' style="--aff-colour:' + escHtml( aff.colour ) + ';"'
+				+ ' data-retailer="' + escHtml( aff.key ) + '">'
+				+ iconHtml
+				+ '<span>' + escHtml( aff.label ) + '</span>'
+				+ '<svg class="fcc-aff-chip__ext" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+				+ '</a>';
+		} );
+
+		affiliateChips.innerHTML = html;
+		affiliateSec.hidden = false;
 	}
 
 	// -------------------------------------------------------------------------
