@@ -65,7 +65,8 @@
 	const macroWrapper  = features.macro_chart  ? root.querySelector( '.fcc-macro-chart-wrapper' ) : null;
 	const omega3Sec     = features.omega3_display  ? root.querySelector( '.fcc-omega3-section' )  : null;
 	const caffeineSec   = features.caffeine_display ? root.querySelector( '.fcc-caffeine-section' ) : null;
-	const trafficLights = features.fsa_traffic_lights ? root.querySelector( '.fcc-traffic-lights' ) : null;
+	const trafficLights    = features.fsa_traffic_lights ? root.querySelector( '.fcc-traffic-lights' ) : null;
+	const healthHighlights = root.querySelector( '.fcc-health-highlights' );
 	const bmrSection    = features.bmr_tdee ? root.querySelector( '.fcc-bmr-section' ) : null;
 	const mealTabBadge  = root.querySelector( '.fcc-tab-badge' );
 	const mealEmptyState = root.querySelector( '.fcc-meal-empty' );
@@ -300,6 +301,9 @@
 		const rows = buildNutrientRows( food, factor, d );
 		if ( nutrientsBody ) nutrientsBody.innerHTML = rows;
 
+		// Health highlights.
+		renderHealthHighlights( food );
+
 		// FSA traffic lights.
 		if ( trafficLights && features.fsa_traffic_lights ) {
 			renderTrafficLights( food );
@@ -389,6 +393,46 @@
 		} );
 
 		return html;
+	}
+
+	// -------------------------------------------------------------------------
+	// Health Highlights
+	// -------------------------------------------------------------------------
+	function renderHealthHighlights( food ) {
+		if ( ! healthHighlights ) return;
+
+		const ICON_CHECK = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+		const ICON_OMEGA = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M3 12a9 9 0 0 1 18 0"/></svg>';
+		const ICON_WARN  = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+
+		const positive = [];
+		const warnings = [];
+
+		if ( food.protein_g             != null && food.protein_g             >= 15   ) positive.push( { label: 'High Protein',    type: 'positive', icon: ICON_CHECK } );
+		if ( food.fat_g                 != null && food.fat_g                 <= 3    ) positive.push( { label: 'Low Fat',          type: 'positive', icon: ICON_CHECK } );
+		if ( food.energy_kcal           != null && food.energy_kcal           <= 100  ) positive.push( { label: 'Low Calorie',      type: 'positive', icon: ICON_CHECK } );
+		if ( food.of_which_sugars_g     != null && food.of_which_sugars_g     <= 5    ) positive.push( { label: 'Low Sugar',        type: 'positive', icon: ICON_CHECK } );
+		if ( food.fibre_g               != null && food.fibre_g               >= 6    ) positive.push( { label: 'High Fibre',       type: 'positive', icon: ICON_CHECK } );
+		if ( food.salt_g                != null && food.salt_g                <= 0.3  ) positive.push( { label: 'Low Salt',         type: 'positive', icon: ICON_CHECK } );
+		if ( food.omega3_total_mg       != null && food.omega3_total_mg       >= 500  ) positive.push( { label: 'Rich in Omega-3',  type: 'omega3',   icon: ICON_OMEGA } );
+
+		if ( food.salt_g                != null && food.salt_g                >= 1.5  ) warnings.push( { label: 'High in Salt',     type: 'danger',   icon: ICON_WARN  } );
+		if ( food.of_which_saturates_g  != null && food.of_which_saturates_g  >= 5    ) warnings.push( { label: 'High Saturates',   type: 'warning',  icon: ICON_WARN  } );
+		if ( food.of_which_sugars_g     != null && food.of_which_sugars_g     >= 22.5 ) warnings.push( { label: 'High Sugar',       type: 'warning',  icon: ICON_WARN  } );
+
+		const all = positive.slice( 0, 3 ).concat( warnings );
+
+		if ( ! all.length ) { healthHighlights.hidden = true; return; }
+
+		let html = '<p class="fcc-health-highlights__label">Health Highlights</p><div class="fcc-health-chips" role="list">';
+		all.forEach( function ( chip ) {
+			html += '<span class="fcc-health-chip fcc-health-chip--' + chip.type + '" role="listitem">' +
+				chip.icon + escHtml( chip.label ) + '</span>';
+		} );
+		html += '</div>';
+
+		healthHighlights.innerHTML = html;
+		healthHighlights.hidden = false;
 	}
 
 	// -------------------------------------------------------------------------

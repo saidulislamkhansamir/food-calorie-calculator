@@ -188,6 +188,9 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 			<section class="fcc-section fcc-results-section" aria-label="<?php esc_attr_e( 'Nutrition results', 'food-calorie-calculator' ); ?>" hidden aria-live="polite">
 				<h3 class="fcc-section-title"><?php echo esc_html( $labels['results_title'] ?? __( 'Nutrition Information', 'food-calorie-calculator' ) ); ?></h3>
 
+				<!-- Health Highlights -->
+				<div class="fcc-health-highlights" hidden aria-label="<?php esc_attr_e( 'Health highlights', 'food-calorie-calculator' ); ?>"></div>
+
 				<!-- FSA Traffic Lights -->
 				<?php if ( ! empty( $features['fsa_traffic_lights'] ) ) : ?>
 				<div class="fcc-traffic-lights" hidden aria-label="<?php esc_attr_e( 'FSA Traffic Light Labels', 'food-calorie-calculator' ); ?>">
