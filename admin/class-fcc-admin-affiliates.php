@@ -64,7 +64,7 @@ class Affiliates {
 				'enabled'       => ! empty( $r['enabled'] ),
 				'tracking_id'   => sanitize_text_field( $r['tracking_id'] ?? '' ),
 				'custom_label'  => sanitize_text_field( $r['custom_label'] ?? '' ),
-				'url_template'  => esc_url_raw( $r['url_template'] ?? $def['url_template'] ),
+				'url_template'  => sanitize_text_field( $r['url_template'] ?? $def['url_template'] ),
 			];
 		}
 
@@ -94,6 +94,20 @@ class Affiliates {
 
 		foreach ( $retailers as $key => $def ) {
 			$saved_r = $saved['retailers'][ $key ] ?? [];
+			// Heal templates previously broken by esc_url_raw() stripping braces.
+			$saved_tpl = $saved_r['url_template'] ?? '';
+			if ( $saved_tpl && ! str_contains( $saved_tpl, '{QUERY}' ) && str_contains( $saved_tpl, 'QUERY' ) ) {
+				$saved_tpl = str_replace( 'QUERY', '{QUERY}', $saved_tpl );
+				$saved_tpl = str_replace( '{ID}', '{ID}', $saved_tpl ); // already fine
+				$saved_tpl = str_replace( 'tag=ID', 'tag={ID}', $saved_tpl );
+				$saved_tpl = str_replace( 'aff=ID', 'aff={ID}', $saved_tpl );
+				$saved_tpl = str_replace( 'ref=ID', 'ref={ID}', $saved_tpl );
+				$saved_tpl = str_replace( 'rcode=ID', 'rcode={ID}', $saved_tpl );
+				$saved_tpl = str_replace( 'affil=ID', 'affil={ID}', $saved_tpl );
+				$saved_tpl = str_replace( 'awc=ID', 'awc={ID}', $saved_tpl );
+				$saved_r['url_template'] = $saved_tpl;
+			}
+
 			$result['retailers'][ $key ] = array_merge(
 				[
 					'enabled'      => false,
@@ -136,7 +150,7 @@ class Affiliates {
 				'key'      => $key,
 				'name'     => $r['name'],
 				'label'    => esc_html( $label ),
-				'url'      => esc_url_raw( $r['url_template'] ),
+				'url'      => $r['url_template'],
 				'id'       => $r['tracking_id'],
 				'colour'   => $r['colour'],
 				'icon'     => $r['icon'],
