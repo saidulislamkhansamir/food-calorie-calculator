@@ -77,51 +77,51 @@ $nonce = wp_create_nonce( 'fcc_ajax_reqs' );
 	</div><!-- .fcc-foods-hero -->
 
 	<!-- ======================================================================
-	     Toolbar: search + filter tabs
+	     Unified card: toolbar + table
 	     ====================================================================== -->
-	<div class="fcc-reqs-toolbar">
+	<div class="fcc-card fcc-reqs-unified">
 
-		<div class="fcc-foods-searchbox fcc-reqs-searchbox">
-			<svg class="fcc-foods-searchbox__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-				<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-			</svg>
-			<input type="search" id="fcc-reqs-search"
-				value="<?php echo esc_attr( $search ); ?>"
-				placeholder="<?php esc_attr_e( 'Search by food name or email…', 'food-calorie-calculator' ); ?>"
-				class="fcc-foods-searchbox__input">
-		</div>
+		<!-- Card header: search left, filter tabs right -->
+		<div class="fcc-reqs-unified__header">
+			<div class="fcc-reqs-unified__search">
+				<svg class="fcc-reqs-unified__search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+				</svg>
+				<input type="search" id="fcc-reqs-search"
+					value="<?php echo esc_attr( $search ); ?>"
+					placeholder="<?php esc_attr_e( 'Search by food name or email…', 'food-calorie-calculator' ); ?>"
+					class="fcc-reqs-unified__search-input">
+			</div>
+			<div class="fcc-reqs-unified__tabs">
+				<?php
+				$tabs = [
+					''          => __( 'All', 'food-calorie-calculator' ),
+					'pending'   => __( 'Pending', 'food-calorie-calculator' ),
+					'done'      => __( 'Done', 'food-calorie-calculator' ),
+					'dismissed' => __( 'Dismissed', 'food-calorie-calculator' ),
+				];
+				foreach ( $tabs as $key => $label ) :
+					$active = $status_filter === $key ? ' fcc-reqs-tab--active' : '';
+				?>
+					<button type="button"
+						class="fcc-reqs-tab fcc-reqs-tab-btn<?php echo esc_attr( $active ); ?>"
+						data-status="<?php echo esc_attr( $key ); ?>">
+						<?php echo esc_html( $label ); ?>
+					</button>
+				<?php endforeach; ?>
+			</div>
+		</div><!-- .fcc-reqs-unified__header -->
 
-		<div class="fcc-reqs-tabs">
-			<?php
-			$tabs = [
-				''          => __( 'All', 'food-calorie-calculator' ),
-				'pending'   => __( 'Pending', 'food-calorie-calculator' ),
-				'done'      => __( 'Done', 'food-calorie-calculator' ),
-				'dismissed' => __( 'Dismissed', 'food-calorie-calculator' ),
-			];
-			foreach ( $tabs as $key => $label ) :
-				$active = $status_filter === $key ? ' fcc-reqs-tab--active' : '';
-			?>
-				<button type="button"
-					class="fcc-reqs-tab fcc-reqs-tab-btn<?php echo esc_attr( $active ); ?>"
-					data-status="<?php echo esc_attr( $key ); ?>">
-					<?php echo esc_html( $label ); ?>
-				</button>
-			<?php endforeach; ?>
-		</div>
+		<!-- AJAX region (no inner card — outer card provides the shell) -->
+		<div id="fcc-reqs-list"
+			data-nonce="<?php echo esc_attr( $nonce ); ?>"
+			data-status="<?php echo esc_attr( $status_filter ); ?>"
+			data-search="<?php echo esc_attr( $search ); ?>"
+			data-paged="<?php echo (int) $paged; ?>">
+			<?php include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests-table.php'; ?>
+		</div><!-- #fcc-reqs-list -->
 
-	</div><!-- .fcc-reqs-toolbar -->
-
-	<!-- ======================================================================
-	     AJAX region — table + pagination
-	     ====================================================================== -->
-	<div id="fcc-reqs-list"
-		data-nonce="<?php echo esc_attr( $nonce ); ?>"
-		data-status="<?php echo esc_attr( $status_filter ); ?>"
-		data-search="<?php echo esc_attr( $search ); ?>"
-		data-paged="<?php echo (int) $paged; ?>">
-		<?php include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests-table.php'; ?>
-	</div><!-- #fcc-reqs-list -->
+	</div><!-- .fcc-reqs-unified -->
 
 	<!-- ======================================================================
 	     Export panel

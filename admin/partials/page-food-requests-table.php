@@ -71,14 +71,12 @@ if ( ! function_exists( 'fcc_build_reqs_pagination' ) ) :
 endif;
 ?>
 <?php if ( empty( $requests ) ) : ?>
-	<div class="fcc-card fcc-reqs-card">
-		<div class="fcc-reqs-empty">
-			<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-			<p><?php esc_html_e( 'No requests found.', 'food-calorie-calculator' ); ?></p>
-		</div>
+	<div class="fcc-reqs-empty">
+		<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+		<p><?php esc_html_e( 'No requests found.', 'food-calorie-calculator' ); ?></p>
 	</div>
 <?php else : ?>
-	<div class="fcc-card fcc-reqs-card">
+	<div class="fcc-reqs-table-wrap">
 		<div class="fcc-reqs-table-footer fcc-reqs-table-header">
 			<p class="fcc-reqs-count">
 				<?php if ( $total > $per_page ) :
@@ -187,5 +185,5 @@ endif;
 			</p>
 			<?php echo fcc_build_reqs_pagination( $paged, $total_pages ); ?>
 		</div>
-	</div>
+	</div><!-- .fcc-reqs-table-wrap -->
 <?php endif; ?>
