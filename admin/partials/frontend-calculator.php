@@ -268,14 +268,32 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 				<?php if ( ! empty( $features['omega3_display'] ) ) : ?>
 				<div class="fcc-omega3-section" hidden aria-live="polite">
 					<h4 class="fcc-subsection-title"><?php echo esc_html( $labels['omega3_title'] ?? __( 'Omega-3 Fatty Acids', 'food-calorie-calculator' ) ); ?></h4>
-					<table class="fcc-omega3-table">
-						<tbody>
-							<tr data-omega3="total"><th scope="row"><?php esc_html_e( 'Total Omega-3', 'food-calorie-calculator' ); ?></th><td></td></tr>
-							<tr data-omega3="ala"><th scope="row"><?php esc_html_e( 'ALA', 'food-calorie-calculator' ); ?></th><td></td></tr>
-							<tr data-omega3="epa"><th scope="row"><?php esc_html_e( 'EPA', 'food-calorie-calculator' ); ?></th><td></td></tr>
-							<tr data-omega3="dha"><th scope="row"><?php esc_html_e( 'DHA', 'food-calorie-calculator' ); ?></th><td></td></tr>
-						</tbody>
-					</table>
+					<div class="fcc-omega3-cards">
+						<div class="fcc-omega3-card fcc-omega3-card--total" data-omega3="total">
+							<span class="fcc-omega3-card__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/></svg></span>
+							<span class="fcc-omega3-val"></span>
+							<span class="fcc-omega3-card__label"><?php esc_html_e( 'Total', 'food-calorie-calculator' ); ?></span>
+							<span class="fcc-omega3-card__sub"><?php esc_html_e( 'Omega-3', 'food-calorie-calculator' ); ?></span>
+						</div>
+						<div class="fcc-omega3-card fcc-omega3-card--ala" data-omega3="ala">
+							<span class="fcc-omega3-card__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
+							<span class="fcc-omega3-val"></span>
+							<span class="fcc-omega3-card__label"><?php esc_html_e( 'ALA', 'food-calorie-calculator' ); ?></span>
+							<span class="fcc-omega3-card__sub"><?php esc_html_e( 'Plant source', 'food-calorie-calculator' ); ?></span>
+						</div>
+						<div class="fcc-omega3-card fcc-omega3-card--epa" data-omega3="epa">
+							<span class="fcc-omega3-card__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12c1.5-3 3-3 4.5 0s3 3 4.5 0 3-3 4.5 0 3-3 4.5 0"/></svg></span>
+							<span class="fcc-omega3-val"></span>
+							<span class="fcc-omega3-card__label"><?php esc_html_e( 'EPA', 'food-calorie-calculator' ); ?></span>
+							<span class="fcc-omega3-card__sub"><?php esc_html_e( 'Anti-inflammatory', 'food-calorie-calculator' ); ?></span>
+						</div>
+						<div class="fcc-omega3-card fcc-omega3-card--dha" data-omega3="dha">
+							<span class="fcc-omega3-card__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+							<span class="fcc-omega3-val"></span>
+							<span class="fcc-omega3-card__label"><?php esc_html_e( 'DHA', 'food-calorie-calculator' ); ?></span>
+							<span class="fcc-omega3-card__sub"><?php esc_html_e( 'Brain &amp; Heart', 'food-calorie-calculator' ); ?></span>
+						</div>
+					</div>
 				</div>
 				<?php endif; ?>
 

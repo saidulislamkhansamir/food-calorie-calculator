@@ -1051,23 +1051,72 @@
 }
 
 /* --------------------------------------------------------------------------
-   Omega-3 & Caffeine
+   Omega-3 Cards
    -------------------------------------------------------------------------- */
-.fcc-omega3-table {
-	width: 100%;
-	border-collapse: collapse;
+.fcc-omega3-cards {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 0.625rem;
+	margin-top: 0.75rem;
+}
+
+.fcc-omega3-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0.875rem 0.5rem 0.75rem;
+	border-radius: 12px;
+	border: 1.5px solid var(--fcc-border);
+	background: var(--fcc-surface);
+	gap: 0.15rem;
+}
+
+.fcc-omega3-card--total {
+	background: linear-gradient(135deg, #f0faf4 0%, #e8f8ef 100%);
+	border-color: #86efac;
+}
+
+.fcc-omega3-card__icon {
+	margin-bottom: 0.3rem;
+	display: flex;
+}
+
+.fcc-omega3-card--total .fcc-omega3-card__icon { color: var(--fcc-primary); }
+.fcc-omega3-card--ala   .fcc-omega3-card__icon { color: #16a34a; }
+.fcc-omega3-card--epa   .fcc-omega3-card__icon { color: #0284c7; }
+.fcc-omega3-card--dha   .fcc-omega3-card__icon { color: #7c3aed; }
+
+.fcc-omega3-val {
 	font-size: 0.875rem;
+	font-weight: 700;
+	color: var(--fcc-text);
+	min-height: 1.3em;
+	line-height: 1.3;
 }
 
-.fcc-omega3-table th,
-.fcc-omega3-table td {
-	padding: 0.4rem 0.75rem;
-	border-bottom: 1px solid var(--fcc-border);
+.fcc-omega3-card__label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--fcc-text-muted);
+	margin-top: 0.1rem;
 }
 
-.fcc-omega3-table th { font-weight: 500; color: var(--fcc-text-muted); font-size: 0.85rem; }
-.fcc-omega3-table td { text-align: right; font-weight: 600; }
+.fcc-omega3-card__sub {
+	font-size: 0.62rem;
+	color: var(--fcc-text-light);
+	line-height: 1.3;
+}
 
+@media (max-width: 480px) {
+	.fcc-omega3-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   Caffeine
+   -------------------------------------------------------------------------- */
 .fcc-caffeine-value { font-weight: 600; font-size: 1rem; }
 
 .fcc-data-na { color: var(--fcc-text-light); font-style: italic; font-size: 0.8rem; }

@@ -502,16 +502,16 @@
 		Object.keys( fields ).forEach( function ( key ) {
 			const row = omega3Sec.querySelector( '[data-omega3="' + key + '"]' );
 			if ( ! row ) return;
-			const val = food[ fields[ key ] ];
-			const td  = row.querySelector( 'td' );
-			if ( ! td ) return;
+			const val    = food[ fields[ key ] ];
+			const valEl  = row.querySelector( '.fcc-omega3-val' );
+			if ( ! valEl ) return;
 
 			if ( val === null || val === undefined ) {
-				td.textContent = i18n.dataNotAvailable || 'Data not available';
-				td.className = 'fcc-data-na';
+				valEl.textContent = i18n.dataNotAvailable || 'N/A';
+				valEl.className = 'fcc-omega3-val fcc-data-na';
 			} else {
-				td.textContent = fmt( val * factor, d ) + ' mg';
-				td.className = '';
+				valEl.textContent = fmt( val * factor, d ) + ' mg';
+				valEl.className = 'fcc-omega3-val';
 			}
 		} );
 	}
