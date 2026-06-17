@@ -3107,9 +3107,13 @@
 
 .fcc-reqs-table {
 	width: 100%;
+	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: 0.875rem;
 }
+
+.fcc-reqs-th--name,
+.fcc-reqs-td--name { width: auto; overflow: hidden; word-break: break-word; overflow-wrap: anywhere; }
 
 .fcc-reqs-table thead tr {
 	background: #f8faf5;
@@ -3936,6 +3940,8 @@ button.fcc-reqs-tab {
 	margin-top: 0.3rem;
 	font-size: 0.8rem;
 	color: #6b7280;
+	word-break: break-all;
+	overflow-wrap: anywhere;
 }
 
 .fcc-reqs-note-toggle {
