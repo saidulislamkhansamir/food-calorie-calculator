@@ -536,8 +536,8 @@
 		$short.prop( 'hidden', ! expanded );
 		$full.prop( 'hidden', expanded );
 		$toggle.html( expanded
-			? ( escAttr( 'Show more' ) + ' &#x2193;' )
-			: ( escAttr( 'Show less' ) + ' &#x2191;' )
+			? ( escAttr( 'More' ) + ' &#x2193;' )
+			: ( escAttr( 'Less' ) + ' &#x2191;' )
 		);
 	} );
 

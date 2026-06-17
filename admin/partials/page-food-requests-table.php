@@ -130,10 +130,15 @@ endif;
 						<strong><?php echo esc_html( $req['food_name'] ); ?></strong>
 						<?php if ( $note ) : ?>
 							<div class="fcc-reqs-note">
-								<span class="fcc-reqs-note__short"><?php echo esc_html( '"' . $note_short . '"' ); ?></span>
+								<svg class="fcc-reqs-note__icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+								<span class="fcc-reqs-note__text">
+									<span class="fcc-reqs-note__short"><?php echo esc_html( $note_short ); ?></span>
+									<?php if ( $has_more ) : ?>
+										<span class="fcc-reqs-note__full" hidden><?php echo esc_html( $note ); ?></span>
+									<?php endif; ?>
+								</span>
 								<?php if ( $has_more ) : ?>
-									<span class="fcc-reqs-note__full" hidden><?php echo esc_html( '"' . $note . '"' ); ?></span>
-									<button type="button" class="fcc-reqs-note-toggle"><?php esc_html_e( 'Show more', 'food-calorie-calculator' ); ?> &#x2193;</button>
+									<button type="button" class="fcc-reqs-note-toggle"><?php esc_html_e( 'More', 'food-calorie-calculator' ); ?> &#x2193;</button>
 								<?php endif; ?>
 							</div>
 						<?php endif; ?>

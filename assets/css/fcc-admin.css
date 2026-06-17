@@ -3912,9 +3912,18 @@ button.fcc-reqs-tab {
 	border: 1px solid #a7f3d0;
 }
 
-/* Request / search count badge (Nx) */
+/* Column widths (table-layout: fixed needs all fixed cols declared) */
 .fcc-reqs-th--count,
-.fcc-reqs-td--count { width: 100px; text-align: center; }
+.fcc-reqs-td--count  { width: 82px; text-align: center; }
+
+.fcc-reqs-th--date,
+.fcc-reqs-td--date   { width: 118px; white-space: nowrap; }
+
+.fcc-reqs-th--status,
+.fcc-reqs-td--status { width: 92px; }
+
+.fcc-reqs-th--actions,
+.fcc-reqs-td--actions { width: 258px; }
 
 .fcc-reqs-count-badge {
 	display: inline-flex;
@@ -3935,24 +3944,45 @@ button.fcc-reqs-tab {
 	border-color: #6ee7b7;
 }
 
-/* Note expand / collapse */
+/* Note block — left-border quote style */
 .fcc-reqs-note {
-	margin-top: 0.3rem;
-	font-size: 0.8rem;
-	color: #6b7280;
+	display: flex;
+	align-items: flex-start;
+	gap: 0.3rem;
+	margin-top: 0.45rem;
+	padding: 0.3rem 0.45rem 0.3rem 0.4rem;
+	background: #f0fdf4;
+	border-left: 2px solid #2D7A4F;
+	border-radius: 0 5px 5px 0;
+	font-size: 0.775rem;
+	color: #4b5563;
+	font-style: italic;
 	word-break: break-all;
 	overflow-wrap: anywhere;
 }
 
+.fcc-reqs-note__icon {
+	flex-shrink: 0;
+	margin-top: 2px;
+	color: #2D7A4F;
+	opacity: 0.75;
+}
+
+.fcc-reqs-note__text { flex: 1; min-width: 0; }
+
 .fcc-reqs-note-toggle {
+	flex-shrink: 0;
+	align-self: flex-end;
 	background: none;
 	border: none;
 	padding: 0;
-	margin-left: 0.2rem;
-	font-size: 0.78rem;
+	font-size: 0.72rem;
+	font-style: normal;
+	font-weight: 600;
 	color: #2D7A4F;
 	cursor: pointer;
 	font-family: inherit;
+	white-space: nowrap;
 }
 
 .fcc-reqs-note-toggle:hover { text-decoration: underline; }
@@ -3973,13 +4003,13 @@ button.fcc-reqs-tab {
 	vertical-align: middle;
 }
 
-/* Action buttons — all in Forest Green palette */
+/* Action buttons — all in Forest Green palette, compact for single-line fit */
 .fcc-reqs-btn--add {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.3rem;
-	padding: 0.3rem 0.75rem;
-	font-size: 0.78rem;
+	gap: 0.25rem;
+	padding: 0.25rem 0.6rem;
+	font-size: 0.76rem;
 	font-weight: 600;
 	color: #2D7A4F;
 	background: #f0fdf4;
@@ -3991,6 +4021,7 @@ button.fcc-reqs-tab {
 	transition: background 0.15s, border-color 0.15s;
 	-webkit-appearance: none;
 	appearance: none;
+	white-space: nowrap;
 }
 
 .fcc-reqs-btn--add:hover {
@@ -4002,9 +4033,9 @@ button.fcc-reqs-tab {
 .fcc-reqs-btn--mark-added {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.3rem;
-	padding: 0.3rem 0.75rem;
-	font-size: 0.78rem;
+	gap: 0.25rem;
+	padding: 0.25rem 0.6rem;
+	font-size: 0.76rem;
 	font-weight: 600;
 	color: #fff;
 	background: #2D7A4F;
@@ -4015,6 +4046,7 @@ button.fcc-reqs-tab {
 	transition: background 0.15s;
 	-webkit-appearance: none;
 	appearance: none;
+	white-space: nowrap;
 }
 
 .fcc-reqs-btn--mark-added:hover { background: #245f3f; border-color: #245f3f; }
@@ -4023,9 +4055,9 @@ button.fcc-reqs-tab {
 .fcc-reqs-btn--dismiss {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.3rem;
-	padding: 0.3rem 0.75rem;
-	font-size: 0.78rem;
+	gap: 0.25rem;
+	padding: 0.25rem 0.6rem;
+	font-size: 0.76rem;
 	font-weight: 600;
 	color: #374151;
 	background: #f9fafb;
@@ -4036,6 +4068,7 @@ button.fcc-reqs-tab {
 	transition: background 0.15s;
 	-webkit-appearance: none;
 	appearance: none;
+	white-space: nowrap;
 }
 
 .fcc-reqs-btn--dismiss:hover { background: #f3f4f6; border-color: #d1d5db; }
@@ -4061,12 +4094,12 @@ button.fcc-reqs-tab {
 
 .fcc-reqs-btn--delete:hover { color: #2D7A4F; background: #f0fdf4; border-color: #a7f3d0; }
 
-/* Actions cell: compact, wrap-friendly */
+/* Actions cell: single line */
 .fcc-reqs-actions {
 	display: flex;
 	align-items: center;
-	gap: 0.35rem;
-	flex-wrap: wrap;
+	gap: 0.3rem;
+	flex-wrap: nowrap;
 }
 
 /* Spacing between the two sections */
