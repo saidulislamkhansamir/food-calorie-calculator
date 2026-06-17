@@ -274,7 +274,7 @@
    -------------------------------------------------------------------------- */
 .fcc-cats-hero {
 	position: relative;
-	background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #4338ca 100%);
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
 	border-radius: 18px;
 	margin-bottom: 1.25rem;
 	overflow: hidden;
@@ -381,7 +381,7 @@
 	border-radius: 14px;
 	box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 14px rgba(0,0,0,.05);
 	margin-bottom: 1.5rem;
-	border-left: 4px solid #2563eb;
+	border-left: 4px solid #2D7A4F;
 	overflow: hidden;
 }
 
@@ -399,7 +399,7 @@
 	gap: 0.5rem;
 }
 
-.fcc-cats-formbar__mode { color: #2563eb; font-weight: 700; }
+.fcc-cats-formbar__mode { color: #2D7A4F; font-weight: 700; }
 .fcc-cats-formbar--edit .fcc-cats-formbar__mode { color: #f97316; }
 
 .fcc-cats-formbar__row {
@@ -467,9 +467,9 @@
 }
 
 .fcc-cats-qinput:focus {
-	border-color: #3b82f6;
+	border-color: #2D7A4F;
 	background: #fff;
-	box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+	box-shadow: 0 0 0 3px rgba(45,122,79,.12);
 }
 
 .fcc-cats-qinput--slug {
@@ -497,7 +497,7 @@
 .fcc-cats-qsubmit {
 	height: 38px;
 	padding: 0 1.25rem;
-	background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+	background: linear-gradient(135deg, #1a5c35 0%, #2D7A4F 100%);
 	color: #fff;
 	border: none;
 	border-radius: 9px;
@@ -505,7 +505,7 @@
 	font-weight: 600;
 	cursor: pointer;
 	transition: opacity .15s, transform .1s;
-	box-shadow: 0 2px 6px rgba(59,130,246,.4);
+	box-shadow: 0 2px 6px rgba(45,122,79,.4);
 	white-space: nowrap;
 	font-family: inherit;
 }
@@ -552,7 +552,7 @@
 }
 
 .fcc-cats-list-badge {
-	background: #2271b1;
+	background: #2D7A4F;
 	color: #fff;
 	font-size: 0.72rem;
 	font-weight: 700;
@@ -688,7 +688,7 @@
 	color: #4b5563;
 }
 
-.fcc-cat-card__btn--edit:hover  { background: #eff6ff; color: #1d4ed8; }
+.fcc-cat-card__btn--edit:hover  { background: #f0f7f3; color: #2D7A4F; }
 .fcc-cat-card__btn--delete      { border-left: 1px solid #f3f4f6; }
 .fcc-cat-card__btn--delete:hover { background: #fef2f2; color: #dc2626; }
 
@@ -728,7 +728,7 @@
    -------------------------------------------------------------------------- */
 .fcc-ie-hero {
 	position: relative;
-	background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #6d28d9 100%);
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
 	border-radius: 18px;
 	margin-bottom: 1.25rem;
 	overflow: hidden;
@@ -875,11 +875,11 @@
 }
 
 .fcc-ie-card__header--import {
-	background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 60%, #60a5fa 100%);
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 60%, #6DBF67 100%);
 }
 
 .fcc-ie-card__header--export {
-	background: linear-gradient(135deg, #065f46 0%, #059669 60%, #34d399 100%);
+	background: linear-gradient(135deg, #1a5c35 0%, #2D7A4F 60%, #6DBF67 100%);
 }
 
 .fcc-ie-card__hicon {
@@ -927,8 +927,8 @@
 
 .fcc-ie-dropzone:hover,
 .fcc-ie-dropzone--over {
-	border-color: #3b82f6;
-	background: #eff6ff;
+	border-color: #2D7A4F;
+	background: #f0f7f3;
 }
 
 .fcc-ie-dropzone--file {
@@ -943,7 +943,7 @@
 }
 
 .fcc-ie-dropzone:hover .fcc-ie-dropzone__cloud,
-.fcc-ie-dropzone--over .fcc-ie-dropzone__cloud { color: #3b82f6; }
+.fcc-ie-dropzone--over .fcc-ie-dropzone__cloud { color: #2D7A4F; }
 .fcc-ie-dropzone--file .fcc-ie-dropzone__cloud  { color: #22c55e; }
 
 .fcc-ie-dropzone__primary {
@@ -1057,7 +1057,7 @@
 	justify-content: center;
 	gap: 0.5rem;
 	padding: 0.75rem 1.5rem;
-	background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+	background: linear-gradient(135deg, #1a5c35 0%, #2D7A4F 100%);
 	color: #fff;
 	border: none;
 	border-radius: 10px;
@@ -1065,7 +1065,7 @@
 	font-weight: 700;
 	cursor: pointer;
 	transition: opacity .15s, transform .1s;
-	box-shadow: 0 2px 8px rgba(59,130,246,.45);
+	box-shadow: 0 2px 8px rgba(45,122,79,.45);
 	font-family: inherit;
 }
 
@@ -1247,8 +1247,8 @@
 .fcc-ie-col-card__key {
 	font-family: 'Courier New', Courier, monospace;
 	font-size: 0.72rem;
-	color: #4338ca;
-	background: #eef2ff;
+	color: #1a5c35;
+	background: #e8f5ed;
 	padding: 2px 6px;
 	border-radius: 5px;
 	word-break: break-all;
@@ -1320,7 +1320,7 @@
    -------------------------------------------------------------------------- */
 .fcc-foods-hero {
 	position: relative;
-	background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #0f766e 100%);
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
 	border-radius: 18px;
 	margin-bottom: 1.25rem;
 	overflow: hidden;
@@ -1420,7 +1420,7 @@
 	gap: 7px;
 	padding: 11px 20px;
 	background: rgba(255,255,255,.9);
-	color: #065f46;
+	color: #1a5c35;
 	border-radius: 10px;
 	font-size: 0.82rem;
 	font-weight: 700;
@@ -1430,7 +1430,7 @@
 }
 .fcc-foods-hero-cta:hover {
 	background: #fff;
-	color: #064e3b;
+	color: #0d3d26;
 }
 
 /* --------------------------------------------------------------------------
@@ -1485,9 +1485,9 @@
 
 .fcc-foods-searchbox__input:focus {
 	outline: none;
-	border-color: #10b981;
+	border-color: #2D7A4F;
 	background: #fff;
-	box-shadow: 0 0 0 3px rgba(16,185,129,.15);
+	box-shadow: 0 0 0 3px rgba(45,122,79,.15);
 }
 
 .fcc-foods-catselect {
@@ -1504,7 +1504,7 @@
 
 .fcc-foods-catselect:focus {
 	outline: none;
-	border-color: #10b981;
+	border-color: #2D7A4F;
 }
 
 .fcc-foods-filter-btn {
@@ -1608,13 +1608,13 @@
 }
 
 .fcc-foods-page-btn--active {
-	background: #065f46;
-	border-color: #065f46;
+	background: #2D7A4F;
+	border-color: #2D7A4F;
 	color: #fff;
 }
 
 .fcc-foods-page-btn--active:hover {
-	background: #064e3b;
+	background: #1a5c35;
 	color: #fff;
 }
 
@@ -1683,25 +1683,25 @@
 
 .fcc-foods-row:last-child .fcc-foods-td { border-bottom: none; }
 .fcc-foods-row:nth-child(even) .fcc-foods-td { background: #fafafa; }
-.fcc-foods-row:hover .fcc-foods-td { background: #f0fdf4; }
+.fcc-foods-row:hover .fcc-foods-td { background: #f0f7f3; }
 
 /* Food name link */
 .fcc-foods-name-link {
-	color: #065f46;
+	color: #2D7A4F;
 	font-weight: 600;
 	text-decoration: none;
 }
 .fcc-foods-name-link:hover {
-	color: #064e3b;
+	color: #1a5c35;
 	text-decoration: underline;
 }
 
 /* Category badge */
 .fcc-foods-cat-badge {
 	display: inline-block;
-	background: #eff6ff;
-	color: #1d4ed8;
-	border: 1px solid #bfdbfe;
+	background: #e8f5ed;
+	color: #1a5c35;
+	border: 1px solid #a8d5b5;
 	border-radius: 20px;
 	padding: 2px 9px;
 	font-size: 0.73rem;
@@ -1836,7 +1836,7 @@
    -------------------------------------------------------------------------- */
 .fcc-dash-hero {
 	position: relative;
-	background: linear-gradient(135deg, #0c1832 0%, #0e3a6e 55%, #0284c7 100%);
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
 	border-radius: 18px;
 	margin-bottom: 1.75rem;
 	overflow: hidden;
@@ -1971,9 +1971,9 @@
 	border-bottom: 1px solid rgba(0,0,0,.06);
 }
 
-.fcc-dash-card__hd--blue   { background: linear-gradient(135deg, #1e40af, #2563eb); }
-.fcc-dash-card__hd--green  { background: linear-gradient(135deg, #065f46, #059669); }
-.fcc-dash-card__hd--orange { background: linear-gradient(135deg, #92400e, #d97706); }
+.fcc-dash-card__hd--blue   { background: linear-gradient(135deg, #1a5c35, #2D7A4F); }
+.fcc-dash-card__hd--green  { background: linear-gradient(135deg, #1a5c35, #2D7A4F); }
+.fcc-dash-card__hd--orange { background: linear-gradient(135deg, #b85c12, #F47B20); }
 
 .fcc-dash-card__hicon {
 	color: rgba(255,255,255,.9);
@@ -2019,7 +2019,7 @@
 	flex: 1;
 	font-family: 'Courier New', Courier, monospace;
 	font-size: 0.82rem;
-	color: #1e40af;
+	color: #2D7A4F;
 	background: none;
 	padding: 0;
 	border: none;
@@ -2033,7 +2033,7 @@
 	align-items: center;
 	gap: 5px;
 	padding: 5px 11px;
-	background: #1e40af;
+	background: #2D7A4F;
 	color: #fff;
 	border: none;
 	border-radius: 7px;
@@ -2046,23 +2046,23 @@
 }
 
 .fcc-dash-code-box__copy:hover {
-	background: #1e3a8a;
+	background: #1a5c35;
 }
 
 .fcc-dash-code-box__copy--copied {
-	background: #065f46;
+	background: #1a5c35;
 }
 
 .fcc-dash-mini-link {
 	display: block;
 	font-size: 0.8rem;
-	color: #2563eb;
+	color: #2D7A4F;
 	text-decoration: none;
 	margin-top: 7px;
 }
 .fcc-dash-mini-link:hover {
 	text-decoration: underline;
-	color: #1d4ed8;
+	color: #1a5c35;
 }
 
 /* --------------------------------------------------------------------------
@@ -2183,7 +2183,7 @@
    -------------------------------------------------------------------------- */
 .fcc-stg-hero {
 	position: relative;
-	background: linear-gradient(135deg, #1a0522 0%, #6b21a8 55%, #a21caf 100%);
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
 	border-radius: 18px;
 	margin-bottom: 1.25rem;
 	overflow: hidden;
@@ -2275,7 +2275,7 @@
 .fcc-stg-hero-stat__pill {
 	display: inline-block;
 	background: rgba(255,255,255,.9);
-	color: #6b21a8;
+	color: #2D7A4F;
 	border-radius: 20px;
 	padding: 4px 12px;
 	font-size: 0.78rem;
@@ -2318,9 +2318,9 @@
 }
 
 .fcc-stg-tab--active {
-	background: linear-gradient(135deg, #6b21a8, #a21caf);
+	background: linear-gradient(135deg, #1a5c35, #2D7A4F);
 	color: #fff;
-	box-shadow: 0 2px 8px rgba(107,33,168,.35);
+	box-shadow: 0 2px 8px rgba(45,122,79,.35);
 }
 
 .fcc-stg-tab--active:hover { color: #fff; }
@@ -2357,8 +2357,8 @@
 	padding: 16px 22px 14px;
 	padding-left: 20px;
 	border-bottom: 1px solid #f3f4f6;
-	border-left: 4px solid #a21caf;
-	background: linear-gradient(90deg, #fdf4ff 0%, #fafafa 60%);
+	border-left: 4px solid #2D7A4F;
+	background: linear-gradient(90deg, #f0f7f3 0%, #fafafa 60%);
 }
 
 .fcc-stg-section--danger .fcc-stg-section__hd {
@@ -2447,7 +2447,7 @@
 
 .fcc-stg-select:focus {
 	outline: none;
-	border-color: #a21caf;
+	border-color: #2D7A4F;
 }
 
 .fcc-stg-number {
@@ -2463,7 +2463,7 @@
 
 .fcc-stg-number:focus {
 	outline: none;
-	border-color: #a21caf;
+	border-color: #2D7A4F;
 }
 
 /* --------------------------------------------------------------------------
@@ -2490,13 +2490,13 @@
 }
 
 .fcc-stg-nutrient:hover {
-	border-color: #a21caf;
-	background: #fdf4ff;
+	border-color: #2D7A4F;
+	background: #f0f7f3;
 }
 
 .fcc-stg-nutrient--checked {
-	border-color: #a21caf;
-	background: #fdf4ff;
+	border-color: #2D7A4F;
+	background: #f0f7f3;
 }
 
 .fcc-stg-nutrient input[type="checkbox"] {
@@ -2521,8 +2521,8 @@
 }
 
 .fcc-stg-nutrient--checked .fcc-stg-nutrient__box {
-	background: #a21caf;
-	border-color: #a21caf;
+	background: #2D7A4F;
+	border-color: #2D7A4F;
 	color: #fff;
 }
 
@@ -2534,7 +2534,7 @@
 }
 
 .fcc-stg-nutrient--checked .fcc-stg-nutrient__label {
-	color: #6b21a8;
+	color: #1a5c35;
 	font-weight: 600;
 }
 
@@ -2555,13 +2555,13 @@
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	border-top: 3px solid #ede9fe;
+	border-top: 3px solid #c8e6d3;
 	transition: border-top-color .2s;
 }
 
 .fcc-stg-numfield:hover {
-	border-top-color: #a21caf;
-	background: #fdf4ff;
+	border-top-color: #2D7A4F;
+	background: #f0f7f3;
 }
 
 .fcc-stg-numfield__label {
@@ -2588,14 +2588,14 @@
 
 .fcc-stg-numfield__input:focus {
 	outline: none;
-	border-color: #a21caf;
+	border-color: #2D7A4F;
 	background: #fff;
-	box-shadow: 0 0 0 3px rgba(162,28,175,.12);
+	box-shadow: 0 0 0 3px rgba(45,122,79,.12);
 }
 
 .fcc-stg-numfield:focus-within {
-	border-top-color: #a21caf;
-	background: #fdf4ff;
+	border-top-color: #2D7A4F;
+	background: #f0f7f3;
 }
 
 /* --------------------------------------------------------------------------
@@ -2720,7 +2720,7 @@
 }
 
 .fcc-stg-feature:last-child { border-bottom: none; }
-.fcc-stg-feature--on { background: #fdf4ff; }
+.fcc-stg-feature--on { background: #f0f7f3; }
 .fcc-stg-feature--danger.fcc-stg-feature--on { background: #fff1f2; }
 
 .fcc-stg-feature__info {
@@ -2780,7 +2780,7 @@
 }
 
 .fcc-stg-toggle input:checked + .fcc-stg-toggle__track {
-	background: #a21caf;
+	background: #2D7A4F;
 }
 
 .fcc-stg-toggle--danger input:checked + .fcc-stg-toggle__track {
@@ -2813,13 +2813,13 @@
 }
 
 .fcc-stg-label-field:hover {
-	border-color: #d8b4fe;
-	box-shadow: 0 2px 8px rgba(162,28,175,.08);
+	border-color: #a8d5b5;
+	box-shadow: 0 2px 8px rgba(45,122,79,.08);
 }
 
 .fcc-stg-label-field:focus-within {
-	border-color: #a21caf;
-	box-shadow: 0 0 0 3px rgba(162,28,175,.1);
+	border-color: #2D7A4F;
+	box-shadow: 0 0 0 3px rgba(45,122,79,.1);
 }
 
 .fcc-stg-label-field__label {
@@ -2838,14 +2838,14 @@
 	display: inline-block;
 	width: 3px;
 	height: 12px;
-	background: #d8b4fe;
+	background: #a8d5b5;
 	border-radius: 2px;
 	flex-shrink: 0;
 	transition: background .15s;
 }
 
 .fcc-stg-label-field:focus-within .fcc-stg-label-field__label::before {
-	background: #a21caf;
+	background: #2D7A4F;
 }
 
 .fcc-stg-label-field__input {
@@ -2863,7 +2863,7 @@
 
 .fcc-stg-label-field__input:focus {
 	outline: none;
-	border-color: #a21caf;
+	border-color: #2D7A4F;
 	background: #fff;
 }
 
@@ -2890,7 +2890,7 @@
 
 .fcc-stg-css-editor:focus {
 	outline: none;
-	box-shadow: inset 0 0 0 2px #a21caf;
+	box-shadow: inset 0 0 0 2px #2D7A4F;
 }
 
 /* --------------------------------------------------------------------------
@@ -2914,7 +2914,7 @@
 	align-items: center;
 	gap: 8px;
 	padding: 10px 24px;
-	background: linear-gradient(135deg, #6b21a8, #a21caf);
+	background: linear-gradient(135deg, #1a5c35, #2D7A4F);
 	color: #fff;
 	border: none;
 	border-radius: 9px;
@@ -2922,12 +2922,12 @@
 	font-weight: 700;
 	cursor: pointer;
 	transition: opacity .15s, box-shadow .15s;
-	box-shadow: 0 2px 8px rgba(107,33,168,.35);
+	box-shadow: 0 2px 8px rgba(45,122,79,.35);
 }
 
 .fcc-stg-save:hover {
 	opacity: .9;
-	box-shadow: 0 4px 14px rgba(107,33,168,.45);
+	box-shadow: 0 4px 14px rgba(45,122,79,.45);
 }
 
 .fcc-stg-footer__tab {
