@@ -62,6 +62,48 @@
 	} );
 
 	// -------------------------------------------------------------------------
+	// AJAX column sort — Foods list table (all sortable headers)
+	// -------------------------------------------------------------------------
+	$( document ).on( 'click', '#fcc-foods-list .fcc-foods-sort', function ( e ) {
+		e.preventDefault();
+
+		const $list = $( '#fcc-foods-list' );
+		const href  = $( this ).attr( 'href' );
+
+		// Parse new orderby/order from the link's URL params.
+		const urlObj     = new URL( href, window.location.href );
+		const newOrderby = urlObj.searchParams.get( 'orderby' ) || 'name';
+		const newOrder   = urlObj.searchParams.get( 'order' )   || 'asc';
+
+		// Persist the new sort state on the container for subsequent pagination clicks.
+		$list.data( 'orderby', newOrderby ).data( 'order', newOrder );
+
+		const nonce  = $list.data( 'nonce' );
+		const search = $list.data( 'search' );
+		const cat    = $list.data( 'cat' );
+
+		$list.addClass( 'fcc-loading' );
+
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_foods_page',
+			_ajax_nonce: nonce,
+			paged:       1,
+			s:           search,
+			category_id: cat,
+			orderby:     newOrderby,
+			order:       newOrder,
+		}, function ( response ) {
+			$list.removeClass( 'fcc-loading' );
+			if ( response.success ) {
+				$list.html( response.data.html );
+				$list[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+			}
+		} ).fail( function () {
+			$list.removeClass( 'fcc-loading' );
+		} );
+	} );
+
+	// -------------------------------------------------------------------------
 	// AJAX pagination — Foods list table
 	// -------------------------------------------------------------------------
 	$( document ).on( 'click', '#fcc-foods-list .fcc-foods-page-btn[data-page]', function ( e ) {

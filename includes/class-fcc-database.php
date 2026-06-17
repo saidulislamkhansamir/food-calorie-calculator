@@ -186,19 +186,31 @@ class Database {
 		];
 		$args = wp_parse_args( $args, $defaults );
 
-		$allowed_orderby = [ 'id', 'name', 'category_id', 'energy_kcal', 'created_at' ];
-		$orderby         = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'name';
-		$order           = 'DESC' === strtoupper( $args['order'] ) ? 'DESC' : 'ASC';
+		$allowed_orderby = [
+			'id', 'name', 'category_id', 'category_name',
+			'energy_kcal', 'protein_g', 'carbohydrate_g', 'fat_g',
+			'omega3_total_mg', 'caffeine_mg', 'created_at',
+		];
+		$order    = 'DESC' === strtoupper( $args['order'] ) ? 'DESC' : 'ASC';
+		$use_join = 'category_name' === $args['orderby'];
+
+		if ( ! in_array( $args['orderby'], $allowed_orderby, true ) ) {
+			$args['orderby'] = 'name';
+			$use_join        = false;
+		}
+
+		$col_prefix = $use_join ? 'f.' : '';
+		$orderby    = $use_join ? "COALESCE(c.name,'')" : $args['orderby'];
 
 		$where_parts = [];
 		$where_vals  = [];
 
 		if ( $args['category_id'] > 0 ) {
-			$where_parts[] = 'category_id = %d';
+			$where_parts[] = "{$col_prefix}category_id = %d";
 			$where_vals[]  = absint( $args['category_id'] );
 		}
 		if ( '' !== $args['search'] ) {
-			$where_parts[] = 'name LIKE %s';
+			$where_parts[] = "{$col_prefix}name LIKE %s";
 			$where_vals[]  = '%' . $wpdb->esc_like( $args['search'] ) . '%';
 		}
 
@@ -206,13 +218,21 @@ class Database {
 		$offset    = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
-		$count_sql = "SELECT COUNT(*) FROM {$table} {$where_sql}";
-		$total     = (int) ( $where_vals
+		if ( $use_join ) {
+			$cat_table = self::categories_table();
+			$join_sql  = "LEFT JOIN {$cat_table} c ON f.category_id = c.id";
+			$count_sql = "SELECT COUNT(*) FROM {$table} f {$join_sql} {$where_sql}";
+			$data_sql  = "SELECT f.* FROM {$table} f {$join_sql} {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+		} else {
+			$count_sql = "SELECT COUNT(*) FROM {$table} {$where_sql}";
+			$data_sql  = "SELECT * FROM {$table} {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+		}
+
+		$total = (int) ( $where_vals
 			? $wpdb->get_var( $wpdb->prepare( $count_sql, ...$where_vals ) )
 			: $wpdb->get_var( $count_sql )
 		);
 
-		$data_sql = "SELECT * FROM {$table} {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
 		$all_vals = array_merge( $where_vals, [ absint( $args['per_page'] ), $offset ] );
 		$rows     = $wpdb->get_results( $wpdb->prepare( $data_sql, ...$all_vals ), ARRAY_A );
 		// phpcs:enable

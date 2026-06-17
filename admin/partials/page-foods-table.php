@@ -127,7 +127,15 @@ endif;
 							</span>
 						</a>
 					</th>
-					<th class="fcc-foods-th"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
+					<th class="fcc-foods-th">
+						<a href="<?php echo esc_url( fcc_sort_url( 'category_name', $orderby, $order ) ); ?>"
+							class="fcc-foods-sort <?php echo 'category_name' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
+							<?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?>
+							<span class="fcc-foods-sort__arrow" aria-hidden="true">
+								<?php echo 'category_name' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
+							</span>
+						</a>
+					</th>
 					<th class="fcc-foods-th fcc-foods-th--num">
 						<a href="<?php echo esc_url( fcc_sort_url( 'energy_kcal', $orderby, $order ) ); ?>"
 							class="fcc-foods-sort <?php echo 'energy_kcal' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
@@ -137,11 +145,51 @@ endif;
 							</span>
 						</a>
 					</th>
-					<th class="fcc-foods-th fcc-foods-th--num"><?php esc_html_e( 'Protein', 'food-calorie-calculator' ); ?></th>
-					<th class="fcc-foods-th fcc-foods-th--num"><?php esc_html_e( 'Carbs', 'food-calorie-calculator' ); ?></th>
-					<th class="fcc-foods-th fcc-foods-th--num"><?php esc_html_e( 'Fat', 'food-calorie-calculator' ); ?></th>
-					<th class="fcc-foods-th fcc-foods-th--badge">&#937;-3</th>
-					<th class="fcc-foods-th fcc-foods-th--badge"><?php esc_html_e( 'Caff.', 'food-calorie-calculator' ); ?></th>
+					<th class="fcc-foods-th fcc-foods-th--num">
+						<a href="<?php echo esc_url( fcc_sort_url( 'protein_g', $orderby, $order ) ); ?>"
+							class="fcc-foods-sort <?php echo 'protein_g' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
+							<?php esc_html_e( 'Protein', 'food-calorie-calculator' ); ?>
+							<span class="fcc-foods-sort__arrow" aria-hidden="true">
+								<?php echo 'protein_g' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
+							</span>
+						</a>
+					</th>
+					<th class="fcc-foods-th fcc-foods-th--num">
+						<a href="<?php echo esc_url( fcc_sort_url( 'carbohydrate_g', $orderby, $order ) ); ?>"
+							class="fcc-foods-sort <?php echo 'carbohydrate_g' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
+							<?php esc_html_e( 'Carbs', 'food-calorie-calculator' ); ?>
+							<span class="fcc-foods-sort__arrow" aria-hidden="true">
+								<?php echo 'carbohydrate_g' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
+							</span>
+						</a>
+					</th>
+					<th class="fcc-foods-th fcc-foods-th--num">
+						<a href="<?php echo esc_url( fcc_sort_url( 'fat_g', $orderby, $order ) ); ?>"
+							class="fcc-foods-sort <?php echo 'fat_g' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
+							<?php esc_html_e( 'Fat', 'food-calorie-calculator' ); ?>
+							<span class="fcc-foods-sort__arrow" aria-hidden="true">
+								<?php echo 'fat_g' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
+							</span>
+						</a>
+					</th>
+					<th class="fcc-foods-th fcc-foods-th--badge">
+						<a href="<?php echo esc_url( fcc_sort_url( 'omega3_total_mg', $orderby, $order ) ); ?>"
+							class="fcc-foods-sort <?php echo 'omega3_total_mg' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
+							&#937;-3
+							<span class="fcc-foods-sort__arrow" aria-hidden="true">
+								<?php echo 'omega3_total_mg' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
+							</span>
+						</a>
+					</th>
+					<th class="fcc-foods-th fcc-foods-th--badge">
+						<a href="<?php echo esc_url( fcc_sort_url( 'caffeine_mg', $orderby, $order ) ); ?>"
+							class="fcc-foods-sort <?php echo 'caffeine_mg' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
+							<?php esc_html_e( 'Caff.', 'food-calorie-calculator' ); ?>
+							<span class="fcc-foods-sort__arrow" aria-hidden="true">
+								<?php echo 'caffeine_mg' === $orderby ? ( 'ASC' === $order ? '↑' : '↓' ) : '↕'; ?>
+							</span>
+						</a>
+					</th>
 					<th class="fcc-foods-th fcc-foods-th--actions"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
 				</tr>
 			</thead>
