@@ -54,7 +54,6 @@
 	background: var(--fcc-surface);
 	border-radius: 16px;
 	box-shadow: var(--fcc-shadow-lg);
-	overflow: hidden;
 	max-width: 860px;
 	margin: 0 auto;
 	line-height: 1.5;
@@ -89,6 +88,7 @@
 	padding: 1.5rem 1.75rem;
 	position: relative;
 	overflow: hidden;
+	border-radius: 16px 16px 0 0;
 }
 
 .fcc-hero::after {
