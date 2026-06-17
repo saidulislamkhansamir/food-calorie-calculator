@@ -3112,8 +3112,17 @@
 	font-size: 0.875rem;
 }
 
+/* td itself can't reliably clip — constrain via inner div instead */
 .fcc-reqs-th--name,
-.fcc-reqs-td--name { width: auto; overflow: hidden; word-break: break-word; overflow-wrap: anywhere; }
+.fcc-reqs-td--name { width: auto; }
+
+.fcc-reqs-name-wrap {
+	display: block;
+	max-width: 100%;
+	overflow: hidden;
+	word-break: break-all;
+	overflow-wrap: anywhere;
+}
 
 .fcc-reqs-table thead tr {
 	background: #f8faf5;
@@ -3968,7 +3977,12 @@ button.fcc-reqs-tab {
 	opacity: 0.75;
 }
 
-.fcc-reqs-note__text { display: inline; }
+/* block div — inherits word-break and stays within .fcc-reqs-name-wrap */
+.fcc-reqs-note__text {
+	display: block;
+	word-break: break-all;
+	overflow-wrap: anywhere;
+}
 
 .fcc-reqs-note-toggle {
 	display: inline;
