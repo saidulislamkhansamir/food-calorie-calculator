@@ -165,6 +165,15 @@ class Admin {
 			'fcc-ads',
 			[ $this, 'page_ads' ]
 		);
+
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'Supplement Lead Gen', 'food-calorie-calculator' ),
+			__( 'Supplement Lead Gen', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-supplements',
+			[ $this, 'page_supplements' ]
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -239,6 +248,10 @@ class Admin {
 
 	public function page_ads(): void {
 		( new Ads() )->page_ads();
+	}
+
+	public function page_supplements(): void {
+		( new Supplements() )->page_supplements();
 	}
 
 	// -------------------------------------------------------------------------

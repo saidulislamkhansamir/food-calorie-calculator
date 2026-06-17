@@ -370,6 +370,13 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 					<div class="fcc-affiliate-links__chips"></div>
 				</div>
 
+				<!-- Supplement suggestions (contextual, trigger-matched) -->
+				<div class="fcc-supplement-suggestions" hidden aria-label="<?php esc_attr_e( 'Recommended supplements', 'food-calorie-calculator' ); ?>">
+					<h4 class="fcc-supplement-suggestions__heading"></h4>
+					<div class="fcc-supplement-suggestions__grid"></div>
+					<p class="fcc-supplement-suggestions__disclosure"></p>
+				</div>
+
 				<!-- Action buttons -->
 				<div class="fcc-result-actions">
 					<?php if ( ! empty( $features['print_pdf'] ) ) : ?>

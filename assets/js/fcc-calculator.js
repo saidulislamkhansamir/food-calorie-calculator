@@ -80,6 +80,8 @@
 	const mealEmptyState = root.querySelector( '.fcc-meal-empty' );
 	const affiliateSec   = root.querySelector( '.fcc-affiliate-links' );
 	const affiliateChips = root.querySelector( '.fcc-affiliate-links__chips' );
+	const suppSec        = root.querySelector( '.fcc-supplement-suggestions' );
+	const suppGrid       = suppSec ? suppSec.querySelector( '.fcc-supplement-suggestions__grid' ) : null;
 
 	// -------------------------------------------------------------------------
 	// REST helpers
@@ -131,6 +133,7 @@
 			if ( bar ) bar.remove();
 		}
 		if ( affiliateSec ) affiliateSec.hidden = true;
+		if ( suppSec     ) suppSec.hidden      = true;
 	}
 
 	function showPopular() {
@@ -552,6 +555,9 @@
 
 		// Affiliate buy buttons.
 		renderAffiliateLinks( food );
+
+		// Supplement suggestions (contextual lead gen).
+		renderSupplementSuggestions( food );
 	}
 
 	// -------------------------------------------------------------------------
@@ -590,6 +596,154 @@
 
 		affiliateChips.innerHTML = html;
 		affiliateSec.hidden = false;
+	}
+
+	// -------------------------------------------------------------------------
+	// Supplement lead gen — contextual suggestions
+	// -------------------------------------------------------------------------
+	function renderSupplementSuggestions( food ) {
+		if ( ! suppSec || ! suppGrid ) return;
+		var sData = cfg.supplements;
+		if ( ! sData || ! sData.config ) { suppSec.hidden = true; return; }
+
+		var matched = matchSupplements( food, sData );
+		if ( ! matched.length ) { suppSec.hidden = true; return; }
+
+		var scfg    = sData.config;
+		var heading = suppSec.querySelector( '.fcc-supplement-suggestions__heading' );
+		var disc    = suppSec.querySelector( '.fcc-supplement-suggestions__disclosure' );
+		if ( heading ) heading.textContent = scfg.heading || 'Recommended Supplements';
+		if ( disc )    disc.textContent    = scfg.disclosure || '';
+
+		var netNames = {
+			amazon_uk: 'Amazon UK', myprotein: 'MyProtein', hollbarrett: 'Holland & Barrett',
+			boots: 'Boots', bulk: 'Bulk™', chemist_drct: 'Chemist Direct', custom: ''
+		};
+
+		var html = '';
+		matched.forEach( function ( s ) {
+			var netLabel = netNames[ s.network ] || s.network || '';
+			var imgHtml  = s.image
+				? '<img class="fcc-supp-card__img" src="' + escHtml( s.image ) + '" alt="' + escHtml( s.name ) + '" loading="lazy">'
+				: '<div class="fcc-supp-card__img-placeholder"></div>';
+
+			var badgeHtml = s.badge
+				? '<span class="fcc-supp-card__badge">' + escHtml( s.badge ) + '</span>'
+				: '';
+
+			var priceHtml = ( scfg.show_price && s.price )
+				? '<span class="fcc-supp-card__price">' + escHtml( s.price ) + '</span>'
+				: '';
+
+			var netHtml = ( scfg.show_network && netLabel )
+				? '<span class="fcc-supp-card__network">via ' + escHtml( netLabel ) + '</span>'
+				: '';
+
+			if ( scfg.style === 'compact' ) {
+				html += '<a class="fcc-supp-row" href="' + escHtml( s.url ) + '" target="_blank" rel="noopener sponsored"'
+					+ ' data-supp-id="' + escHtml( s.id ) + '">'
+					+ '<span class="fcc-supp-row__name">' + escHtml( s.name ) + '</span>'
+					+ '<span class="fcc-supp-row__brand">' + escHtml( s.brand ) + '</span>'
+					+ priceHtml
+					+ '<span class="fcc-supp-row__cta">' + escHtml( scfg.cta ) + ' →</span>'
+					+ '</a>';
+			} else {
+				html += '<a class="fcc-supp-card" href="' + escHtml( s.url ) + '" target="_blank" rel="noopener sponsored"'
+					+ ' data-supp-id="' + escHtml( s.id ) + '">'
+					+ imgHtml
+					+ '<div class="fcc-supp-card__body">'
+					+ '<div class="fcc-supp-card__top">'
+					+ badgeHtml
+					+ netHtml
+					+ '</div>'
+					+ '<div class="fcc-supp-card__brand">' + escHtml( s.brand ) + '</div>'
+					+ '<div class="fcc-supp-card__name">' + escHtml( s.name ) + '</div>'
+					+ ( s.tagline ? '<div class="fcc-supp-card__tagline">' + escHtml( s.tagline ) + '</div>' : '' )
+					+ '<div class="fcc-supp-card__footer">'
+					+ priceHtml
+					+ '<span class="fcc-supp-card__cta">' + escHtml( scfg.cta ) + ' →</span>'
+					+ '</div>'
+					+ '</div>'
+					+ '</a>';
+			}
+		} );
+
+		suppGrid.innerHTML = html;
+		suppSec.hidden = false;
+
+		// Track impressions.
+		trackSuppImpressions( matched.map( function ( s ) { return s.id; } ), sData.nonce );
+
+		// Bind click tracking.
+		suppGrid.querySelectorAll( '[data-supp-id]' ).forEach( function ( el ) {
+			el.addEventListener( 'click', function () {
+				trackSuppClick( el.dataset.suppId, sData.nonce );
+			} );
+		} );
+	}
+
+	function matchSupplements( food, sData ) {
+		var matchedCats = [];
+
+		( sData.rules || [] ).forEach( function ( rule ) {
+			if ( ! rule.enabled ) return;
+			var hit = false;
+
+			if ( rule.type === 'nutrient' ) {
+				var val       = parseFloat( food[ rule.field ] || 0 );
+				var threshold = parseFloat( rule.value || 0 );
+				if ( rule.operator === 'gte' && val >= threshold ) hit = true;
+				else if ( rule.operator === 'lte' && val <= threshold ) hit = true;
+				else if ( rule.operator === 'eq'  && val === threshold ) hit = true;
+
+			} else if ( rule.type === 'keyword' ) {
+				var foodName = ( food.name || '' ).toLowerCase();
+				var keywords = ( rule.value || '' ).split( ',' );
+				for ( var k = 0; k < keywords.length; k++ ) {
+					var kw = keywords[ k ].trim().toLowerCase();
+					if ( kw && foodName.includes( kw ) ) { hit = true; break; }
+				}
+
+			} else if ( rule.type === 'category' ) {
+				var catName = ( food.category_name || '' ).toLowerCase();
+				var kw2     = ( rule.value || '' ).toLowerCase().trim();
+				if ( kw2 && catName.includes( kw2 ) ) hit = true;
+			}
+
+			if ( hit ) {
+				( rule.cats || [] ).forEach( function ( c ) {
+					if ( ! matchedCats.includes( c ) ) matchedCats.push( c );
+				} );
+			}
+		} );
+
+		if ( ! matchedCats.length ) return [];
+
+		var catalog = ( sData.catalog || [] ).filter( function ( s ) {
+			return s.url && matchedCats.includes( s.category );
+		} );
+
+		// Shuffle slightly so the same supplement doesn't always appear first.
+		catalog.sort( function () { return Math.random() - 0.5; } );
+
+		return catalog.slice( 0, sData.config.max_sugg || 2 );
+	}
+
+	function trackSuppClick( suppId, nonce ) {
+		var fd = new FormData();
+		fd.append( 'action', 'fcc_supp_click' );
+		fd.append( 'nonce',  nonce );
+		fd.append( 'id',     suppId );
+		fetch( cfg.ajaxUrl, { method: 'POST', body: fd, keepalive: true } ).catch( function () {} );
+	}
+
+	function trackSuppImpressions( ids, nonce ) {
+		if ( ! ids.length ) return;
+		var fd = new FormData();
+		fd.append( 'action', 'fcc_supp_impression' );
+		fd.append( 'nonce',  nonce );
+		ids.forEach( function ( id ) { fd.append( 'ids[]', id ); } );
+		fetch( cfg.ajaxUrl, { method: 'POST', body: fd, keepalive: true } ).catch( function () {} );
 	}
 
 	// -------------------------------------------------------------------------

@@ -3,7 +3,7 @@
  * Plugin Name:       Food Calorie Calculator
  * Plugin URI:        https://foodcaloriecalculator.co.uk
  * Description:       A comprehensive UK food calorie calculator. Ships with 110+ foods, FSA traffic lights, Omega-3/caffeine tracking, meal builder, BMR/TDEE, CSV/Excel import-export, and a fully-featured admin control panel — no coding required.
- * Version:           1.12.0
+ * Version:           1.13.0
  * Requires at least: 6.0
  * Requires PHP:      8.1
  * Author:            The Khan Digital
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 // ---------------------------------------------------------------------------
 // Constants.
 // ---------------------------------------------------------------------------
-define( 'FCC_VERSION',         '1.12.0' );
+define( 'FCC_VERSION',         '1.13.0' );
 define( 'FCC_DB_VERSION',      '1.3' );
 define( 'FCC_PLUGIN_FILE',     __FILE__ );
 define( 'FCC_PLUGIN_DIR',      plugin_dir_path( __FILE__ ) );
@@ -39,9 +39,10 @@ require_once FCC_PLUGIN_DIR . 'includes/class-fcc-rest-api.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-shortcode.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-block.php';
 
-// Affiliates + Ads classes loaded unconditionally — their static helpers are called by the shortcode on the frontend.
+// Affiliates, Ads, and Supplements classes loaded unconditionally — their static helpers are called by the shortcode on the frontend.
 require_once FCC_PLUGIN_DIR . 'admin/class-fcc-admin-affiliates.php';
 require_once FCC_PLUGIN_DIR . 'admin/class-fcc-admin-ads.php';
+require_once FCC_PLUGIN_DIR . 'admin/class-fcc-admin-supplements.php';
 
 // Admin files loaded only inside the admin context.
 if ( is_admin() ) {
@@ -90,9 +91,10 @@ add_action( 'plugins_loaded', function (): void {
 	$block = new FCC\FCC_Block();
 	$block->register( $loader );
 
-	// Affiliates + Ads AJAX handlers registered for both admin and logged-in frontend.
+	// Affiliates, Ads, and Supplements AJAX handlers registered for admin + frontend.
 	( new FCC\Admin\Affiliates() )->register( $loader );
 	( new FCC\Admin\Ads() )->register( $loader );
+	( new FCC\Admin\Supplements() )->register( $loader );
 
 	// Admin.
 	if ( is_admin() ) {
