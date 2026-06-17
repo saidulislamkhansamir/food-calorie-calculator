@@ -247,6 +247,19 @@
 		} );
 	}
 
+	var missedSearchLog = {};
+
+	function logMissedSearch( q ) {
+		var now = Date.now();
+		if ( missedSearchLog[ q ] && ( now - missedSearchLog[ q ] ) < 30000 ) return;
+		missedSearchLog[ q ] = now;
+		fetch( cfg.restUrl + '/missed-search', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify( { query: q } ),
+		} ).catch( function () {} );
+	}
+
 	function doSearch( q ) {
 		setSpinner( true );
 		const cat = Number( general.defaultCategory || 0 );
@@ -275,6 +288,7 @@
 			} );
 			dropdown.appendChild( li );
 			showDropdown();
+			if ( q.length >= 2 ) logMissedSearch( q );
 			return;
 		}
 		foods.forEach( function ( food ) {

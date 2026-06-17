@@ -36,6 +36,11 @@ class Database {
 		return $wpdb->prefix . 'fcc_food_requests';
 	}
 
+	public static function missed_searches_table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'fcc_missed_searches';
+	}
+
 	// -------------------------------------------------------------------------
 	// Schema creation / upgrade.
 	// -------------------------------------------------------------------------
@@ -115,11 +120,51 @@ class Database {
 ) {$charset_collate};";
 		// phpcs:enable
 
+		$missed   = self::missed_searches_table();
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql_missed = "CREATE TABLE {$missed} (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  query varchar(255) NOT NULL,
+  search_count int(11) NOT NULL DEFAULT 1,
+  last_searched_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  status varchar(20) NOT NULL DEFAULT 'active',
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  UNIQUE KEY fcc_ms_query (query(191)),
+  KEY status (status)
+) {$charset_collate};";
+		// phpcs:enable
+
 		dbDelta( $sql_cats );
 		dbDelta( $sql_foods );
 		dbDelta( $sql_requests );
+		dbDelta( $sql_missed );
 
 		update_option( 'fcc_db_version', self::SCHEMA_VERSION );
+	}
+
+	/**
+	 * Create the missed searches table — called by migration seed_v15.
+	 */
+	public static function create_missed_searches_table(): void {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$missed          = self::missed_searches_table();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql = "CREATE TABLE {$missed} (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  query varchar(255) NOT NULL,
+  search_count int(11) NOT NULL DEFAULT 1,
+  last_searched_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  status varchar(20) NOT NULL DEFAULT 'active',
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  UNIQUE KEY fcc_ms_query (query(191)),
+  KEY status (status)
+) {$charset_collate};";
+		// phpcs:enable
+		dbDelta( $sql );
 	}
 
 	/**
@@ -736,5 +781,284 @@ class Database {
 		$table = self::requests_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE status = %s", 'pending' ) );
+	}
+
+	// -------------------------------------------------------------------------
+	// Food Requests — Grouped view (deduplicated by food_name).
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Get food requests grouped by food_name, with sort, period, and status filter.
+	 *
+	 * @param array{status?:string,sort?:string,days?:int,date_from?:string,date_to?:string,per_page?:int,page?:int} $args
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_food_requests_grouped( array $args = [] ): array {
+		global $wpdb;
+		$table = self::requests_table();
+
+		$args = wp_parse_args( $args, [
+			'status'    => '',
+			'sort'      => 'most_requested',
+			'days'      => 0,
+			'date_from' => '',
+			'date_to'   => '',
+			'per_page'  => 20,
+			'page'      => 1,
+		] );
+
+		[ $where, $having, $vals ] = self::grouped_reqs_clauses( $args );
+		$having_sql = $having ? ' HAVING ' . $having : '';
+
+		$order = match ( $args['sort'] ) {
+			'latest' => 'last_requested DESC',
+			'oldest' => 'first_requested ASC',
+			default  => 'request_count DESC, last_requested DESC',
+		};
+
+		$offset = ( max( 1, (int) $args['page'] ) - 1 ) * (int) $args['per_page'];
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		$sql = "SELECT
+			food_name,
+			COUNT(*) AS request_count,
+			MAX(created_at) AS last_requested,
+			MIN(created_at) AS first_requested,
+			MAX(CASE WHEN status = 'pending'   THEN 1 ELSE 0 END) AS has_pending,
+			MAX(CASE WHEN status = 'done'      THEN 1 ELSE 0 END) AS has_done,
+			(SELECT note FROM {$table} r2
+			 WHERE LOWER(r2.food_name) = LOWER(r.food_name)
+			   AND r2.note != ''
+			 ORDER BY r2.created_at DESC LIMIT 1) AS latest_note
+		FROM {$table} r{$where}
+		GROUP BY LOWER(food_name){$having_sql}
+		ORDER BY {$order}
+		LIMIT %d OFFSET %d";
+		// phpcs:enable
+
+		$qvals   = array_merge( $vals, [ (int) $args['per_page'], $offset ] );
+		$rows    = $qvals
+			? $wpdb->get_results( $wpdb->prepare( $sql, $qvals ), ARRAY_A ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			: $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		foreach ( $rows as &$row ) {
+			$row['group_status'] = $row['has_pending'] ? 'pending'
+				: ( $row['has_done'] ? 'done' : 'dismissed' );
+		}
+
+		return $rows ?: [];
+	}
+
+	/**
+	 * Count distinct food_name groups (same filters as get_food_requests_grouped).
+	 *
+	 * @param array{status?:string,days?:int,date_from?:string,date_to?:string} $args
+	 */
+	public static function count_food_requests_grouped( array $args = [] ): int {
+		global $wpdb;
+		$table = self::requests_table();
+
+		[ $where, $having, $vals ] = self::grouped_reqs_clauses( $args );
+		$having_sql = $having ? ' HAVING ' . $having : '';
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		$inner = "SELECT 1 FROM {$table} r{$where} GROUP BY LOWER(food_name){$having_sql}";
+		$sql   = "SELECT COUNT(*) FROM ({$inner}) AS grp";
+		// phpcs:enable
+
+		return $vals
+			? (int) $wpdb->get_var( $wpdb->prepare( $sql, $vals ) ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			: (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	/** @return array{0:string,1:string,2:array<int,mixed>} [where_sql, having_sql, vals] */
+	private static function grouped_reqs_clauses( array $args ): array {
+		$where_parts  = [];
+		$having_parts = [];
+		$vals         = [];
+
+		// Period filter (WHERE on created_at).
+		$days      = (int) ( $args['days'] ?? 0 );
+		$date_from = $args['date_from'] ?? '';
+		$date_to   = $args['date_to'] ?? '';
+
+		if ( $date_from && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_from ) ) {
+			$where_parts[] = 'created_at >= %s';
+			$vals[]        = $date_from . ' 00:00:00';
+		} elseif ( $days > 0 ) {
+			$where_parts[] = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
+			$vals[]        = $days;
+		}
+		if ( $date_to && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_to ) ) {
+			$where_parts[] = 'created_at <= %s';
+			$vals[]        = $date_to . ' 23:59:59';
+		}
+
+		// Status filter (HAVING on aggregated status).
+		$status = $args['status'] ?? '';
+		if ( 'pending' === $status ) {
+			$having_parts[] = "MAX(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) = 1";
+		} elseif ( 'done' === $status ) {
+			$having_parts[] = "MAX(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) = 0";
+			$having_parts[] = "MAX(CASE WHEN status = 'done' THEN 1 ELSE 0 END) = 1";
+		} elseif ( 'dismissed' === $status ) {
+			$having_parts[] = "MAX(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) = 0";
+			$having_parts[] = "MAX(CASE WHEN status = 'done' THEN 1 ELSE 0 END) = 0";
+		}
+
+		$where  = $where_parts ? ' WHERE ' . implode( ' AND ', $where_parts ) : '';
+		$having = $having_parts ? implode( ' AND ', $having_parts ) : '';
+
+		return [ $where, $having, $vals ];
+	}
+
+	/** Update all requests with a given food_name to a new status. */
+	public static function update_requests_status_by_food( string $food_name, string $status ): void {
+		global $wpdb;
+		$table = self::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$table} SET status = %s WHERE LOWER(food_name) = LOWER(%s)",
+				$status,
+				$food_name
+			)
+		);
+	}
+
+	// -------------------------------------------------------------------------
+	// Missed Searches CRUD.
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Log a missed search query — insert new row or increment count.
+	 * Normalises to lowercase. Silently ignores queries shorter than 2 chars.
+	 */
+	public static function log_missed_search( string $query ): void {
+		global $wpdb;
+		$query = mb_strtolower( trim( $query ), 'UTF-8' );
+		if ( strlen( $query ) < 2 ) {
+			return;
+		}
+		$table = self::missed_searches_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query(
+			$wpdb->prepare(
+				"INSERT INTO {$table} (query, search_count, last_searched_at)
+				 VALUES (%s, 1, NOW())
+				 ON DUPLICATE KEY UPDATE search_count = search_count + 1, last_searched_at = NOW()",
+				$query
+			)
+		);
+	}
+
+	/**
+	 * Get missed searches with optional filtering and pagination.
+	 *
+	 * @param array{status?:string,sort?:string,days?:int,date_from?:string,date_to?:string,per_page?:int,page?:int} $args
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_missed_searches( array $args = [] ): array {
+		global $wpdb;
+		$table = self::missed_searches_table();
+
+		$args = wp_parse_args( $args, [
+			'status'    => '',
+			'sort'      => 'most_searched',
+			'days'      => 0,
+			'date_from' => '',
+			'date_to'   => '',
+			'per_page'  => 20,
+			'page'      => 1,
+		] );
+
+		[ $where, $vals ] = self::ms_where( $args );
+		$offset = ( max( 1, (int) $args['page'] ) - 1 ) * (int) $args['per_page'];
+
+		$order = match ( $args['sort'] ) {
+			'latest' => 'last_searched_at DESC',
+			'oldest' => 'created_at ASC',
+			default  => 'search_count DESC, last_searched_at DESC',
+		};
+
+		$vals[] = (int) $args['per_page'];
+		$vals[] = $offset;
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare( "SELECT * FROM {$table}{$where} ORDER BY {$order} LIMIT %d OFFSET %d", $vals ), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Count missed searches with the same filtering as get_missed_searches().
+	 *
+	 * @param array{status?:string,days?:int,date_from?:string,date_to?:string} $args
+	 */
+	public static function count_missed_searches( array $args = [] ): int {
+		global $wpdb;
+		$table = self::missed_searches_table();
+		[ $where, $vals ] = self::ms_where( $args );
+		if ( $vals ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table}{$where}", $vals ) );
+		}
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
+	}
+
+	public static function count_active_missed_searches(): int {
+		global $wpdb;
+		$table = self::missed_searches_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE status = %s", 'active' ) );
+	}
+
+	public static function count_high_priority_missed_searches( int $threshold = 5 ): int {
+		global $wpdb;
+		$table = self::missed_searches_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE status = 'active' AND search_count >= %d", $threshold ) );
+	}
+
+	public static function update_missed_search_status( int $id, string $status ): void {
+		global $wpdb;
+		$wpdb->update( self::missed_searches_table(), [ 'status' => $status ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
+	}
+
+	public static function delete_missed_search( int $id ): void {
+		global $wpdb;
+		$wpdb->delete( self::missed_searches_table(), [ 'id' => $id ], [ '%d' ] );
+	}
+
+	/** @return array{0:string,1:array<int,mixed>} */
+	private static function ms_where( array $args ): array {
+		$parts = [];
+		$vals  = [];
+
+		if ( ! empty( $args['status'] ) ) {
+			$parts[] = 'status = %s';
+			$vals[]  = $args['status'];
+		}
+
+		$days      = (int) ( $args['days'] ?? 0 );
+		$date_from = $args['date_from'] ?? '';
+		$date_to   = $args['date_to'] ?? '';
+
+		if ( $date_from && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_from ) ) {
+			$parts[] = 'created_at >= %s';
+			$vals[]  = $date_from . ' 00:00:00';
+		} elseif ( $days > 0 ) {
+			$parts[] = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
+			$vals[]  = $days;
+		}
+		if ( $date_to && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_to ) ) {
+			$parts[] = 'created_at <= %s';
+			$vals[]  = $date_to . ' 23:59:59';
+		}
+
+		$where = $parts ? ' WHERE ' . implode( ' AND ', $parts ) : '';
+		return [ $where, $vals ];
 	}
 }

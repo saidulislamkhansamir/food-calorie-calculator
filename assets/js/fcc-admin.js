@@ -394,85 +394,170 @@
 	}
 
 	// -------------------------------------------------------------------------
-	// Food Requests page — AJAX
+	// Food Requests page — AJAX (grouped view)
 	// -------------------------------------------------------------------------
-	let reqsSearchTimer;
 
 	function loadReqsPage( page ) {
 		const $list = $( '#fcc-reqs-list' );
 		if ( ! $list.length ) return;
-		const nonce  = $list.data( 'nonce' );
-		const status = $list.data( 'status' ) || '';
-		const search = $list.data( 'search' ) || '';
 		$list.data( 'paged', page ).addClass( 'fcc-loading' );
 		$.post( fccAdmin.ajaxUrl, {
 			action:      'fcc_reqs_page',
-			_ajax_nonce: nonce,
+			_ajax_nonce: $list.data( 'nonce' ),
 			paged:       page,
-			status:      status,
-			s:           search,
+			status:      $list.data( 'status' ) || '',
+			sort:        $list.data( 'sort' )   || 'most_requested',
+			period:      $list.data( 'period' ) !== undefined ? $list.data( 'period' ) : 0,
+			date_from:   $list.data( 'date-from' ) || '',
+			date_to:     $list.data( 'date-to' )   || '',
 		}, function ( response ) {
 			$list.removeClass( 'fcc-loading' );
 			if ( response.success ) {
 				$list.html( response.data.html );
 				$list[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 			}
-		} ).fail( function () {
-			$list.removeClass( 'fcc-loading' );
-		} );
+		} ).fail( function () { $list.removeClass( 'fcc-loading' ); } );
 	}
 
-	// Filter tabs.
+	function loadMsPage( page ) {
+		const $list = $( '#fcc-ms-list' );
+		if ( ! $list.length ) return;
+		$list.data( 'paged', page ).addClass( 'fcc-loading' );
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_ms_page',
+			_ajax_nonce: $list.data( 'nonce' ),
+			paged:       page,
+			status:      $list.data( 'status' ) || '',
+			sort:        $list.data( 'sort' )   || 'most_searched',
+			period:      $list.data( 'period' ) !== undefined ? $list.data( 'period' ) : 0,
+			date_from:   $list.data( 'date-from' ) || '',
+			date_to:     $list.data( 'date-to' )   || '',
+		}, function ( response ) {
+			$list.removeClass( 'fcc-loading' );
+			if ( response.success ) {
+				$list.html( response.data.html );
+				$list[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+			}
+		} ).fail( function () { $list.removeClass( 'fcc-loading' ); } );
+	}
+
+	// Status filter tabs.
 	$( document ).on( 'click', '.fcc-reqs-tab-btn', function () {
 		const $btn   = $( this );
+		const region = $btn.data( 'region' );
 		const status = $btn.data( 'status' ) !== undefined ? String( $btn.data( 'status' ) ) : '';
-		$( '#fcc-reqs-list' ).data( 'status', status );
-		$( '.fcc-reqs-tab-btn' ).removeClass( 'fcc-reqs-tab--active' );
+
+		$( '.fcc-reqs-tab-btn[data-region="' + region + '"]' ).removeClass( 'fcc-reqs-tab--active' );
 		$btn.addClass( 'fcc-reqs-tab--active' );
-		loadReqsPage( 1 );
-	} );
 
-	// Search box — debounced.
-	$( document ).on( 'input', '#fcc-reqs-search', function () {
-		clearTimeout( reqsSearchTimer );
-		const val = $( this ).val();
-		reqsSearchTimer = setTimeout( function () {
-			$( '#fcc-reqs-list' ).data( 'search', val );
+		if ( 'ms' === region ) {
+			$( '#fcc-ms-list' ).data( 'status', status );
+			loadMsPage( 1 );
+		} else {
+			$( '#fcc-reqs-list' ).data( 'status', status );
 			loadReqsPage( 1 );
-		}, 350 );
+		}
 	} );
 
-	// Pagination inside the AJAX region.
+	// Sort pills.
+	$( document ).on( 'click', '.fcc-reqs-sort-btn', function () {
+		const $btn   = $( this );
+		const region = $btn.data( 'region' );
+		const sort   = $btn.data( 'sort' );
+
+		$( '.fcc-reqs-sort-btn[data-region="' + region + '"]' ).removeClass( 'fcc-reqs-pill--active' );
+		$btn.addClass( 'fcc-reqs-pill--active' );
+
+		if ( 'ms' === region ) {
+			$( '#fcc-ms-list' ).data( 'sort', sort );
+			loadMsPage( 1 );
+		} else {
+			$( '#fcc-reqs-list' ).data( 'sort', sort );
+			loadReqsPage( 1 );
+		}
+	} );
+
+	// Period pills.
+	$( document ).on( 'click', '.fcc-reqs-period-btn', function () {
+		const $btn    = $( this );
+		const region  = $btn.data( 'region' );
+		const period  = parseInt( $btn.data( 'period' ), 10 );
+		const drId    = 'ms' === region ? '#fcc-ms-daterange' : '#fcc-reqs-daterange';
+
+		$( '.fcc-reqs-period-btn[data-region="' + region + '"]' ).removeClass( 'fcc-reqs-pill--active' );
+		$btn.addClass( 'fcc-reqs-pill--active' );
+		$( drId ).prop( 'hidden', period !== -1 );
+
+		if ( 'ms' === region ) {
+			$( '#fcc-ms-list' ).data( 'period', period );
+			if ( period !== -1 ) loadMsPage( 1 );
+		} else {
+			$( '#fcc-reqs-list' ).data( 'period', period );
+			if ( period !== -1 ) loadReqsPage( 1 );
+		}
+	} );
+
+	// Custom date inputs.
+	$( document ).on( 'change', '.fcc-reqs-date-input', function () {
+		const $inp   = $( this );
+		const region = $inp.data( 'region' );
+		const field  = $inp.data( 'field' );
+		const val    = $inp.val();
+
+		if ( 'ms' === region ) {
+			$( '#fcc-ms-list' ).data( field === 'date_from' ? 'date-from' : 'date-to', val );
+			loadMsPage( 1 );
+		} else {
+			$( '#fcc-reqs-list' ).data( field === 'date_from' ? 'date-from' : 'date-to', val );
+			loadReqsPage( 1 );
+		}
+	} );
+
+	// Pagination — food requests.
 	$( document ).on( 'click', '#fcc-reqs-list .fcc-reqs-page-btn[data-page]', function ( e ) {
 		e.preventDefault();
 		loadReqsPage( parseInt( $( this ).data( 'page' ), 10 ) );
 	} );
 
-	// Action buttons: Done / Dismiss / Delete.
-	$( document ).on( 'click', '#fcc-reqs-list .fcc-reqs-btn', function () {
-		const $btn   = $( this );
-		const action = $btn.data( 'action' );
-		const id     = $btn.data( 'id' );
-		const $list  = $( '#fcc-reqs-list' );
+	// Pagination — missed searches.
+	$( document ).on( 'click', '#fcc-ms-list .fcc-ms-page-btn[data-page]', function ( e ) {
+		e.preventDefault();
+		loadMsPage( parseInt( $( this ).data( 'page' ), 10 ) );
+	} );
 
-		if ( 'delete' === action ) {
-			const msg = fccAdmin.i18n.confirmDeleteReq || fccAdmin.i18n.confirmDelete;
-			if ( ! window.confirm( msg ) ) return;
-		}
+	// Note expand / collapse.
+	$( document ).on( 'click', '.fcc-reqs-note-toggle', function () {
+		const $toggle = $( this );
+		const $wrap   = $toggle.closest( '.fcc-reqs-note' );
+		const $short  = $wrap.find( '.fcc-reqs-note__short' );
+		const $full   = $wrap.find( '.fcc-reqs-note__full' );
+		const expanded = ! $full.prop( 'hidden' );
+
+		$short.prop( 'hidden', ! expanded );
+		$full.prop( 'hidden', expanded );
+		$toggle.html( expanded
+			? ( escAttr( 'Show more' ) + ' &#x2193;' )
+			: ( escAttr( 'Show less' ) + ' &#x2191;' )
+		);
+	} );
+
+	// Food Requests — group action buttons (Mark Added / Dismiss).
+	$( document ).on( 'click', '#fcc-reqs-list .fcc-reqs-group-btn', function () {
+		const $btn    = $( this );
+		const action  = $btn.data( 'action' );
+		const food    = $btn.data( 'food' );
+		const $list   = $( '#fcc-reqs-list' );
 
 		const ajaxAction = {
-			done:    'fcc_ajax_mark_request_done',
-			dismiss: 'fcc_ajax_dismiss_request',
-			delete:  'fcc_ajax_delete_request',
+			mark_added: 'fcc_ajax_mark_group_added',
+			dismiss:    'fcc_ajax_dismiss_group',
 		}[ action ];
-
 		if ( ! ajaxAction ) return;
 
 		$btn.prop( 'disabled', true );
-
 		$.post( fccAdmin.ajaxUrl, {
 			action:      ajaxAction,
-			request_id:  id,
+			food_name:   food,
 			_ajax_nonce: $list.data( 'nonce' ),
 		}, function ( response ) {
 			if ( response.success ) {
@@ -481,9 +566,40 @@
 				$btn.prop( 'disabled', false );
 				showToast( ( response.data && response.data.message ) || fccAdmin.i18n.error );
 			}
-		} ).fail( function () {
-			$btn.prop( 'disabled', false );
-		} );
+		} ).fail( function () { $btn.prop( 'disabled', false ); } );
+	} );
+
+	// Missed Searches — action buttons (Mark Added / Dismiss / Delete).
+	$( document ).on( 'click', '#fcc-ms-list .fcc-ms-action-btn', function () {
+		const $btn   = $( this );
+		const action = $btn.data( 'action' );
+		const id     = $btn.data( 'id' );
+		const $list  = $( '#fcc-ms-list' );
+
+		if ( 'delete' === action ) {
+			if ( ! window.confirm( fccAdmin.i18n.confirmDeleteReq || 'Delete this entry?' ) ) return;
+		}
+
+		const ajaxAction = {
+			mark_added: 'fcc_ajax_mark_ms_added',
+			dismiss:    'fcc_ajax_dismiss_ms',
+			delete:     'fcc_ajax_delete_ms',
+		}[ action ];
+		if ( ! ajaxAction ) return;
+
+		$btn.prop( 'disabled', true );
+		$.post( fccAdmin.ajaxUrl, {
+			action:      ajaxAction,
+			ms_id:       id,
+			_ajax_nonce: $list.data( 'nonce' ),
+		}, function ( response ) {
+			if ( response.success ) {
+				loadMsPage( $list.data( 'paged' ) || 1 );
+			} else {
+				$btn.prop( 'disabled', false );
+				showToast( ( response.data && response.data.message ) || fccAdmin.i18n.error );
+			}
+		} ).fail( function () { $btn.prop( 'disabled', false ); } );
 	} );
 
 	// -------------------------------------------------------------------------

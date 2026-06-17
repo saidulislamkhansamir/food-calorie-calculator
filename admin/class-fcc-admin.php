@@ -193,6 +193,8 @@ class Admin {
 				'foodsNonce' => wp_create_nonce( 'fcc_foods_page' ),
 				'catsNonce'  => wp_create_nonce( 'fcc_ajax_cats' ),
 				'reqsNonce'  => wp_create_nonce( 'fcc_ajax_reqs' ),
+				'msNonce'    => wp_create_nonce( 'fcc_ajax_ms' ),
+				'addFoodUrl' => admin_url( 'admin.php?page=fcc-foods' ),
 				'i18n'       => [
 					'confirmDelete'     => __( 'Are you sure you want to delete this food?', 'food-calorie-calculator' ),
 					'confirmDeleteReq'  => __( 'Are you sure you want to delete this request?', 'food-calorie-calculator' ),

@@ -632,6 +632,16 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: create fcc_missed_searches table (v1.7.0).
+	// -------------------------------------------------------------------------
+
+	public static function seed_v15(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 15 ) { return; }
+		Database::create_missed_searches_table();
+		update_option( 'fcc_seed_version', 15 );
+	}
+
+	// -------------------------------------------------------------------------
 	// Migration: add marketing_optin column to fcc_food_requests (v1.5.9).
 	// -------------------------------------------------------------------------
 

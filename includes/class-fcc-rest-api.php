@@ -130,6 +130,26 @@ class Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/missed-search',
+			[
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'log_missed_search' ],
+				'permission_callback' => '__return_true',
+				'args'                => [
+					'query' => [
+						'type'              => 'string',
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+						'validate_callback' => static function ( $val ): bool {
+							return is_string( $val ) && strlen( trim( $val ) ) >= 2;
+						},
+					],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/food-requests',
 			[
 				'methods'             => \WP_REST_Server::CREATABLE,
@@ -225,6 +245,12 @@ class Rest_Api {
 		}
 
 		return new \WP_REST_Response( [ 'ok' => true ], 201 );
+	}
+
+	public function log_missed_search( \WP_REST_Request $request ): \WP_REST_Response {
+		$query = trim( (string) $request->get_param( 'query' ) );
+		Database::log_missed_search( $query );
+		return new \WP_REST_Response( [ 'ok' => true ], 200 );
 	}
 
 	public function record_food_hit( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
