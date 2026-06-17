@@ -632,6 +632,23 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add search_count column to fcc_foods (v1.3.26).
+	// -------------------------------------------------------------------------
+
+	public static function seed_v12(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 12 ) { return; }
+		global $wpdb;
+		$foods_table = Database::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$col = $wpdb->get_results( "SHOW COLUMNS FROM {$foods_table} LIKE 'search_count'" );
+		if ( ! $col ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "ALTER TABLE {$foods_table} ADD COLUMN search_count INT UNSIGNED NOT NULL DEFAULT 0" );
+		}
+		update_option( 'fcc_seed_version', 12 );
+	}
+
+	// -------------------------------------------------------------------------
 	// Categories.
 	// -------------------------------------------------------------------------
 

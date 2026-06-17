@@ -168,6 +168,32 @@ class Database {
 	}
 
 	/**
+	 * Get foods ordered by search_count DESC (most popular first).
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_popular_foods( int $limit = 8 ): array {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare( "SELECT * FROM {$table} WHERE search_count > 0 ORDER BY search_count DESC LIMIT %d", $limit ),
+			ARRAY_A
+		);
+		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
+	}
+
+	/**
+	 * Increment search_count for a food by 1.
+	 */
+	public static function increment_food_hit( int $id ): void {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( $wpdb->prepare( "UPDATE {$table} SET search_count = search_count + 1 WHERE id = %d", $id ) );
+	}
+
+	/**
 	 * Get all foods, paginated, with optional sorting and category filter.
 	 *
 	 * @return array{total:int,rows:array<int,array<string,mixed>>}

@@ -365,6 +365,48 @@
 	flex-shrink: 0;
 }
 
+.fcc-popular-section {
+	margin-top: 1rem;
+}
+
+.fcc-popular-label {
+	font-size: 0.7rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #4a8c6a;
+	margin: 0 0 0.5rem;
+}
+
+.fcc-popular-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.fcc-popular-chip {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.3rem 0.75rem;
+	font-size: 0.8rem;
+	font-family: inherit;
+	color: #2D7A4F;
+	background: rgba(45, 122, 79, 0.08);
+	border: 1px solid rgba(45, 122, 79, 0.25);
+	border-radius: 999px;
+	cursor: pointer;
+	transition: background 0.15s, border-color 0.15s, color 0.15s;
+	white-space: nowrap;
+}
+
+.fcc-popular-chip:hover,
+.fcc-popular-chip:focus-visible {
+	background: rgba(45, 122, 79, 0.15);
+	border-color: #2D7A4F;
+	color: #1a5c37;
+	outline: none;
+}
+
 .fcc-search-spinner {
 	position: absolute;
 	right: 0.875rem;

@@ -52,6 +52,8 @@
 	const searchClearBtn = root.querySelector( '.fcc-search-clear' );
 	const dropdown       = root.querySelector( '.fcc-results-dropdown' );
 	const spinner        = root.querySelector( '.fcc-search-spinner' );
+	const popularSection = root.querySelector( '.fcc-popular-section' );
+	const popularChips   = root.querySelector( '.fcc-popular-chips' );
 	const qtySection   = root.querySelector( '.fcc-quantity-section' );
 	const resultsSection = root.querySelector( '.fcc-results-section' );
 	const mealSection  = features.meal_builder ? root.querySelector( '.fcc-meal-section' ) : null;
@@ -87,6 +89,16 @@
 		} ).then( function ( r ) { return r.ok ? r.json() : Promise.reject( r ); } );
 	}
 
+	function apiPost( endpoint ) {
+		return fetch( cfg.restUrl + endpoint, {
+			method: 'POST',
+			headers: {
+				'X-WP-Nonce': cfg.restNonce,
+				'Content-Type': 'application/json',
+			},
+		} ).catch( function () {} );
+	}
+
 	// -------------------------------------------------------------------------
 	// Autocomplete
 	// -------------------------------------------------------------------------
@@ -102,10 +114,43 @@
 		if ( searchInput    ) { searchInput.value = ''; searchInput.focus(); }
 		if ( searchClearBtn ) searchClearBtn.hidden = true;
 		hideDropdown();
+		showPopular();
 		if ( qtySection     ) qtySection.hidden    = true;
 		if ( resultsSection ) resultsSection.hidden = true;
 		if ( addToMealBtn   ) addToMealBtn.hidden   = true;
 		history.replaceState( null, '', window.location.pathname );
+	}
+
+	function showPopular() {
+		if ( popularSection && popularChips && popularChips.children.length ) {
+			popularSection.hidden = false;
+		}
+	}
+
+	function hidePopular() {
+		if ( popularSection ) popularSection.hidden = true;
+	}
+
+	function loadPopularFoods() {
+		if ( ! popularSection || ! popularChips ) return;
+		apiFetch( '/foods/popular?limit=8' ).then( function ( foods ) {
+			if ( ! foods || ! foods.length ) return;
+			popularChips.innerHTML = '';
+			foods.forEach( function ( food ) {
+				const btn = document.createElement( 'button' );
+				btn.type = 'button';
+				btn.className = 'fcc-popular-chip';
+				btn.textContent = food.name;
+				btn.addEventListener( 'click', function () {
+					searchInput.value = food.name;
+					updateClearBtn();
+					hidePopular();
+					selectFood( food );
+				} );
+				popularChips.appendChild( btn );
+			} );
+			popularSection.hidden = false;
+		} ).catch( function () {} );
 	}
 
 	if ( searchClearBtn ) {
@@ -117,7 +162,8 @@
 			clearTimeout( debounceTimer );
 			updateClearBtn();
 			const q = this.value.trim();
-			if ( q.length < 2 ) { hideDropdown(); return; }
+			if ( q.length < 2 ) { hideDropdown(); showPopular(); return; }
+			hidePopular();
 			debounceTimer = setTimeout( function () { doSearch( q ); }, 280 );
 		} );
 
@@ -213,6 +259,8 @@
 		searchInput.value = food.name;
 		updateClearBtn();
 		hideDropdown();
+		hidePopular();
+		apiPost( '/foods/' + food.id + '/hit' );
 
 		// Populate unit selector with serving sizes.
 		rebuildUnitSelect( food );
@@ -914,6 +962,9 @@
 			history.replaceState( null, '', buildShareUrl() );
 		}
 	}
+
+	// Load popular foods on page init.
+	loadPopularFoods();
 
 	// Restore state from URL params on page load.
 	( function restoreFromUrl() {

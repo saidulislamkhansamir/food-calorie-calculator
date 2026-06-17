@@ -114,6 +114,10 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 						<ul id="fcc-search-results" class="fcc-results-dropdown" role="listbox" aria-label="<?php esc_attr_e( 'Search results', 'food-calorie-calculator' ); ?>"></ul>
 					</div>
 					<p class="fcc-search-hint"><?php esc_html_e( 'Type at least 2 characters to search from our UK foods database', 'food-calorie-calculator' ); ?></p>
+					<div id="fcc-popular-section" class="fcc-popular-section" hidden>
+						<p class="fcc-popular-label"><?php esc_html_e( 'Popular searches', 'food-calorie-calculator' ); ?></p>
+						<div id="fcc-popular-chips" class="fcc-popular-chips" aria-label="<?php esc_attr_e( 'Popular foods', 'food-calorie-calculator' ); ?>"></div>
+					</div>
 				</div>
 			</section>
 

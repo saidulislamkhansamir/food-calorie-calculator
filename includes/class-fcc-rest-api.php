@@ -66,10 +66,47 @@ class Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/foods/popular',
+			[
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_popular_foods' ],
+				'permission_callback' => '__return_true',
+				'args'                => [
+					'limit' => [
+						'type'              => 'integer',
+						'default'           => 8,
+						'sanitize_callback' => 'absint',
+						'validate_callback' => static function ( $val ): bool {
+							return $val >= 1 && $val <= 20;
+						},
+					],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/foods/(?P<id>\d+)',
 			[
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_food' ],
+				'permission_callback' => '__return_true',
+				'args'                => [
+					'id' => [
+						'type'              => 'integer',
+						'required'          => true,
+						'sanitize_callback' => 'absint',
+					],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/foods/(?P<id>\d+)/hit',
+			[
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'record_food_hit' ],
 				'permission_callback' => '__return_true',
 				'args'                => [
 					'id' => [
@@ -127,6 +164,29 @@ class Rest_Api {
 	public function get_categories( \WP_REST_Request $request ): \WP_REST_Response {
 		$cats = Database::get_all_categories();
 		return new \WP_REST_Response( $cats, 200 );
+	}
+
+	public function get_popular_foods( \WP_REST_Request $request ): \WP_REST_Response {
+		$limit = min( (int) $request->get_param( 'limit' ), 20 );
+		$foods = Database::get_popular_foods( $limit );
+		return new \WP_REST_Response(
+			array_map( [ $this, 'format_food' ], $foods ),
+			200
+		);
+	}
+
+	public function record_food_hit( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+		$id   = (int) $request->get_param( 'id' );
+		$food = Database::get_food( $id );
+		if ( ! $food ) {
+			return new \WP_Error(
+				'fcc_food_not_found',
+				__( 'Food not found.', 'food-calorie-calculator' ),
+				[ 'status' => 404 ]
+			);
+		}
+		Database::increment_food_hit( $id );
+		return new \WP_REST_Response( [ 'ok' => true ], 200 );
 	}
 
 	// -------------------------------------------------------------------------
