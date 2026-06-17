@@ -89,7 +89,7 @@ class Admin {
 			[ $this, 'page_settings' ]
 		);
 
-		$pending = Database::count_pending_requests();
+		$pending = \FCC\Database::count_pending_requests();
 		$req_label = __( 'Food Requests', 'food-calorie-calculator' );
 		if ( $pending > 0 ) {
 			$req_label .= ' <span class="awaiting-mod count-' . $pending . '"><span class="pending-count">' . $pending . '</span></span>';
