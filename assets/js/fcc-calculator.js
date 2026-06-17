@@ -124,6 +124,10 @@
 		if ( qtySection     ) qtySection.hidden    = true;
 		if ( resultsSection ) resultsSection.hidden = true;
 		if ( addToMealBtn   ) addToMealBtn.hidden   = true;
+		if ( foodNameEl ) {
+			const bar = foodNameEl.parentNode.querySelector( '.fcc-sponsor-bar' );
+			if ( bar ) bar.remove();
+		}
 	}
 
 	function showPopular() {
@@ -296,9 +300,12 @@
 			li.setAttribute( 'role', 'option' );
 			li.setAttribute( 'aria-selected', 'false' );
 			li.dataset.id = food.id;
+			const isActive = food.is_sponsored && food.sponsor_active;
+			if ( isActive ) li.classList.add( 'fcc-result--sponsored' );
 			li.innerHTML =
 				'<span class="fcc-result-name">' + escHtml( food.name ) + '</span>' +
-				'<span class="fcc-result-kcal">' + fmt( food.energy_kcal ) + ' kcal</span>';
+				'<span class="fcc-result-kcal">' + fmt( food.energy_kcal ) + ' kcal</span>' +
+				( isActive ? '<span class="fcc-sponsored-pill">Sponsored</span>' : '' );
 			li.addEventListener( 'click', function () { selectFood( food ); } );
 			dropdown.appendChild( li );
 		} );
@@ -363,7 +370,35 @@
 		rebuildUnitSelect( food );
 
 		if ( qtyInput  ) qtyInput.value = 100;
-		if ( foodNameEl ) foodNameEl.textContent = food.name;
+		if ( foodNameEl ) {
+			foodNameEl.textContent = food.name;
+			// Remove any previous sponsor bar.
+			const prevBar = foodNameEl.parentNode.querySelector( '.fcc-sponsor-bar' );
+			if ( prevBar ) prevBar.remove();
+			// Inject sponsor bar if active sponsored food.
+			if ( food.is_sponsored && food.sponsor_active ) {
+				const bar = document.createElement( 'div' );
+				bar.className = 'fcc-sponsor-bar';
+				let inner = '';
+				if ( food.sponsor_logo_url ) {
+					inner += '<img class="fcc-sponsor-logo" src="' + escHtml( food.sponsor_logo_url ) + '" alt="' + escHtml( food.sponsor_name || '' ) + '">';
+				}
+				inner += '<span class="fcc-sponsor-label">Sponsored';
+				if ( food.sponsor_name ) {
+					inner += ' by ';
+					if ( food.sponsor_url ) {
+						inner += '<a href="' + escHtml( food.sponsor_url ) + '" target="_blank" rel="noopener sponsored">' + escHtml( food.sponsor_name ) + '</a>';
+					} else {
+						inner += escHtml( food.sponsor_name );
+					}
+				}
+				inner += '</span>';
+				bar.innerHTML = inner;
+				foodNameEl.parentNode.insertBefore( bar, foodNameEl.nextSibling );
+				// Fire sponsor-click silently.
+				fetch( cfg.restUrl + '/foods/' + food.id + '/sponsor-click', { method: 'POST' } ).catch( function () {} );
+			}
+		}
 		if ( qtySection ) qtySection.hidden = false;
 		if ( addToMealBtn && features.meal_builder ) addToMealBtn.hidden = false;
 

@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Database {
 
-	const SCHEMA_VERSION = '1.1';
+	const SCHEMA_VERSION = '1.2';
 
 	// -------------------------------------------------------------------------
 	// Table name helpers.
@@ -44,6 +44,11 @@ class Database {
 	public static function search_log_table(): string {
 		global $wpdb;
 		return $wpdb->prefix . 'fcc_search_log';
+	}
+
+	public static function sponsor_clicks_table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'fcc_sponsor_clicks';
 	}
 
 	// -------------------------------------------------------------------------
@@ -101,12 +106,19 @@ class Database {
   is_fruit_veg tinyint(1) DEFAULT NULL,
   portion_grams decimal(8,2) DEFAULT NULL,
   source_notes text,
+  is_sponsored tinyint(1) NOT NULL DEFAULT 0,
+  sponsor_active tinyint(1) NOT NULL DEFAULT 0,
+  sponsor_name varchar(200) DEFAULT NULL,
+  sponsor_logo_id bigint(20) DEFAULT NULL,
+  sponsor_url varchar(500) DEFAULT NULL,
+  sponsor_expires_at datetime DEFAULT NULL,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY  (id),
   UNIQUE KEY slug (slug),
   KEY category_id (category_id),
-  KEY name (name(50))
+  KEY name (name(50)),
+  KEY is_sponsored (is_sponsored)
 ) {$charset_collate};";
 		// phpcs:enable
 
@@ -154,11 +166,24 @@ class Database {
 ) {$charset_collate};";
 		// phpcs:enable
 
+		$sponsor_clicks = self::sponsor_clicks_table();
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql_sponsor_clicks = "CREATE TABLE {$sponsor_clicks} (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  food_id mediumint(9) NOT NULL,
+  clicked_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  KEY food_id (food_id),
+  KEY clicked_at (clicked_at)
+) {$charset_collate};";
+		// phpcs:enable
+
 		dbDelta( $sql_cats );
 		dbDelta( $sql_foods );
 		dbDelta( $sql_requests );
 		dbDelta( $sql_missed );
 		dbDelta( $sql_search_log );
+		dbDelta( $sql_sponsor_clicks );
 
 		update_option( 'fcc_db_version', self::SCHEMA_VERSION );
 	}
@@ -251,11 +276,14 @@ class Database {
 		$table = self::foods_table();
 		$like  = '%' . $wpdb->esc_like( $query ) . '%';
 
+		// Sponsored + active + not-expired foods float to top; then by search_count DESC.
+		$sponsor_order = "CASE WHEN is_sponsored=1 AND sponsor_active=1 AND (sponsor_expires_at IS NULL OR sponsor_expires_at > NOW()) THEN 0 ELSE 1 END ASC, search_count DESC";
+
 		if ( $category_id > 0 ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM {$table} WHERE name LIKE %s AND category_id = %d ORDER BY name ASC LIMIT %d",
+					"SELECT * FROM {$table} WHERE name LIKE %s AND category_id = %d ORDER BY {$sponsor_order} LIMIT %d",
 					$like,
 					$category_id,
 					$limit
@@ -266,7 +294,7 @@ class Database {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM {$table} WHERE name LIKE %s ORDER BY name ASC LIMIT %d",
+					"SELECT * FROM {$table} WHERE name LIKE %s ORDER BY {$sponsor_order} LIMIT %d",
 					$like,
 					$limit
 				),
@@ -554,17 +582,23 @@ class Database {
 		];
 
 		$row = [
-			'name'          => sanitize_text_field( $data['name'] ?? '' ),
-			'slug'          => sanitize_title( $data['slug'] ?? $data['name'] ?? '' ),
-			'category_id'   => absint( $data['category_id'] ?? 0 ),
-			'serving_sizes' => isset( $data['serving_sizes'] ) ? wp_json_encode( $data['serving_sizes'] ) : null,
-			'energy_kcal'   => (float) ( $data['energy_kcal'] ?? 0 ),
-			'energy_kj'     => (float) ( $data['energy_kj']   ?? 0 ),
-			'protein_g'     => (float) ( $data['protein_g']   ?? 0 ),
-			'carbohydrate_g'=> (float) ( $data['carbohydrate_g'] ?? 0 ),
-			'fat_g'         => (float) ( $data['fat_g']       ?? 0 ),
-			'is_fruit_veg'  => isset( $data['is_fruit_veg'] ) ? (int) (bool) $data['is_fruit_veg'] : null,
-			'source_notes'  => isset( $data['source_notes'] ) ? sanitize_textarea_field( $data['source_notes'] ) : null,
+			'name'               => sanitize_text_field( $data['name'] ?? '' ),
+			'slug'               => sanitize_title( $data['slug'] ?? $data['name'] ?? '' ),
+			'category_id'        => absint( $data['category_id'] ?? 0 ),
+			'serving_sizes'      => isset( $data['serving_sizes'] ) ? wp_json_encode( $data['serving_sizes'] ) : null,
+			'energy_kcal'        => (float) ( $data['energy_kcal'] ?? 0 ),
+			'energy_kj'          => (float) ( $data['energy_kj']   ?? 0 ),
+			'protein_g'          => (float) ( $data['protein_g']   ?? 0 ),
+			'carbohydrate_g'     => (float) ( $data['carbohydrate_g'] ?? 0 ),
+			'fat_g'              => (float) ( $data['fat_g']       ?? 0 ),
+			'is_fruit_veg'       => isset( $data['is_fruit_veg'] ) ? (int) (bool) $data['is_fruit_veg'] : null,
+			'source_notes'       => isset( $data['source_notes'] ) ? sanitize_textarea_field( $data['source_notes'] ) : null,
+			'is_sponsored'       => (int) (bool) ( $data['is_sponsored'] ?? 0 ),
+			'sponsor_active'     => (int) (bool) ( $data['sponsor_active'] ?? 0 ),
+			'sponsor_name'       => isset( $data['sponsor_name'] ) && '' !== $data['sponsor_name'] ? sanitize_text_field( $data['sponsor_name'] ) : null,
+			'sponsor_logo_id'    => isset( $data['sponsor_logo_id'] ) && $data['sponsor_logo_id'] > 0 ? (int) $data['sponsor_logo_id'] : null,
+			'sponsor_url'        => isset( $data['sponsor_url'] ) && '' !== $data['sponsor_url'] ? esc_url_raw( $data['sponsor_url'] ) : null,
+			'sponsor_expires_at' => isset( $data['sponsor_expires_at'] ) && '' !== $data['sponsor_expires_at'] ? sanitize_text_field( $data['sponsor_expires_at'] ) : null,
 		];
 
 		foreach ( $nullable_floats as $col ) {
@@ -585,8 +619,8 @@ class Database {
 	 * @return array<int,string>
 	 */
 	private static function food_formats( array $row ): array {
-		$int_cols    = [ 'category_id', 'is_fruit_veg' ];
-		$string_cols = [ 'name', 'slug', 'serving_sizes', 'source_notes' ];
+		$int_cols    = [ 'category_id', 'is_fruit_veg', 'is_sponsored', 'sponsor_active', 'sponsor_logo_id' ];
+		$string_cols = [ 'name', 'slug', 'serving_sizes', 'source_notes', 'sponsor_name', 'sponsor_url', 'sponsor_expires_at' ];
 
 		$formats = [];
 		foreach ( array_keys( $row ) as $col ) {
@@ -632,8 +666,11 @@ class Database {
 			}
 		}
 
-		$row['id']          = (int) $row['id'];
-		$row['category_id'] = (int) $row['category_id'];
+		$row['id']            = (int) $row['id'];
+		$row['category_id']   = (int) $row['category_id'];
+		$row['is_sponsored']  = (bool) ( $row['is_sponsored'] ?? 0 );
+		$row['sponsor_active'] = (bool) ( $row['sponsor_active'] ?? 0 );
+		$row['sponsor_logo_id'] = isset( $row['sponsor_logo_id'] ) && null !== $row['sponsor_logo_id'] ? (int) $row['sponsor_logo_id'] : null;
 
 		return $row;
 	}
@@ -1076,6 +1113,24 @@ class Database {
 		dbDelta( $sql );
 	}
 
+	public static function create_sponsor_clicks_table(): void {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$table           = self::sponsor_clicks_table();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql = "CREATE TABLE {$table} (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  food_id mediumint(9) NOT NULL,
+  clicked_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  KEY food_id (food_id),
+  KEY clicked_at (clicked_at)
+) {$charset_collate};";
+		// phpcs:enable
+		dbDelta( $sql );
+	}
+
 	/** Log any search query (successful or not) — upserts a daily aggregate row. */
 	public static function log_search( string $query, bool $has_results ): void {
 		global $wpdb;
@@ -1354,5 +1409,100 @@ class Database {
 
 		$where = $parts ? ' WHERE ' . implode( ' AND ', $parts ) : '';
 		return [ $where, $vals ];
+	}
+
+	// -------------------------------------------------------------------------
+	// Sponsored Foods.
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Record a sponsored-food click for engagement analytics.
+	 */
+	public static function record_sponsor_click( int $food_id ): void {
+		global $wpdb;
+		$wpdb->insert( self::sponsor_clicks_table(), [ 'food_id' => $food_id ], [ '%d' ] );
+	}
+
+	/**
+	 * Count sponsor clicks for a food in the last N days (0 = all time).
+	 */
+	public static function get_sponsor_click_count( int $food_id, int $days = 30 ): int {
+		global $wpdb;
+		$table = self::sponsor_clicks_table();
+		if ( $days > 0 ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			return (int) $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table} WHERE food_id = %d AND clicked_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
+				$food_id,
+				$days
+			) );
+		}
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE food_id = %d", $food_id ) );
+	}
+
+	/**
+	 * Get all sponsored foods (is_sponsored=1) with 30-day click counts.
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_sponsored_foods(): array {
+		global $wpdb;
+		$ft = self::foods_table();
+		$ct = self::sponsor_clicks_table();
+		$now = current_time( 'mysql' );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			"SELECT f.id, f.name, f.slug, f.is_sponsored, f.sponsor_active, f.sponsor_name,
+			        f.sponsor_logo_id, f.sponsor_url, f.sponsor_expires_at,
+			        COUNT(c.id) AS clicks_30d
+			   FROM {$ft} f
+			   LEFT JOIN {$ct} c ON c.food_id = f.id AND c.clicked_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+			  WHERE f.is_sponsored = 1
+			  GROUP BY f.id
+			  ORDER BY f.sponsor_active DESC, f.sponsor_name ASC",
+			ARRAY_A
+		) ?? [];
+
+		foreach ( $rows as &$r ) {
+			$r['is_sponsored']   = (bool) $r['is_sponsored'];
+			$r['sponsor_active'] = (bool) $r['sponsor_active'];
+			$r['clicks_30d']     = (int) $r['clicks_30d'];
+			$r['sponsor_logo_id'] = $r['sponsor_logo_id'] ? (int) $r['sponsor_logo_id'] : null;
+			// Compute status: expired / paused / active.
+			if ( $r['sponsor_expires_at'] && strtotime( $r['sponsor_expires_at'] ) < strtotime( $now ) ) {
+				$r['sponsor_status'] = 'expired';
+			} elseif ( ! $r['sponsor_active'] ) {
+				$r['sponsor_status'] = 'paused';
+			} else {
+				$r['sponsor_status'] = 'active';
+			}
+		}
+		unset( $r );
+
+		return $rows;
+	}
+
+	/**
+	 * Toggle sponsor_active for a food.
+	 */
+	public static function toggle_sponsor_active( int $id, bool $active ): void {
+		global $wpdb;
+		$wpdb->update( self::foods_table(), [ 'sponsor_active' => $active ? 1 : 0 ], [ 'id' => $id ], [ '%d' ], [ '%d' ] );
+	}
+
+	/**
+	 * Count active (non-expired) sponsored foods — used in Analytics KPI card.
+	 */
+	public static function count_active_sponsors(): int {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$table}
+			  WHERE is_sponsored = 1
+			    AND sponsor_active = 1
+			    AND (sponsor_expires_at IS NULL OR sponsor_expires_at > NOW())"
+		);
 	}
 }

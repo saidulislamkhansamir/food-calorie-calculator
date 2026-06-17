@@ -220,6 +220,9 @@ endif;
 								<a href="<?php echo $edit_url; ?>" class="fcc-foods-name-link">
 									<?php echo esc_html( $food['name'] ); ?>
 								</a>
+								<?php if ( ! empty( $food['is_sponsored'] ) ) : ?>
+									<span class="fcc-foods-sponsored-pill"><?php esc_html_e( 'Sponsored', 'food-calorie-calculator' ); ?></span>
+								<?php endif; ?>
 							</td>
 							<td class="fcc-foods-td">
 								<?php if ( isset( $cat_map[ (int) $food['category_id'] ] ) ) : ?>

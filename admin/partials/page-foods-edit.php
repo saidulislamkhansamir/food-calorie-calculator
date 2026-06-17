@@ -177,6 +177,83 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 					</div>
 				</div>
 
+				<!-- Sponsorship -->
+				<div class="fcc-card fcc-card--sponsorship">
+					<h2 class="fcc-card__title">
+						<?php esc_html_e( 'Sponsorship', 'food-calorie-calculator' ); ?>
+						<span class="fcc-badge fcc-badge--optional"><?php esc_html_e( 'Monetisation', 'food-calorie-calculator' ); ?></span>
+					</h2>
+					<p class="description" style="margin-bottom:1rem">
+						<?php esc_html_e( 'Mark this food as a paid sponsored listing. Sponsored foods appear first in search results with a "Sponsored" badge.', 'food-calorie-calculator' ); ?>
+					</p>
+
+					<div class="fcc-field">
+						<label>
+							<input type="checkbox" name="is_sponsored" id="fcc-is-sponsored" value="1"
+								<?php checked( $is_edit && ! empty( $food['is_sponsored'] ) ); ?>>
+							<?php esc_html_e( 'Is Sponsored', 'food-calorie-calculator' ); ?>
+						</label>
+					</div>
+
+					<div id="fcc-sponsor-fields" style="<?php echo ( $is_edit && ! empty( $food['is_sponsored'] ) ) ? '' : 'display:none'; ?>">
+
+						<div class="fcc-field" style="margin-top:.75rem">
+							<label>
+								<input type="checkbox" name="sponsor_active" value="1"
+									<?php checked( $is_edit && ! empty( $food['sponsor_active'] ) ); ?>>
+								<?php esc_html_e( 'Active (show on frontend)', 'food-calorie-calculator' ); ?>
+							</label>
+						</div>
+
+						<div class="fcc-field">
+							<label for="sponsor_name"><?php esc_html_e( 'Brand Name', 'food-calorie-calculator' ); ?></label>
+							<input type="text" id="sponsor_name" name="sponsor_name" class="regular-text"
+								placeholder="<?php esc_attr_e( 'e.g. Tesco Finest', 'food-calorie-calculator' ); ?>"
+								value="<?php echo esc_attr( $is_edit ? ( $food['sponsor_name'] ?? '' ) : '' ); ?>">
+							<p class="description"><?php esc_html_e( 'Shown as "Sponsored by [Brand Name]" on the frontend.', 'food-calorie-calculator' ); ?></p>
+						</div>
+
+						<div class="fcc-field">
+							<label for="sponsor_url"><?php esc_html_e( 'Brand URL', 'food-calorie-calculator' ); ?></label>
+							<input type="url" id="sponsor_url" name="sponsor_url" class="regular-text"
+								placeholder="https://"
+								value="<?php echo esc_attr( $is_edit ? ( $food['sponsor_url'] ?? '' ) : '' ); ?>">
+							<p class="description"><?php esc_html_e( 'Link opens in a new tab (rel="sponsored").', 'food-calorie-calculator' ); ?></p>
+						</div>
+
+						<div class="fcc-field">
+							<label><?php esc_html_e( 'Brand Logo', 'food-calorie-calculator' ); ?></label>
+							<?php
+							$logo_id  = $is_edit ? (int) ( $food['sponsor_logo_id'] ?? 0 ) : 0;
+							$logo_url = $logo_id ? wp_get_attachment_url( $logo_id ) : '';
+							?>
+							<input type="hidden" id="sponsor_logo_id" name="sponsor_logo_id" value="<?php echo esc_attr( $logo_id ?: '' ); ?>">
+							<div id="fcc-sponsor-logo-preview" style="<?php echo $logo_url ? '' : 'display:none'; ?>;margin-bottom:.5rem">
+								<img src="<?php echo esc_url( $logo_url ); ?>" alt="" style="max-height:60px;border:1px solid #ddd;border-radius:4px;padding:4px">
+							</div>
+							<button type="button" id="fcc-sponsor-logo-select" class="button">
+								<?php esc_html_e( 'Select Logo', 'food-calorie-calculator' ); ?>
+							</button>
+							<button type="button" id="fcc-sponsor-logo-remove" class="button"
+								style="<?php echo $logo_url ? '' : 'display:none'; ?>">
+								<?php esc_html_e( 'Remove', 'food-calorie-calculator' ); ?>
+							</button>
+							<p class="description"><?php esc_html_e( 'Recommended: transparent PNG, max 200×80px.', 'food-calorie-calculator' ); ?></p>
+						</div>
+
+						<div class="fcc-field">
+							<label for="sponsor_expires_at"><?php esc_html_e( 'Expires', 'food-calorie-calculator' ); ?></label>
+							<input type="date" id="sponsor_expires_at" name="sponsor_expires_at" class="regular-text"
+								value="<?php
+									$exp = $is_edit ? ( $food['sponsor_expires_at'] ?? '' ) : '';
+									echo esc_attr( $exp ? date( 'Y-m-d', strtotime( $exp ) ) : '' );
+								?>">
+							<p class="description"><?php esc_html_e( 'Leave empty for no expiry. After this date the sponsorship is automatically paused.', 'food-calorie-calculator' ); ?></p>
+						</div>
+
+					</div><!-- #fcc-sponsor-fields -->
+				</div>
+
 				<!-- Submit -->
 				<div class="fcc-card">
 					<?php submit_button( $is_edit ? __( 'Update Food', 'food-calorie-calculator' ) : __( 'Add Food', 'food-calorie-calculator' ), 'primary large', 'submit', false ); ?>
@@ -187,5 +264,51 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 
 			</div><!-- .fcc-form-col -->
 		</div><!-- .fcc-form-grid -->
+
+<script>
+(function () {
+	var cb    = document.getElementById( 'fcc-is-sponsored' );
+	var panel = document.getElementById( 'fcc-sponsor-fields' );
+	if ( cb && panel ) {
+		cb.addEventListener( 'change', function () {
+			panel.style.display = this.checked ? '' : 'none';
+		} );
+	}
+
+	// WP Media Library logo picker.
+	var selectBtn  = document.getElementById( 'fcc-sponsor-logo-select' );
+	var removeBtn  = document.getElementById( 'fcc-sponsor-logo-remove' );
+	var logoInput  = document.getElementById( 'sponsor_logo_id' );
+	var logoPreview = document.getElementById( 'fcc-sponsor-logo-preview' );
+
+	if ( selectBtn ) {
+		selectBtn.addEventListener( 'click', function ( e ) {
+			e.preventDefault();
+			var frame = wp.media( {
+				title: 'Select Brand Logo',
+				button: { text: 'Use this logo' },
+				multiple: false,
+				library: { type: 'image' },
+			} );
+			frame.on( 'select', function () {
+				var attachment = frame.state().get( 'selection' ).first().toJSON();
+				logoInput.value = attachment.id;
+				logoPreview.querySelector( 'img' ).src = attachment.url;
+				logoPreview.style.display = '';
+				if ( removeBtn ) removeBtn.style.display = '';
+			} );
+			frame.open();
+		} );
+	}
+
+	if ( removeBtn ) {
+		removeBtn.addEventListener( 'click', function () {
+			logoInput.value = '';
+			logoPreview.style.display = 'none';
+			removeBtn.style.display = 'none';
+		} );
+	}
+}() );
+</script>
 	</form>
 </div><!-- .wrap -->

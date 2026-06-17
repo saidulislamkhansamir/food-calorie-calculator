@@ -4389,3 +4389,74 @@ button.fcc-reqs-tab {
 	.fcc-eh-hero    { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
 	.fcc-cp-hero    { padding: 1.25rem; }
 }
+
+/* =============================================================================
+   Sponsored Foods admin (.fcc-sp-*)
+   ============================================================================= */
+
+.fcc-sp-hero {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
+	border-radius: 18px;
+	padding: 1.75rem 2.5rem;
+	margin-bottom: 1.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.fcc-sp-hero h1 {
+	color: #fff;
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin: 0 0 .25rem;
+}
+
+.fcc-sp-hero p {
+	color: rgba(255,255,255,.85);
+	margin: 0;
+	font-size: .9rem;
+}
+
+.fcc-sp-status {
+	display: inline-block;
+	padding: .2rem .65rem;
+	border-radius: 12px;
+	font-size: .78rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+}
+
+.fcc-sp-status--active  { background: #d4edda; color: #155724; }
+.fcc-sp-status--paused  { background: #fff3cd; color: #856404; }
+.fcc-sp-status--expired { background: #f8d7da; color: #721c24; }
+
+/* Sponsored pill in foods list table */
+.fcc-foods-sponsored-pill {
+	display: inline-block;
+	margin-left: .4rem;
+	padding: .1rem .45rem;
+	border-radius: 10px;
+	background: #fff3cd;
+	color: #856404;
+	font-size: .72rem;
+	font-weight: 700;
+	vertical-align: middle;
+	letter-spacing: .02em;
+}
+
+/* KPI card gold variant (Active Sponsors) */
+.fcc-an-kpi-card--gold { border-top-color: #d4ac0d; }
+.fcc-an-kpi-card--gold .fcc-an-kpi-card__value,
+.fcc-an-kpi-card--gold .fcc-an-kpi-card__icon svg { color: #b7950b; stroke: #b7950b; }
+
+/* Sponsorship card in food edit form */
+.fcc-card--sponsorship { border-left: 3px solid #d4ac0d; }
+
+/* Analytics KPI row — 6-card layout */
+.fcc-an-kpi-row { grid-template-columns: repeat(6, 1fr); }
+@media screen and (max-width: 1400px) { .fcc-an-kpi-row { grid-template-columns: repeat(3, 1fr); } }
+@media screen and (max-width: 900px)  { .fcc-an-kpi-row { grid-template-columns: repeat(2, 1fr); } }
+@media screen and (max-width: 600px)  { .fcc-an-kpi-row { grid-template-columns: 1fr; } }

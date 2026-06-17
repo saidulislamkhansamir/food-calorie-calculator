@@ -2807,3 +2807,60 @@ select.fcc-bmr-input {
 	.fcc-meal-header { border-radius: 10px 10px 0 0; }
 	.fcc-meal-total-kcal { font-size: 1.2rem; }
 }
+
+/* =============================================================================
+   Sponsored food listings (.fcc-result--sponsored, .fcc-sponsor-*)
+   ============================================================================= */
+
+.fcc-result--sponsored {
+	border-left: 3px solid #d4ac0d;
+	background: #fffdf0;
+}
+
+.fcc-sponsored-pill {
+	display: inline-block;
+	margin-left: auto;
+	padding: .15rem .5rem;
+	border-radius: 10px;
+	background: #d4ac0d;
+	color: #fff;
+	font-size: .7rem;
+	font-weight: 700;
+	letter-spacing: .03em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.fcc-sponsor-bar {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .4rem .65rem;
+	margin: .35rem 0 0;
+	background: #fffdf0;
+	border: 1px solid #f0e28a;
+	border-radius: 6px;
+	font-size: .8rem;
+}
+
+.fcc-sponsor-logo {
+	max-height: 28px;
+	max-width: 90px;
+	object-fit: contain;
+	flex-shrink: 0;
+}
+
+.fcc-sponsor-label {
+	color: #888;
+}
+
+.fcc-sponsor-label a {
+	color: #2D7A4F;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.fcc-sponsor-label a:hover {
+	text-decoration: underline;
+}

@@ -130,6 +130,23 @@ class Rest_Api {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/foods/(?P<id>\d+)/sponsor-click',
+			[
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'record_sponsor_click' ],
+				'permission_callback' => '__return_true',
+				'args'                => [
+					'id' => [
+						'type'              => 'integer',
+						'required'          => true,
+						'sanitize_callback' => 'absint',
+					],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/missed-search',
 			[
 				'methods'             => \WP_REST_Server::CREATABLE,
@@ -250,6 +267,15 @@ class Rest_Api {
 		return new \WP_REST_Response( [ 'ok' => true ], 201 );
 	}
 
+	public function record_sponsor_click( \WP_REST_Request $request ): \WP_REST_Response {
+		$id   = (int) $request->get_param( 'id' );
+		$food = Database::get_food( $id );
+		if ( $food && $food['is_sponsored'] && $food['sponsor_active'] ) {
+			Database::record_sponsor_click( $id );
+		}
+		return new \WP_REST_Response( [ 'ok' => true ], 200 );
+	}
+
 	public function log_missed_search( \WP_REST_Request $request ): \WP_REST_Response {
 		$query = trim( (string) $request->get_param( 'query' ) );
 		Database::log_missed_search( $query );
@@ -305,6 +331,11 @@ class Rest_Api {
 			// Caffeine: only present when published data exists.
 			'caffeine_mg'          => null !== $food['caffeine_mg']          ? (float) $food['caffeine_mg']          : null,
 			'source_notes'         => ! empty( $food['source_notes'] ) ? esc_html( $food['source_notes'] ) : null,
+			'is_sponsored'         => (bool) ( $food['is_sponsored'] ?? false ),
+			'sponsor_active'       => (bool) ( $food['sponsor_active'] ?? false ),
+			'sponsor_name'         => ! empty( $food['sponsor_name'] ) ? esc_html( $food['sponsor_name'] ) : null,
+			'sponsor_logo_url'     => ! empty( $food['sponsor_logo_id'] ) ? wp_get_attachment_url( (int) $food['sponsor_logo_id'] ) : null,
+			'sponsor_url'          => ! empty( $food['sponsor_url'] ) ? esc_url( $food['sponsor_url'] ) : null,
 		];
 	}
 }

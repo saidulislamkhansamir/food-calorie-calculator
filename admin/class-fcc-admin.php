@@ -105,6 +105,15 @@ class Admin {
 
 		add_submenu_page(
 			'fcc-dashboard',
+			__( 'Sponsored', 'food-calorie-calculator' ),
+			__( 'Sponsored', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-sponsored',
+			[ $this, 'page_sponsored' ]
+		);
+
+		add_submenu_page(
+			'fcc-dashboard',
 			__( 'Analytics', 'food-calorie-calculator' ),
 			__( 'Analytics', 'food-calorie-calculator' ),
 			$capability,
@@ -177,6 +186,10 @@ class Admin {
 		include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests.php';
 	}
 
+	public function page_sponsored(): void {
+		( new Sponsored() )->page_sponsored();
+	}
+
 	public function page_analytics(): void {
 		( new Analytics() )->page_analytics();
 	}
@@ -222,6 +235,11 @@ class Admin {
 			$ver,
 			true
 		);
+
+		// Enqueue WP media library on the food edit/add page for the logo picker.
+		if ( false !== strpos( $hook, 'fcc-foods' ) ) {
+			wp_enqueue_media();
+		}
 
 		if ( false !== strpos( $hook, 'fcc-analytics' ) ) {
 			wp_register_script( 'chartjs', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js', [], '4.4.4', true );

@@ -645,6 +645,39 @@ class Seed_Data {
 	// Migration: create fcc_search_log table, backfill from missed_searches (v1.8.0).
 	// -------------------------------------------------------------------------
 
+	// -------------------------------------------------------------------------
+	// Migration: add sponsorship columns to fcc_foods + create fcc_sponsor_clicks (v1.9.0).
+	// -------------------------------------------------------------------------
+
+	public static function seed_v17(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 17 ) { return; }
+		global $wpdb;
+		$table = Database::foods_table();
+
+		$existing = $wpdb->get_col( "DESCRIBE {$table}", 0 ); // phpcs:ignore
+		$cols_to_add = [
+			'is_sponsored'       => "ALTER TABLE {$table} ADD COLUMN is_sponsored tinyint(1) NOT NULL DEFAULT 0 AFTER source_notes",
+			'sponsor_active'     => "ALTER TABLE {$table} ADD COLUMN sponsor_active tinyint(1) NOT NULL DEFAULT 0 AFTER is_sponsored",
+			'sponsor_name'       => "ALTER TABLE {$table} ADD COLUMN sponsor_name varchar(200) DEFAULT NULL AFTER sponsor_active",
+			'sponsor_logo_id'    => "ALTER TABLE {$table} ADD COLUMN sponsor_logo_id bigint(20) DEFAULT NULL AFTER sponsor_name",
+			'sponsor_url'        => "ALTER TABLE {$table} ADD COLUMN sponsor_url varchar(500) DEFAULT NULL AFTER sponsor_logo_id",
+			'sponsor_expires_at' => "ALTER TABLE {$table} ADD COLUMN sponsor_expires_at datetime DEFAULT NULL AFTER sponsor_url",
+		];
+		foreach ( $cols_to_add as $col => $sql ) {
+			if ( ! in_array( $col, $existing, true ) ) {
+				$wpdb->query( $sql ); // phpcs:ignore
+			}
+		}
+		// Add index if missing.
+		$indexes = $wpdb->get_col( "SHOW INDEX FROM {$table} WHERE Key_name = 'is_sponsored'", 2 ); // phpcs:ignore
+		if ( empty( $indexes ) ) {
+			$wpdb->query( "ALTER TABLE {$table} ADD KEY is_sponsored (is_sponsored)" ); // phpcs:ignore
+		}
+
+		Database::create_sponsor_clicks_table();
+		update_option( 'fcc_seed_version', 17 );
+	}
+
 	public static function seed_v16(): void {
 		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 16 ) { return; }
 		Database::create_search_log_table();

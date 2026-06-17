@@ -174,15 +174,21 @@ class Foods {
 		];
 
 		$data = [
-			'name'          => sanitize_text_field( $post['name']          ?? '' ),
-			'category_id'   => absint(              $post['category_id']   ?? 0  ),
-			'energy_kcal'   => (float)             ($post['energy_kcal']   ?? 0  ),
-			'energy_kj'     => (float)             ($post['energy_kj']     ?? 0  ),
-			'protein_g'     => (float)             ($post['protein_g']     ?? 0  ),
-			'carbohydrate_g'=> (float)             ($post['carbohydrate_g']?? 0  ),
-			'fat_g'         => (float)             ($post['fat_g']         ?? 0  ),
-			'is_fruit_veg'  => isset( $post['is_fruit_veg'] ) ? 1 : null,
-			'source_notes'  => sanitize_textarea_field( $post['source_notes'] ?? '' ),
+			'name'               => sanitize_text_field( $post['name']          ?? '' ),
+			'category_id'        => absint(              $post['category_id']   ?? 0  ),
+			'energy_kcal'        => (float)             ($post['energy_kcal']   ?? 0  ),
+			'energy_kj'          => (float)             ($post['energy_kj']     ?? 0  ),
+			'protein_g'          => (float)             ($post['protein_g']     ?? 0  ),
+			'carbohydrate_g'     => (float)             ($post['carbohydrate_g']?? 0  ),
+			'fat_g'              => (float)             ($post['fat_g']         ?? 0  ),
+			'is_fruit_veg'       => isset( $post['is_fruit_veg'] ) ? 1 : null,
+			'source_notes'       => sanitize_textarea_field( $post['source_notes'] ?? '' ),
+			'is_sponsored'       => isset( $post['is_sponsored'] ) ? 1 : 0,
+			'sponsor_active'     => isset( $post['sponsor_active'] ) ? 1 : 0,
+			'sponsor_name'       => sanitize_text_field( $post['sponsor_name'] ?? '' ),
+			'sponsor_logo_id'    => absint( $post['sponsor_logo_id'] ?? 0 ) ?: null,
+			'sponsor_url'        => esc_url_raw( $post['sponsor_url'] ?? '' ),
+			'sponsor_expires_at' => sanitize_text_field( $post['sponsor_expires_at'] ?? '' ),
 		];
 
 		foreach ( $nullable_float_fields as $field ) {

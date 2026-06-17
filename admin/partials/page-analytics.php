@@ -20,6 +20,7 @@ $kpi_rate        = \FCC\Database::get_search_success_rate( $range );
 $kpi_gaps        = \FCC\Database::count_active_missed_searches();
 $kpi_requests    = \FCC\Database::count_food_requests_grouped( [ 'status' => 'pending' ] );
 $kpi_subscribers = \FCC\Database::count_opted_in_requests();
+$kpi_sponsors    = \FCC\Database::count_active_sponsors();
 
 // Tables.
 $content_gaps  = \FCC\Database::get_top_content_gaps( 15 );
@@ -109,6 +110,19 @@ $analytics_nonce = wp_create_nonce( 'fcc_analytics_nonce' );
 				<span class="fcc-an-kpi-card__value"><?php echo number_format( $kpi_subscribers ); ?></span>
 				<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Email Subscribers', 'food-calorie-calculator' ); ?></span>
 				<span class="fcc-an-kpi-card__sub"><?php esc_html_e( 'Newsletter opt-ins', 'food-calorie-calculator' ); ?></span>
+			</div>
+		</div>
+
+		<div class="fcc-an-kpi-card fcc-an-kpi-card--gold">
+			<div class="fcc-an-kpi-card__icon">
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+			</div>
+			<div>
+				<span class="fcc-an-kpi-card__value"><?php echo number_format( $kpi_sponsors ); ?></span>
+				<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Active Sponsors', 'food-calorie-calculator' ); ?></span>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-sponsored' ) ); ?>" class="fcc-an-kpi-card__sub" style="color:inherit;text-decoration:underline">
+					<?php esc_html_e( 'Manage →', 'food-calorie-calculator' ); ?>
+				</a>
 			</div>
 		</div>
 
