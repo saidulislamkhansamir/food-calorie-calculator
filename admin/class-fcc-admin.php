@@ -138,6 +138,15 @@ class Admin {
 			'fcc-content-planner',
 			[ $this, 'page_content_planner' ]
 		);
+
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'White Label', 'food-calorie-calculator' ),
+			__( 'White Label', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-white-label',
+			[ $this, 'page_white_label' ]
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -202,6 +211,10 @@ class Admin {
 		( new Content_Planner() )->page_content_planner();
 	}
 
+	public function page_white_label(): void {
+		( new White_Label() )->page_white_label();
+	}
+
 	// -------------------------------------------------------------------------
 	// Assets.
 	// -------------------------------------------------------------------------
@@ -236,8 +249,8 @@ class Admin {
 			true
 		);
 
-		// Enqueue WP media library on the food edit/add page for the logo picker.
-		if ( false !== strpos( $hook, 'fcc-foods' ) ) {
+		// Enqueue WP media library on the food edit/add page and white-label page for the logo picker.
+		if ( false !== strpos( $hook, 'fcc-foods' ) || false !== strpos( $hook, 'fcc-white-label' ) ) {
 			wp_enqueue_media();
 		}
 

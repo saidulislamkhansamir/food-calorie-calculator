@@ -2864,3 +2864,38 @@ select.fcc-bmr-input {
 .fcc-sponsor-label a:hover {
 	text-decoration: underline;
 }
+
+/* ==========================================================================
+   White Label — Powered-by footer & logo
+   ========================================================================== */
+
+.fcc-powered-by {
+	text-align: center;
+	padding: 0.5rem 1rem 0.25rem;
+	font-size: 0.72rem;
+	color: #888;
+	letter-spacing: 0.02em;
+}
+
+.fcc-powered-by a {
+	color: var(--fcc-primary, #2D7A4F);
+	text-decoration: none;
+}
+
+.fcc-powered-by a:hover {
+	text-decoration: underline;
+}
+
+/* Hide powered-by when hidePoweredBy=1 (JS adds this class to wrapper) */
+.fcc-wl-hide-powered-by .fcc-powered-by {
+	display: none;
+}
+
+/* White-label brand logo above search */
+.fcc-wl-logo {
+	display: block;
+	max-height: 48px;
+	max-width: 200px;
+	margin: 0 auto 0.75rem;
+	object-fit: contain;
+}

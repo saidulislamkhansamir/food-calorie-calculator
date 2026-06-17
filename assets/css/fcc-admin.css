@@ -4460,3 +4460,388 @@ button.fcc-reqs-tab {
 @media screen and (max-width: 1400px) { .fcc-an-kpi-row { grid-template-columns: repeat(3, 1fr); } }
 @media screen and (max-width: 900px)  { .fcc-an-kpi-row { grid-template-columns: repeat(2, 1fr); } }
 @media screen and (max-width: 600px)  { .fcc-an-kpi-row { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   White Label Admin Styles
+   ========================================================================== */
+
+/* ---- Hero ---- */
+.fcc-wl-hero {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
+	border-radius: 12px;
+	padding: 2rem 2rem 0;
+	color: #fff;
+	margin-bottom: 1.5rem;
+}
+.fcc-wl-hero__inner {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+.fcc-wl-hero__title {
+	color: #fff;
+	font-size: 1.5rem;
+	margin: 0 0 0.25rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.fcc-wl-hero__sub {
+	color: rgba(255,255,255,0.82);
+	margin: 0;
+	font-size: 0.9rem;
+}
+.fcc-wl-stats {
+	display: flex;
+	gap: 0;
+	margin-top: 1.5rem;
+	border-top: 1px solid rgba(255,255,255,0.15);
+	flex-wrap: wrap;
+}
+.fcc-wl-stat {
+	flex: 1;
+	padding: 1rem 1.25rem;
+	border-right: 1px solid rgba(255,255,255,0.12);
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	min-width: 110px;
+}
+.fcc-wl-stat:last-child { border-right: none; }
+.fcc-wl-stat__val {
+	font-size: 1.6rem;
+	font-weight: 700;
+	color: #fff;
+	line-height: 1;
+}
+.fcc-wl-stat__val--green { color: #a8f0c6; }
+.fcc-wl-stat__val--amber { color: #ffd580; }
+.fcc-wl-stat__lbl {
+	font-size: 0.72rem;
+	color: rgba(255,255,255,0.65);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* ---- Buttons ---- */
+.fcc-wl-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.5rem 1rem;
+	border-radius: 6px;
+	font-size: 0.82rem;
+	font-weight: 600;
+	cursor: pointer;
+	border: 1px solid transparent;
+	line-height: 1.4;
+	text-decoration: none;
+	transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.fcc-wl-btn--primary  { background: #fff; color: #0d3d26; border-color: rgba(0,0,0,0.1); }
+.fcc-wl-btn--primary:hover { background: #e8f5ee; }
+.fcc-wl-btn--ghost    { background: transparent; color: #fff; border-color: rgba(255,255,255,0.4); }
+.fcc-wl-btn--ghost:hover { background: rgba(255,255,255,0.1); }
+.fcc-wl-btn--outline  { background: transparent; color: #2D7A4F; border-color: #2D7A4F; }
+.fcc-wl-btn--outline:hover { background: #e8f5ee; }
+.fcc-wl-btn--amber    { background: #fff8ec; color: #966000; border-color: #f5c77a; }
+.fcc-wl-btn--amber:hover { background: #fce8b4; }
+.fcc-wl-btn--green    { background: #e8f5ee; color: #0d3d26; border-color: #6DBF67; }
+.fcc-wl-btn--green:hover { background: #c5ecd3; }
+.fcc-wl-btn--danger   { background: #fdf2f2; color: #c0392b; border-color: #e8a49c; }
+.fcc-wl-btn--danger:hover { background: #fce0de; }
+.fcc-wl-btn--copy     { background: #f0f4f8; color: #1e2a1e; border-color: #ccc; }
+.fcc-wl-btn--copy:hover { background: #e2eaf0; }
+.fcc-wl-btn--sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+
+/* ---- Tier cards ---- */
+.fcc-wl-tiers {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+@media screen and (max-width: 900px) { .fcc-wl-tiers { grid-template-columns: repeat(2, 1fr); } }
+@media screen and (max-width: 600px) { .fcc-wl-tiers { grid-template-columns: 1fr; } }
+
+.fcc-wl-tier-card {
+	background: #fff;
+	border-radius: 10px;
+	padding: 1.25rem;
+	border: 2px solid transparent;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.fcc-wl-tier-card--starter      { border-color: #b0bec5; }
+.fcc-wl-tier-card--growth       { border-color: #42a5f5; }
+.fcc-wl-tier-card--professional { border-color: #7e57c2; }
+.fcc-wl-tier-card--enterprise   { border-color: #d4ac0d; }
+
+.fcc-wl-tier-card__name {
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	letter-spacing: 0.07em;
+	color: #666;
+	font-weight: 600;
+	margin-bottom: 0.25rem;
+}
+.fcc-wl-tier-card__price {
+	font-size: 1.35rem;
+	font-weight: 700;
+	color: #1e2a1e;
+	line-height: 1.2;
+}
+.fcc-wl-tier-card__count {
+	font-size: 0.82rem;
+	color: #555;
+	margin-top: 0.5rem;
+}
+.fcc-wl-tier-card__arr {
+	font-size: 0.88rem;
+	font-weight: 700;
+	color: #2D7A4F;
+	margin-top: 0.2rem;
+}
+
+/* ---- Section ---- */
+.fcc-wl-section {
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+	margin-bottom: 1.5rem;
+	overflow: hidden;
+}
+.fcc-wl-section--expiring { border: 2px solid #f5c77a; }
+.fcc-wl-section__header {
+	padding: 1rem 1.5rem 0.75rem;
+	border-bottom: 1px solid #e8eef2;
+}
+.fcc-wl-section__header h2 {
+	margin: 0;
+	font-size: 1rem;
+	color: #1e2a1e;
+}
+
+/* ---- Table ---- */
+.fcc-wl-table-wrap { overflow-x: auto; }
+.fcc-wl-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.83rem;
+}
+.fcc-wl-table th {
+	background: #f5f8fa;
+	padding: 0.6rem 0.85rem;
+	text-align: left;
+	font-size: 0.73rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #555;
+	white-space: nowrap;
+	border-bottom: 1px solid #e0e8ed;
+}
+.fcc-wl-table td {
+	padding: 0.75rem 0.85rem;
+	border-bottom: 1px solid #f0f4f6;
+	vertical-align: top;
+	color: #333;
+}
+.fcc-wl-table tr:hover td { background: #f9fbfc; }
+.fcc-wl-table .fcc-wl-actions { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+
+/* ---- Status badges ---- */
+.fcc-wl-status {
+	display: inline-block;
+	padding: 0.2rem 0.55rem;
+	border-radius: 999px;
+	font-size: 0.73rem;
+	font-weight: 600;
+	letter-spacing: 0.03em;
+}
+.fcc-wl-status--trial     { background: #e8f0fe; color: #1a56db; }
+.fcc-wl-status--active    { background: #e3f5eb; color: #1a6a3c; }
+.fcc-wl-status--suspended { background: #fff3e0; color: #966000; }
+.fcc-wl-status--expired   { background: #fdf2f2; color: #c0392b; }
+
+/* ---- Tier pills ---- */
+.fcc-wl-tier-pill {
+	display: inline-block;
+	padding: 0.18rem 0.5rem;
+	border-radius: 4px;
+	font-size: 0.72rem;
+	font-weight: 600;
+}
+.fcc-wl-tier-pill--starter      { background: #eceff1; color: #546e7a; }
+.fcc-wl-tier-pill--growth       { background: #e3f2fd; color: #1565c0; }
+.fcc-wl-tier-pill--professional { background: #f3e5f5; color: #6a1b9a; }
+.fcc-wl-tier-pill--enterprise   { background: #fffde7; color: #9a7000; }
+
+/* ---- Misc ---- */
+.fcc-wl-muted     { color: #aaa; }
+.fcc-wl-brand-label { color: #888; font-size: 0.78rem; }
+.fcc-wl-days-left { color: #c0392b; }
+.fcc-wl-empty {
+	text-align: center;
+	padding: 3rem 2rem;
+	color: #888;
+}
+.fcc-wl-empty p { margin-top: 0.75rem; }
+
+/* ---- Form panel ---- */
+.fcc-wl-form-panel {
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+	margin-bottom: 1.5rem;
+	overflow: hidden;
+	border: 2px solid #2D7A4F;
+}
+.fcc-wl-form-panel__header {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 100%);
+	color: #fff;
+	padding: 1rem 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.fcc-wl-form-panel__header h2 { margin: 0; color: #fff; font-size: 1rem; }
+.fcc-wl-form-panel__close {
+	background: transparent;
+	border: none;
+	color: #fff;
+	font-size: 1.5rem;
+	cursor: pointer;
+	line-height: 1;
+	padding: 0;
+	opacity: 0.8;
+}
+.fcc-wl-form-panel__close:hover { opacity: 1; }
+
+.fcc-wl-form { padding: 1.5rem; }
+.fcc-wl-form__grid { display: flex; flex-direction: column; gap: 1.5rem; }
+.fcc-wl-form__section h3 {
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #888;
+	margin: 0 0 0.75rem;
+	padding-bottom: 0.4rem;
+	border-bottom: 1px solid #e8eef2;
+}
+.fcc-wl-form__row { display: grid; gap: 1rem; }
+.fcc-wl-form__row--2 { grid-template-columns: 1fr 1fr; }
+.fcc-wl-form__row--3 { grid-template-columns: 1fr 1fr 1fr; }
+@media screen and (max-width: 700px) {
+	.fcc-wl-form__row--2,
+	.fcc-wl-form__row--3 { grid-template-columns: 1fr; }
+}
+.fcc-wl-form__field { display: flex; flex-direction: column; gap: 0.3rem; }
+.fcc-wl-form__field label { font-size: 0.82rem; font-weight: 600; color: #333; }
+.fcc-wl-form__footer {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding-top: 1rem;
+	border-top: 1px solid #e8eef2;
+	flex-wrap: wrap;
+}
+.fcc-wl-form__msg { font-size: 0.82rem; font-weight: 600; }
+.fcc-required { color: #c0392b; }
+
+/* Tier-gated field hint */
+.fcc-wl-tier-badge {
+	display: inline-block;
+	padding: 0.1rem 0.35rem;
+	background: #f0f4f8;
+	border-radius: 4px;
+	font-size: 0.7rem;
+	color: #666;
+	font-weight: 600;
+	vertical-align: middle;
+	margin-left: 0.2rem;
+}
+.fcc-wl-colour-input {
+	width: 50px;
+	height: 36px;
+	padding: 2px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	cursor: pointer;
+}
+.fcc-wl-checkbox-label { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+
+/* ---- Embed modal ---- */
+.fcc-wl-modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,0.55);
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.fcc-wl-modal {
+	background: #fff;
+	border-radius: 12px;
+	width: min(680px, 96vw);
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+}
+.fcc-wl-modal__header {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 100%);
+	color: #fff;
+	padding: 1rem 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: 12px 12px 0 0;
+}
+.fcc-wl-modal__header h2 { margin: 0; color: #fff; font-size: 1rem; }
+.fcc-wl-modal__close {
+	background: transparent;
+	border: none;
+	color: #fff;
+	font-size: 1.5rem;
+	cursor: pointer;
+	line-height: 1;
+	padding: 0;
+}
+.fcc-wl-modal__body { padding: 1.5rem; }
+.fcc-wl-modal__client { font-weight: 600; color: #1e2a1e; margin: 0 0 1rem; }
+.fcc-wl-modal__note {
+	margin-top: 1rem;
+	font-size: 0.8rem;
+	color: #888;
+	border-top: 1px solid #e8eef2;
+	padding-top: 0.75rem;
+}
+.fcc-wl-embed-block {
+	margin-bottom: 1.25rem;
+}
+.fcc-wl-embed-block label {
+	display: block;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: #555;
+	margin-bottom: 0.4rem;
+}
+.fcc-wl-embed-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+.fcc-wl-embed-row code {
+	flex: 1;
+	display: block;
+	background: #f5f8fa;
+	border: 1px solid #dce4ea;
+	border-radius: 6px;
+	padding: 0.6rem 0.85rem;
+	font-family: monospace;
+	font-size: 0.78rem;
+	color: #1e2a1e;
+	word-break: break-all;
+	white-space: pre-wrap;
+}

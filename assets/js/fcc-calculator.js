@@ -1766,6 +1766,32 @@
 	initCompareSlot( 'a' );
 	initCompareSlot( 'b' );
 
+	// -------------------------------------------------------------------------
+	// White Label — logo injection + powered-by visibility
+	// -------------------------------------------------------------------------
+	( function initWhiteLabel() {
+		var wl = cfg.wl;
+		if ( ! wl ) return;
+
+		// Apply hide-powered-by class to the wrapper.
+		if ( wl.hidePoweredBy ) {
+			var wrapper = document.querySelector( '.fcc-calculator-wrapper' ) || root;
+			if ( wrapper ) wrapper.classList.add( 'fcc-wl-hide-powered-by' );
+		}
+
+		// Inject logo above the search input (Growth+ tier).
+		if ( wl.logoUrl ) {
+			var searchSection = root.querySelector( '.fcc-search-section' );
+			if ( searchSection && ! root.querySelector( '.fcc-wl-logo' ) ) {
+				var img = document.createElement( 'img' );
+				img.src       = wl.logoUrl;
+				img.alt       = wl.brandName || 'Brand logo';
+				img.className = 'fcc-wl-logo';
+				searchSection.insertBefore( img, searchSection.firstChild );
+			}
+		}
+	} )();
+
 	function showToast( msg ) {
 		let toast = document.getElementById( 'fcc-toast' );
 		if ( ! toast ) {

@@ -3801,4 +3801,15 @@ class Seed_Data {
 
 		]; // end foods array.
 	}
+
+	/**
+	 * Migration v18: create fcc_wl_licenses table.
+	 */
+	public static function seed_v18(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 18 ) {
+			return;
+		}
+		Database::create_wl_licenses_table();
+		update_option( 'fcc_seed_version', 18 );
+	}
 }

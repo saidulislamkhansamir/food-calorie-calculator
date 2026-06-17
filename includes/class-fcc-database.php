@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Database {
 
-	const SCHEMA_VERSION = '1.2';
+	const SCHEMA_VERSION = '1.3';
 
 	// -------------------------------------------------------------------------
 	// Table name helpers.
@@ -49,6 +49,11 @@ class Database {
 	public static function sponsor_clicks_table(): string {
 		global $wpdb;
 		return $wpdb->prefix . 'fcc_sponsor_clicks';
+	}
+
+	public static function wl_licenses_table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'fcc_wl_licenses';
 	}
 
 	// -------------------------------------------------------------------------
@@ -178,12 +183,45 @@ class Database {
 ) {$charset_collate};";
 		// phpcs:enable
 
+		$wl_licenses = self::wl_licenses_table();
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql_wl_licenses = "CREATE TABLE {$wl_licenses} (
+  id              int(11) NOT NULL AUTO_INCREMENT,
+  license_key     varchar(64) NOT NULL,
+  client_name     varchar(200) NOT NULL,
+  client_email    varchar(200) NOT NULL,
+  client_url      varchar(500) DEFAULT NULL,
+  business_type   varchar(50) NOT NULL DEFAULT 'other',
+  tier            varchar(20) NOT NULL DEFAULT 'starter',
+  price_gbp       decimal(8,2) NOT NULL DEFAULT 99.00,
+  status          varchar(20) NOT NULL DEFAULT 'trial',
+  allowed_domains text DEFAULT NULL,
+  brand_name      varchar(200) DEFAULT NULL,
+  primary_colour  varchar(7) DEFAULT NULL,
+  accent_colour   varchar(7) DEFAULT NULL,
+  logo_url        varchar(500) DEFAULT NULL,
+  hide_powered_by tinyint(1) NOT NULL DEFAULT 0,
+  custom_css      text DEFAULT NULL,
+  notes           text DEFAULT NULL,
+  embed_loads     int(11) NOT NULL DEFAULT 0,
+  search_count    int(11) NOT NULL DEFAULT 0,
+  expires_at      datetime DEFAULT NULL,
+  renewed_at      datetime DEFAULT NULL,
+  created_at      datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  UNIQUE KEY license_key (license_key),
+  KEY status (status),
+  KEY expires_at (expires_at)
+) {$charset_collate};";
+		// phpcs:enable
+
 		dbDelta( $sql_cats );
 		dbDelta( $sql_foods );
 		dbDelta( $sql_requests );
 		dbDelta( $sql_missed );
 		dbDelta( $sql_search_log );
 		dbDelta( $sql_sponsor_clicks );
+		dbDelta( $sql_wl_licenses );
 
 		update_option( 'fcc_db_version', self::SCHEMA_VERSION );
 	}
@@ -1504,5 +1542,355 @@ class Database {
 			    AND sponsor_active = 1
 			    AND (sponsor_expires_at IS NULL OR sponsor_expires_at > NOW())"
 		);
+	}
+
+	// -------------------------------------------------------------------------
+	// White Label Licenses.
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Create (or upgrade) the fcc_wl_licenses table via dbDelta.
+	 * Called by seed_v18() on existing installs.
+	 */
+	public static function create_wl_licenses_table(): void {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$table           = self::wl_licenses_table();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql = "CREATE TABLE {$table} (
+  id              int(11) NOT NULL AUTO_INCREMENT,
+  license_key     varchar(64) NOT NULL,
+  client_name     varchar(200) NOT NULL,
+  client_email    varchar(200) NOT NULL,
+  client_url      varchar(500) DEFAULT NULL,
+  business_type   varchar(50) NOT NULL DEFAULT 'other',
+  tier            varchar(20) NOT NULL DEFAULT 'starter',
+  price_gbp       decimal(8,2) NOT NULL DEFAULT 99.00,
+  status          varchar(20) NOT NULL DEFAULT 'trial',
+  allowed_domains text DEFAULT NULL,
+  brand_name      varchar(200) DEFAULT NULL,
+  primary_colour  varchar(7) DEFAULT NULL,
+  accent_colour   varchar(7) DEFAULT NULL,
+  logo_url        varchar(500) DEFAULT NULL,
+  hide_powered_by tinyint(1) NOT NULL DEFAULT 0,
+  custom_css      text DEFAULT NULL,
+  notes           text DEFAULT NULL,
+  embed_loads     int(11) NOT NULL DEFAULT 0,
+  search_count    int(11) NOT NULL DEFAULT 0,
+  expires_at      datetime DEFAULT NULL,
+  renewed_at      datetime DEFAULT NULL,
+  created_at      datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  UNIQUE KEY license_key (license_key),
+  KEY status (status),
+  KEY expires_at (expires_at)
+) {$charset_collate};";
+		// phpcs:enable
+		dbDelta( $sql );
+	}
+
+	/**
+	 * Generate a cryptographically random 32-char uppercase hex license key.
+	 */
+	public static function generate_license_key(): string {
+		return strtoupper( bin2hex( random_bytes( 16 ) ) );
+	}
+
+	/**
+	 * Insert a new white-label license.
+	 *
+	 * @param array<string,mixed> $data
+	 * @return int|false  Inserted row ID or false on failure.
+	 */
+	public static function insert_wl_license( array $data ): int|false {
+		global $wpdb;
+
+		if ( empty( $data['license_key'] ) ) {
+			$data['license_key'] = self::generate_license_key();
+		}
+
+		$result = $wpdb->insert(
+			self::wl_licenses_table(),
+			[
+				'license_key'     => sanitize_text_field( $data['license_key'] ),
+				'client_name'     => sanitize_text_field( $data['client_name'] ?? '' ),
+				'client_email'    => sanitize_email( $data['client_email'] ?? '' ),
+				'client_url'      => esc_url_raw( $data['client_url'] ?? '' ),
+				'business_type'   => sanitize_key( $data['business_type'] ?? 'other' ),
+				'tier'            => sanitize_key( $data['tier'] ?? 'starter' ),
+				'price_gbp'       => (float) ( $data['price_gbp'] ?? 99.00 ),
+				'status'          => sanitize_key( $data['status'] ?? 'trial' ),
+				'allowed_domains' => isset( $data['allowed_domains'] ) ? wp_json_encode( (array) $data['allowed_domains'] ) : null,
+				'brand_name'      => sanitize_text_field( $data['brand_name'] ?? '' ),
+				'primary_colour'  => sanitize_hex_color( $data['primary_colour'] ?? '' ) ?: null,
+				'accent_colour'   => sanitize_hex_color( $data['accent_colour'] ?? '' ) ?: null,
+				'logo_url'        => esc_url_raw( $data['logo_url'] ?? '' ) ?: null,
+				'hide_powered_by' => (int) ( $data['hide_powered_by'] ?? 0 ),
+				'custom_css'      => wp_strip_all_tags( $data['custom_css'] ?? '' ) ?: null,
+				'notes'           => sanitize_textarea_field( $data['notes'] ?? '' ) ?: null,
+				'expires_at'      => ! empty( $data['expires_at'] ) ? sanitize_text_field( $data['expires_at'] ) : null,
+			]
+		);
+
+		return $result ? (int) $wpdb->insert_id : false;
+	}
+
+	/**
+	 * Update an existing white-label license.
+	 *
+	 * @param array<string,mixed> $data
+	 */
+	public static function update_wl_license( int $id, array $data ): bool {
+		global $wpdb;
+
+		$update = [];
+
+		if ( isset( $data['client_name'] ) )     $update['client_name']     = sanitize_text_field( $data['client_name'] );
+		if ( isset( $data['client_email'] ) )     $update['client_email']    = sanitize_email( $data['client_email'] );
+		if ( isset( $data['client_url'] ) )       $update['client_url']      = esc_url_raw( $data['client_url'] );
+		if ( isset( $data['business_type'] ) )    $update['business_type']   = sanitize_key( $data['business_type'] );
+		if ( isset( $data['tier'] ) )             $update['tier']            = sanitize_key( $data['tier'] );
+		if ( isset( $data['price_gbp'] ) )        $update['price_gbp']       = (float) $data['price_gbp'];
+		if ( isset( $data['status'] ) )           $update['status']          = sanitize_key( $data['status'] );
+		if ( isset( $data['allowed_domains'] ) )  $update['allowed_domains'] = wp_json_encode( (array) $data['allowed_domains'] );
+		if ( isset( $data['brand_name'] ) )       $update['brand_name']      = sanitize_text_field( $data['brand_name'] );
+		if ( isset( $data['primary_colour'] ) )   $update['primary_colour']  = sanitize_hex_color( $data['primary_colour'] ) ?: null;
+		if ( isset( $data['accent_colour'] ) )    $update['accent_colour']   = sanitize_hex_color( $data['accent_colour'] ) ?: null;
+		if ( isset( $data['logo_url'] ) )         $update['logo_url']        = esc_url_raw( $data['logo_url'] ) ?: null;
+		if ( isset( $data['hide_powered_by'] ) )  $update['hide_powered_by'] = (int) $data['hide_powered_by'];
+		if ( isset( $data['custom_css'] ) )       $update['custom_css']      = wp_strip_all_tags( $data['custom_css'] ) ?: null;
+		if ( isset( $data['notes'] ) )            $update['notes']           = sanitize_textarea_field( $data['notes'] ) ?: null;
+		if ( array_key_exists( 'expires_at', $data ) ) {
+			$update['expires_at'] = ! empty( $data['expires_at'] ) ? sanitize_text_field( $data['expires_at'] ) : null;
+		}
+		if ( isset( $data['renewed_at'] ) ) $update['renewed_at'] = sanitize_text_field( $data['renewed_at'] );
+
+		if ( empty( $update ) ) {
+			return false;
+		}
+
+		$result = $wpdb->update( self::wl_licenses_table(), $update, [ 'id' => $id ] );
+		return false !== $result;
+	}
+
+	/**
+	 * Delete a white-label license.
+	 */
+	public static function delete_wl_license( int $id ): bool {
+		global $wpdb;
+		$result = $wpdb->delete( self::wl_licenses_table(), [ 'id' => $id ], [ '%d' ] );
+		return (bool) $result;
+	}
+
+	/**
+	 * Get a single license by ID.
+	 *
+	 * @return array<string,mixed>|null
+	 */
+	public static function get_wl_license( int $id ): ?array {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ), ARRAY_A );
+		return $row ? self::decode_wl_license( $row ) : null;
+	}
+
+	/**
+	 * Get a single license by key string.
+	 *
+	 * @return array<string,mixed>|null
+	 */
+	public static function get_wl_license_by_key( string $key ): ?array {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE license_key = %s", $key ), ARRAY_A );
+		return $row ? self::decode_wl_license( $row ) : null;
+	}
+
+	/**
+	 * Paginated list of licenses with optional status filter.
+	 *
+	 * @param array<string,mixed> $args  Keys: status, per_page, page, orderby, order
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_wl_licenses( array $args = [] ): array {
+		global $wpdb;
+		$table    = self::wl_licenses_table();
+		$per_page = max( 1, (int) ( $args['per_page'] ?? 25 ) );
+		$page     = max( 1, (int) ( $args['page'] ?? 1 ) );
+		$offset   = ( $page - 1 ) * $per_page;
+		$orderby  = in_array( $args['orderby'] ?? '', [ 'client_name', 'tier', 'status', 'expires_at', 'created_at', 'embed_loads' ], true )
+			? $args['orderby'] : 'created_at';
+		$order    = strtoupper( $args['order'] ?? 'DESC' ) === 'ASC' ? 'ASC' : 'DESC';
+
+		$where = '1=1';
+		$values = [];
+
+		if ( ! empty( $args['status'] ) ) {
+			$where   .= ' AND status = %s';
+			$values[] = $args['status'];
+		}
+
+		$values[] = $per_page;
+		$values[] = $offset;
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$table} WHERE {$where} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
+				...$values
+			),
+			ARRAY_A
+		) ?? [];
+
+		return array_map( [ self::class, 'decode_wl_license' ], $rows );
+	}
+
+	/**
+	 * Count licenses with optional status filter.
+	 *
+	 * @param array<string,mixed> $args
+	 */
+	public static function count_wl_licenses( array $args = [] ): int {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+
+		if ( ! empty( $args['status'] ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			return (int) $wpdb->get_var(
+				$wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE status = %s", $args['status'] )
+			);
+		}
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
+	}
+
+	/**
+	 * Increment embed_loads counter for a license key.
+	 */
+	public static function increment_wl_embed_load( string $key ): void {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( $wpdb->prepare( "UPDATE {$table} SET embed_loads = embed_loads + 1 WHERE license_key = %s", $key ) );
+	}
+
+	/**
+	 * Increment search_count counter for a license key.
+	 */
+	public static function increment_wl_search_count( string $key ): void {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( $wpdb->prepare( "UPDATE {$table} SET search_count = search_count + 1 WHERE license_key = %s", $key ) );
+	}
+
+	/**
+	 * Get aggregate stats for the White Label dashboard hero.
+	 *
+	 * @return array{total:int,active:int,expiring_30d:int,mrr:float,arr:float}
+	 */
+	public static function get_wl_stats(): array {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row(
+			"SELECT
+			    COUNT(*) AS total,
+			    SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS active,
+			    SUM(CASE WHEN status = 'active' AND expires_at IS NOT NULL AND expires_at BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) AS expiring_30d,
+			    SUM(CASE WHEN status = 'active' THEN price_gbp ELSE 0 END) / 12 AS mrr,
+			    SUM(CASE WHEN status = 'active' THEN price_gbp ELSE 0 END) AS arr
+			  FROM {$table}",
+			ARRAY_A
+		);
+
+		return [
+			'total'        => (int)   ( $row['total']        ?? 0 ),
+			'active'       => (int)   ( $row['active']       ?? 0 ),
+			'expiring_30d' => (int)   ( $row['expiring_30d'] ?? 0 ),
+			'mrr'          => (float) ( $row['mrr']          ?? 0 ),
+			'arr'          => (float) ( $row['arr']          ?? 0 ),
+		];
+	}
+
+	/**
+	 * Get licenses expiring within a given number of days.
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_wl_expiring( int $days = 30 ): array {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$table}
+				  WHERE status = 'active'
+				    AND expires_at IS NOT NULL
+				    AND expires_at BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL %d DAY)
+				  ORDER BY expires_at ASC",
+				$days
+			),
+			ARRAY_A
+		) ?? [];
+
+		return array_map( [ self::class, 'decode_wl_license' ], $rows );
+	}
+
+	/**
+	 * Get per-tier revenue breakdown for the summary cards.
+	 *
+	 * @return array<string,array{count:int,arr:float}>
+	 */
+	public static function get_wl_tier_breakdown(): array {
+		global $wpdb;
+		$table = self::wl_licenses_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			"SELECT tier,
+			        COUNT(*) AS cnt,
+			        SUM(CASE WHEN status = 'active' THEN price_gbp ELSE 0 END) AS arr
+			   FROM {$table}
+			  GROUP BY tier",
+			ARRAY_A
+		) ?? [];
+
+		$result = [];
+		foreach ( $rows as $r ) {
+			$result[ $r['tier'] ] = [
+				'count' => (int)   $r['cnt'],
+				'arr'   => (float) $r['arr'],
+			];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Cast raw DB row to correct PHP types.
+	 *
+	 * @param array<string,mixed> $row
+	 * @return array<string,mixed>
+	 */
+	private static function decode_wl_license( array $row ): array {
+		$row['id']              = (int) $row['id'];
+		$row['price_gbp']       = (float) $row['price_gbp'];
+		$row['hide_powered_by'] = (bool) $row['hide_powered_by'];
+		$row['embed_loads']     = (int) $row['embed_loads'];
+		$row['search_count']    = (int) $row['search_count'];
+
+		// Decode allowed_domains JSON → array.
+		if ( ! empty( $row['allowed_domains'] ) ) {
+			$decoded = json_decode( $row['allowed_domains'], true );
+			$row['allowed_domains'] = is_array( $decoded ) ? $decoded : [];
+		} else {
+			$row['allowed_domains'] = [];
+		}
+
+		return $row;
 	}
 }

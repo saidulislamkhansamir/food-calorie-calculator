@@ -18,6 +18,9 @@ class Shortcode {
 	/** Set to true when the shortcode is found on the current page. */
 	private bool $enqueue_assets = false;
 
+	/** White-label data for the active license (if any), shared with enqueue_public_assets(). */
+	private static ?array $wl_active = null;
+
 	public function register( Loader $loader ): void {
 		$loader->add_action( 'init', $this, 'register_shortcode' );
 		$loader->add_action( 'wp_footer', $this, 'maybe_enqueue_assets' );
@@ -39,6 +42,7 @@ class Shortcode {
 			[
 				'title'    => '',
 				'category' => '',
+				'license'  => '',
 			],
 			$atts,
 			'food_calorie_calculator'
@@ -50,9 +54,66 @@ class Shortcode {
 		$labels     = $settings['labels'] ?? [];
 		$general    = $settings['general'] ?? [];
 
+		// Resolve white-label license key: shortcode attr takes precedence over URL param.
+		$wl_key     = ! empty( $atts['license'] ) ? sanitize_text_field( $atts['license'] ) : sanitize_text_field( $_GET['wl'] ?? '' );
+		$wl_license = null;
+		$wl_data    = null;
+
+		if ( $wl_key ) {
+			$lic = Database::get_wl_license_by_key( $wl_key );
+			if ( $lic && $lic['status'] === 'active' && ( empty( $lic['expires_at'] ) || strtotime( $lic['expires_at'] ) > time() ) ) {
+				// Domain restriction check (skip for enterprise tier).
+				$allowed = (array) $lic['allowed_domains'];
+				if ( $lic['tier'] !== 'enterprise' && ! empty( $allowed ) ) {
+					$host    = strtolower( wp_unslash( $_SERVER['HTTP_HOST'] ?? '' ) );
+					$referer = strtolower( (string) parse_url( wp_unslash( $_SERVER['HTTP_REFERER'] ?? '' ), PHP_URL_HOST ) );
+					$valid   = false;
+					foreach ( $allowed as $d ) {
+						$d = strtolower( trim( $d ) );
+						if ( $d && ( $host === $d || $referer === $d || str_ends_with( $host, '.' . $d ) || str_ends_with( $referer, '.' . $d ) ) ) {
+							$valid = true;
+							break;
+						}
+					}
+					if ( ! $valid ) {
+						$lic = null;
+					}
+				}
+			} else {
+				$lic = null;
+			}
+
+			if ( $lic ) {
+				$wl_license = $lic;
+				$wl_data    = [
+					'brandName'     => ! empty( $lic['brand_name'] ) ? esc_html( $lic['brand_name'] ) : null,
+					'logoUrl'       => ! empty( $lic['logo_url'] ) ? esc_url( $lic['logo_url'] ) : null,
+					'hidePoweredBy' => (bool) $lic['hide_powered_by'],
+					'tier'          => $lic['tier'],
+				];
+				// Override appearance CSS with license branding (Pro+ tiers).
+				if ( in_array( $lic['tier'], [ 'professional', 'enterprise' ], true ) ) {
+					if ( ! empty( $lic['primary_colour'] ) ) $appearance['primary_colour'] = $lic['primary_colour'];
+					if ( ! empty( $lic['accent_colour'] ) )  $appearance['accent_colour']  = $lic['accent_colour'];
+				}
+				// Share with enqueue_public_assets() (custom CSS + wl object in fccData).
+				self::$wl_active = [
+					'wl_data'    => $wl_data,
+					'custom_css' => $lic['tier'] === 'enterprise' ? ( $lic['custom_css'] ?? '' ) : '',
+				];
+				// Fire-and-forget embed load counter.
+				Database::increment_wl_embed_load( $wl_key );
+			}
+		}
+
 		ob_start();
 		include FCC_PLUGIN_DIR . 'admin/partials/frontend-calculator.php';
-		return (string) ob_get_clean();
+		$html = (string) ob_get_clean();
+
+		// Powered-by footer — hidden via CSS when hidePoweredBy is active.
+		$html .= '<div class="fcc-powered-by"><span>Powered by <a href="https://foodcaloriecalculator.co.uk" target="_blank" rel="noopener">Food Calorie Calculator</a></span></div>';
+
+		return $html;
 	}
 
 	/**
@@ -179,8 +240,15 @@ class Shortcode {
 					'maintain'          => esc_html__( 'Maintain weight', 'food-calorie-calculator' ),
 					'gain'              => esc_html__( 'Gain weight', 'food-calorie-calculator' ),
 				],
+				'wl' => $wl_active ? $wl_active['wl_data'] : null,
 			]
 		);
+
+		// White-label: inject enterprise custom CSS (Enterprise tier only).
+		$wl_active = self::$wl_active;
+		if ( $wl_active && ! empty( $wl_active['custom_css'] ) ) {
+			wp_add_inline_style( 'fcc-public', $wl_active['custom_css'] );
+		}
 
 		// JSON-LD schema if enabled.
 		if ( ! empty( $features['json_ld_schema'] ) ) {
