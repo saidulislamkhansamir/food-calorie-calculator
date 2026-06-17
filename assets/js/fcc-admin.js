@@ -99,6 +99,217 @@
 	} );
 
 	// -------------------------------------------------------------------------
+	// AJAX Categories — edit, save, delete (no page reload)
+	// -------------------------------------------------------------------------
+
+	// Edit button: populate form without reload.
+	$( document ).on( 'click', '.fcc-cat-edit-btn', function () {
+		const $card  = $( this ).closest( '.fcc-cat-card' );
+		const catId  = $card.data( 'cat-id' );
+		const catName = $card.data( 'cat-name' );
+
+		$( '#cat_name' ).val( catName );
+		// Trigger input so slug auto-gen marks itself as manual (won't overwrite set value).
+		$( '#cat_slug' ).val( $card.data( 'cat-slug' ) ).trigger( 'input' );
+		$( '#cat_desc' ).val( $card.data( 'cat-desc' ) );
+		$( '#cat_order' ).val( $card.data( 'cat-order' ) );
+		$( '[name="category_id"]', '#fcc-cat-form' ).val( catId );
+
+		// Switch formbar to edit mode.
+		$( '#fcc-cats-formbar' ).addClass( 'fcc-cats-formbar--edit' );
+		$( '#fcc-cats-formbar-mode' )
+			.addClass( 'fcc-cats-formbar__mode--edit' )
+			.html( '&#9999;&#65039; ' + fccAdmin.i18n.editing );
+		$( '#fcc-cats-formbar-name' ).text( catName ).removeAttr( 'hidden' );
+		$( '#fcc-cat-submit-btn' ).addClass( 'fcc-cats-qsubmit--update' ).text( fccAdmin.i18n.update );
+		$( '#fcc-cat-cancel' ).removeAttr( 'hidden' );
+
+		// Highlight active card.
+		$( '.fcc-cat-card' ).removeClass( 'fcc-cat-card--active' );
+		$card.addClass( 'fcc-cat-card--active' );
+
+		$( '#fcc-cat-form' )[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+	} );
+
+	// Cancel edit: reset form without navigating.
+	$( document ).on( 'click', '#fcc-cat-cancel', function ( e ) {
+		e.preventDefault();
+		resetCatForm();
+	} );
+
+	// Form submit: AJAX save/update.
+	$( document ).on( 'submit', '#fcc-cat-form', function ( e ) {
+		e.preventDefault();
+		const $form   = $( this );
+		const $btn    = $( '#fcc-cat-submit-btn' );
+		const $region = $( '#fcc-cats-region' );
+
+		const $actionInput = $form.find( '[name="action"]' );
+		$actionInput.val( 'fcc_ajax_save_category' );
+		const data = $form.serialize();
+		$actionInput.val( 'fcc_save_category' );
+
+		$btn.prop( 'disabled', true );
+		$region.addClass( 'fcc-loading' );
+
+		$.post( fccAdmin.ajaxUrl, data, function ( response ) {
+			$btn.prop( 'disabled', false );
+			$region.removeClass( 'fcc-loading' );
+			if ( response.success ) {
+				$region.html( response.data.html );
+				resetCatForm();
+				showToast( response.data.message || fccAdmin.i18n.saved );
+			} else {
+				showToast( ( response.data && response.data.message ) || fccAdmin.i18n.error );
+			}
+		} ).fail( function () {
+			$btn.prop( 'disabled', false );
+			$region.removeClass( 'fcc-loading' );
+			showToast( fccAdmin.i18n.error );
+		} );
+	} );
+
+	// Delete button: AJAX delete.
+	$( document ).on( 'click', '.fcc-cat-delete-btn', function () {
+		const msg = $( this ).data( 'confirm' ) || fccAdmin.i18n.confirmDelete;
+		if ( ! window.confirm( msg ) ) {
+			return;
+		}
+		const catId   = $( this ).data( 'cat-id' );
+		const $region = $( '#fcc-cats-region' );
+
+		$region.addClass( 'fcc-loading' );
+
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_ajax_delete_category',
+			category_id: catId,
+			_ajax_nonce: $region.data( 'nonce' ),
+		}, function ( response ) {
+			$region.removeClass( 'fcc-loading' );
+			if ( response.success ) {
+				$region.html( response.data.html );
+				resetCatForm();
+				showToast( response.data.message || fccAdmin.i18n.saved );
+			} else {
+				showToast( ( response.data && response.data.message ) || fccAdmin.i18n.error );
+			}
+		} ).fail( function () {
+			$region.removeClass( 'fcc-loading' );
+			showToast( fccAdmin.i18n.error );
+		} );
+	} );
+
+	function resetCatForm() {
+		const $form = $( '#fcc-cat-form' );
+		$form[0].reset();
+		$form.find( '[name="category_id"]' ).val( '0' );
+
+		$( '#fcc-cats-formbar' ).removeClass( 'fcc-cats-formbar--edit' );
+		$( '#fcc-cats-formbar-mode' )
+			.removeClass( 'fcc-cats-formbar__mode--edit' )
+			.html( '&#10133; ' + fccAdmin.i18n.addCategory );
+		$( '#fcc-cats-formbar-name' ).text( '' ).attr( 'hidden', '' );
+		$( '#fcc-cat-submit-btn' ).removeClass( 'fcc-cats-qsubmit--update' ).text( fccAdmin.i18n.addCategoryBtn );
+		$( '#fcc-cat-cancel' ).attr( 'hidden', '' );
+
+		$( '.fcc-cat-card' ).removeClass( 'fcc-cat-card--active' );
+	}
+
+	// -------------------------------------------------------------------------
+	// AJAX Settings save — inline feedback, no reload
+	// -------------------------------------------------------------------------
+	$( document ).on( 'submit', '#fcc-stg-form', function ( e ) {
+		e.preventDefault();
+		const $form = $( this );
+		const $btn  = $form.find( '.fcc-stg-save' );
+		const $tab  = $form.find( '.fcc-stg-footer__tab' );
+		const origTabText = $tab.text();
+
+		const $actionInput = $form.find( '[name="action"]' );
+		$actionInput.val( 'fcc_ajax_save_settings' );
+		const data = $form.serialize();
+		$actionInput.val( 'fcc_save_settings' );
+
+		$btn.prop( 'disabled', true );
+
+		$.post( fccAdmin.ajaxUrl, data, function ( response ) {
+			$btn.prop( 'disabled', false );
+			if ( response.success ) {
+				const msg = ( response.data && response.data.message ) || fccAdmin.i18n.saved;
+				$tab.text( '✓ ' + msg );
+				showToast( msg );
+				setTimeout( function () { $tab.text( origTabText ); }, 3000 );
+			} else {
+				showToast( ( response.data && response.data.message ) || fccAdmin.i18n.error );
+			}
+		} ).fail( function () {
+			$btn.prop( 'disabled', false );
+			showToast( fccAdmin.i18n.error );
+		} );
+	} );
+
+	// -------------------------------------------------------------------------
+	// AJAX Import — file upload with inline result
+	// -------------------------------------------------------------------------
+	$( document ).on( 'submit', '#fcc-import-form', function ( e ) {
+		e.preventDefault();
+		const $form   = $( this );
+		const $btn    = $( '#fcc-import-btn' );
+		const $result = $( '#fcc-import-result' );
+		const origBtnHtml = $btn.html();
+
+		const formData = new FormData( $form[0] );
+		formData.set( 'action', 'fcc_ajax_import' );
+
+		$btn.prop( 'disabled', true ).text( fccAdmin.i18n.importing );
+		$result.hide().text( '' ).removeClass( 'fcc-import-result--success fcc-import-result--error' );
+
+		$.ajax( {
+			url:         fccAdmin.ajaxUrl,
+			method:      'POST',
+			data:        formData,
+			processData: false,
+			contentType: false,
+			success: function ( response ) {
+				$btn.prop( 'disabled', false ).html( origBtnHtml );
+				if ( response.success ) {
+					let html = '<strong>' + escHtml( response.data.message ) + '</strong>';
+					if ( response.data.errors && response.data.errors.length ) {
+						html += '<ul class="fcc-import-result__errors">';
+						$.each( response.data.errors, function ( i, err ) {
+							html += '<li>' + escHtml( err ) + '</li>';
+						} );
+						html += '</ul>';
+					}
+					$result.addClass( 'fcc-import-result--success' ).html( html ).removeAttr( 'hidden' ).show();
+					showToast( response.data.message );
+				} else {
+					const errMsg = ( typeof response.data === 'string' )
+						? response.data
+						: ( response.data && response.data.message ) || fccAdmin.i18n.error;
+					$result.addClass( 'fcc-import-result--error' )
+						.text( errMsg )
+						.removeAttr( 'hidden' ).show();
+				}
+			},
+			error: function () {
+				$btn.prop( 'disabled', false ).html( origBtnHtml );
+				$result.addClass( 'fcc-import-result--error' )
+					.text( fccAdmin.i18n.error )
+					.removeAttr( 'hidden' ).show();
+			},
+		} );
+	} );
+
+	function escHtml( s ) {
+		return String( s )
+			.replace( /&/g, '&amp;' )
+			.replace( /</g, '&lt;' )
+			.replace( />/g, '&gt;' )
+			.replace( /"/g, '&quot;' );
+	}
+
+	// -------------------------------------------------------------------------
 	// Copy shortcode to clipboard
 	// -------------------------------------------------------------------------
 	$( document ).on( 'click', '.fcc-copy-shortcode', function () {

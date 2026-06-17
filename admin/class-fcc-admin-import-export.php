@@ -15,9 +15,10 @@ defined( 'ABSPATH' ) || exit;
 class Import_Export {
 
 	public function register( \FCC\Loader $loader ): void {
-		$loader->add_action( 'admin_post_fcc_import',     $this, 'handle_import' );
-		$loader->add_action( 'admin_post_fcc_export_csv', $this, 'handle_export_csv' );
-		$loader->add_action( 'admin_post_fcc_export_xlsx',$this, 'handle_export_xlsx' );
+		$loader->add_action( 'admin_post_fcc_import',      $this, 'handle_import' );
+		$loader->add_action( 'admin_post_fcc_export_csv',  $this, 'handle_export_csv' );
+		$loader->add_action( 'admin_post_fcc_export_xlsx', $this, 'handle_export_xlsx' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_import',    $this, 'ajax_import' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -93,6 +94,68 @@ class Import_Export {
 		}
 
 		$this->redirect_import( $result['errors'] ? 'warning' : 'success', $msg );
+	}
+
+	// -------------------------------------------------------------------------
+	// AJAX import.
+	// -------------------------------------------------------------------------
+
+	public function ajax_import(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Permission denied.', 'food-calorie-calculator' ), 403 );
+		}
+
+		check_ajax_referer( 'fcc_import' );
+
+		if ( empty( $_FILES['fcc_import_file']['tmp_name'] ) ) {
+			wp_send_json_error( __( 'No file uploaded.', 'food-calorie-calculator' ) );
+		}
+
+		$file     = $_FILES['fcc_import_file'];
+		$tmp_path = $file['tmp_name'];
+		$name     = sanitize_file_name( $file['name'] );
+
+		if ( ! is_uploaded_file( $tmp_path ) ) {
+			wp_send_json_error( __( 'Invalid file upload.', 'food-calorie-calculator' ) );
+		}
+
+		if ( $file['size'] > 10 * 1024 * 1024 ) {
+			wp_send_json_error( __( 'File exceeds the 10 MB limit.', 'food-calorie-calculator' ) );
+		}
+
+		$ext = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+		if ( ! in_array( $ext, [ 'csv', 'xlsx' ], true ) ) {
+			wp_send_json_error( __( 'Only CSV and XLSX files are supported.', 'food-calorie-calculator' ) );
+		}
+
+		if ( 'xlsx' === $ext ) {
+			$fh    = fopen( $tmp_path, 'rb' );
+			$magic = $fh ? fread( $fh, 4 ) : '';
+			if ( $fh ) {
+				fclose( $fh );
+			}
+			if ( "\x50\x4b\x03\x04" !== $magic ) {
+				wp_send_json_error( __( 'The uploaded file is not a valid XLSX file.', 'food-calorie-calculator' ) );
+			}
+		}
+
+		if ( 'csv' === $ext ) {
+			$result = \FCC\Import_Export::import_csv( $tmp_path );
+		} else {
+			$result = \FCC\Import_Export::import_xlsx( $tmp_path );
+		}
+
+		$msg = sprintf(
+			// translators: 1: imported count, 2: skipped count.
+			__( 'Import complete: %1$d food(s) imported, %2$d skipped.', 'food-calorie-calculator' ),
+			$result['imported'],
+			$result['skipped']
+		);
+
+		wp_send_json_success( [
+			'message' => $msg,
+			'errors'  => $result['errors'] ?? [],
+		] );
 	}
 
 	// -------------------------------------------------------------------------

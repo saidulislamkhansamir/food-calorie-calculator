@@ -15,7 +15,8 @@ defined( 'ABSPATH' ) || exit;
 class Settings_Page {
 
 	public function register( \FCC\Loader $loader ): void {
-		$loader->add_action( 'admin_post_fcc_save_settings', $this, 'handle_save_settings' );
+		$loader->add_action( 'admin_post_fcc_save_settings',  $this, 'handle_save_settings' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_save_settings', $this, 'ajax_save_settings' );
 	}
 
 	public function handle_save_settings(): void {
@@ -59,6 +60,41 @@ class Settings_Page {
 			admin_url( 'admin.php' )
 		) );
 		exit;
+	}
+
+	public function ajax_save_settings(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Permission denied.', 403 );
+		}
+
+		check_ajax_referer( 'fcc_save_settings' );
+
+		$tab = isset( $_POST['fcc_tab'] ) ? sanitize_key( $_POST['fcc_tab'] ) : 'general';
+		$all = \FCC\Settings::get_all();
+
+		switch ( $tab ) {
+			case 'general':
+				$all['general'] = $this->sanitise_general( $_POST );
+				break;
+			case 'features':
+				$all['features'] = $this->sanitise_features( $_POST );
+				break;
+			case 'appearance':
+				$all['appearance'] = $this->sanitise_appearance( $_POST );
+				break;
+			case 'labels':
+				$all['labels'] = $this->sanitise_labels( $_POST );
+				break;
+			case 'advanced':
+				$all['advanced'] = $this->sanitise_advanced( $_POST );
+				break;
+		}
+
+		\FCC\Settings::save( $all );
+
+		wp_send_json_success( [
+			'message' => __( 'Settings saved.', 'food-calorie-calculator' ),
+		] );
 	}
 
 	// -------------------------------------------------------------------------

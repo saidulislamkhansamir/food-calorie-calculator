@@ -100,7 +100,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 	     Settings form
 	     ====================================================================== -->
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
-		class="fcc-stg-form">
+		class="fcc-stg-form" id="fcc-stg-form">
 		<input type="hidden" name="action"  value="fcc_save_settings">
 		<input type="hidden" name="fcc_tab" value="<?php echo esc_attr( $active_tab ); ?>">
 		<?php wp_nonce_field( 'fcc_save_settings' ); ?>

@@ -170,12 +170,18 @@ class Admin {
 				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 				'nonce'      => wp_create_nonce( 'fcc_admin_nonce' ),
 				'foodsNonce' => wp_create_nonce( 'fcc_foods_page' ),
+				'catsNonce'  => wp_create_nonce( 'fcc_ajax_cats' ),
 				'i18n'       => [
 					'confirmDelete'     => __( 'Are you sure you want to delete this food?', 'food-calorie-calculator' ),
 					'confirmBulkDelete' => __( 'Are you sure you want to delete the selected foods?', 'food-calorie-calculator' ),
 					'selectItems'       => __( 'Please select at least one item.', 'food-calorie-calculator' ),
 					'saved'             => __( 'Saved!', 'food-calorie-calculator' ),
 					'error'             => __( 'An error occurred.', 'food-calorie-calculator' ),
+					'editing'           => __( 'Editing', 'food-calorie-calculator' ),
+					'update'            => __( 'Update', 'food-calorie-calculator' ),
+					'addCategory'       => __( 'Add New Category', 'food-calorie-calculator' ),
+					'addCategoryBtn'    => __( 'Add Category', 'food-calorie-calculator' ),
+					'importing'         => __( 'Importing…', 'food-calorie-calculator' ),
 				],
 			]
 		);

@@ -141,6 +141,9 @@ $cat_count  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_cat
 					</button>
 
 				</form>
+
+				<div id="fcc-import-result" class="fcc-import-result" hidden></div>
+
 			</div>
 		</div><!-- .fcc-ie-card (import) -->
 
