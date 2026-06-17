@@ -1382,13 +1382,18 @@
 			const clone = root.cloneNode( true );
 			clone.classList.add( 'fcc-print-clone' );
 
-			[ 'fcc-tabs-nav', 'fcc-search-section', 'fcc-quantity-section', 'fcc-result-actions' ].forEach( function ( cls ) {
-				const el = clone.querySelector( '.' + cls );
+			[ 'fcc-tabs-nav', 'fcc-search-section', 'fcc-result-actions' ].forEach( function ( cls ) {
+				var el = clone.querySelector( '.' + cls );
 				if ( el ) el.remove();
 			} );
 			clone.querySelectorAll( '.fcc-tab-panel' ).forEach( function ( panel ) {
-				if ( panel.dataset.panel !== 'food' ) panel.remove();
+				if ( panel.dataset.panel !== 'calculator' ) panel.remove();
 			} );
+			// Reveal hidden sections in the clone for print.
+			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
+			// Strip interactive controls from quantity section (keep food name).
+			var qtyControls = clone.querySelector( '.fcc-qty-controls' );
+			if ( qtyControls ) qtyControls.remove();
 
 			document.body.appendChild( clone );
 

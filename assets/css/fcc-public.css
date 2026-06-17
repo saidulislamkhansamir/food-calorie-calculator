@@ -2076,8 +2076,27 @@ select.fcc-bmr-input {
 
 	.fcc-print-clone .fcc-hero { background: #2D7A4F !important; }
 
+	.fcc-print-clone .fcc-tab-panel,
+	.fcc-print-clone .fcc-section,
+	.fcc-print-clone .fcc-results-section,
+	.fcc-print-clone .fcc-quantity-section,
+	.fcc-print-clone .fcc-food-header,
+	.fcc-print-clone .fcc-health-highlights,
+	.fcc-print-clone .fcc-nutrition-table-wrapper,
+	.fcc-print-clone .fcc-macro-chart-wrapper,
+	.fcc-print-clone .fcc-traffic-lights,
+	.fcc-print-clone .fcc-omega3-section,
+	.fcc-print-clone .fcc-caffeine-section {
+		display: block !important;
+		visibility: visible !important;
+	}
+
 	.fcc-print-clone .fcc-nutrition-table th,
 	.fcc-print-clone .fcc-nutrition-table td { border: 1px solid #ccc !important; }
+
+	.fcc-print-clone .fcc-affiliate-links,
+	.fcc-print-clone .fcc-supplement-suggestions,
+	.fcc-print-clone .fcc-ad-slot { display: none !important; }
 
 	@page { margin: 1cm; }
 }
