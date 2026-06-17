@@ -531,17 +531,48 @@
 			const protein_kcal = ( food.protein_g || 0 ) * factor * 4;
 			const carbs_kcal   = ( food.carbohydrate_g || 0 ) * factor * 4;
 			const fat_kcal     = ( food.fat_g || 0 ) * factor * 9;
+			var chartColors = {
+				protein: appearance.chartProteinColour || '#3b82f6',
+				carbs:   appearance.chartCarbsColour   || '#f59e0b',
+				fat:     appearance.chartFatColour     || '#ef4444',
+			};
 			window.FccChart.draw(
 				macroCanvas,
 				{ protein: protein_kcal, carbs: carbs_kcal, fat: fat_kcal },
 				macroLegend,
 				{ protein: 'Protein', carbs: 'Carbs', fat: 'Fat' },
-				{
-					protein: appearance.chartProteinColour || '#3b82f6',
-					carbs:   appearance.chartCarbsColour   || '#f59e0b',
-					fat:     appearance.chartFatColour     || '#ef4444',
-				}
+				chartColors
 			);
+			var macroDetail = macroWrapper.querySelector( '.fcc-macro-detail' );
+			if ( macroDetail ) {
+				var pG = fmt( ( food.protein_g || 0 ) * factor, d );
+				var cG = fmt( ( food.carbohydrate_g || 0 ) * factor, d );
+				var fG = fmt( ( food.fat_g || 0 ) * factor, d );
+				var totalKcal = Math.round( protein_kcal + carbs_kcal + fat_kcal );
+				var cPerG = totalKcal > 0 && state.quantity > 0 ? fmt( totalKcal / state.quantity, 1 ) : '—';
+				macroDetail.innerHTML =
+					'<div class="fcc-macro-detail__row">'
+					+  '<span class="fcc-macro-detail__dot" style="background:' + chartColors.protein + '"></span>'
+					+  '<span class="fcc-macro-detail__lbl">Protein</span>'
+					+  '<span class="fcc-macro-detail__val">' + pG + 'g</span>'
+					+  '<span class="fcc-macro-detail__kcal">' + Math.round( protein_kcal ) + ' kcal</span>'
+					+ '</div>'
+					+ '<div class="fcc-macro-detail__row">'
+					+  '<span class="fcc-macro-detail__dot" style="background:' + chartColors.carbs + '"></span>'
+					+  '<span class="fcc-macro-detail__lbl">Carbs</span>'
+					+  '<span class="fcc-macro-detail__val">' + cG + 'g</span>'
+					+  '<span class="fcc-macro-detail__kcal">' + Math.round( carbs_kcal ) + ' kcal</span>'
+					+ '</div>'
+					+ '<div class="fcc-macro-detail__row">'
+					+  '<span class="fcc-macro-detail__dot" style="background:' + chartColors.fat + '"></span>'
+					+  '<span class="fcc-macro-detail__lbl">Fat</span>'
+					+  '<span class="fcc-macro-detail__val">' + fG + 'g</span>'
+					+  '<span class="fcc-macro-detail__kcal">' + Math.round( fat_kcal ) + ' kcal</span>'
+					+ '</div>'
+					+ '<div class="fcc-macro-detail__footer">'
+					+  '<span>' + cPerG + ' kcal/g</span>'
+					+ '</div>';
+			}
 			macroWrapper.hidden = false;
 		}
 

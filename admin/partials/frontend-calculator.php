@@ -330,6 +330,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 					<canvas id="fcc-macro-chart" class="fcc-macro-chart" width="200" height="200"
 						aria-label="<?php esc_attr_e( 'Macro breakdown chart', 'food-calorie-calculator' ); ?>" role="img"></canvas>
 					<div class="fcc-macro-legend" aria-label="<?php esc_attr_e( 'Macro legend', 'food-calorie-calculator' ); ?>"></div>
+					<div class="fcc-macro-detail" aria-label="<?php esc_attr_e( 'Macro details', 'food-calorie-calculator' ); ?>"></div>
 				</div>
 				<?php endif; ?>
 

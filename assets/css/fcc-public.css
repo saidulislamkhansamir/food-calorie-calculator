@@ -1312,6 +1312,60 @@
 	flex-shrink: 0;
 }
 
+/* Macro detail panel — gram + kcal breakdown next to legend */
+.fcc-macro-detail {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+	margin-left: auto;
+	min-width: 170px;
+}
+.fcc-macro-detail__row {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.8125rem;
+	padding: 0.3rem 0.625rem;
+	background: rgba(255,255,255,.75);
+	border: 1px solid rgba(0,0,0,.06);
+	border-radius: 8px;
+}
+.fcc-macro-detail__dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+.fcc-macro-detail__lbl {
+	font-weight: 600;
+	color: var(--fcc-text);
+	min-width: 48px;
+}
+.fcc-macro-detail__val {
+	font-weight: 700;
+	color: var(--fcc-text);
+	margin-left: auto;
+}
+.fcc-macro-detail__kcal {
+	font-size: 0.7rem;
+	color: var(--fcc-text-muted);
+	min-width: 48px;
+	text-align: right;
+}
+.fcc-macro-detail__footer {
+	text-align: center;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--fcc-text-muted);
+	padding-top: 0.25rem;
+	border-top: 1px solid rgba(0,0,0,.06);
+	margin-top: 0.125rem;
+}
+
+@media (max-width: 600px) {
+	.fcc-macro-detail { margin-left: 0; min-width: auto; }
+}
+
 /* --------------------------------------------------------------------------
    Omega-3 Cards
    -------------------------------------------------------------------------- */
