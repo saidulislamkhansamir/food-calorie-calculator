@@ -582,13 +582,14 @@ class Database {
 		$result = $wpdb->insert(
 			self::requests_table(),
 			[
-				'food_name'       => sanitize_text_field( $data['food_name'] ?? '' ),
-				'note'            => sanitize_textarea_field( $data['note'] ?? '' ),
-				'requester_email' => sanitize_email( $data['email'] ?? '' ),
-				'status'          => 'pending',
-				'ip_address'      => sanitize_text_field( $data['ip'] ?? '' ),
+				'food_name'        => sanitize_text_field( $data['food_name'] ?? '' ),
+				'note'             => sanitize_textarea_field( $data['note'] ?? '' ),
+				'requester_email'  => sanitize_email( $data['email'] ?? '' ),
+				'marketing_optin'  => isset( $data['marketing_optin'] ) ? (int) (bool) $data['marketing_optin'] : 1,
+				'status'           => 'pending',
+				'ip_address'       => sanitize_text_field( $data['ip'] ?? '' ),
 			],
-			[ '%s', '%s', '%s', '%s', '%s' ]
+			[ '%s', '%s', '%s', '%d', '%s', '%s' ]
 		);
 		return $result ? $wpdb->insert_id : false;
 	}

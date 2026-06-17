@@ -134,9 +134,17 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 							<div class="fcc-req-row">
 								<label for="fcc-req-email" class="fcc-req-label">
 									<?php esc_html_e( 'Your email', 'food-calorie-calculator' ); ?>
-									<span class="fcc-req-opt"><?php esc_html_e( '(optional)', 'food-calorie-calculator' ); ?></span>
+									<span class="fcc-req-required" aria-hidden="true">*</span>
 								</label>
-								<input type="email" id="fcc-req-email" name="email" class="fcc-req-input" placeholder="you@example.com">
+								<input type="email" id="fcc-req-email" name="email" class="fcc-req-input" placeholder="you@example.com" required>
+								<p class="fcc-req-hint"><?php esc_html_e( "We'll email you when this food is added.", 'food-calorie-calculator' ); ?></p>
+								<p class="fcc-req-error" id="fcc-req-email-error" hidden><?php esc_html_e( 'Please enter a valid email address.', 'food-calorie-calculator' ); ?></p>
+							</div>
+							<div class="fcc-req-row fcc-req-row--optin">
+								<label class="fcc-req-optin-label" for="fcc-req-optin">
+									<input type="checkbox" id="fcc-req-optin" name="marketing_optin" checked>
+									<?php esc_html_e( 'Also send me occasional nutrition tips & updates', 'food-calorie-calculator' ); ?>
+								</label>
 							</div>
 							<div class="fcc-req-row">
 								<label for="fcc-req-note" class="fcc-req-label">

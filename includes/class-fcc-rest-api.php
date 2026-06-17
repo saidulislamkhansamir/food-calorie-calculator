@@ -145,7 +145,15 @@ class Rest_Api {
 						},
 					],
 					'note'  => [ 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_textarea_field' ],
-					'email' => [ 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_email' ],
+					'email' => [
+						'type'              => 'string',
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_email',
+						'validate_callback' => static function ( $val ): bool {
+							return is_email( $val );
+						},
+					],
+					'marketing_optin' => [ 'type' => 'boolean', 'default' => true ],
 				],
 			]
 		);
@@ -198,14 +206,15 @@ class Rest_Api {
 	}
 
 	public function submit_food_request( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
-		$food_name = trim( (string) $request->get_param( 'food_name' ) );
-		$note      = trim( (string) $request->get_param( 'note' ) );
-		$email     = trim( (string) $request->get_param( 'email' ) );
-		$ip        = sanitize_text_field(
+		$food_name       = trim( (string) $request->get_param( 'food_name' ) );
+		$note            = trim( (string) $request->get_param( 'note' ) );
+		$email           = trim( (string) $request->get_param( 'email' ) );
+		$marketing_optin = (bool) $request->get_param( 'marketing_optin' );
+		$ip              = sanitize_text_field(
 			$request->get_header( 'x-forwarded-for' ) ?: ( $_SERVER['REMOTE_ADDR'] ?? '' )
 		);
 
-		$id = Database::insert_food_request( compact( 'food_name', 'note', 'email', 'ip' ) );
+		$id = Database::insert_food_request( compact( 'food_name', 'note', 'email', 'marketing_optin', 'ip' ) );
 
 		if ( ! $id ) {
 			return new \WP_Error(

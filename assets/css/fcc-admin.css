@@ -3137,6 +3137,11 @@
 .fcc-reqs-row--pending td { background: #fffdf0; }
 .fcc-reqs-row:last-child td { border-bottom: none; }
 
+.fcc-reqs-th--optin,
+.fcc-reqs-td--optin { width: 80px; text-align: center; }
+
+.fcc-reqs-optin-yes { color: #2D7A4F; font-weight: 700; font-size: 1rem; }
+
 .fcc-reqs-th--note,
 .fcc-reqs-td--note  { max-width: 200px; word-break: break-word; }
 

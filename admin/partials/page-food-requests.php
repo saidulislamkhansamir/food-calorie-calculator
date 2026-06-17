@@ -72,7 +72,8 @@ $palette = [
 						<th class="fcc-reqs-th--name"><?php esc_html_e( 'Food Name', 'food-calorie-calculator' ); ?></th>
 						<th class="fcc-reqs-th--note"><?php esc_html_e( 'Note', 'food-calorie-calculator' ); ?></th>
 						<th class="fcc-reqs-th--email"><?php esc_html_e( 'Email', 'food-calorie-calculator' ); ?></th>
-						<th class="fcc-reqs-th--status"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></th>
+						<th class="fcc-reqs-th--optin"><?php esc_html_e( 'Newsletter', 'food-calorie-calculator' ); ?></th>
+					<th class="fcc-reqs-th--status"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></th>
 						<th class="fcc-reqs-th--date"><?php esc_html_e( 'Date', 'food-calorie-calculator' ); ?></th>
 						<th class="fcc-reqs-th--actions"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
 					</tr>
@@ -91,6 +92,13 @@ $palette = [
 						<td class="fcc-reqs-td--email">
 							<?php if ( ! empty( $req['requester_email'] ) ) : ?>
 								<a href="mailto:<?php echo esc_attr( $req['requester_email'] ); ?>"><?php echo esc_html( $req['requester_email'] ); ?></a>
+							<?php else : ?>
+								<span class="fcc-reqs-muted">—</span>
+							<?php endif; ?>
+						</td>
+						<td class="fcc-reqs-td--optin">
+							<?php if ( ! empty( $req['marketing_optin'] ) ) : ?>
+								<span class="fcc-reqs-optin-yes" title="<?php esc_attr_e( 'Opted in', 'food-calorie-calculator' ); ?>">&#10003;</span>
 							<?php else : ?>
 								<span class="fcc-reqs-muted">—</span>
 							<?php endif; ?>

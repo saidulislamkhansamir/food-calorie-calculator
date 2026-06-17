@@ -498,6 +498,52 @@
 	color: #9ca3af;
 }
 
+.fcc-req-required {
+	color: #dc2626;
+	margin-left: 2px;
+}
+
+.fcc-req-hint {
+	margin: 0.25rem 0 0;
+	font-size: 0.72rem;
+	color: #4a8c6a;
+}
+
+.fcc-req-error {
+	margin: 0.25rem 0 0;
+	font-size: 0.72rem;
+	color: #dc2626;
+	font-weight: 600;
+}
+
+.fcc-req-input--error {
+	border-color: #dc2626 !important;
+	box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+}
+
+.fcc-req-row--optin {
+	margin-bottom: 0.5rem;
+}
+
+.fcc-req-optin-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
+	font-size: 0.8rem;
+	color: #374151;
+	cursor: pointer;
+	line-height: 1.4;
+}
+
+.fcc-req-optin-label input[type="checkbox"] {
+	flex-shrink: 0;
+	margin-top: 2px;
+	accent-color: #2D7A4F;
+	width: 14px;
+	height: 14px;
+	cursor: pointer;
+}
+
 .fcc-req-input,
 .fcc-req-textarea {
 	width: 100%;

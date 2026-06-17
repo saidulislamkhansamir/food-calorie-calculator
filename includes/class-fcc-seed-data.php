@@ -632,6 +632,23 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: add marketing_optin column to fcc_food_requests (v1.5.9).
+	// -------------------------------------------------------------------------
+
+	public static function seed_v14(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 14 ) { return; }
+		global $wpdb;
+		$table = Database::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$col = $wpdb->get_results( "SHOW COLUMNS FROM {$table} LIKE 'marketing_optin'" );
+		if ( ! $col ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "ALTER TABLE {$table} ADD COLUMN marketing_optin tinyint(1) NOT NULL DEFAULT 1 AFTER requester_email" );
+		}
+		update_option( 'fcc_seed_version', 14 );
+	}
+
+	// -------------------------------------------------------------------------
 	// Migration: create fcc_food_requests table for existing installs (v1.5.8).
 	// -------------------------------------------------------------------------
 

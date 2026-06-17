@@ -164,10 +164,26 @@
 	if ( requestForm ) {
 		requestForm.addEventListener( 'submit', function ( e ) {
 			e.preventDefault();
-			const btn  = requestForm.querySelector( '.fcc-req-submit' );
-			const note  = ( requestForm.querySelector( '[name="note"]' )  || {} ).value || '';
-			const email = ( requestForm.querySelector( '[name="email"]' ) || {} ).value || '';
-			const food_name = reqFoodInput ? reqFoodInput.value : '';
+			const btn        = requestForm.querySelector( '.fcc-req-submit' );
+			const emailInput = requestForm.querySelector( '[name="email"]' );
+			const emailError = root.querySelector( '#fcc-req-email-error' );
+			const email      = emailInput ? emailInput.value.trim() : '';
+
+			// Validate email.
+			const emailValid = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( email );
+			if ( ! emailValid ) {
+				if ( emailInput )  emailInput.classList.add( 'fcc-req-input--error' );
+				if ( emailError )  emailError.hidden = false;
+				if ( emailInput )  emailInput.focus();
+				return;
+			}
+			if ( emailInput )  emailInput.classList.remove( 'fcc-req-input--error' );
+			if ( emailError )  emailError.hidden = true;
+
+			const note           = ( requestForm.querySelector( '[name="note"]' )             || {} ).value || '';
+			const optinEl        = requestForm.querySelector( '[name="marketing_optin"]' );
+			const marketing_optin = optinEl ? optinEl.checked : true;
+			const food_name      = reqFoodInput ? reqFoodInput.value : '';
 			btn.disabled = true;
 
 			fetch( cfg.restUrl + '/food-requests', {
@@ -176,7 +192,7 @@
 					'X-WP-Nonce': cfg.restNonce,
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify( { food_name: food_name, note: note, email: email } ),
+				body: JSON.stringify( { food_name: food_name, note: note, email: email, marketing_optin: marketing_optin } ),
 			} ).then( function ( r ) {
 				btn.disabled = false;
 				if ( r.ok ) {
