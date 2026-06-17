@@ -118,7 +118,6 @@
 		if ( qtySection     ) qtySection.hidden    = true;
 		if ( resultsSection ) resultsSection.hidden = true;
 		if ( addToMealBtn   ) addToMealBtn.hidden   = true;
-		history.replaceState( null, '', window.location.pathname );
 	}
 
 	function showPopular() {
@@ -958,9 +957,9 @@
 	}
 
 	function updateShareUrl() {
-		if ( history.replaceState && state.food ) {
-			history.replaceState( null, '', buildShareUrl() );
-		}
+		// Intentionally empty — we do not push state to the URL during normal use.
+		// URL params are only used for explicit share links (see shareBtn click handler).
+		// Keeping params in the URL would restore the selection on page reload.
 	}
 
 	// Load popular foods on page init.
