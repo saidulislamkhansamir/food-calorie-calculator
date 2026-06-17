@@ -674,6 +674,8 @@ class Database {
 			'optin_only' => true,
 			'days'       => 0,
 			'status'     => '',
+			'date_from'  => '',
+			'date_to'    => '',
 		];
 		$args = wp_parse_args( $args, $defaults );
 
@@ -683,9 +685,16 @@ class Database {
 		if ( $args['optin_only'] ) {
 			$parts[] = "marketing_optin = 1 AND requester_email != ''";
 		}
-		if ( (int) $args['days'] > 0 ) {
+		if ( ! empty( $args['date_from'] ) ) {
+			$parts[] = 'created_at >= %s';
+			$vals[]  = $args['date_from'] . ' 00:00:00';
+		} elseif ( (int) $args['days'] > 0 ) {
 			$parts[] = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
 			$vals[]  = (int) $args['days'];
+		}
+		if ( ! empty( $args['date_to'] ) ) {
+			$parts[] = 'created_at <= %s';
+			$vals[]  = $args['date_to'] . ' 23:59:59';
 		}
 		if ( ! empty( $args['status'] ) ) {
 			$parts[] = 'status = %s';

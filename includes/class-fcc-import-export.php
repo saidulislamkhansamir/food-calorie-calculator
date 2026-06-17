@@ -184,12 +184,19 @@ class Import_Export {
 		return $out;
 	}
 
-	/** @param array{days?:int} $args */
+	/** @param array{days?:int,date_from?:string,date_to?:string} $args */
 	private static function requests_export_filename( array $args, string $ext ): string {
-		$days = (int) ( $args['days'] ?? 0 );
-		if ( $days > 0 ) {
-			$from = gmdate( 'Y-m-d', strtotime( "-{$days} days" ) );
-			$to   = gmdate( 'Y-m-d' );
+		$days      = (int) ( $args['days'] ?? 0 );
+		$date_from = $args['date_from'] ?? '';
+		$date_to   = $args['date_to']   ?? '';
+
+		if ( $date_from || $date_to ) {
+			$from  = $date_from ?: 'start';
+			$to    = $date_to   ?: gmdate( 'Y-m-d' );
+			$range = "{$from}-to-{$to}";
+		} elseif ( $days > 0 ) {
+			$from  = gmdate( 'Y-m-d', strtotime( "-{$days} days" ) );
+			$to    = gmdate( 'Y-m-d' );
 			$range = "{$from}-to-{$to}";
 		} else {
 			$range = 'all-time';

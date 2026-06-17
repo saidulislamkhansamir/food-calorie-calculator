@@ -38,13 +38,23 @@ class Food_Requests {
 		}
 	}
 
-	/** @return array{optin_only:bool,days:int,status:string} */
+	/** @return array{optin_only:bool,days:int,date_from:string,date_to:string,status:string} */
 	private function parse_export_args(): array {
 		$optin_only = (bool) absint( $_POST['optin_only'] ?? 1 );
 
-		$days_raw    = (int) ( $_POST['days'] ?? 0 );
-		$days_custom = absint( $_POST['days_custom'] ?? 0 );
-		$days        = ( -1 === $days_raw ) ? $days_custom : max( 0, $days_raw );
+		$days_raw  = (int) ( $_POST['days'] ?? 0 );
+		$date_from = '';
+		$date_to   = '';
+		$days      = 0;
+
+		if ( -1 === $days_raw ) {
+			$df = sanitize_text_field( wp_unslash( $_POST['date_from'] ?? '' ) );
+			$dt = sanitize_text_field( wp_unslash( $_POST['date_to'] ?? '' ) );
+			if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $df ) ) $date_from = $df;
+			if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $dt ) ) $date_to   = $dt;
+		} else {
+			$days = max( 0, $days_raw );
+		}
 
 		$allowed_statuses = [ '', 'pending', 'done', 'dismissed' ];
 		$status           = sanitize_key( $_POST['req_status'] ?? '' );
@@ -52,7 +62,7 @@ class Food_Requests {
 			$status = '';
 		}
 
-		return compact( 'optin_only', 'days', 'status' );
+		return compact( 'optin_only', 'days', 'date_from', 'date_to', 'status' );
 	}
 
 	public function ajax_reqs_page(): void {

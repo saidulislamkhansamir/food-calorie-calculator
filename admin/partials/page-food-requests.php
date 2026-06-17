@@ -116,65 +116,79 @@ $nonce = wp_create_nonce( 'fcc_ajax_reqs' );
 	     Export panel
 	     ====================================================================== -->
 	<div class="fcc-card fcc-reqs-export">
-		<div class="fcc-reqs-export__title">
-			<span aria-hidden="true">📤</span>
-			<?php esc_html_e( 'Export Emails', 'food-calorie-calculator' ); ?>
+
+		<div class="fcc-reqs-export__header">
+			<div class="fcc-reqs-export__header-icon" aria-hidden="true">📤</div>
+			<div>
+				<div class="fcc-reqs-export__title"><?php esc_html_e( 'Export Emails', 'food-calorie-calculator' ); ?></div>
+				<p class="fcc-reqs-export__desc"><?php esc_html_e( 'Download contacts collected through food requests for your email campaigns.', 'food-calorie-calculator' ); ?></p>
+			</div>
 		</div>
 
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="fcc-reqs-export__form">
 			<input type="hidden" name="action" value="fcc_export_requests">
 			<?php wp_nonce_field( 'fcc_export_requests' ); ?>
 
-			<!-- Opt-in toggle -->
-			<div class="fcc-reqs-export__row">
-				<label class="fcc-reqs-export__optin-label">
-					<input type="checkbox" name="optin_only" value="1" checked>
-					<?php esc_html_e( 'Newsletter opt-in only', 'food-calorie-calculator' ); ?>
-				</label>
-			</div>
+			<!-- Top filter row: contacts + status -->
+			<div class="fcc-reqs-export__filter-bar">
+
+				<div class="fcc-reqs-export__filter-group">
+					<span class="fcc-reqs-export__filter-label"><?php esc_html_e( 'Contacts', 'food-calorie-calculator' ); ?></span>
+					<label class="fcc-reqs-export__optin-label">
+						<input type="checkbox" name="optin_only" value="1" checked>
+						<span><?php esc_html_e( 'Newsletter opt-in only', 'food-calorie-calculator' ); ?></span>
+					</label>
+				</div>
+
+				<div class="fcc-reqs-export__filter-group">
+					<label class="fcc-reqs-export__filter-label" for="fcc-reqs-export-status"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></label>
+					<select name="req_status" id="fcc-reqs-export-status" class="fcc-reqs-export__select">
+						<option value=""><?php esc_html_e( 'All statuses', 'food-calorie-calculator' ); ?></option>
+						<option value="pending"><?php esc_html_e( 'Pending', 'food-calorie-calculator' ); ?></option>
+						<option value="done"><?php esc_html_e( 'Done', 'food-calorie-calculator' ); ?></option>
+						<option value="dismissed"><?php esc_html_e( 'Dismissed', 'food-calorie-calculator' ); ?></option>
+					</select>
+				</div>
+
+			</div><!-- .fcc-reqs-export__filter-bar -->
 
 			<!-- Period presets -->
-			<div class="fcc-reqs-export__row">
-				<span class="fcc-reqs-export__label"><?php esc_html_e( 'Period:', 'food-calorie-calculator' ); ?></span>
-				<div class="fcc-reqs-export__presets" role="group">
+			<div class="fcc-reqs-export__period-row">
+				<span class="fcc-reqs-export__filter-label"><?php esc_html_e( 'Period', 'food-calorie-calculator' ); ?></span>
+				<div class="fcc-reqs-export__presets" role="radiogroup">
 					<?php
 					$presets = [
 						0  => __( 'All time', 'food-calorie-calculator' ),
 						7  => __( 'Last 7 days', 'food-calorie-calculator' ),
 						14 => __( 'Last 14 days', 'food-calorie-calculator' ),
 						30 => __( 'Last 30 days', 'food-calorie-calculator' ),
-						-1 => __( 'Custom', 'food-calorie-calculator' ),
+						-1 => __( 'Custom range', 'food-calorie-calculator' ),
 					];
 					foreach ( $presets as $val => $label ) :
-						$id = 'fcc-reqs-days-' . ( $val < 0 ? 'custom' : $val );
 					?>
-						<label class="fcc-reqs-export__preset" for="<?php echo esc_attr( $id ); ?>">
-							<input type="radio" name="days" id="<?php echo esc_attr( $id ); ?>"
-								value="<?php echo esc_attr( $val ); ?>"
-								<?php checked( $val, 0 ); ?>>
-							<?php echo esc_html( $label ); ?>
+						<label class="fcc-reqs-export__preset">
+							<input type="radio" name="days" value="<?php echo esc_attr( $val ); ?>"<?php checked( $val, 0 ); ?>>
+							<span><?php echo esc_html( $label ); ?></span>
 						</label>
 					<?php endforeach; ?>
-
-					<span class="fcc-reqs-export__custom-wrap" id="fcc-reqs-custom-days-wrap" hidden>
-						<input type="number" name="days_custom" id="fcc-reqs-days-custom-val"
-							class="fcc-reqs-export__custom-input"
-							min="1" max="3650" value="120"
-							aria-label="<?php esc_attr_e( 'Number of days', 'food-calorie-calculator' ); ?>">
-						<span class="fcc-reqs-export__custom-unit"><?php esc_html_e( 'days', 'food-calorie-calculator' ); ?></span>
-					</span>
 				</div>
 			</div>
 
-			<!-- Status filter -->
-			<div class="fcc-reqs-export__row">
-				<label class="fcc-reqs-export__label" for="fcc-reqs-export-status"><?php esc_html_e( 'Status:', 'food-calorie-calculator' ); ?></label>
-				<select name="req_status" id="fcc-reqs-export-status" class="fcc-reqs-export__select">
-					<option value=""><?php esc_html_e( 'All statuses', 'food-calorie-calculator' ); ?></option>
-					<option value="pending"><?php esc_html_e( 'Pending', 'food-calorie-calculator' ); ?></option>
-					<option value="done"><?php esc_html_e( 'Done', 'food-calorie-calculator' ); ?></option>
-					<option value="dismissed"><?php esc_html_e( 'Dismissed', 'food-calorie-calculator' ); ?></option>
-				</select>
+			<!-- Custom date range (shown when "Custom range" selected) -->
+			<div class="fcc-reqs-export__daterange" id="fcc-reqs-daterange" hidden>
+				<label class="fcc-reqs-export__date-label" for="fcc-reqs-date-from">
+					<?php esc_html_e( 'From', 'food-calorie-calculator' ); ?>
+					<input type="date" name="date_from" id="fcc-reqs-date-from"
+						class="fcc-reqs-export__date-input"
+						value="">
+				</label>
+				<span class="fcc-reqs-export__date-sep" aria-hidden="true">→</span>
+				<label class="fcc-reqs-export__date-label" for="fcc-reqs-date-to">
+					<?php esc_html_e( 'To', 'food-calorie-calculator' ); ?>
+					<input type="date" name="date_to" id="fcc-reqs-date-to"
+						class="fcc-reqs-export__date-input"
+						value="<?php echo esc_attr( gmdate( 'Y-m-d' ) ); ?>">
+				</label>
 			</div>
 
 			<!-- Download buttons -->
@@ -193,11 +207,11 @@ $nonce = wp_create_nonce( 'fcc_ajax_reqs' );
 
 	<script>
 	( function () {
-		var radios = document.querySelectorAll( 'input[name="days"]' );
-		var wrap   = document.getElementById( 'fcc-reqs-custom-days-wrap' );
+		var radios   = document.querySelectorAll( 'input[name="days"]' );
+		var dateWrap = document.getElementById( 'fcc-reqs-daterange' );
 		function toggle() {
-			var custom = document.querySelector( 'input[name="days"]:checked' );
-			if ( wrap ) wrap.hidden = ! custom || custom.value !== '-1';
+			var checked = document.querySelector( 'input[name="days"]:checked' );
+			if ( dateWrap ) dateWrap.hidden = ! checked || checked.value !== '-1';
 		}
 		radios.forEach( function ( r ) { r.addEventListener( 'change', toggle ); } );
 		toggle();
