@@ -598,40 +598,66 @@ function renderCatalog() {
 	}
 	var html = '';
 	catalog.forEach(function(s, idx) {
-		var col   = catColour(s.category);
-		var lbl   = catLabel(s.category);
-		var icon  = catIcon(s.category);
-		var net   = netLabel(s.network);
-		var clk   = s.clicks || 0;
-		var impr  = s.impressions || 0;
-		var ctr   = impr > 0 ? (clk / impr * 100).toFixed(1) : '0';
+		var col      = catColour(s.category);
+		var lbl      = catLabel(s.category);
+		var icon     = catIcon(s.category);
+		var net      = netLabel(s.network);
+		var clk      = s.clicks || 0;
+		var impr     = s.impressions || 0;
+		var ctr      = impr > 0 ? (clk / impr * 100).toFixed(1) : '0';
 		var isActive = s.status !== 'inactive';
-		html += '<div class="fcc-supps-card ' + (isActive ? 'fcc-supps-card--active' : 'fcc-supps-card--inactive') + '" data-idx="' + idx + '" style="--supp-colour:' + esc(col) + ';">'
-			+ '<div class="fcc-supps-card__colour-strip"></div>'
-			+ '<div class="fcc-supps-card__body">'
-			+ '<div class="fcc-supps-card__top">'
-			+ '<span class="fcc-supps-cat-badge" style="background:' + esc(col) + ';">' + esc(icon) + ' ' + esc(lbl) + '</span>'
-			+ (s.badge ? '<span class="fcc-supps-card__badge">' + esc(s.badge) + '</span>' : '')
-			+ '<span class="fcc-supps-card__status ' + (isActive ? 'fcc-supps-card__status--active' : 'fcc-supps-card__status--inactive') + '">'
-			+ (isActive ? '<?php echo esc_js( __( 'Active', 'food-calorie-calculator' ) ); ?>' : '<?php echo esc_js( __( 'Inactive', 'food-calorie-calculator' ) ); ?>')
-			+ '</span></div>'
-			+ '<div class="fcc-supps-card__name">' + esc(s.name) + '</div>'
-			+ '<div class="fcc-supps-card__brand">' + esc(s.brand) + '</div>'
-			+ (s.tagline ? '<div class="fcc-supps-card__tagline">' + esc(s.tagline) + '</div>' : '')
-			+ '<div class="fcc-supps-card__meta">'
-			+ '<span class="fcc-supps-card__net">' + esc(net) + '</span>'
-			+ (s.price ? '<span class="fcc-supps-card__price">' + esc(s.price) + '</span>' : '')
+
+		var trashIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>';
+		var editIcon  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+		var linkIcon  = s.affiliate_url
+			? '<span class="fcc-sc__link-dot fcc-sc__link-dot--ok" title="Affiliate URL set">●</span>'
+			: '<span class="fcc-sc__link-dot fcc-sc__link-dot--missing" title="No affiliate URL">●</span>';
+
+		html += '<div class="fcc-sc ' + (isActive ? 'fcc-sc--active' : 'fcc-sc--off') + '"'
+			+ ' data-idx="' + idx + '" style="--sc:' + esc(col) + ';">'
+
+			// ── Colored header band ──────────────────────────────────────
+			+ '<div class="fcc-sc__hdr">'
+			+ '<span class="fcc-sc__hdr-icon" aria-hidden="true">' + esc(icon) + '</span>'
+			+ '<span class="fcc-sc__hdr-cat">' + esc(lbl) + '</span>'
+			+ (s.badge ? '<span class="fcc-sc__hdr-badge">' + esc(s.badge) + '</span>' : '')
+			+ '<span class="fcc-sc__hdr-status ' + (isActive ? 'fcc-sc__hdr-status--on' : 'fcc-sc__hdr-status--off') + '">'
+			+ (isActive ? '<?php echo esc_js( __( 'Active', 'food-calorie-calculator' ) ); ?>' : '<?php echo esc_js( __( 'Off', 'food-calorie-calculator' ) ); ?>')
+			+ '</span>'
 			+ '</div>'
-			+ '<div class="fcc-supps-card__stats">'
-			+ '<span><?php echo esc_js( __( 'Clicks', 'food-calorie-calculator' ) ); ?>: <strong>' + clk + '</strong></span>'
-			+ '<span><?php echo esc_js( __( 'Imp.', 'food-calorie-calculator' ) ); ?>: <strong>' + impr + '</strong></span>'
-			+ '<span>CTR: <strong>' + ctr + '%</strong></span>'
+
+			// ── Body: brand / name / tagline ─────────────────────────────
+			+ '<div class="fcc-sc__body">'
+			+ '<div class="fcc-sc__brand">' + esc(s.brand || '—') + '</div>'
+			+ '<div class="fcc-sc__name">' + esc(s.name) + '</div>'
+			+ (s.tagline ? '<div class="fcc-sc__tagline">' + esc(s.tagline) + '</div>' : '')
 			+ '</div>'
-			+ '<div class="fcc-supps-card__actions">'
-			+ '<button type="button" class="fcc-supps-btn-edit" data-cat-idx="' + idx + '"><?php echo esc_js( __( 'Edit', 'food-calorie-calculator' ) ); ?></button>'
-			+ '<button type="button" class="fcc-supps-btn-delete" data-cat-idx="' + idx + '"><?php echo esc_js( __( 'Delete', 'food-calorie-calculator' ) ); ?></button>'
+
+			// ── Price + retailer row ──────────────────────────────────────
+			+ '<div class="fcc-sc__meta">'
+			+ (s.price ? '<span class="fcc-sc__price">' + esc(s.price) + '</span>' : '<span></span>')
+			+ '<span class="fcc-sc__net-pill">' + esc(net) + '</span>'
+			+ linkIcon
 			+ '</div>'
-			+ '</div></div>';
+
+			// ── Stats strip ───────────────────────────────────────────────
+			+ '<div class="fcc-sc__stats">'
+			+ '<div class="fcc-sc__stat"><b>' + clk + '</b><span>Clicks</span></div>'
+			+ '<div class="fcc-sc__stat"><b>' + impr + '</b><span>Impr.</span></div>'
+			+ '<div class="fcc-sc__stat fcc-sc__stat--ctr"><b>' + ctr + '%</b><span>CTR</span></div>'
+			+ '</div>'
+
+			// ── Actions ───────────────────────────────────────────────────
+			+ '<div class="fcc-sc__actions">'
+			+ '<button type="button" class="fcc-supps-btn-edit fcc-sc__edit-btn" data-cat-idx="' + idx + '">'
+			+ editIcon + ' <?php echo esc_js( __( 'Edit', 'food-calorie-calculator' ) ); ?>'
+			+ '</button>'
+			+ '<button type="button" class="fcc-supps-btn-delete fcc-sc__del-btn" data-cat-idx="' + idx + '" title="<?php echo esc_js( __( 'Delete supplement', 'food-calorie-calculator' ) ); ?>">'
+			+ trashIcon
+			+ '</button>'
+			+ '</div>'
+
+			+ '</div>'; // /.fcc-sc
 	});
 	grid.innerHTML = html;
 	bindCatalogEvents();
