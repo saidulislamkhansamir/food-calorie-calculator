@@ -113,6 +113,17 @@ $nonce = wp_create_nonce( 'fcc_ajax_reqs' );
 	</div><!-- .fcc-reqs-toolbar -->
 
 	<!-- ======================================================================
+	     AJAX region — table + pagination
+	     ====================================================================== -->
+	<div id="fcc-reqs-list"
+		data-nonce="<?php echo esc_attr( $nonce ); ?>"
+		data-status="<?php echo esc_attr( $status_filter ); ?>"
+		data-search="<?php echo esc_attr( $search ); ?>"
+		data-paged="<?php echo (int) $paged; ?>">
+		<?php include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests-table.php'; ?>
+	</div><!-- #fcc-reqs-list -->
+
+	<!-- ======================================================================
 	     Export panel
 	     ====================================================================== -->
 	<div class="fcc-card fcc-reqs-export">
@@ -217,16 +228,5 @@ $nonce = wp_create_nonce( 'fcc_ajax_reqs' );
 		toggle();
 	}() );
 	</script>
-
-	<!-- ======================================================================
-	     AJAX region — table + pagination
-	     ====================================================================== -->
-	<div id="fcc-reqs-list"
-		data-nonce="<?php echo esc_attr( $nonce ); ?>"
-		data-status="<?php echo esc_attr( $status_filter ); ?>"
-		data-search="<?php echo esc_attr( $search ); ?>"
-		data-paged="<?php echo (int) $paged; ?>">
-		<?php include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests-table.php'; ?>
-	</div><!-- #fcc-reqs-list -->
 
 </div><!-- .wrap -->
