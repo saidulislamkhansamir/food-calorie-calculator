@@ -106,12 +106,23 @@ class Shortcode {
 			}
 		}
 
+		// Ad slot HTML — injected at specific positions inside/around the template.
+		$ad_slot_above_search     = \FCC\Admin\Ads::get_slot_html( 'above_search' );
+		$ad_slot_before_results   = \FCC\Admin\Ads::get_slot_html( 'before_results' );
+		$ad_slot_after_results    = \FCC\Admin\Ads::get_slot_html( 'after_results' );
+		$ad_slot_below_calculator = \FCC\Admin\Ads::get_slot_html( 'below_calculator' );
+
 		ob_start();
 		include FCC_PLUGIN_DIR . 'admin/partials/frontend-calculator.php';
 		$html = (string) ob_get_clean();
 
 		// Powered-by footer — hidden via CSS when hidePoweredBy is active.
 		$html .= '<div class="fcc-powered-by"><span>Powered by <a href="https://foodcaloriecalculator.co.uk" target="_blank" rel="noopener">Food Calorie Calculator</a></span></div>';
+
+		// Below-calculator ad slot (outside the widget wrapper).
+		if ( ! empty( $ad_slot_below_calculator ) ) {
+			$html .= '<div class="fcc-ad-slot fcc-ad-slot--below-calculator">' . $ad_slot_below_calculator . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 
 		return $html;
 	}
@@ -125,6 +136,12 @@ class Shortcode {
 			return;
 		}
 		$this->enqueue_public_assets();
+
+		// Output ad network scripts in footer — all major ad networks support footer injection.
+		$ad_scripts = \FCC\Admin\Ads::get_head_scripts();
+		if ( $ad_scripts ) {
+			echo $ad_scripts; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 	}
 
 	/**

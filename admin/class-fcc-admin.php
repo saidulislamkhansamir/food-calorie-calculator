@@ -156,6 +156,15 @@ class Admin {
 			'fcc-affiliates',
 			[ $this, 'page_affiliates' ]
 		);
+
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'Ad Networks', 'food-calorie-calculator' ),
+			__( 'Ad Networks', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-ads',
+			[ $this, 'page_ads' ]
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -226,6 +235,10 @@ class Admin {
 
 	public function page_affiliates(): void {
 		( new Affiliates() )->page_affiliates();
+	}
+
+	public function page_ads(): void {
+		( new Ads() )->page_ads();
 	}
 
 	// -------------------------------------------------------------------------

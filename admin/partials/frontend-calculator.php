@@ -84,6 +84,10 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 		     ================================================================== -->
 		<div class="fcc-tab-panel" data-panel="calculator">
 
+			<?php if ( ! empty( $ad_slot_above_search ) ) : ?>
+			<div class="fcc-ad-slot fcc-ad-slot--above-search"><?php echo $ad_slot_above_search; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+			<?php endif; ?>
+
 			<!-- ============================================================
 			     FOOD SEARCH
 			     ============================================================ -->
@@ -233,6 +237,10 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 				</div>
 			</section>
 
+			<?php if ( ! empty( $ad_slot_before_results ) ) : ?>
+			<div class="fcc-ad-slot fcc-ad-slot--before-results"><?php echo $ad_slot_before_results; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+			<?php endif; ?>
+
 			<!-- ============================================================
 			     RESULTS PANEL
 			     ============================================================ -->
@@ -378,6 +386,10 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 					<?php endif; ?>
 				</div>
 			</section>
+
+			<?php if ( ! empty( $ad_slot_after_results ) ) : ?>
+			<div class="fcc-ad-slot fcc-ad-slot--after-results"><?php echo $ad_slot_after_results; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+			<?php endif; ?>
 
 		</div><!-- .fcc-tab-panel[calculator] -->
 

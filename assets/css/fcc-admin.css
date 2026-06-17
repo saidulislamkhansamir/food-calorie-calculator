@@ -5110,3 +5110,398 @@ button.fcc-reqs-tab {
 	font-size: 0.85rem;
 	color: #333;
 }
+
+/* =============================================================================
+   AD NETWORKS PAGE (v1.12.0)
+   ============================================================================= */
+
+/* ---- Hero ---- */
+.fcc-ads-page { max-width: 1100px; }
+
+.fcc-ads-hero {
+	background: linear-gradient(135deg, #0d3d26 0%, #2D7A4F 55%, #6DBF67 100%);
+	border-radius: 12px;
+	padding: 1.75rem 2rem;
+	margin-bottom: 1.5rem;
+	color: #fff;
+}
+
+.fcc-ads-hero__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1.25rem;
+}
+
+.fcc-ads-hero__left {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.fcc-ads-hero__icon {
+	width: 52px;
+	height: 52px;
+	background: rgba(255,255,255,0.15);
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.fcc-ads-hero__title { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.2rem; }
+.fcc-ads-hero__sub   { font-size: 0.85rem; opacity: 0.85; margin: 0; }
+
+.fcc-ads-hero__stats {
+	display: flex;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+}
+
+.fcc-ads-hero__stat {
+	text-align: center;
+	min-width: 70px;
+}
+
+.fcc-ads-hero__stat-val {
+	display: block;
+	font-size: 1.65rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.fcc-ads-hero__stat-lbl {
+	display: block;
+	font-size: 0.7rem;
+	opacity: 0.8;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin-top: 0.2rem;
+}
+
+.fcc-ads-hero__stat--cpm .fcc-ads-hero__stat-val { font-size: 1.25rem; }
+
+/* ---- Card ---- */
+.fcc-card {
+	background: #fff;
+	border: 1px solid #dde3e8;
+	border-radius: 10px;
+	margin-bottom: 1.5rem;
+	overflow: hidden;
+}
+
+.fcc-card__header {
+	padding: 1rem 1.5rem 0.75rem;
+	border-bottom: 1px solid #edf0f3;
+}
+
+.fcc-card__title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: #1E2A1E;
+	margin: 0 0 0.25rem;
+}
+
+.fcc-card__desc { font-size: 0.8rem; color: #6b7c8d; margin: 0; }
+
+.fcc-card__body { padding: 1.25rem 1.5rem; }
+
+/* ---- General settings ---- */
+.fcc-ads-general__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem 2rem;
+}
+
+.fcc-ads-general__field--inline { grid-column: 1 / -1; }
+
+.fcc-ads-toggle-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	cursor: pointer;
+}
+
+.fcc-ads-toggle-label__text { display: flex; flex-direction: column; gap: 0.2rem; }
+.fcc-ads-toggle-label__text strong { font-size: 0.88rem; color: #1E2A1E; }
+.fcc-ads-toggle-label__hint { font-size: 0.76rem; color: #6b7c8d; }
+
+/* ---- Positions overview ---- */
+.fcc-ads-positions-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
+}
+
+.fcc-ads-pos-card {
+	border: 2px solid #e8edf2;
+	border-radius: 8px;
+	padding: 1rem;
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	transition: border-color 0.2s;
+}
+
+.fcc-ads-pos-card--active {
+	border-color: #2D7A4F;
+	background: #f0faf5;
+}
+
+.fcc-ads-pos-card__icon {
+	font-size: 1.4rem;
+	line-height: 1;
+	flex-shrink: 0;
+}
+
+.fcc-ads-pos-card__info { display: flex; flex-direction: column; gap: 0.25rem; }
+.fcc-ads-pos-card__info strong { font-size: 0.85rem; color: #1E2A1E; }
+.fcc-ads-pos-card__hint { font-size: 0.75rem; color: #6b7c8d; }
+
+.fcc-ads-pos-card__nets { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+
+.fcc-ads-pos-card__chip {
+	font-size: 0.7rem;
+	background: #2D7A4F;
+	color: #fff;
+	border-radius: 99px;
+	padding: 0.15rem 0.5rem;
+}
+
+.fcc-ads-pos-card__empty { font-size: 0.74rem; color: #aab4bd; font-style: italic; }
+
+/* ---- Category header ---- */
+.fcc-ads-section { margin-bottom: 2rem; }
+
+.fcc-ads-category-header {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-bottom: 0.85rem;
+	padding-bottom: 0.6rem;
+	border-bottom: 2px solid #e8edf2;
+}
+
+.fcc-ads-category-icon { color: #2D7A4F; display: flex; }
+
+.fcc-ads-category-title {
+	font-size: 1rem;
+	font-weight: 700;
+	color: #1E2A1E;
+	margin: 0;
+	flex: 1;
+}
+
+.fcc-ads-category-count {
+	font-size: 0.74rem;
+	background: #edf0f3;
+	border-radius: 99px;
+	padding: 0.2rem 0.65rem;
+	color: #5a6d7c;
+	font-weight: 600;
+}
+
+/* ---- Network grid ---- */
+.fcc-ads-network-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+	gap: 1rem;
+}
+
+/* ---- Network card ---- */
+.fcc-ads-network-card {
+	background: #fff;
+	border: 2px solid #dde3e8;
+	border-radius: 10px;
+	overflow: hidden;
+	transition: box-shadow 0.18s, border-color 0.18s;
+	display: flex;
+	flex-direction: column;
+}
+
+.fcc-ads-network-card--active {
+	border-color: var(--net-colour);
+}
+
+.fcc-ads-network-card__header {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.85rem 1rem;
+	background: #fafbfc;
+	border-bottom: 1px solid #edf0f3;
+}
+
+.fcc-ads-network-card__colour-bar {
+	width: 4px;
+	height: 36px;
+	border-radius: 4px;
+	background: var(--net-colour);
+	flex-shrink: 0;
+}
+
+.fcc-ads-network-card__meta { flex: 1; min-width: 0; }
+
+.fcc-ads-network-card__name {
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: #1E2A1E;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	flex-wrap: wrap;
+}
+
+.fcc-ads-network-badge {
+	font-size: 0.62rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	background: linear-gradient(135deg, #2D7A4F, #6DBF67);
+	color: #fff;
+	border-radius: 99px;
+	padding: 0.15rem 0.45rem;
+}
+
+.fcc-ads-network-card__cpm {
+	font-size: 0.74rem;
+	color: #5a7260;
+	margin-top: 0.15rem;
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.fcc-ads-network-card__toggle { flex-shrink: 0; }
+
+.fcc-ads-network-card__desc {
+	font-size: 0.78rem;
+	color: #5a6d7c;
+	margin: 0;
+	padding: 0.6rem 1rem;
+	line-height: 1.5;
+	border-bottom: 1px solid #edf0f3;
+}
+
+/* ---- Card body (collapsible) ---- */
+.fcc-ads-network-card__body {
+	display: none;
+	padding: 0.85rem 1rem;
+	flex-direction: column;
+	gap: 0.85rem;
+	border-bottom: 1px solid #edf0f3;
+}
+
+.fcc-ads-network-card__body--open { display: flex; }
+
+.fcc-ads-network-card__field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+/* ---- Position radio pills ---- */
+.fcc-ads-pos-radios {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.fcc-ads-pos-radio {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	font-size: 0.78rem;
+	border: 1.5px solid #dde3e8;
+	border-radius: 99px;
+	padding: 0.25rem 0.7rem;
+	cursor: pointer;
+	transition: border-color 0.15s, background 0.15s;
+	color: #4a5568;
+}
+
+.fcc-ads-pos-radio input[type=radio] { display: none; }
+
+.fcc-ads-pos-radio--active,
+.fcc-ads-pos-radio:hover {
+	border-color: #2D7A4F;
+	background: #f0faf5;
+	color: #1E5C38;
+	font-weight: 600;
+}
+
+/* ---- Code textareas ---- */
+.fcc-ads-code-textarea {
+	width: 100%;
+	font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+	font-size: 0.73rem;
+	background: #f7f8fa;
+	border: 1.5px solid #dde3e8;
+	border-radius: 6px;
+	padding: 0.55rem 0.7rem;
+	resize: vertical;
+	color: #1E2A1E;
+	line-height: 1.5;
+}
+
+.fcc-ads-code-textarea:focus {
+	border-color: #2D7A4F;
+	outline: none;
+	background: #fff;
+}
+
+.fcc-form-label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #3a4a56;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.fcc-ads-code-hint {
+	font-size: 0.7rem;
+	font-weight: 400;
+	color: #7a8d9c;
+}
+
+.fcc-ads-code-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.4rem;
+	font-size: 0.74rem;
+	color: #5a7260;
+	background: #f0faf5;
+	border: 1px solid #c3e6d0;
+	border-radius: 6px;
+	padding: 0.4rem 0.6rem;
+	margin: 0;
+}
+
+/* ---- Expand button ---- */
+.fcc-ads-expand-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	width: 100%;
+	padding: 0.5rem;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	font-size: 0.76rem;
+	font-weight: 600;
+	color: #5a7260;
+	transition: background 0.15s, color 0.15s;
+	margin-top: auto;
+}
+
+.fcc-ads-expand-btn:hover { background: #f0faf5; color: #2D7A4F; }
+
+.fcc-ads-expand-btn__caret { transition: transform 0.2s; }
+
+.fcc-ads-expand-btn[aria-expanded="true"] .fcc-ads-expand-btn__caret {
+	transform: rotate(180deg);
+}
