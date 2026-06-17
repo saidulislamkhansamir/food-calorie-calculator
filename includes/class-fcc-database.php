@@ -1893,4 +1893,382 @@ class Database {
 
 		return $row;
 	}
+
+	// ─────────────────────────────────────────────────────────────────────
+	// Analytics v2 — comparison, trending, monetization, content, audience.
+	// ─────────────────────────────────────────────────────────────────────
+
+	/**
+	 * Total searches for current period AND previous period of equal length.
+	 *
+	 * @return array{current:int,previous:int}
+	 */
+	public static function count_searches_with_comparison( int $days ): array {
+		if ( $days <= 0 ) {
+			$total = self::count_total_searches( 0 );
+			return [ 'current' => $total, 'previous' => 0 ];
+		}
+		global $wpdb;
+		$t = self::search_log_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT
+				    COALESCE(SUM(CASE WHEN log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY) THEN count END), 0) AS current_val,
+				    COALESCE(SUM(CASE WHEN log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY) AND log_date < DATE_SUB(CURDATE(), INTERVAL %d DAY) THEN count END), 0) AS previous_val
+				 FROM {$t}
+				 WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)",
+				$days, $days * 2, $days, $days * 2
+			),
+			ARRAY_A
+		);
+		return [
+			'current'  => (int) ( $row['current_val']  ?? 0 ),
+			'previous' => (int) ( $row['previous_val'] ?? 0 ),
+		];
+	}
+
+	/**
+	 * Success rate for current AND previous period.
+	 *
+	 * @return array{current:float,previous:float}
+	 */
+	public static function get_success_rate_with_comparison( int $days ): array {
+		if ( $days <= 0 ) {
+			return [ 'current' => self::get_search_success_rate( 0 ), 'previous' => 0.0 ];
+		}
+		global $wpdb;
+		$t = self::search_log_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT
+				    CASE WHEN log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY) THEN 'cur' ELSE 'prev' END AS period,
+				    SUM(count) AS total,
+				    SUM(CASE WHEN has_results=1 THEN count ELSE 0 END) AS hits
+				 FROM {$t}
+				 WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)
+				 GROUP BY period",
+				$days, $days * 2
+			),
+			ARRAY_A
+		) ?: [];
+
+		$out = [ 'current' => 0.0, 'previous' => 0.0 ];
+		foreach ( $rows as $r ) {
+			$rate = (int) $r['total'] > 0 ? round( (int) $r['hits'] / (int) $r['total'] * 100, 1 ) : 0.0;
+			if ( $r['period'] === 'cur' ) {
+				$out['current'] = $rate;
+			} else {
+				$out['previous'] = $rate;
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * Trending searches — queries with biggest growth vs previous period.
+	 *
+	 * @return array<int,array{query:string,current_count:int,previous_count:int,growth_pct:float}>
+	 */
+	public static function get_trending_searches( int $days = 30, int $limit = 15 ): array {
+		global $wpdb;
+		$t = self::search_log_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT query,
+				    COALESCE(SUM(CASE WHEN log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY) THEN count END), 0) AS cur,
+				    COALESCE(SUM(CASE WHEN log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY) AND log_date < DATE_SUB(CURDATE(), INTERVAL %d DAY) THEN count END), 0) AS prev
+				 FROM {$t}
+				 WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)
+				 GROUP BY query
+				 HAVING cur > 0
+				 ORDER BY (cur - prev) / GREATEST(prev, 1) DESC, cur DESC
+				 LIMIT %d",
+				$days, $days * 2, $days, $days * 2, $limit
+			),
+			ARRAY_A
+		) ?: [];
+
+		return array_map( function ( $r ) {
+			$cur  = (int) $r['cur'];
+			$prev = (int) $r['prev'];
+			return [
+				'query'          => $r['query'],
+				'current_count'  => $cur,
+				'previous_count' => $prev,
+				'growth_pct'     => $prev > 0 ? round( ( $cur - $prev ) / $prev * 100, 1 ) : ( $cur > 0 ? 100.0 : 0.0 ),
+			];
+		}, $rows );
+	}
+
+	/**
+	 * Daily success rate for trend chart.
+	 *
+	 * @return array<int,array{log_date:string,success_rate:float,total:int}>
+	 */
+	public static function get_success_rate_by_day( int $days = 30 ): array {
+		global $wpdb;
+		$t = self::search_log_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT log_date, SUM(count) AS total,
+				    SUM(CASE WHEN has_results=1 THEN count ELSE 0 END) AS hits
+				 FROM {$t}
+				 WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)
+				 GROUP BY log_date ORDER BY log_date ASC",
+				$days
+			),
+			ARRAY_A
+		) ?: [];
+
+		return array_map( function ( $r ) {
+			$total = (int) $r['total'];
+			return [
+				'log_date'     => $r['log_date'],
+				'success_rate' => $total > 0 ? round( (int) $r['hits'] / $total * 100, 1 ) : 0.0,
+				'total'        => $total,
+			];
+		}, $rows );
+	}
+
+	/**
+	 * Search count by food category (all-time, uses foods.search_count).
+	 *
+	 * @return array<int,array{category_id:int,category_name:string,search_count:int}>
+	 */
+	public static function get_searches_by_category(): array {
+		global $wpdb;
+		$ft = self::foods_table();
+		$ct = self::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			"SELECT c.id AS category_id, c.name AS category_name, COALESCE(SUM(f.search_count),0) AS search_count
+			 FROM {$ct} c
+			 LEFT JOIN {$ft} f ON f.category_id = c.id
+			 GROUP BY c.id, c.name
+			 HAVING search_count > 0
+			 ORDER BY search_count DESC",
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Search volume by day of week.
+	 *
+	 * @return array<int,array{day_of_week:int,day_name:string,total:int}>
+	 */
+	public static function get_searches_by_day_of_week( int $days = 90 ): array {
+		global $wpdb;
+		$t = self::search_log_table();
+		$day_names = [ 1 => 'Sun', 2 => 'Mon', 3 => 'Tue', 4 => 'Wed', 5 => 'Thu', 6 => 'Fri', 7 => 'Sat' ];
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DAYOFWEEK(log_date) AS dow, SUM(count) AS total
+				 FROM {$t}
+				 WHERE log_date >= DATE_SUB(CURDATE(), INTERVAL %d DAY)
+				 GROUP BY DAYOFWEEK(log_date)
+				 ORDER BY DAYOFWEEK(log_date)",
+				$days
+			),
+			ARRAY_A
+		) ?: [];
+
+		return array_map( function ( $r ) use ( $day_names ) {
+			$dow = (int) $r['dow'];
+			return [
+				'day_of_week' => $dow,
+				'day_name'    => $day_names[ $dow ] ?? '?',
+				'total'       => (int) $r['total'],
+			];
+		}, $rows );
+	}
+
+	/**
+	 * Total sponsor clicks for a period, with previous-period comparison.
+	 *
+	 * @return array{current:int,previous:int}
+	 */
+	public static function get_total_sponsor_clicks( int $days = 30 ): array {
+		global $wpdb;
+		$t = self::sponsor_clicks_table();
+		if ( $days <= 0 ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t}" );
+			return [ 'current' => $total, 'previous' => 0 ];
+		}
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT
+				    SUM(CASE WHEN clicked_at >= DATE_SUB(NOW(), INTERVAL %d DAY) THEN 1 ELSE 0 END) AS cur,
+				    SUM(CASE WHEN clicked_at >= DATE_SUB(NOW(), INTERVAL %d DAY) AND clicked_at < DATE_SUB(NOW(), INTERVAL %d DAY) THEN 1 ELSE 0 END) AS prev
+				 FROM {$t}
+				 WHERE clicked_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
+				$days, $days * 2, $days, $days * 2
+			),
+			ARRAY_A
+		);
+		return [
+			'current'  => (int) ( $row['cur']  ?? 0 ),
+			'previous' => (int) ( $row['prev'] ?? 0 ),
+		];
+	}
+
+	/**
+	 * Sponsor clicks grouped by food.
+	 *
+	 * @return array<int,array{food_id:int,food_name:string,sponsor_name:string,clicks:int}>
+	 */
+	public static function get_sponsor_clicks_by_food( int $days = 30, int $limit = 10 ): array {
+		global $wpdb;
+		$ct = self::sponsor_clicks_table();
+		$ft = self::foods_table();
+		$where_date = $days > 0
+			? $wpdb->prepare( 'AND sc.clicked_at >= DATE_SUB(NOW(), INTERVAL %d DAY)', $days )
+			: '';
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT sc.food_id, f.name AS food_name, f.sponsor_name, COUNT(*) AS clicks
+				 FROM {$ct} sc
+				 INNER JOIN {$ft} f ON f.id = sc.food_id
+				 WHERE 1=1 {$where_date}
+				 GROUP BY sc.food_id
+				 ORDER BY clicks DESC
+				 LIMIT %d",
+				$limit
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Sponsor clicks by day for trend sparkline.
+	 *
+	 * @return array<int,array{click_date:string,clicks:int}>
+	 */
+	public static function get_sponsor_clicks_by_day( int $days = 30 ): array {
+		global $wpdb;
+		$t = self::sponsor_clicks_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DATE(clicked_at) AS click_date, COUNT(*) AS clicks
+				 FROM {$t}
+				 WHERE clicked_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
+				 GROUP BY DATE(clicked_at) ORDER BY click_date ASC",
+				$days
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Content gaps scored by search_count × recency weight.
+	 *
+	 * @return array<int,array{id:int,query:string,search_count:int,last_searched_at:string,priority_score:float}>
+	 */
+	public static function get_scored_content_gaps( int $limit = 20 ): array {
+		global $wpdb;
+		$t = self::missed_searches_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, query, search_count, last_searched_at,
+				    search_count * CASE
+				        WHEN last_searched_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 3
+				        WHEN last_searched_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 2
+				        ELSE 1
+				    END AS priority_score
+				 FROM {$t}
+				 WHERE status = 'active'
+				 ORDER BY priority_score DESC, search_count DESC
+				 LIMIT %d",
+				$limit
+			),
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Food request counts by status for pipeline visualisation.
+	 *
+	 * @return array{pending:int,done:int,dismissed:int,total:int}
+	 */
+	public static function get_request_pipeline_counts(): array {
+		global $wpdb;
+		$t = self::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			"SELECT status, COUNT(*) AS cnt FROM {$t} GROUP BY status",
+			ARRAY_A
+		) ?: [];
+
+		$out = [ 'pending' => 0, 'done' => 0, 'dismissed' => 0, 'total' => 0 ];
+		foreach ( $rows as $r ) {
+			$s = $r['status'];
+			$c = (int) $r['cnt'];
+			if ( isset( $out[ $s ] ) ) {
+				$out[ $s ] = $c;
+			}
+			$out['total'] += $c;
+		}
+		return $out;
+	}
+
+	/**
+	 * Foods per category for coverage analysis.
+	 *
+	 * @return array<int,array{category_id:int,category_name:string,food_count:int}>
+	 */
+	public static function get_category_coverage(): array {
+		global $wpdb;
+		$ft = self::foods_table();
+		$ct = self::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results(
+			"SELECT c.id AS category_id, c.name AS category_name, COUNT(f.id) AS food_count
+			 FROM {$ct} c
+			 LEFT JOIN {$ft} f ON f.category_id = c.id
+			 GROUP BY c.id, c.name
+			 ORDER BY food_count DESC",
+			ARRAY_A
+		) ?: [];
+	}
+
+	/**
+	 * Monthly subscriber growth (cumulative opt-ins).
+	 *
+	 * @return array<int,array{month:string,count:int,cumulative:int}>
+	 */
+	public static function get_subscriber_growth( int $months = 12 ): array {
+		global $wpdb;
+		$t = self::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DATE_FORMAT(created_at, '%%Y-%%m') AS month, COUNT(*) AS count
+				 FROM {$t}
+				 WHERE marketing_optin = 1 AND requester_email != ''
+				   AND created_at >= DATE_SUB(NOW(), INTERVAL %d MONTH)
+				 GROUP BY month ORDER BY month ASC",
+				$months
+			),
+			ARRAY_A
+		) ?: [];
+
+		$cumulative = 0;
+		return array_map( function ( $r ) use ( &$cumulative ) {
+			$cumulative += (int) $r['count'];
+			return [
+				'month'      => $r['month'],
+				'count'      => (int) $r['count'],
+				'cumulative' => $cumulative,
+			];
+		}, $rows );
+	}
 }

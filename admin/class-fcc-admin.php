@@ -298,9 +298,10 @@ class Admin {
 			wp_enqueue_script( 'chartjs' );
 			wp_enqueue_script( 'fcc-analytics', FCC_PLUGIN_URL . 'assets/js/fcc-analytics.js', [ 'chartjs' ], $ver, true );
 			wp_localize_script( 'fcc-analytics', 'fccAnalytics', [
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'fcc_analytics_nonce' ),
-				'range'   => absint( $_GET['range'] ?? 30 ),
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'adminPostUrl' => admin_url( 'admin-post.php' ),
+				'nonce'        => wp_create_nonce( 'fcc_analytics_nonce' ),
+				'range'        => absint( $_GET['range'] ?? 30 ),
 			] );
 		}
 

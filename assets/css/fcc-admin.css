@@ -6107,3 +6107,263 @@ button.fcc-reqs-tab {
 }
 .fcc-sc__del-btn:hover { border-color:#c0392b; background:#fff5f5; color:#c0392b; }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   ANALYTICS v2 — Tabs, monetization, content, audience
+   ─────────────────────────────────────────────────────────────── */
+
+/* ── Tab navigation ── */
+.fcc-an-tabs {
+	display: flex;
+	gap: 4px;
+	margin: 0 0 1.5rem;
+	padding: 4px;
+	background: #f0f4f0;
+	border-radius: 10px;
+	overflow-x: auto;
+}
+.fcc-an-tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 9px 18px;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	color: #555;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background .15s, color .15s, box-shadow .15s;
+}
+.fcc-an-tab:hover { background: #e0e8e0; color: #1E2A1E; }
+.fcc-an-tab--active {
+	background: #fff;
+	color: #2D7A4F;
+	box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+.fcc-an-tab svg { opacity: .7; }
+.fcc-an-tab--active svg { opacity: 1; stroke: #2D7A4F; }
+
+/* ── Tab panels ── */
+.fcc-an-tab-panel { display: none; }
+.fcc-an-tab-panel--active { display: block; }
+
+/* ── KPI row 8-column ── */
+.fcc-an-kpi-row--8 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1200px) { .fcc-an-kpi-row--8 { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px)  { .fcc-an-kpi-row--8 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .fcc-an-kpi-row--8 { grid-template-columns: 1fr; } }
+
+/* ── KPI card colour variants ── */
+.fcc-an-kpi-card--purple { border-top-color: #9b59b6; }
+.fcc-an-kpi-card--purple .fcc-an-kpi-card__icon { color: #9b59b6; }
+.fcc-an-kpi-card--teal   { border-top-color: #16a085; }
+.fcc-an-kpi-card--teal .fcc-an-kpi-card__icon { color: #16a085; }
+
+/* ── Delta badges ── */
+.fcc-an-delta {
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 700;
+	padding: 1px 6px;
+	border-radius: 10px;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+.fcc-an-delta--up      { color: #27ae60; background: rgba(39,174,96,.1); }
+.fcc-an-delta--down    { color: #e74c3c; background: rgba(231,76,60,.1); }
+.fcc-an-delta--neutral { color: #888;    background: rgba(0,0,0,.05); }
+
+/* ── Quick Revenue Summary row ── */
+.fcc-an-revenue-row {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+@media (max-width: 1000px) { .fcc-an-revenue-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .fcc-an-revenue-row { grid-template-columns: 1fr; } }
+
+.fcc-an-rev-card {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 16px;
+	border-radius: 10px;
+	background: #fff;
+	box-shadow: 0 1px 5px rgba(0,0,0,.06);
+	border-left: 4px solid #ddd;
+}
+.fcc-an-rev-card--purple { border-left-color: #9b59b6; }
+.fcc-an-rev-card--gold   { border-left-color: #d4a017; }
+.fcc-an-rev-card--teal   { border-left-color: #16a085; }
+.fcc-an-rev-card--green  { border-left-color: #2D7A4F; }
+.fcc-an-rev-card__icon   { font-size: 22px; flex-shrink: 0; }
+.fcc-an-rev-card__data   { flex: 1; display: flex; flex-direction: column; }
+.fcc-an-rev-card__val    { font-size: 18px; font-weight: 700; color: #1E2A1E; }
+.fcc-an-rev-card__label  { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: .04em; }
+.fcc-an-rev-card__extra  { font-size: 12px; font-weight: 600; color: #2D7A4F; white-space: nowrap; }
+
+/* ── Monetization grid ── */
+.fcc-an-monetization-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1.25rem;
+}
+@media (max-width: 900px) { .fcc-an-monetization-grid { grid-template-columns: 1fr; } }
+
+.fcc-an-rev-detail {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 0;
+	overflow: hidden;
+}
+.fcc-an-rev-detail__header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 14px 16px;
+	border-bottom: 1px solid #f0f4f0;
+	font-size: 15px;
+}
+.fcc-an-rev-detail__header span:first-child { font-size: 20px; }
+.fcc-an-rev-detail__kpis {
+	display: flex;
+	gap: 16px;
+	padding: 8px 16px;
+	flex-wrap: wrap;
+}
+.fcc-an-rev-detail__kpis > div { display: flex; flex-direction: column; min-width: 60px; }
+.fcc-an-rev-detail__num  { font-size: 20px; font-weight: 700; color: #1E2A1E; line-height: 1.2; }
+.fcc-an-rev-detail__lbl  { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+
+.fcc-an-rev-detail .fcc-an-table--compact { margin: 0 16px; }
+.fcc-an-rev-detail .fcc-an-view-all { padding: 10px 16px; display: block; }
+.fcc-an-rev-detail__warn { padding: 6px 16px; margin: 0; font-size: 12px; color: #e67e22; background: #fef9e7; border-radius: 6px; margin: 0 16px; }
+.fcc-an-rev-detail__note { padding: 6px 16px; margin: 0; font-size: 12px; color: #888; font-style: italic; }
+.fcc-an-rev-detail__tags { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 16px; }
+.fcc-an-tag {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 20px;
+	background: #f0f4f0;
+	font-size: 11px;
+	font-weight: 600;
+	color: #555;
+}
+
+/* ── Colour left-borders for monetization cards ── */
+.fcc-an-rev-detail--purple { border-left: 4px solid #9b59b6; }
+.fcc-an-rev-detail--gold   { border-left: 4px solid #d4a017; }
+.fcc-an-rev-detail--teal   { border-left: 4px solid #16a085; }
+.fcc-an-rev-detail--green  { border-left: 4px solid #2D7A4F; }
+
+/* ── Mini chart wrapper ── */
+.fcc-an-chart-wrap--mini { height: 80px; padding: 0 16px; }
+
+/* ── Search charts 3-col grid ── */
+.fcc-an-charts-row--search { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 1100px) { .fcc-an-charts-row--search { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 700px)  { .fcc-an-charts-row--search { grid-template-columns: 1fr; } }
+
+/* ── Compact table ── */
+.fcc-an-table--compact { font-size: 12px; }
+.fcc-an-table--compact th,
+.fcc-an-table--compact td { padding: 5px 8px; }
+
+/* ── Pipeline row ── */
+.fcc-an-pipeline-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 1.5rem;
+	flex-wrap: wrap;
+}
+.fcc-an-pipeline-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 14px 22px;
+	border-radius: 10px;
+	background: #fff;
+	box-shadow: 0 1px 5px rgba(0,0,0,.06);
+	min-width: 90px;
+}
+.fcc-an-pipeline-card__num { font-size: 24px; font-weight: 700; color: #1E2A1E; line-height: 1; }
+.fcc-an-pipeline-card__lbl { font-size: 11px; text-transform: uppercase; color: #888; font-weight: 600; margin-top: 4px; }
+.fcc-an-pipeline-card--pending { border-top: 3px solid #f39c12; }
+.fcc-an-pipeline-card--done    { border-top: 3px solid #27ae60; }
+.fcc-an-pipeline-card--dismissed { border-top: 3px solid #e74c3c; }
+.fcc-an-pipeline-card--total   { border-top: 3px solid #3498db; }
+.fcc-an-pipeline-arrow { font-size: 20px; color: #bbb; font-weight: 700; }
+
+/* ── Score badges ── */
+.fcc-an-score {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 700;
+	color: #fff;
+}
+.fcc-an-score--critical { background: #e74c3c; }
+.fcc-an-score--high     { background: #f39c12; }
+.fcc-an-score--med      { background: #27ae60; }
+
+/* ── Quick action link ── */
+.fcc-an-quick-action {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 6px;
+	font-size: 11px;
+	font-weight: 600;
+	color: #2D7A4F;
+	background: rgba(45,122,79,.08);
+	text-decoration: none;
+	white-space: nowrap;
+}
+.fcc-an-quick-action:hover { background: #2D7A4F; color: #fff; }
+
+/* ── Coverage bar ── */
+.fcc-an-bar-wrap {
+	width: 100%;
+	height: 8px;
+	background: #f0f4f0;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.fcc-an-bar {
+	height: 100%;
+	background: #2D7A4F;
+	border-radius: 4px;
+	transition: width .3s;
+}
+.fcc-an-bar--low   { background: #f39c12; }
+.fcc-an-bar--empty { background: #e74c3c; }
+
+/* ── Export buttons in section headers ── */
+.fcc-an-export-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	background: #fff;
+	color: #777;
+	cursor: pointer;
+	margin-left: auto;
+	flex-shrink: 0;
+	transition: border-color .15s, color .15s;
+}
+.fcc-an-export-btn:hover { border-color: #2D7A4F; color: #2D7A4F; }
+
+/* ── Section header flex for export button ── */
+.fcc-an-section__header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.fcc-an-section__title  { display: flex; align-items: center; gap: 6px; }
+.fcc-an-section__desc   { flex: 1; }
+
