@@ -118,6 +118,42 @@ $has_tabs    = $has_bmr || ! empty( $features['meal_builder'] ) || $has_compare;
 						<p class="fcc-popular-label"><?php esc_html_e( 'Popular searches', 'food-calorie-calculator' ); ?></p>
 						<div id="fcc-popular-chips" class="fcc-popular-chips" aria-label="<?php esc_attr_e( 'Popular foods', 'food-calorie-calculator' ); ?>"></div>
 					</div>
+
+					<!-- Food request panel (shown when search returns no results) -->
+					<div id="fcc-request-panel" class="fcc-request-panel" hidden>
+						<div class="fcc-request-panel__head">
+							<p class="fcc-request-panel__title">
+								<?php esc_html_e( 'Request', 'food-calorie-calculator' ); ?>
+								<strong class="fcc-req-food-name"></strong>
+								<?php esc_html_e( 'to be added', 'food-calorie-calculator' ); ?>
+							</p>
+							<button type="button" class="fcc-request-close" aria-label="<?php esc_attr_e( 'Close', 'food-calorie-calculator' ); ?>">&times;</button>
+						</div>
+						<form id="fcc-request-form" class="fcc-request-form" novalidate>
+							<input type="hidden" id="fcc-req-food-input" name="food_name" value="">
+							<div class="fcc-req-row">
+								<label for="fcc-req-email" class="fcc-req-label">
+									<?php esc_html_e( 'Your email', 'food-calorie-calculator' ); ?>
+									<span class="fcc-req-opt"><?php esc_html_e( '(optional)', 'food-calorie-calculator' ); ?></span>
+								</label>
+								<input type="email" id="fcc-req-email" name="email" class="fcc-req-input" placeholder="you@example.com">
+							</div>
+							<div class="fcc-req-row">
+								<label for="fcc-req-note" class="fcc-req-label">
+									<?php esc_html_e( 'Extra info', 'food-calorie-calculator' ); ?>
+									<span class="fcc-req-opt"><?php esc_html_e( '(optional)', 'food-calorie-calculator' ); ?></span>
+								</label>
+								<textarea id="fcc-req-note" name="note" class="fcc-req-textarea" rows="2" placeholder="<?php esc_attr_e( 'Brand, where you found it, any other details…', 'food-calorie-calculator' ); ?>"></textarea>
+							</div>
+							<div class="fcc-req-footer">
+								<button type="submit" class="fcc-req-submit"><?php esc_html_e( 'Send Request', 'food-calorie-calculator' ); ?></button>
+							</div>
+						</form>
+						<div id="fcc-request-success" class="fcc-request-success" hidden>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+							<?php esc_html_e( "Request sent! We'll review and add it soon.", 'food-calorie-calculator' ); ?>
+						</div>
+					</div>
 				</div>
 			</section>
 

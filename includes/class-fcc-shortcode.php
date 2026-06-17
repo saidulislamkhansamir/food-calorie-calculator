@@ -156,6 +156,7 @@ class Shortcode {
 				'i18n'       => [
 					'searchPlaceholder' => esc_html__( 'Search for a food…', 'food-calorie-calculator' ),
 					'noResults'         => esc_html__( 'No foods found', 'food-calorie-calculator' ),
+					'requestFood'       => esc_html__( 'Request this food', 'food-calorie-calculator' ),
 					'loading'           => esc_html__( 'Searching…', 'food-calorie-calculator' ),
 					'perLabel'          => esc_html__( 'per', 'food-calorie-calculator' ),
 					'grams'             => esc_html__( 'g', 'food-calorie-calculator' ),

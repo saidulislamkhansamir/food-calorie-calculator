@@ -3035,3 +3035,165 @@
 	.fcc-stg-fsa-hd,
 	.fcc-stg-fsa-row     { grid-template-columns: 1fr 80px 80px; }
 }
+
+/* ==========================================================================
+   Food Requests Page
+   ========================================================================== */
+
+.fcc-reqs-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.3rem 0.85rem;
+	border-radius: 999px;
+	font-size: 0.78rem;
+	font-weight: 700;
+}
+
+.fcc-reqs-badge--pending {
+	background: #fff3cd;
+	color: #856404;
+}
+
+.fcc-reqs-badge--clear {
+	background: #d1fae5;
+	color: #065f46;
+}
+
+.fcc-reqs-filters {
+	display: flex;
+	gap: 0.4rem;
+	margin: 1rem 0;
+	flex-wrap: wrap;
+}
+
+.fcc-reqs-tab {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.4rem 1rem;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: #374151;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 999px;
+	text-decoration: none;
+	transition: background 0.15s, color 0.15s;
+}
+
+.fcc-reqs-tab:hover { background: #e5e7eb; color: #111827; }
+
+.fcc-reqs-tab--active {
+	background: #2D7A4F;
+	color: #fff;
+	border-color: #2D7A4F;
+}
+
+.fcc-reqs-tab--active:hover { background: #245f3f; color: #fff; }
+
+.fcc-reqs-card {
+	padding: 0;
+	overflow: hidden;
+}
+
+.fcc-reqs-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 3rem 1.5rem;
+	color: #9ca3af;
+	text-align: center;
+}
+
+.fcc-reqs-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+}
+
+.fcc-reqs-table thead tr {
+	background: #f8faf5;
+	border-bottom: 2px solid #e5e7eb;
+}
+
+.fcc-reqs-table th {
+	padding: 0.75rem 1rem;
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #6b7280;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.fcc-reqs-table td {
+	padding: 0.85rem 1rem;
+	border-bottom: 1px solid #f3f4f6;
+	vertical-align: middle;
+	color: #374151;
+}
+
+.fcc-reqs-row--pending td { background: #fffdf0; }
+.fcc-reqs-row:last-child td { border-bottom: none; }
+
+.fcc-reqs-th--note,
+.fcc-reqs-td--note  { max-width: 200px; word-break: break-word; }
+
+.fcc-reqs-th--email,
+.fcc-reqs-td--email { max-width: 180px; word-break: break-all; }
+
+.fcc-reqs-td--email a { color: #2D7A4F; text-decoration: none; }
+.fcc-reqs-td--email a:hover { text-decoration: underline; }
+
+.fcc-reqs-muted { color: #9ca3af; }
+
+.fcc-reqs-status {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.2rem 0.65rem;
+	border-radius: 999px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.fcc-reqs-status--pending   { background: #fff3cd; color: #856404; }
+.fcc-reqs-status--done      { background: #d1fae5; color: #065f46; }
+.fcc-reqs-status--dismissed { background: #f3f4f6; color: #6b7280; }
+
+.fcc-reqs-actions {
+	display: flex;
+	gap: 0.4rem;
+	justify-content: flex-end;
+}
+
+.fcc-reqs-btn {
+	padding: 0.3rem 0.7rem;
+	font-size: 0.75rem;
+	font-family: inherit;
+	font-weight: 600;
+	border-radius: 6px;
+	border: 1px solid transparent;
+	cursor: pointer;
+	transition: background 0.15s, opacity 0.15s;
+}
+
+.fcc-reqs-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.fcc-reqs-btn--done    { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+.fcc-reqs-btn--done:hover { background: #a7f3d0; }
+
+.fcc-reqs-btn--dismiss { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
+.fcc-reqs-btn--dismiss:hover { background: #e5e7eb; }
+
+.fcc-reqs-btn--delete  { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+.fcc-reqs-btn--delete:hover { background: #fecaca; }
+
+@media screen and (max-width: 700px) {
+	.fcc-reqs-th--note,
+	.fcc-reqs-td--note,
+	.fcc-reqs-th--email,
+	.fcc-reqs-td--email { display: none; }
+}

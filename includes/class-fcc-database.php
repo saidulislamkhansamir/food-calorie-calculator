@@ -31,6 +31,11 @@ class Database {
 		return $wpdb->prefix . 'fcc_categories';
 	}
 
+	public static function requests_table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'fcc_food_requests';
+	}
+
 	// -------------------------------------------------------------------------
 	// Schema creation / upgrade.
 	// -------------------------------------------------------------------------
@@ -95,10 +100,50 @@ class Database {
 ) {$charset_collate};";
 		// phpcs:enable
 
+		$requests = self::requests_table();
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql_requests = "CREATE TABLE {$requests} (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  food_name varchar(200) NOT NULL,
+  note text,
+  requester_email varchar(200),
+  status varchar(20) NOT NULL DEFAULT 'pending',
+  ip_address varchar(45),
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  KEY status (status)
+) {$charset_collate};";
+		// phpcs:enable
+
 		dbDelta( $sql_cats );
 		dbDelta( $sql_foods );
+		dbDelta( $sql_requests );
 
 		update_option( 'fcc_db_version', self::SCHEMA_VERSION );
+	}
+
+	/**
+	 * Create the food requests table — called by migration for existing installs.
+	 */
+	public static function create_requests_table(): void {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$requests        = self::requests_table();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql = "CREATE TABLE {$requests} (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  food_name varchar(200) NOT NULL,
+  note text,
+  requester_email varchar(200),
+  status varchar(20) NOT NULL DEFAULT 'pending',
+  ip_address varchar(45),
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  KEY status (status)
+) {$charset_collate};";
+		// phpcs:enable
+		dbDelta( $sql );
 	}
 
 	// -------------------------------------------------------------------------
@@ -526,5 +571,59 @@ class Database {
 		$row['category_id'] = (int) $row['category_id'];
 
 		return $row;
+	}
+
+	// -------------------------------------------------------------------------
+	// Food Requests CRUD.
+	// -------------------------------------------------------------------------
+
+	public static function insert_food_request( array $data ): int|false {
+		global $wpdb;
+		$result = $wpdb->insert(
+			self::requests_table(),
+			[
+				'food_name'       => sanitize_text_field( $data['food_name'] ?? '' ),
+				'note'            => sanitize_textarea_field( $data['note'] ?? '' ),
+				'requester_email' => sanitize_email( $data['email'] ?? '' ),
+				'status'          => 'pending',
+				'ip_address'      => sanitize_text_field( $data['ip'] ?? '' ),
+			],
+			[ '%s', '%s', '%s', '%s', '%s' ]
+		);
+		return $result ? $wpdb->insert_id : false;
+	}
+
+	/**
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_food_requests( string $status = '' ): array {
+		global $wpdb;
+		$table = self::requests_table();
+		if ( $status ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			return $wpdb->get_results(
+				$wpdb->prepare( "SELECT * FROM {$table} WHERE status = %s ORDER BY created_at DESC", $status ),
+				ARRAY_A
+			) ?: [];
+		}
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_results( "SELECT * FROM {$table} ORDER BY created_at DESC", ARRAY_A ) ?: [];
+	}
+
+	public static function update_request_status( int $id, string $status ): void {
+		global $wpdb;
+		$wpdb->update( self::requests_table(), [ 'status' => $status ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
+	}
+
+	public static function delete_food_request( int $id ): void {
+		global $wpdb;
+		$wpdb->delete( self::requests_table(), [ 'id' => $id ], [ '%d' ] );
+	}
+
+	public static function count_pending_requests(): int {
+		global $wpdb;
+		$table = self::requests_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE status = %s", 'pending' ) );
 	}
 }

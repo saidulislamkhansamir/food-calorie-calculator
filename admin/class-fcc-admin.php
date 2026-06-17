@@ -88,6 +88,20 @@ class Admin {
 			'fcc-settings',
 			[ $this, 'page_settings' ]
 		);
+
+		$pending = Database::count_pending_requests();
+		$req_label = __( 'Food Requests', 'food-calorie-calculator' );
+		if ( $pending > 0 ) {
+			$req_label .= ' <span class="awaiting-mod count-' . $pending . '"><span class="pending-count">' . $pending . '</span></span>';
+		}
+		add_submenu_page(
+			'fcc-dashboard',
+			__( 'Food Requests', 'food-calorie-calculator' ),
+			$req_label,
+			$capability,
+			'fcc-food-requests',
+			[ $this, 'page_food_requests' ]
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -127,6 +141,13 @@ class Admin {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'food-calorie-calculator' ) );
 		}
 		include FCC_PLUGIN_DIR . 'admin/partials/page-settings.php';
+	}
+
+	public function page_food_requests(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'food-calorie-calculator' ) );
+		}
+		include FCC_PLUGIN_DIR . 'admin/partials/page-food-requests.php';
 	}
 
 	// -------------------------------------------------------------------------
@@ -171,6 +192,7 @@ class Admin {
 				'nonce'      => wp_create_nonce( 'fcc_admin_nonce' ),
 				'foodsNonce' => wp_create_nonce( 'fcc_foods_page' ),
 				'catsNonce'  => wp_create_nonce( 'fcc_ajax_cats' ),
+				'reqsNonce'  => wp_create_nonce( 'fcc_ajax_reqs' ),
 				'i18n'       => [
 					'confirmDelete'     => __( 'Are you sure you want to delete this food?', 'food-calorie-calculator' ),
 					'confirmBulkDelete' => __( 'Are you sure you want to delete the selected foods?', 'food-calorie-calculator' ),

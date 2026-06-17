@@ -632,6 +632,16 @@ class Seed_Data {
 	}
 
 	// -------------------------------------------------------------------------
+	// Migration: create fcc_food_requests table for existing installs (v1.5.8).
+	// -------------------------------------------------------------------------
+
+	public static function seed_v13(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 13 ) { return; }
+		Database::create_requests_table();
+		update_option( 'fcc_seed_version', 13 );
+	}
+
+	// -------------------------------------------------------------------------
 	// Migration: add search_count column to fcc_foods (v1.3.26).
 	// -------------------------------------------------------------------------
 

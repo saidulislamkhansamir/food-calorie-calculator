@@ -3,7 +3,7 @@
  * Plugin Name:       Food Calorie Calculator
  * Plugin URI:        https://foodcaloriecalculator.co.uk
  * Description:       A comprehensive UK food calorie calculator. Ships with 110+ foods, FSA traffic lights, Omega-3/caffeine tracking, meal builder, BMR/TDEE, CSV/Excel import-export, and a fully-featured admin control panel — no coding required.
- * Version:           1.5.7
+ * Version:           1.5.8
  * Requires at least: 6.0
  * Requires PHP:      8.1
  * Author:            The Khan Digital
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 // ---------------------------------------------------------------------------
 // Constants.
 // ---------------------------------------------------------------------------
-define( 'FCC_VERSION',         '1.5.7' );
+define( 'FCC_VERSION',         '1.5.8' );
 define( 'FCC_DB_VERSION',      '1.0' );
 define( 'FCC_PLUGIN_FILE',     __FILE__ );
 define( 'FCC_PLUGIN_DIR',      plugin_dir_path( __FILE__ ) );
@@ -46,6 +46,7 @@ if ( is_admin() ) {
 	require_once FCC_PLUGIN_DIR . 'admin/class-fcc-admin-categories.php';
 	require_once FCC_PLUGIN_DIR . 'admin/class-fcc-admin-settings.php';
 	require_once FCC_PLUGIN_DIR . 'admin/class-fcc-admin-import-export.php';
+	require_once FCC_PLUGIN_DIR . 'admin/class-fcc-admin-food-requests.php';
 }
 
 // ---------------------------------------------------------------------------
@@ -87,6 +88,7 @@ add_action( 'plugins_loaded', function (): void {
 		( new FCC\Admin\Categories() )->register( $loader );
 		( new FCC\Admin\Settings_Page() )->register( $loader );
 		( new FCC\Admin\Import_Export() )->register( $loader );
+		( new FCC\Admin\Food_Requests() )->register( $loader );
 	}
 
 	$loader->run();
@@ -103,4 +105,5 @@ add_action( 'plugins_loaded', function (): void {
 	FCC\Seed_Data::seed_v10();
 	FCC\Seed_Data::seed_v11();
 	FCC\Seed_Data::seed_v12();
+	FCC\Seed_Data::seed_v13();
 } );

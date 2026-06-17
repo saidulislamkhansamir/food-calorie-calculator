@@ -54,6 +54,11 @@
 	const spinner        = root.querySelector( '.fcc-search-spinner' );
 	const popularSection = root.querySelector( '.fcc-popular-section' );
 	const popularChips   = root.querySelector( '.fcc-popular-chips' );
+	const requestPanel   = root.querySelector( '.fcc-request-panel' );
+	const requestForm    = root.querySelector( '#fcc-request-form' );
+	const reqFoodInput   = root.querySelector( '#fcc-req-food-input' );
+	const reqFoodName    = root.querySelector( '.fcc-req-food-name' );
+	const reqSuccess     = root.querySelector( '#fcc-request-success' );
 	const qtySection   = root.querySelector( '.fcc-quantity-section' );
 	const resultsSection = root.querySelector( '.fcc-results-section' );
 	const mealSection  = features.meal_builder ? root.querySelector( '.fcc-meal-section' ) : null;
@@ -114,6 +119,7 @@
 		if ( searchInput    ) { searchInput.value = ''; searchInput.focus(); }
 		if ( searchClearBtn ) searchClearBtn.hidden = true;
 		hideDropdown();
+		hideRequestPanel();
 		showPopular();
 		if ( qtySection     ) qtySection.hidden    = true;
 		if ( resultsSection ) resultsSection.hidden = true;
@@ -128,6 +134,59 @@
 
 	function hidePopular() {
 		if ( popularSection ) popularSection.hidden = true;
+	}
+
+	function showRequestPanel( foodName ) {
+		hideDropdown();
+		hidePopular();
+		if ( ! requestPanel ) return;
+		if ( reqFoodInput ) reqFoodInput.value = foodName;
+		if ( reqFoodName )  reqFoodName.textContent = foodName;
+		if ( requestForm )  { requestForm.reset(); requestForm.hidden = false; }
+		if ( reqSuccess )   reqSuccess.hidden = true;
+		requestPanel.hidden = false;
+		requestPanel.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+	}
+
+	function hideRequestPanel() {
+		if ( ! requestPanel ) return;
+		requestPanel.hidden = true;
+		if ( requestForm ) { requestForm.reset(); requestForm.hidden = false; }
+		if ( reqSuccess )  reqSuccess.hidden = true;
+	}
+
+	if ( requestPanel ) {
+		requestPanel.addEventListener( 'click', function ( e ) {
+			if ( e.target.closest( '.fcc-request-close' ) ) hideRequestPanel();
+		} );
+	}
+
+	if ( requestForm ) {
+		requestForm.addEventListener( 'submit', function ( e ) {
+			e.preventDefault();
+			const btn  = requestForm.querySelector( '.fcc-req-submit' );
+			const note  = ( requestForm.querySelector( '[name="note"]' )  || {} ).value || '';
+			const email = ( requestForm.querySelector( '[name="email"]' ) || {} ).value || '';
+			const food_name = reqFoodInput ? reqFoodInput.value : '';
+			btn.disabled = true;
+
+			fetch( cfg.restUrl + '/food-requests', {
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': cfg.restNonce,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( { food_name: food_name, note: note, email: email } ),
+			} ).then( function ( r ) {
+				btn.disabled = false;
+				if ( r.ok ) {
+					requestForm.hidden = true;
+					if ( reqSuccess ) reqSuccess.hidden = false;
+				}
+			} ).catch( function () {
+				btn.disabled = false;
+			} );
+		} );
 	}
 
 	function loadPopularFoods() {
@@ -189,7 +248,15 @@
 		if ( ! foods.length ) {
 			const li = document.createElement( 'li' );
 			li.className = 'fcc-no-results';
-			li.textContent = i18n.noResults || 'No foods found';
+			const q = searchInput ? searchInput.value.trim() : '';
+			li.innerHTML =
+				'<span class="fcc-no-results__text">' + escHtml( i18n.noResults || 'No foods found' ) + '</span>' +
+				'<button type="button" class="fcc-no-results__request">' +
+				escHtml( i18n.requestFood || 'Request this food' ) +
+				'</button>';
+			li.querySelector( '.fcc-no-results__request' ).addEventListener( 'click', function () {
+				showRequestPanel( q );
+			} );
 			dropdown.appendChild( li );
 			showDropdown();
 			return;
@@ -259,6 +326,7 @@
 		updateClearBtn();
 		hideDropdown();
 		hidePopular();
+		hideRequestPanel();
 		apiPost( '/foods/' + food.id + '/hit' );
 
 		// Populate unit selector with serving sizes.

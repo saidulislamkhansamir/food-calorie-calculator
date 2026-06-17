@@ -127,6 +127,28 @@ class Rest_Api {
 				'permission_callback' => '__return_true',
 			]
 		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/food-requests',
+			[
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'submit_food_request' ],
+				'permission_callback' => '__return_true',
+				'args'                => [
+					'food_name' => [
+						'type'              => 'string',
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+						'validate_callback' => static function ( $val ): bool {
+							return is_string( $val ) && strlen( trim( $val ) ) >= 2;
+						},
+					],
+					'note'  => [ 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_textarea_field' ],
+					'email' => [ 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_email' ],
+				],
+			]
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -173,6 +195,27 @@ class Rest_Api {
 			array_map( [ $this, 'format_food' ], $foods ),
 			200
 		);
+	}
+
+	public function submit_food_request( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+		$food_name = trim( (string) $request->get_param( 'food_name' ) );
+		$note      = trim( (string) $request->get_param( 'note' ) );
+		$email     = trim( (string) $request->get_param( 'email' ) );
+		$ip        = sanitize_text_field(
+			$request->get_header( 'x-forwarded-for' ) ?: ( $_SERVER['REMOTE_ADDR'] ?? '' )
+		);
+
+		$id = Database::insert_food_request( compact( 'food_name', 'note', 'email', 'ip' ) );
+
+		if ( ! $id ) {
+			return new \WP_Error(
+				'fcc_request_failed',
+				__( 'Request could not be saved.', 'food-calorie-calculator' ),
+				[ 'status' => 500 ]
+			);
+		}
+
+		return new \WP_REST_Response( [ 'ok' => true ], 201 );
 	}
 
 	public function record_food_hit( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
