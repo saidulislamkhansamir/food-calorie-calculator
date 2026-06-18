@@ -1590,7 +1590,7 @@
 			if ( ! state.food ) return;
 			var compareTab = root.querySelector( '.fcc-tab-btn[data-tab="compare"]' );
 			if ( compareTab ) {
-				selectCompareFood( 0, state.food );
+				selectCompareFood( 'a', state.food );
 				compareTab.click();
 			}
 		} );
