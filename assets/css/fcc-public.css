@@ -3451,19 +3451,22 @@ select.fcc-bmr-input {
 	border-right: 1px solid var(--fcc-border, #e2e8f0);
 	background: var(--fcc-surface, #fff);
 	cursor: pointer;
-	transition: background .15s, color .15s;
-	color: #666;
+	transition: background .15s;
+	padding: 0;
 }
+.fcc-share-icon svg { display: block; flex-shrink: 0; }
 .fcc-share-icon:last-child { border-right: none; }
 .fcc-share-icon:hover { background: #f0f4f0; }
 
-.fcc-share-icon--email:hover    { color: #d44638; background: #fef2f0; }
-.fcc-share-icon--whatsapp       { color: #25D366; }
-.fcc-share-icon--whatsapp:hover { background: #e8fdf0; }
-.fcc-share-icon--facebook       { color: #1877F2; }
-.fcc-share-icon--facebook:hover { background: #eef4ff; }
-.fcc-share-icon--x              { color: #000; }
-.fcc-share-icon--x:hover        { background: #f5f5f5; }
+.fcc-share-icon--email svg         { stroke: #888; fill: none; }
+.fcc-share-icon--email:hover       { background: #fef2f0; }
+.fcc-share-icon--email:hover svg   { stroke: #d44638; }
+.fcc-share-icon--whatsapp svg      { fill: #25D366; }
+.fcc-share-icon--whatsapp:hover    { background: #e8fdf0; }
+.fcc-share-icon--facebook svg      { fill: #1877F2; }
+.fcc-share-icon--facebook:hover    { background: #eef4ff; }
+.fcc-share-icon--x svg             { fill: #14171A; }
+.fcc-share-icon--x:hover           { background: #f5f5f5; }
 
 @media (max-width: 480px) {
 	.fcc-share-icon { width: 30px; height: 30px; }
