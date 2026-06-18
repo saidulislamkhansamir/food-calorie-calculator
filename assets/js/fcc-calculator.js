@@ -1586,12 +1586,34 @@
 	// -------------------------------------------------------------------------
 	const compareShortcutBtn = root.querySelector( '.fcc-compare-shortcut-btn' );
 	if ( compareShortcutBtn ) {
+		var compareOrigHTML = compareShortcutBtn.innerHTML;
 		compareShortcutBtn.addEventListener( 'click', function () {
 			if ( ! state.food ) return;
-			var compareTab = root.querySelector( '.fcc-tab-btn[data-tab="compare"]' );
-			if ( compareTab ) {
-				selectCompareFood( 'a', state.food );
-				compareTab.click();
+			var slot, msg;
+			if ( ! state.compareA ) {
+				slot = 'a';
+				msg = 'Slot A set — now search another food and click Compare for Slot B';
+			} else if ( ! state.compareB || state.compareA.id === state.food.id ) {
+				slot = 'b';
+				msg = 'Slot B set — comparing now!';
+			} else {
+				state.compareA = null;
+				state.compareB = null;
+				slot = 'a';
+				msg = 'Reset — Slot A set. Search another food for Slot B';
+			}
+			selectCompareFood( slot, state.food );
+
+			compareShortcutBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Slot ' + slot.toUpperCase() + ' ✓';
+			compareShortcutBtn.disabled = true;
+			setTimeout( function () {
+				compareShortcutBtn.innerHTML = compareOrigHTML;
+				compareShortcutBtn.disabled = false;
+			}, 2000 );
+
+			if ( slot === 'b' ) {
+				var compareTab = root.querySelector( '.fcc-tab-btn[data-tab="compare"]' );
+				if ( compareTab ) compareTab.click();
 			}
 		} );
 	}
