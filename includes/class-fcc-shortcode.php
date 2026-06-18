@@ -169,9 +169,9 @@ class Shortcode {
 		// Inline CSS custom properties from appearance settings.
 		$custom_props = sprintf(
 			':root{--fcc-primary:%s;--fcc-accent:%s;--fcc-bg:%s;--fcc-radius:%dpx;}',
-			esc_attr( $appearance['primary_colour']    ?? '#005EB8' ),
-			esc_attr( $appearance['accent_colour']     ?? '#41B883' ),
-			esc_attr( $appearance['background_colour'] ?? '#F0F4F8' ),
+			esc_attr( $appearance['primary_colour']    ?? '#075B5E' ),
+			esc_attr( $appearance['accent_colour']     ?? '#FF3F33' ),
+			esc_attr( $appearance['background_colour'] ?? '#FFE6E1' ),
 			absint(   $appearance['button_radius']     ?? 8 )
 		);
 		if ( ! empty( $appearance['custom_css'] ) ) {

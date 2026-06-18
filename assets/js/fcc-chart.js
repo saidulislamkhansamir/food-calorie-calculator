@@ -8,9 +8,9 @@
 	'use strict';
 
 	const COLORS = {
-		protein: '#2D7A4F',
-		carbs:   '#6DBF67',
-		fat:     '#F47B20',
+		protein: '#075B5E',
+		carbs:   '#9FC87E',
+		fat:     '#FF3F33',
 	};
 
 	/**

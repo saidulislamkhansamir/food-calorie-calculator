@@ -78,9 +78,9 @@ class Settings {
 				'powered_by_footer'      => true,
 			],
 			'appearance' => [
-				'primary_colour'    => '#005EB8',
-				'accent_colour'     => '#41B883',
-				'background_colour' => '#F0F4F8',
+				'primary_colour'    => '#075B5E',
+				'accent_colour'     => '#FF3F33',
+				'background_colour' => '#FFE6E1',
 				'dark_mode'         => false,
 				'button_radius'     => 8,
 				'font_family'       => 'system',
