@@ -1196,9 +1196,10 @@
    -------------------------------------------------------------------------- */
 .fcc-nutrition-table-wrapper {
 	overflow-x: auto;
-	border: 1.5px solid var(--fcc-border);
-	border-radius: 12px;
+	border: 2px solid var(--fcc-primary, #2D7A4F);
+	border-radius: 14px;
 	overflow: hidden;
+	box-shadow: 0 2px 10px rgba(45,122,79,.08);
 }
 
 .fcc-nutrition-table {
@@ -1209,27 +1210,36 @@
 
 .fcc-nutrition-table th,
 .fcc-nutrition-table td {
-	padding: 0.6rem 0.875rem;
-	border-bottom: 1px solid #eef4ee;
+	padding: 0.7rem 1rem;
+	border-bottom: 1px solid #e0ece0;
 	text-align: left;
 }
 
 .fcc-nutrition-table thead th {
-	background: var(--fcc-primary, #2D7A4F);
+	background: linear-gradient(135deg, #1a5c35 0%, #2D7A4F 60%, #3a9a60 100%);
 	font-weight: 700;
 	font-size: 0.72rem;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 	color: #fff;
 	border-bottom: none;
+	padding: 0.75rem 1rem;
 }
 
-.fcc-nutrition-table tbody tr:nth-child(even) { background: #f8faf8; }
-.fcc-nutrition-table tbody tr:hover { background: #ecf7f0; }
+.fcc-nutrition-table tbody tr { transition: background .15s; }
+.fcc-nutrition-table tbody tr:nth-child(even) { background: #f0faf4; }
+.fcc-nutrition-table tbody tr:hover { background: #dcfce7; }
+
+.fcc-nutrition-table tbody td:first-child {
+	font-weight: 600;
+	color: var(--fcc-text, #1E2A1E);
+}
 
 .fcc-col-per,
 .fcc-col-per100,
 .fcc-col-ri { text-align: right; }
+
+.fcc-col-per100 { color: var(--fcc-text-muted, #6b7c6b); }
 
 .fcc-col-ri { vertical-align: middle; }
 
@@ -1239,38 +1249,44 @@
 	flex-direction: column;
 	align-items: flex-end;
 	gap: 4px;
-	min-width: 52px;
+	min-width: 56px;
 }
 
 .fcc-ri-val {
-	font-weight: 700;
-	font-size: 0.875rem;
+	font-weight: 800;
+	font-size: 0.9rem;
 	color: var(--fcc-primary);
 	line-height: 1;
 }
 
 .fcc-ri-bar {
 	width: 100%;
-	height: 4px;
-	background: var(--fcc-border);
-	border-radius: 2px;
+	height: 5px;
+	background: #e8f0e8;
+	border-radius: 3px;
 	overflow: hidden;
 }
 
 .fcc-ri-bar__fill {
 	height: 100%;
-	border-radius: 2px;
+	border-radius: 3px;
 	transition: width 0.45s ease;
 }
 
-/* Energy rows: subtle blue wash */
+/* Energy rows: highlighted */
 .fcc-row--energy th,
 .fcc-row--energy td {
 	font-weight: 700;
-	background: linear-gradient(to right, #f0faf4 0%, transparent 70%);
+	background: linear-gradient(to right, #e8f5ee 0%, #f0faf4 50%, transparent 100%) !important;
+	border-bottom: 1.5px solid #c6e7d0;
 }
 
-.fcc-row--sub th { padding-left: 1.75rem; color: var(--fcc-text-muted); font-weight: 400; }
+.fcc-row--sub th {
+	padding-left: 2rem;
+	color: var(--fcc-text-muted);
+	font-weight: 400;
+	font-style: italic;
+}
 
 .fcc-ri-footnote {
 	font-size: 0.72rem;
