@@ -6702,17 +6702,22 @@ button.fcc-reqs-tab {
 /* ── Per-page selector ── */
 .fcc-foods-perpage {
 	margin-left: auto;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
-	gap: 5px;
-	font-size: 0.75rem;
+	gap: 6px;
+	font-size: 0.78rem;
+	font-weight: 600;
 	color: #777;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 .fcc-foods-perpage select {
-	padding: 3px 6px;
+	padding: 4px 24px 4px 8px;
 	border-radius: 6px;
 	border: 1px solid #ddd;
-	font-size: 0.75rem;
+	font-size: 0.78rem;
+	min-width: 56px;
+	background: #fff;
 }
 
 /* ── Completeness dot ── */
