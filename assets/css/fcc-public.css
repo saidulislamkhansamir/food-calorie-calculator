@@ -3397,3 +3397,36 @@ select.fcc-bmr-input {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   FRONTEND ACTION BUTTONS — Copy, Favourite, Compare
+   ─────────────────────────────────────────────────────────────── */
+
+/* ── Action bar flex wrap ── */
+.fcc-result-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+	padding: 0.75rem 0 0;
+}
+
+/* ── Copy button flash ── */
+.fcc-copy-nutrition-btn.fcc-btn--copied {
+	color: var(--fcc-green) !important;
+	border-color: var(--fcc-green) !important;
+}
+
+/* ── Favourite button ── */
+.fcc-favourite-icon { font-size: 1.1em; line-height: 1; }
+.fcc-favourite-btn--saved { color: #e74c3c !important; border-color: #fca5a5 !important; }
+.fcc-favourite-btn--saved .fcc-favourite-icon { color: #e74c3c; }
+
+/* ── Favourites chip row ── */
+.fcc-favourites-section { margin-bottom: 0.25rem; }
+.fcc-favourite-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.fcc-fav-chip { cursor: pointer; }
+
+/* ── Add to Meal in action bar ── */
+.fcc-add-to-meal--action { margin-left: auto; }
+

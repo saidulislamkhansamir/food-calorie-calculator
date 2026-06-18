@@ -122,6 +122,11 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 						<ul id="fcc-search-results" class="fcc-results-dropdown" role="listbox" aria-label="<?php esc_attr_e( 'Search results', 'food-calorie-calculator' ); ?>"></ul>
 					</div>
 					<p class="fcc-search-hint"><?php esc_html_e( 'Type at least 2 characters to search from our UK foods database', 'food-calorie-calculator' ); ?></p>
+					<div id="fcc-favourites-section" class="fcc-favourites-section" hidden>
+						<p class="fcc-popular-label"><?php esc_html_e( 'Your favourites', 'food-calorie-calculator' ); ?> &#9829;</p>
+						<div id="fcc-favourite-chips" class="fcc-popular-chips fcc-favourite-chips"></div>
+					</div>
+
 					<?php if ( ! isset( $features['popular_foods'] ) || ! empty( $features['popular_foods'] ) ) : ?>
 					<div id="fcc-popular-section" class="fcc-popular-section" hidden>
 						<p class="fcc-popular-label"><?php esc_html_e( 'Popular searches', 'food-calorie-calculator' ); ?></p>
@@ -400,6 +405,30 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 					<button type="button" class="fcc-btn fcc-btn--ghost fcc-share-btn" aria-label="<?php esc_attr_e( 'Copy shareable link', 'food-calorie-calculator' ); ?>">
 						<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
 						<?php esc_html_e( 'Share', 'food-calorie-calculator' ); ?>
+					</button>
+					<?php endif; ?>
+
+					<button type="button" class="fcc-btn fcc-btn--ghost fcc-copy-nutrition-btn" aria-label="<?php esc_attr_e( 'Copy nutrition data', 'food-calorie-calculator' ); ?>">
+						<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+						<span class="fcc-copy-nutrition-label"><?php esc_html_e( 'Copy', 'food-calorie-calculator' ); ?></span>
+					</button>
+
+					<button type="button" class="fcc-btn fcc-btn--ghost fcc-favourite-btn" aria-label="<?php esc_attr_e( 'Save to favourites', 'food-calorie-calculator' ); ?>">
+						<span class="fcc-favourite-icon">&#9825;</span>
+						<span class="fcc-favourite-label"><?php esc_html_e( 'Save', 'food-calorie-calculator' ); ?></span>
+					</button>
+
+					<?php if ( $has_compare ) : ?>
+					<button type="button" class="fcc-btn fcc-btn--ghost fcc-compare-shortcut-btn" aria-label="<?php esc_attr_e( 'Compare with another food', 'food-calorie-calculator' ); ?>">
+						<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+						<?php esc_html_e( 'Compare', 'food-calorie-calculator' ); ?>
+					</button>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $features['meal_builder'] ) ) : ?>
+					<button type="button" class="fcc-btn fcc-btn--secondary fcc-add-to-meal fcc-add-to-meal--action" hidden>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+						<?php echo esc_html( $labels['add_to_meal_label'] ?? __( 'Add to Meal', 'food-calorie-calculator' ) ); ?>
 					</button>
 					<?php endif; ?>
 				</div>

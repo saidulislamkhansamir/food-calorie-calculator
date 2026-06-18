@@ -1438,6 +1438,139 @@
 	}
 
 	// -------------------------------------------------------------------------
+	// Copy Nutrition Data
+	// -------------------------------------------------------------------------
+	const copyNutrBtn = root.querySelector( '.fcc-copy-nutrition-btn' );
+	const copyNutrLbl = root.querySelector( '.fcc-copy-nutrition-label' );
+	if ( copyNutrBtn ) {
+		copyNutrBtn.addEventListener( 'click', function () {
+			if ( ! state.food ) return;
+			var f = state.food;
+			var q = state.quantity || 100;
+			var u = state.unit === 'oz' ? 'oz' : 'g';
+			var factor = state.unit === 'oz' ? ( q * OZ_TO_G ) / 100 : q / 100;
+			var text = f.name + ' — per ' + q + u + '\n'
+				+ fmt( ( f.energy_kcal || 0 ) * factor, 0 ) + ' kcal'
+				+ ' | Protein ' + fmt( ( f.protein_g || 0 ) * factor, 1 ) + 'g'
+				+ ' | Carbs ' + fmt( ( f.carbohydrate_g || 0 ) * factor, 1 ) + 'g'
+				+ ' | Fat ' + fmt( ( f.fat_g || 0 ) * factor, 1 ) + 'g'
+				+ '\nFibre ' + fmt( ( f.fibre_g || 0 ) * factor, 1 ) + 'g'
+				+ ' | Salt ' + fmt( ( f.salt_g || 0 ) * factor, 1 ) + 'g';
+			if ( navigator.clipboard ) {
+				navigator.clipboard.writeText( text ).then( function () {
+					if ( copyNutrLbl ) {
+						copyNutrLbl.textContent = 'Copied!';
+						copyNutrBtn.classList.add( 'fcc-btn--copied' );
+						setTimeout( function () {
+							copyNutrLbl.textContent = 'Copy';
+							copyNutrBtn.classList.remove( 'fcc-btn--copied' );
+						}, 2000 );
+					}
+				} );
+			}
+		} );
+	}
+
+	// -------------------------------------------------------------------------
+	// Favourite (localStorage)
+	// -------------------------------------------------------------------------
+	const favBtn       = root.querySelector( '.fcc-favourite-btn' );
+	const favIcon      = root.querySelector( '.fcc-favourite-icon' );
+	const favLabel     = root.querySelector( '.fcc-favourite-label' );
+	const favSection   = root.querySelector( '#fcc-favourites-section' );
+	const favChips     = root.querySelector( '#fcc-favourite-chips' );
+	const FAV_KEY      = 'fcc_favourites';
+	const FAV_MAX      = 20;
+
+	function getFavs() {
+		try { return JSON.parse( localStorage.getItem( FAV_KEY ) ) || []; } catch ( e ) { return []; }
+	}
+	function saveFavs( arr ) { localStorage.setItem( FAV_KEY, JSON.stringify( arr.slice( 0, FAV_MAX ) ) ); }
+	function isFav( id ) { return getFavs().some( function ( f ) { return f.id === id; } ); }
+
+	function updateFavBtn() {
+		if ( ! favBtn || ! state.food ) return;
+		var saved = isFav( state.food.id );
+		if ( favIcon ) favIcon.innerHTML = saved ? '&#9829;' : '&#9825;';
+		if ( favLabel ) favLabel.textContent = saved ? 'Saved' : 'Save';
+		favBtn.classList.toggle( 'fcc-favourite-btn--saved', saved );
+	}
+
+	function renderFavChips() {
+		var favs = getFavs();
+		if ( ! favSection || ! favChips ) return;
+		if ( ! favs.length ) { favSection.hidden = true; return; }
+		favSection.hidden = false;
+		favChips.innerHTML = favs.map( function ( f ) {
+			return '<button type="button" class="fcc-popular-chip fcc-fav-chip" data-id="' + f.id + '" data-slug="' + ( f.slug || '' ) + '">&#9829; ' + f.name + '</button>';
+		} ).join( '' );
+	}
+
+	if ( favBtn ) {
+		favBtn.addEventListener( 'click', function () {
+			if ( ! state.food ) return;
+			var favs = getFavs();
+			var id   = state.food.id;
+			var idx  = favs.findIndex( function ( f ) { return f.id === id; } );
+			if ( idx >= 0 ) {
+				favs.splice( idx, 1 );
+			} else {
+				favs.unshift( { id: id, name: state.food.name, slug: state.food.slug || '' } );
+			}
+			saveFavs( favs );
+			updateFavBtn();
+			renderFavChips();
+		} );
+	}
+
+	if ( favChips ) {
+		favChips.addEventListener( 'click', function ( e ) {
+			var chip = e.target.closest( '.fcc-fav-chip' );
+			if ( ! chip ) return;
+			var foodId = chip.dataset.id;
+			if ( foodId ) {
+				apiFetch( '/foods/' + foodId ).then( function ( food ) {
+					if ( food ) selectFood( food );
+				} );
+			}
+		} );
+	}
+
+	renderFavChips();
+
+	// -------------------------------------------------------------------------
+	// Compare Shortcut
+	// -------------------------------------------------------------------------
+	const compareShortcutBtn = root.querySelector( '.fcc-compare-shortcut-btn' );
+	if ( compareShortcutBtn ) {
+		compareShortcutBtn.addEventListener( 'click', function () {
+			if ( ! state.food ) return;
+			var compareTab = root.querySelector( '.fcc-tab-btn[data-tab="compare"]' );
+			if ( compareTab ) {
+				selectCompareFood( 0, state.food );
+				compareTab.click();
+			}
+		} );
+	}
+
+	// -------------------------------------------------------------------------
+	// Update new buttons visibility on food selection
+	// -------------------------------------------------------------------------
+	var origRenderResults = null;
+	function showActionButtons() {
+		[ '.fcc-copy-nutrition-btn', '.fcc-favourite-btn', '.fcc-compare-shortcut-btn', '.fcc-add-to-meal--action' ].forEach( function ( sel ) {
+			var btn = root.querySelector( sel );
+			if ( btn ) btn.hidden = ! state.food;
+		} );
+		updateFavBtn();
+	}
+
+	var _origResultsSec = root.querySelector( '.fcc-results-section' );
+	if ( _origResultsSec ) {
+		new MutationObserver( function () { showActionButtons(); } ).observe( _origResultsSec, { attributes: true, attributeFilter: [ 'hidden' ] } );
+	}
+
+	// -------------------------------------------------------------------------
 	// Utilities
 	// -------------------------------------------------------------------------
 	function fmt( n, d ) {
