@@ -509,6 +509,12 @@
 			servingDesc.textContent = desc;
 		}
 
+		// Hide Per 100g column when serving IS 100g (identical values).
+		var isExact100g = Math.abs( grams - 100 ) < 0.05;
+		root.querySelectorAll( '.fcc-col-per100' ).forEach( function ( el ) {
+			el.style.display = isExact100g ? 'none' : '';
+		} );
+
 		// Update kcal badge in food header.
 		const kcalBadge = root.querySelector( '.fcc-food-kcal-num' );
 		if ( kcalBadge ) kcalBadge.textContent = fmt( ( food.energy_kcal || 0 ) * factor, 0 );
