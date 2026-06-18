@@ -129,7 +129,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 
 					<?php if ( ! isset( $features['popular_foods'] ) || ! empty( $features['popular_foods'] ) ) : ?>
 					<div id="fcc-popular-section" class="fcc-popular-section" hidden>
-						<p class="fcc-popular-label"><?php esc_html_e( 'Popular searches', 'food-calorie-calculator' ); ?></p>
+						<p class="fcc-popular-label"><?php esc_html_e( 'Trending Now', 'food-calorie-calculator' ); ?> &#x1F525;</p>
 						<div id="fcc-popular-chips" class="fcc-popular-chips" aria-label="<?php esc_attr_e( 'Popular foods', 'food-calorie-calculator' ); ?>"></div>
 					</div>
 					<?php endif; ?>

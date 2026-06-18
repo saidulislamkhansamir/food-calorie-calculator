@@ -221,8 +221,8 @@
 	function loadPopularFoods() {
 		if ( ! popularSection || ! popularChips ) return;
 		var popLimit = general.popularFoodsCount || 8;
-	if ( popLimit === 0 || features.popular_foods === false ) return;
-	apiFetch( '/foods/popular?limit=' + popLimit ).then( function ( foods ) {
+		if ( popLimit === 0 || features.popular_foods === false ) return;
+		apiFetch( '/foods/popular?limit=' + popLimit ).then( function ( foods ) {
 			if ( ! foods || ! foods.length ) return;
 			popularChips.innerHTML = '';
 			foods.forEach( function ( food ) {
