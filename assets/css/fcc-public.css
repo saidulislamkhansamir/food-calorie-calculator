@@ -1345,8 +1345,10 @@
 }
 
 .fcc-serving-desc {
-	color: var(--fcc-primary);
 	font-weight: 700;
+}
+.fcc-nutrition-table thead .fcc-serving-desc {
+	color: #fff;
 }
 
 /* --------------------------------------------------------------------------
