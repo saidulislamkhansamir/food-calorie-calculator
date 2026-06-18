@@ -3458,6 +3458,8 @@ select.fcc-bmr-input {
 .fcc-share-icon:last-child { border-right: none; }
 .fcc-share-icon:hover { background: #f0f4f0; }
 
+.fcc-share-icon--link svg          { stroke: #2D7A4F; fill: none; }
+.fcc-share-icon--link:hover        { background: #ecf7f0; }
 .fcc-share-icon--email svg         { stroke: #888; fill: none; }
 .fcc-share-icon--email:hover       { background: #fef2f0; }
 .fcc-share-icon--email:hover svg   { stroke: #d44638; }

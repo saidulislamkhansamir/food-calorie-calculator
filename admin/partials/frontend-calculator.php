@@ -401,15 +401,13 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 						<?php esc_html_e( 'Print', 'food-calorie-calculator' ); ?>
 					</button>
 					<?php endif; ?>
-					<?php if ( ! empty( $features['share_link'] ) ) : ?>
-					<button type="button" class="fcc-btn fcc-btn--ghost fcc-share-btn" aria-label="<?php esc_attr_e( 'Copy shareable link', 'food-calorie-calculator' ); ?>">
-						<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-						<?php esc_html_e( 'Share', 'food-calorie-calculator' ); ?>
-					</button>
-					<?php endif; ?>
-
-					<!-- Social share buttons -->
+					<!-- Share strip: copy link + social channels -->
 					<div class="fcc-share-group" hidden>
+						<?php if ( ! empty( $features['share_link'] ) ) : ?>
+						<button type="button" class="fcc-share-icon fcc-share-icon--link fcc-share-btn" aria-label="<?php esc_attr_e( 'Copy shareable link', 'food-calorie-calculator' ); ?>" title="<?php esc_attr_e( 'Copy Link', 'food-calorie-calculator' ); ?>">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+						</button>
+						<?php endif; ?>
 						<button type="button" class="fcc-share-icon fcc-share-icon--email" data-channel="email" aria-label="<?php esc_attr_e( 'Share via Email', 'food-calorie-calculator' ); ?>" title="Email">
 							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
 						</button>
