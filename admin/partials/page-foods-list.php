@@ -22,7 +22,8 @@ $cat_filter = isset( $_GET['category_id'] ) ? absint( $_GET['category_id'] )    
 $orderby    = isset( $_GET['orderby'] )     ? sanitize_key( $_GET['orderby'] )                : 'name';
 $order      = isset( $_GET['order'] ) && 'desc' === strtolower( $_GET['order'] ) ? 'DESC'     : 'ASC';
 $paged      = isset( $_GET['paged'] )       ? max( 1, absint( $_GET['paged'] ) )              : 1;
-$per_page   = 20;
+$per_page   = isset( $_GET['per_page'] )   ? max( 10, min( 500, absint( $_GET['per_page'] ) ) ) : 20;
+$status     = isset( $_GET['status'] )      ? sanitize_key( $_GET['status'] )                     : '';
 
 $result = FCC\Database::get_foods( [
 	'search'      => $search,
@@ -31,6 +32,7 @@ $result = FCC\Database::get_foods( [
 	'order'       => $order,
 	'per_page'    => $per_page,
 	'page'        => $paged,
+	'status'      => $status,
 ] );
 
 $total       = $result['total'];
@@ -44,7 +46,14 @@ foreach ( $categories as $cat ) {
 }
 
 global $wpdb;
-$total_all = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_foods" );
+$ft        = $wpdb->prefix . 'fcc_foods';
+$total_all = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ft}" );
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+$total_incomplete = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ft} WHERE energy_kcal IS NULL OR protein_g IS NULL OR carbohydrate_g IS NULL OR fat_g IS NULL OR fibre_g IS NULL OR salt_g IS NULL" );
+$total_complete   = $total_all - $total_incomplete;
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+$total_sponsored  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ft} WHERE is_sponsored = 1" );
+$export_nonce     = wp_create_nonce( 'fcc_export_foods_view' );
 
 $list_url = admin_url( 'admin.php?page=fcc-foods' );
 ?>
@@ -128,13 +137,63 @@ $list_url = admin_url( 'admin.php?page=fcc-foods' );
 			<select name="bulk_action" form="fcc-bulk-form" id="fcc-bulk-action" class="fcc-foods-bulk-select">
 				<option value=""><?php esc_html_e( 'Bulk Actions', 'food-calorie-calculator' ); ?></option>
 				<option value="delete"><?php esc_html_e( 'Delete', 'food-calorie-calculator' ); ?></option>
+				<option value="change_category"><?php esc_html_e( 'Change Category', 'food-calorie-calculator' ); ?></option>
+			</select>
+			<select name="bulk_category_id" form="fcc-bulk-form" id="fcc-bulk-cat" class="fcc-foods-bulk-cat" style="display:none">
+				<?php foreach ( $categories as $cat ) : ?>
+					<option value="<?php echo absint( $cat['id'] ); ?>"><?php echo esc_html( $cat['name'] ); ?></option>
+				<?php endforeach; ?>
 			</select>
 			<button type="submit" form="fcc-bulk-form" class="fcc-foods-bulk-apply">
 				<?php esc_html_e( 'Apply', 'food-calorie-calculator' ); ?>
 			</button>
+
+			<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( [
+				'action'      => 'fcc_export_foods_view',
+				's'           => $search,
+				'category_id' => $cat_filter,
+				'status'      => $status,
+				'orderby'     => $orderby,
+				'order'       => strtolower( $order ),
+			], admin_url( 'admin-post.php' ) ), 'fcc_export_foods_view' ) ); ?>" class="fcc-foods-export-btn" title="<?php esc_attr_e( 'Export CSV', 'food-calorie-calculator' ); ?>">
+				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+				<?php esc_html_e( 'Export', 'food-calorie-calculator' ); ?>
+			</a>
 		</div>
 
 	</div><!-- .fcc-foods-toolbar -->
+
+	<!-- Status filter pills -->
+	<div class="fcc-foods-status-pills">
+		<a href="<?php echo esc_url( remove_query_arg( 'status', $list_url ) ); ?>"
+			class="fcc-foods-pill<?php echo '' === $status ? ' fcc-foods-pill--active' : ''; ?>">
+			<?php esc_html_e( 'All', 'food-calorie-calculator' ); ?> <span class="fcc-foods-pill__count"><?php echo $total_all; ?></span>
+		</a>
+		<a href="<?php echo esc_url( add_query_arg( 'status', 'complete', $list_url ) ); ?>"
+			class="fcc-foods-pill fcc-foods-pill--green<?php echo 'complete' === $status ? ' fcc-foods-pill--active' : ''; ?>">
+			<?php esc_html_e( 'Complete', 'food-calorie-calculator' ); ?> <span class="fcc-foods-pill__count"><?php echo $total_complete; ?></span>
+		</a>
+		<a href="<?php echo esc_url( add_query_arg( 'status', 'incomplete', $list_url ) ); ?>"
+			class="fcc-foods-pill fcc-foods-pill--amber<?php echo 'incomplete' === $status ? ' fcc-foods-pill--active' : ''; ?>">
+			<?php esc_html_e( 'Incomplete', 'food-calorie-calculator' ); ?> <span class="fcc-foods-pill__count"><?php echo $total_incomplete; ?></span>
+		</a>
+		<?php if ( $total_sponsored > 0 ) : ?>
+		<a href="<?php echo esc_url( add_query_arg( 'status', 'sponsored', $list_url ) ); ?>"
+			class="fcc-foods-pill fcc-foods-pill--gold<?php echo 'sponsored' === $status ? ' fcc-foods-pill--active' : ''; ?>">
+			<?php esc_html_e( 'Sponsored', 'food-calorie-calculator' ); ?> <span class="fcc-foods-pill__count"><?php echo $total_sponsored; ?></span>
+		</a>
+		<?php endif; ?>
+
+		<span class="fcc-foods-perpage">
+			<label for="fcc-perpage"><?php esc_html_e( 'Show', 'food-calorie-calculator' ); ?></label>
+			<select id="fcc-perpage" onchange="location.href=this.value">
+				<?php foreach ( [ 20, 50, 100 ] as $pp ) : ?>
+					<option value="<?php echo esc_url( add_query_arg( 'per_page', $pp, $list_url ) ); ?>"
+						<?php selected( $per_page, $pp ); ?>><?php echo $pp; ?></option>
+				<?php endforeach; ?>
+			</select>
+		</span>
+	</div>
 
 	<!-- ======================================================================
 	     AJAX-refreshable table region
@@ -144,7 +203,9 @@ $list_url = admin_url( 'admin.php?page=fcc-foods' );
 		data-search="<?php echo esc_attr( $search ); ?>"
 		data-cat="<?php echo esc_attr( $cat_filter ); ?>"
 		data-orderby="<?php echo esc_attr( $orderby ); ?>"
-		data-order="<?php echo esc_attr( strtolower( $order ) ); ?>">
+		data-order="<?php echo esc_attr( strtolower( $order ) ); ?>"
+		data-per-page="<?php echo esc_attr( $per_page ); ?>"
+		data-status="<?php echo esc_attr( $status ); ?>">
 
 		<?php include FCC_PLUGIN_DIR . 'admin/partials/page-foods-table.php'; ?>
 

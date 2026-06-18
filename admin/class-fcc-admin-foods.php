@@ -16,10 +16,13 @@ defined( 'ABSPATH' ) || exit;
 class Foods {
 
 	public function register( \FCC\Loader $loader ): void {
-		$loader->add_action( 'admin_post_fcc_save_food',   $this, 'handle_save_food' );
-		$loader->add_action( 'admin_post_fcc_delete_food', $this, 'handle_delete_food' );
-		$loader->add_action( 'admin_post_fcc_bulk_foods',  $this, 'handle_bulk_foods' );
-		$loader->add_action( 'wp_ajax_fcc_foods_page',     $this, 'ajax_foods_page' );
+		$loader->add_action( 'admin_post_fcc_save_food',        $this, 'handle_save_food' );
+		$loader->add_action( 'admin_post_fcc_delete_food',      $this, 'handle_delete_food' );
+		$loader->add_action( 'admin_post_fcc_bulk_foods',       $this, 'handle_bulk_foods' );
+		$loader->add_action( 'admin_post_fcc_duplicate_food',   $this, 'handle_duplicate_food' );
+		$loader->add_action( 'admin_post_fcc_export_foods_view', $this, 'handle_export_view' );
+		$loader->add_action( 'wp_ajax_fcc_foods_page',          $this, 'ajax_foods_page' );
+		$loader->add_action( 'wp_ajax_fcc_quick_update_food',   $this, 'ajax_quick_update' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -102,8 +105,18 @@ class Foods {
 			$this->redirect_with_notice(
 				'fcc-foods',
 				'success',
-				// translators: %d = number of foods deleted.
 				sprintf( __( '%d food(s) deleted.', 'food-calorie-calculator' ), $deleted )
+			);
+			return;
+		}
+
+		if ( 'change_category' === $action && $ids ) {
+			$cat_id  = absint( $_POST['bulk_category_id'] ?? 0 );
+			$updated = \FCC\Database::bulk_update_category( $ids, $cat_id );
+			$this->redirect_with_notice(
+				'fcc-foods',
+				'success',
+				sprintf( __( '%d food(s) updated.', 'food-calorie-calculator' ), $updated )
 			);
 			return;
 		}
@@ -126,7 +139,9 @@ class Foods {
 		$orderby    = isset( $_POST['orderby'] )     ? sanitize_key( $_POST['orderby'] )                : 'name';
 		$order      = isset( $_POST['order'] ) && 'desc' === strtolower( sanitize_key( $_POST['order'] ) ) ? 'DESC' : 'ASC';
 		$paged      = isset( $_POST['paged'] )       ? max( 1, absint( $_POST['paged'] ) )              : 1;
-		$per_page   = 20;
+		$per_page   = isset( $_POST['per_page'] )    ? max( 10, absint( $_POST['per_page'] ) )          : 20;
+		$status     = isset( $_POST['status'] )       ? sanitize_key( $_POST['status'] )                 : '';
+		if ( $per_page > 500 ) { $per_page = 500; }
 
 		$result = \FCC\Database::get_foods( [
 			'search'      => $search,
@@ -135,6 +150,7 @@ class Foods {
 			'order'       => $order,
 			'per_page'    => $per_page,
 			'page'        => $paged,
+			'status'      => $status,
 		] );
 
 		$total       = $result['total'];
@@ -153,6 +169,77 @@ class Foods {
 		$html = ob_get_clean();
 
 		wp_send_json_success( [ 'html' => $html, 'paged' => $paged ] );
+	}
+
+	/** Duplicate a food and redirect to edit the copy. */
+	public function handle_duplicate_food(): void {
+		if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'Permission denied.' ); }
+		$id = absint( $_GET['food_id'] ?? 0 );
+		check_admin_referer( 'fcc_duplicate_food_' . $id );
+		$food = \FCC\Database::get_food( $id );
+		if ( ! $food ) { $this->redirect_with_notice( 'fcc-foods', 'error', __( 'Food not found.', 'food-calorie-calculator' ) ); return; }
+		unset( $food['id'], $food['created_at'] );
+		$food['name'] .= ' (Copy)';
+		$food['slug']  = sanitize_title( $food['name'] ) . '-' . time();
+		$food['search_count'] = 0;
+		$food['is_sponsored'] = 0;
+		$food['sponsor_active'] = 0;
+		$new_id = \FCC\Database::insert_food( $food );
+		if ( $new_id ) {
+			wp_safe_redirect( admin_url( 'admin.php?page=fcc-foods&action=edit&food_id=' . $new_id . '&fcc_notice=' . rawurlencode( __( 'Food duplicated.', 'food-calorie-calculator' ) ) . '&fcc_ntype=success' ) );
+			exit;
+		}
+		$this->redirect_with_notice( 'fcc-foods', 'error', __( 'Duplication failed.', 'food-calorie-calculator' ) );
+	}
+
+	/** Export the currently filtered view as CSV. */
+	public function handle_export_view(): void {
+		if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'Permission denied.' ); }
+		check_admin_referer( 'fcc_export_foods_view' );
+		$args = [
+			'search'      => sanitize_text_field( $_GET['s'] ?? '' ),
+			'category_id' => absint( $_GET['category_id'] ?? 0 ),
+			'status'      => sanitize_key( $_GET['status'] ?? '' ),
+			'orderby'     => sanitize_key( $_GET['orderby'] ?? 'name' ),
+			'order'       => ( isset( $_GET['order'] ) && 'desc' === strtolower( $_GET['order'] ) ) ? 'DESC' : 'ASC',
+			'per_page'    => 99999,
+			'page'        => 1,
+		];
+		$result  = \FCC\Database::get_foods( $args );
+		$headers = [ 'Name','Category ID','kcal','kJ','Protein','Carbs','Sugars','Fat','Saturates','Fibre','Salt','Omega-3 Total','Caffeine' ];
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="fcc-foods-' . gmdate( 'Y-m-d' ) . '.csv"' );
+		$out = fopen( 'php://output', 'w' );
+		fputcsv( $out, $headers );
+		foreach ( $result['rows'] as $f ) {
+			fputcsv( $out, [
+				$f['name'], $f['category_id'], $f['energy_kcal'], $f['energy_kj'],
+				$f['protein_g'], $f['carbohydrate_g'], $f['of_which_sugars_g'],
+				$f['fat_g'], $f['of_which_saturates_g'], $f['fibre_g'], $f['salt_g'],
+				$f['omega3_total_mg'], $f['caffeine_mg'],
+			] );
+		}
+		fclose( $out );
+		exit;
+	}
+
+	/** AJAX quick-update: inline edit of name, category, and macros. */
+	public function ajax_quick_update(): void {
+		check_ajax_referer( 'fcc_foods_page' );
+		if ( ! current_user_can( 'manage_options' ) ) { wp_send_json_error( 'Permission denied', 403 ); }
+		$id = absint( $_POST['food_id'] ?? 0 );
+		if ( ! $id ) { wp_send_json_error( 'Missing food ID.' ); }
+		$data = [
+			'name'           => sanitize_text_field( $_POST['name'] ?? '' ),
+			'category_id'    => absint( $_POST['category_id'] ?? 0 ),
+			'energy_kcal'    => (float) ( $_POST['energy_kcal'] ?? 0 ),
+			'protein_g'      => (float) ( $_POST['protein_g'] ?? 0 ),
+			'carbohydrate_g' => (float) ( $_POST['carbohydrate_g'] ?? 0 ),
+			'fat_g'          => (float) ( $_POST['fat_g'] ?? 0 ),
+		];
+		if ( empty( $data['name'] ) ) { wp_send_json_error( 'Name is required.' ); }
+		\FCC\Database::update_food( $id, $data );
+		wp_send_json_success( [ 'message' => __( 'Updated.', 'food-calorie-calculator' ) ] );
 	}
 
 	// -------------------------------------------------------------------------
@@ -278,7 +365,8 @@ class Foods {
 		$orderby     = isset( $_GET['orderby'] ) ? sanitize_key( $_GET['orderby'] ) : 'name';
 		$order       = isset( $_GET['order'] ) && 'desc' === strtolower( $_GET['order'] ) ? 'DESC' : 'ASC';
 		$paged       = isset( $_GET['paged'] ) ? max( 1, absint( $_GET['paged'] ) ) : 1;
-		$per_page    = 20;
+		$per_page    = isset( $_GET['per_page'] ) ? max( 10, min( 500, absint( $_GET['per_page'] ) ) ) : 20;
+		$status      = isset( $_GET['status'] ) ? sanitize_key( $_GET['status'] ) : '';
 
 		$result = \FCC\Database::get_foods( [
 			'search'      => $search,
@@ -287,6 +375,7 @@ class Foods {
 			'order'       => $order,
 			'per_page'    => $per_page,
 			'page'        => $paged,
+			'status'      => $status,
 		] );
 
 		$total      = $result['total'];

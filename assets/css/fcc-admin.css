@@ -6659,3 +6659,182 @@ button.fcc-reqs-tab {
 	.fcc-dash-hero-stat__value { font-size: 1.1rem; }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   FOODS PAGE ENHANCEMENTS v1.17
+   ─────────────────────────────────────────────────────────────── */
+
+/* ── Status filter pills ── */
+.fcc-foods-status-pills {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 1rem;
+	flex-wrap: wrap;
+}
+.fcc-foods-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 5px 12px;
+	border-radius: 20px;
+	font-size: 0.78rem;
+	font-weight: 600;
+	text-decoration: none;
+	color: #555;
+	background: #f1f5f9;
+	border: 1px solid #e2e8f0;
+	transition: background .15s, border-color .15s;
+}
+.fcc-foods-pill:hover { background: #e2e8f0; color: #333; }
+.fcc-foods-pill--active { background: #2D7A4F; color: #fff; border-color: #2D7A4F; }
+.fcc-foods-pill--green.fcc-foods-pill--active { background: #27ae60; border-color: #27ae60; }
+.fcc-foods-pill--amber.fcc-foods-pill--active { background: #f39c12; border-color: #f39c12; }
+.fcc-foods-pill--gold.fcc-foods-pill--active  { background: #d4a017; border-color: #d4a017; }
+.fcc-foods-pill__count {
+	font-size: 0.68rem;
+	background: rgba(0,0,0,.08);
+	padding: 1px 6px;
+	border-radius: 10px;
+}
+.fcc-foods-pill--active .fcc-foods-pill__count { background: rgba(255,255,255,.25); }
+
+/* ── Per-page selector ── */
+.fcc-foods-perpage {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 0.75rem;
+	color: #777;
+}
+.fcc-foods-perpage select {
+	padding: 3px 6px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	font-size: 0.75rem;
+}
+
+/* ── Completeness dot ── */
+.fcc-foods-comp {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	margin-right: 5px;
+	vertical-align: middle;
+	flex-shrink: 0;
+}
+.fcc-foods-comp--full       { background: #27ae60; }
+.fcc-foods-comp--incomplete { background: #e74c3c; }
+
+/* ── Search highlight ── */
+.fcc-foods-name-link mark {
+	background: #fef3cd;
+	padding: 1px 2px;
+	border-radius: 2px;
+	color: inherit;
+}
+
+/* ── Export button ── */
+.fcc-foods-export-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 12px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	background: #fff;
+	color: #555;
+	font-size: 0.78rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: border-color .15s, color .15s;
+}
+.fcc-foods-export-btn:hover { border-color: #2D7A4F; color: #2D7A4F; }
+
+/* ── Bulk category selector ── */
+.fcc-foods-bulk-cat {
+	padding: 5px 8px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	font-size: 0.82rem;
+}
+
+/* ── Quick Edit action button ── */
+.fcc-foods-action-btn--qe {
+	background: none;
+	border: 1px solid #3498db;
+	color: #3498db;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	padding: 3px 8px;
+	border-radius: 5px;
+	font-size: 0.72rem;
+	font-weight: 600;
+	transition: background .15s, color .15s;
+}
+.fcc-foods-action-btn--qe:hover { background: #3498db; color: #fff; }
+
+/* ── Duplicate action button ── */
+.fcc-foods-action-btn--dup {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	color: #999;
+	transition: border-color .15s, color .15s;
+}
+.fcc-foods-action-btn--dup:hover { border-color: #2D7A4F; color: #2D7A4F; }
+
+/* ── Quick-edit inline row ── */
+.fcc-foods-qe-row { background: #f0faf4 !important; }
+.fcc-foods-qe-cell { padding: 12px 16px !important; }
+.fcc-foods-qe-inner {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: flex-end;
+}
+.fcc-foods-qe-inner label {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: #555;
+}
+.fcc-foods-qe-inner input,
+.fcc-foods-qe-inner select {
+	padding: 5px 8px;
+	border: 1.5px solid #d4e8da;
+	border-radius: 6px;
+	font-size: 0.82rem;
+}
+.fcc-foods-qe-inner input:focus,
+.fcc-foods-qe-inner select:focus {
+	border-color: #2D7A4F;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(45,122,79,.15);
+}
+.fcc-foods-qe-inner label:first-child { flex: 2; min-width: 160px; }
+.fcc-foods-qe-inner label:nth-child(2) { flex: 1; min-width: 120px; }
+.fcc-foods-qe-inner label:nth-child(n+3) { flex: 0 0 80px; }
+.fcc-foods-qe-inner input[type="number"] { width: 80px; }
+.fcc-foods-qe-btns {
+	display: flex;
+	gap: 6px;
+	align-items: flex-end;
+	margin-left: auto;
+}
+.fcc-foods-qe-save {
+	background: #2D7A4F !important;
+	border-color: #2D7A4F !important;
+	color: #fff !important;
+}
+

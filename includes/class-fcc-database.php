@@ -385,6 +385,7 @@ class Database {
 			'order'       => 'ASC',
 			'category_id' => 0,
 			'search'      => '',
+			'status'      => '',
 		];
 		$args = wp_parse_args( $args, $defaults );
 
@@ -414,6 +415,13 @@ class Database {
 		if ( '' !== $args['search'] ) {
 			$where_parts[] = "{$col_prefix}name LIKE %s";
 			$where_vals[]  = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+		}
+		if ( 'incomplete' === $args['status'] ) {
+			$where_parts[] = "({$col_prefix}energy_kcal IS NULL OR {$col_prefix}protein_g IS NULL OR {$col_prefix}carbohydrate_g IS NULL OR {$col_prefix}fat_g IS NULL OR {$col_prefix}fibre_g IS NULL OR {$col_prefix}salt_g IS NULL)";
+		} elseif ( 'complete' === $args['status'] ) {
+			$where_parts[] = "({$col_prefix}energy_kcal IS NOT NULL AND {$col_prefix}protein_g IS NOT NULL AND {$col_prefix}carbohydrate_g IS NOT NULL AND {$col_prefix}fat_g IS NOT NULL AND {$col_prefix}fibre_g IS NOT NULL AND {$col_prefix}salt_g IS NOT NULL)";
+		} elseif ( 'sponsored' === $args['status'] ) {
+			$where_parts[] = "{$col_prefix}is_sponsored = 1";
 		}
 
 		$where_sql = $where_parts ? 'WHERE ' . implode( ' AND ', $where_parts ) : '';
@@ -510,6 +518,19 @@ class Database {
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return (int) $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$placeholders})", ...$ids ) );
+	}
+
+	public static function bulk_update_category( array $ids, int $category_id ): int {
+		global $wpdb;
+		$table = self::foods_table();
+		$ids   = array_filter( array_map( 'absint', $ids ) );
+		if ( ! $ids ) { return 0; }
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->query( $wpdb->prepare(
+			"UPDATE {$table} SET category_id = %d WHERE id IN ({$placeholders})",
+			$category_id, ...$ids
+		) );
 	}
 
 	/**

@@ -13,6 +13,26 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if ( ! function_exists( 'fcc_highlight_search' ) ) :
+	function fcc_highlight_search( string $text, string $search ): string {
+		if ( '' === $search ) { return esc_html( $text ); }
+		return preg_replace( '/(' . preg_quote( $search, '/' ) . ')/i', '<mark>$1</mark>', esc_html( $text ) );
+	}
+endif;
+
+if ( ! function_exists( 'fcc_completeness' ) ) :
+	function fcc_completeness( array $f ): string {
+		$core = [ 'energy_kcal', 'protein_g', 'carbohydrate_g', 'fat_g', 'fibre_g', 'salt_g' ];
+		$missing = [];
+		foreach ( $core as $k ) { if ( null === $f[ $k ] || '' === $f[ $k ] ) { $missing[] = $k; } }
+		if ( ! $missing ) {
+			return '<span class="fcc-foods-comp fcc-foods-comp--full" title="' . esc_attr__( 'All core nutrients filled', 'food-calorie-calculator' ) . '"></span>';
+		}
+		$lbl = implode( ', ', array_map( function( $k ) { return str_replace( '_', ' ', str_replace( '_g', '', $k ) ); }, $missing ) );
+		return '<span class="fcc-foods-comp fcc-foods-comp--incomplete" title="' . esc_attr( 'Missing: ' . $lbl ) . '"></span>';
+	}
+endif;
+
 if ( ! function_exists( 'fcc_sort_url' ) ) :
 	function fcc_sort_url( string $col, string $current_col, string $current_order ): string {
 		$new_order = ( $col === $current_col && 'ASC' === $current_order ) ? 'desc' : 'asc';
@@ -210,15 +230,27 @@ endif;
 							add_query_arg( [ 'action' => 'fcc_delete_food', 'food_id' => $food['id'] ], admin_url( 'admin-post.php' ) ),
 							'fcc_delete_food_' . $food['id']
 						) );
+						$dup_url = esc_url( wp_nonce_url(
+							add_query_arg( [ 'action' => 'fcc_duplicate_food', 'food_id' => $food['id'] ], admin_url( 'admin-post.php' ) ),
+							'fcc_duplicate_food_' . $food['id']
+						) );
 					?>
-						<tr class="fcc-foods-row">
+						<tr class="fcc-foods-row"
+							data-id="<?php echo absint( $food['id'] ); ?>"
+							data-name="<?php echo esc_attr( $food['name'] ); ?>"
+							data-cat="<?php echo absint( $food['category_id'] ); ?>"
+							data-kcal="<?php echo esc_attr( $food['energy_kcal'] ); ?>"
+							data-protein="<?php echo esc_attr( $food['protein_g'] ); ?>"
+							data-carbs="<?php echo esc_attr( $food['carbohydrate_g'] ); ?>"
+							data-fat="<?php echo esc_attr( $food['fat_g'] ); ?>">
 							<td class="fcc-foods-td fcc-foods-td--check">
 								<input type="checkbox" name="food_ids[]" value="<?php echo absint( $food['id'] ); ?>"
 									aria-label="<?php echo esc_attr( $food['name'] ); ?>">
 							</td>
 							<td class="fcc-foods-td fcc-foods-td--name">
+								<?php echo fcc_completeness( $food ); ?>
 								<a href="<?php echo $edit_url; ?>" class="fcc-foods-name-link">
-									<?php echo esc_html( $food['name'] ); ?>
+									<?php echo fcc_highlight_search( $food['name'], $search ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 								</a>
 								<?php if ( ! empty( $food['is_sponsored'] ) ) : ?>
 									<span class="fcc-foods-sponsored-pill"><?php esc_html_e( 'Sponsored', 'food-calorie-calculator' ); ?></span>
@@ -261,15 +293,23 @@ endif;
 							</td>
 							<td class="fcc-foods-td fcc-foods-td--actions">
 								<div class="fcc-foods-action-group">
+									<button type="button" class="fcc-foods-action-btn fcc-foods-action-btn--qe fcc-foods-qe-trigger"
+										title="<?php esc_attr_e( 'Quick Edit', 'food-calorie-calculator' ); ?>">
+										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+										<?php esc_html_e( 'Quick', 'food-calorie-calculator' ); ?>
+									</button>
 									<a href="<?php echo $edit_url; ?>" class="fcc-foods-action-btn fcc-foods-action-btn--edit">
-										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
 										<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
+									</a>
+									<a href="<?php echo $dup_url; ?>" class="fcc-foods-action-btn fcc-foods-action-btn--dup"
+										title="<?php esc_attr_e( 'Duplicate', 'food-calorie-calculator' ); ?>">
+										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
 									</a>
 									<a href="<?php echo $delete_url; ?>"
 										class="fcc-foods-action-btn fcc-foods-action-btn--delete fcc-confirm-delete"
 										data-confirm="<?php esc_attr_e( 'Delete this food permanently?', 'food-calorie-calculator' ); ?>">
-										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-										<?php esc_html_e( 'Delete', 'food-calorie-calculator' ); ?>
+										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
 									</a>
 								</div>
 							</td>

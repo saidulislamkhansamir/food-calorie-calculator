@@ -92,6 +92,8 @@
 			category_id: cat,
 			orderby:     newOrderby,
 			order:       newOrder,
+			per_page:    $list.data( 'per-page' ) || 20,
+			status:      $list.data( 'status' ) || '',
 		}, function ( response ) {
 			$list.removeClass( 'fcc-loading' );
 			if ( response.success ) {
@@ -127,6 +129,8 @@
 			category_id: cat,
 			orderby:     orderby,
 			order:       order,
+			per_page:    $list.data( 'per-page' ) || 20,
+			status:      $list.data( 'status' ) || '',
 		}, function ( response ) {
 			$list.removeClass( 'fcc-loading' );
 			if ( response.success ) {
@@ -136,6 +140,91 @@
 		} ).fail( function () {
 			$list.removeClass( 'fcc-loading' );
 		} );
+	} );
+
+	// -------------------------------------------------------------------------
+	// Quick Edit — inline row for foods table
+	// -------------------------------------------------------------------------
+	$( document ).on( 'click', '.fcc-foods-qe-trigger', function () {
+		var $row = $( this ).closest( '.fcc-foods-row' );
+		// Remove any existing quick-edit row.
+		$( '.fcc-foods-qe-row' ).remove();
+
+		var id   = $row.data( 'id' );
+		var cats = $( '#fcc-bulk-cat' ).html();
+		var qe   = '<tr class="fcc-foods-qe-row"><td colspan="10" class="fcc-foods-qe-cell">'
+			+ '<div class="fcc-foods-qe-inner">'
+			+ '<label>Name <input type="text" class="fcc-qe-name" value="' + $row.data('name').toString().replace(/"/g,'&quot;') + '"></label>'
+			+ '<label>Category <select class="fcc-qe-cat">' + cats + '</select></label>'
+			+ '<label>kcal <input type="number" class="fcc-qe-kcal" value="' + $row.data('kcal') + '" step="0.1"></label>'
+			+ '<label>Protein <input type="number" class="fcc-qe-protein" value="' + $row.data('protein') + '" step="0.1"></label>'
+			+ '<label>Carbs <input type="number" class="fcc-qe-carbs" value="' + $row.data('carbs') + '" step="0.1"></label>'
+			+ '<label>Fat <input type="number" class="fcc-qe-fat" value="' + $row.data('fat') + '" step="0.1"></label>'
+			+ '<div class="fcc-foods-qe-btns">'
+			+ '<button type="button" class="fcc-foods-qe-save button button-primary">Save</button>'
+			+ '<button type="button" class="fcc-foods-qe-cancel button">Cancel</button>'
+			+ '</div></div></td></tr>';
+		$row.after( qe );
+		var $qeRow = $row.next( '.fcc-foods-qe-row' );
+		$qeRow.find( '.fcc-qe-cat' ).val( $row.data( 'cat' ) );
+		$qeRow.find( '.fcc-qe-name' ).focus();
+	} );
+
+	$( document ).on( 'click', '.fcc-foods-qe-cancel', function () {
+		$( this ).closest( '.fcc-foods-qe-row' ).remove();
+	} );
+
+	$( document ).on( 'click', '.fcc-foods-qe-save', function () {
+		var $qe   = $( this ).closest( '.fcc-foods-qe-row' );
+		var $row  = $qe.prev( '.fcc-foods-row' );
+		var $list = $( '#fcc-foods-list' );
+		var $btn  = $( this );
+		$btn.prop( 'disabled', true ).text( 'Saving…' );
+
+		$.post( fccAdmin.ajaxUrl, {
+			action:         'fcc_quick_update_food',
+			_ajax_nonce:    $list.data( 'nonce' ),
+			food_id:        $row.data( 'id' ),
+			name:           $qe.find( '.fcc-qe-name' ).val(),
+			category_id:    $qe.find( '.fcc-qe-cat' ).val(),
+			energy_kcal:    $qe.find( '.fcc-qe-kcal' ).val(),
+			protein_g:      $qe.find( '.fcc-qe-protein' ).val(),
+			carbohydrate_g: $qe.find( '.fcc-qe-carbs' ).val(),
+			fat_g:          $qe.find( '.fcc-qe-fat' ).val(),
+		}, function ( res ) {
+			if ( res.success ) {
+				$row.data( 'name', $qe.find('.fcc-qe-name').val() );
+				$row.data( 'cat', $qe.find('.fcc-qe-cat').val() );
+				$row.data( 'kcal', $qe.find('.fcc-qe-kcal').val() );
+				$row.data( 'protein', $qe.find('.fcc-qe-protein').val() );
+				$row.data( 'carbs', $qe.find('.fcc-qe-carbs').val() );
+				$row.data( 'fat', $qe.find('.fcc-qe-fat').val() );
+				// Update visible cells.
+				$row.find('.fcc-foods-name-link').text( $qe.find('.fcc-qe-name').val() );
+				$row.find('.fcc-foods-kcal').text( Math.round( parseFloat($qe.find('.fcc-qe-kcal').val()) ) );
+				$row.find('.fcc-foods-td--protein').html( parseFloat($qe.find('.fcc-qe-protein').val()).toFixed(1) + 'g' );
+				$row.find('.fcc-foods-td--carbs').html( parseFloat($qe.find('.fcc-qe-carbs').val()).toFixed(1) + 'g' );
+				$row.find('.fcc-foods-td--fat').html( parseFloat($qe.find('.fcc-qe-fat').val()).toFixed(1) + 'g' );
+				$qe.remove();
+			} else {
+				$btn.prop( 'disabled', false ).text( 'Save' );
+				alert( res.data || 'Error saving.' );
+			}
+		} ).fail( function () {
+			$btn.prop( 'disabled', false ).text( 'Save' );
+		} );
+	} );
+
+	// -------------------------------------------------------------------------
+	// Bulk Action — show/hide category picker when "Change Category" selected
+	// -------------------------------------------------------------------------
+	$( document ).on( 'change', '#fcc-bulk-action', function () {
+		var $cat = $( '#fcc-bulk-cat' );
+		if ( $( this ).val() === 'change_category' ) {
+			$cat.show();
+		} else {
+			$cat.hide();
+		}
 	} );
 
 	// -------------------------------------------------------------------------
