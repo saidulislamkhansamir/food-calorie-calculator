@@ -1466,30 +1466,46 @@
 			} );
 			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
 
-			// Strip quantity controls but keep food name.
-			var qtyControls = clone.querySelector( '.fcc-qty-controls' );
-			if ( qtyControls ) qtyControls.remove();
-			var addMealBtns = clone.querySelectorAll( '.fcc-add-to-meal' );
-			addMealBtns.forEach( function ( b ) { b.remove(); } );
+			// Strip quantity controls, meal buttons, food header (branded header replaces it).
+			[ '.fcc-qty-controls', '.fcc-quantity-row', '.fcc-quantity-section' ].forEach( function ( sel ) {
+				var el = clone.querySelector( sel );
+				if ( el ) el.remove();
+			} );
+			clone.querySelectorAll( '.fcc-add-to-meal' ).forEach( function ( b ) { b.remove(); } );
 
-			// Remove empty caffeine section if no data.
-			var caffSec = clone.querySelector( '.fcc-caffeine-section' );
-			if ( caffSec && ! caffSec.querySelector( '.fcc-caffeine-value' ) ) {
-				var caffText = caffSec.textContent.trim();
-				if ( ! caffText || caffText === 'Caffeine' ) caffSec.remove();
-			}
+			// Remove empty sections (omega-3 with no values, caffeine with no data).
+			clone.querySelectorAll( '.fcc-omega3-section, .fcc-caffeine-section' ).forEach( function ( sec ) {
+				var vals = sec.querySelectorAll( '.fcc-omega3-card__val, .fcc-caffeine-val' );
+				var hasData = false;
+				vals.forEach( function ( v ) {
+					if ( v.textContent.trim() && ! v.textContent.trim().match( /^0(\.0)?$/ ) ) hasData = true;
+				} );
+				if ( ! hasData ) {
+					var anyNum = sec.textContent.match( /\d+\.\d+\s*mg/ );
+					if ( ! anyNum ) sec.remove();
+				}
+			} );
 
 			// Convert canvas donut chart to image for print.
 			var origCanvas = root.querySelector( '#fcc-macro-chart' );
 			var cloneCanvas = clone.querySelector( '#fcc-macro-chart' );
 			if ( origCanvas && cloneCanvas ) {
 				try {
-					var img = document.createElement( 'img' );
-					img.src = origCanvas.toDataURL( 'image/png' );
-					img.style.cssText = 'width:' + origCanvas.style.width + ';height:' + origCanvas.style.height + ';';
-					img.className = 'fcc-print-chart-img';
-					cloneCanvas.parentNode.replaceChild( img, cloneCanvas );
-				} catch ( e ) {}
+					var dataUrl = origCanvas.toDataURL( 'image/png' );
+					if ( dataUrl && dataUrl.length > 100 ) {
+						var img = document.createElement( 'img' );
+						img.src = dataUrl;
+						img.style.cssText = 'width:180px;height:180px;display:block;margin:0 auto;';
+						img.className = 'fcc-print-chart-img';
+						cloneCanvas.parentNode.replaceChild( img, cloneCanvas );
+					} else {
+						var wrapper = clone.querySelector( '.fcc-macro-chart-wrapper' );
+						if ( wrapper ) { var canv = wrapper.querySelector( 'canvas' ); if ( canv ) canv.remove(); }
+					}
+				} catch ( e ) {
+					var wrapper = clone.querySelector( '.fcc-macro-chart-wrapper' );
+					if ( wrapper ) { var canv = wrapper.querySelector( 'canvas' ); if ( canv ) canv.remove(); }
+				}
 			}
 
 			// Add branded print header.

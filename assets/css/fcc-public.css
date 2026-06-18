@@ -2261,17 +2261,18 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-ad-slot,
 	.fcc-print-clone .fcc-add-to-meal,
 	.fcc-print-clone .fcc-result-actions,
+	.fcc-print-clone .fcc-quantity-section,
 	.fcc-print-clone .fcc-quantity-row { display: none !important; }
 
 	/* Force-show result sections */
 	.fcc-print-clone .fcc-tab-panel,
 	.fcc-print-clone .fcc-section,
 	.fcc-print-clone .fcc-results-section,
-	.fcc-print-clone .fcc-quantity-section,
 	.fcc-print-clone .fcc-food-header,
 	.fcc-print-clone .fcc-health-highlights,
 	.fcc-print-clone .fcc-nutrition-table-wrapper,
 	.fcc-print-clone .fcc-macro-chart-wrapper,
+	.fcc-print-clone .fcc-macro-detail,
 	.fcc-print-clone .fcc-traffic-lights,
 	.fcc-print-clone .fcc-omega3-section,
 	.fcc-print-clone .fcc-caffeine-section {
@@ -2283,50 +2284,61 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-section {
 		border: none !important;
 		box-shadow: none !important;
-		padding: 0.5rem 0 !important;
+		padding: 0.25rem 0 !important;
 		margin: 0 !important;
 	}
-	.fcc-print-clone .fcc-quantity-section {
+
+	/* Section title — green accent */
+	.fcc-print-clone .fcc-section-title {
+		color: #2D7A4F !important;
+		border-bottom: 2px solid #2D7A4F !important;
+		padding-bottom: 4px !important;
+		margin-bottom: 8px !important;
+	}
+
+	/* Health highlights — colourful chips */
+	.fcc-print-clone .fcc-health-highlights { margin-bottom: 8px !important; }
+
+	/* Traffic lights — compact */
+	.fcc-print-clone .fcc-traffic-lights { margin-bottom: 8px !important; }
+
+	/* Nutrition table — colourful header */
+	.fcc-print-clone .fcc-nutrition-table { border: 1.5px solid #2D7A4F !important; border-radius: 6px !important; overflow: hidden !important; }
+	.fcc-print-clone .fcc-nutrition-table th {
 		border: none !important;
-		box-shadow: none !important;
-		padding: 0 !important;
+		border-bottom: 1.5px solid #2D7A4F !important;
+		padding: 8px 10px !important;
+		font-size: 9pt !important;
+		background: #2D7A4F !important;
+		color: #fff !important;
 	}
-
-	/* Food header */
-	.fcc-print-clone .fcc-food-header {
-		border: 2px solid #2D7A4F !important;
-		border-radius: 8px !important;
-		padding: 0.75rem 1rem !important;
-		margin-bottom: 0.75rem !important;
-	}
-
-	/* Nutrition table */
-	.fcc-print-clone .fcc-nutrition-table th,
 	.fcc-print-clone .fcc-nutrition-table td {
-		border: 1px solid #ddd !important;
+		border: none !important;
+		border-bottom: 1px solid #e8f0e8 !important;
 		padding: 6px 10px !important;
 		font-size: 10pt !important;
 	}
-	.fcc-print-clone .fcc-nutrition-table thead th {
-		background: #f0faf4 !important;
-		font-weight: 700 !important;
-	}
+	.fcc-print-clone .fcc-nutrition-table tbody tr:nth-child(even) { background: #f0faf4 !important; }
 
-	/* Chart image */
+	/* Chart */
 	.fcc-print-clone .fcc-print-chart-img {
-		display: block;
-		max-width: 180px;
-		margin: 0 auto;
+		display: block !important;
+		width: 160px !important;
+		height: 160px !important;
+		margin: 0 auto !important;
 	}
 	.fcc-print-clone .fcc-macro-chart-wrapper {
 		break-inside: avoid;
 		padding: 0.5rem !important;
+		border: 1.5px solid #e8f0e8 !important;
+		border-radius: 8px !important;
+		margin-bottom: 8px !important;
 	}
+	.fcc-print-clone .fcc-macro-chart-wrapper canvas { display: none !important; }
 
 	/* Omega-3 cards */
-	.fcc-print-clone .fcc-omega3-cards {
-		break-inside: avoid;
-	}
+	.fcc-print-clone .fcc-omega3-section { break-inside: avoid; }
+	.fcc-print-clone .fcc-omega3-cards { break-inside: avoid; }
 
 	/* ── Branded print header ── */
 	.fcc-print-header {
