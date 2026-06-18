@@ -396,9 +396,9 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<!-- Action buttons -->
 				<div class="fcc-result-actions">
 					<?php if ( ! empty( $features['print_pdf'] ) ) : ?>
-					<button type="button" class="fcc-btn fcc-btn--ghost fcc-print-btn" aria-label="<?php esc_attr_e( 'Print results', 'food-calorie-calculator' ); ?>">
+					<button type="button" class="fcc-btn fcc-btn--ghost fcc-print-btn" aria-label="<?php esc_attr_e( 'Print or save as PDF', 'food-calorie-calculator' ); ?>">
 						<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-						<?php esc_html_e( 'Print', 'food-calorie-calculator' ); ?>
+						<?php esc_html_e( 'Print / PDF', 'food-calorie-calculator' ); ?>
 					</button>
 					<?php endif; ?>
 					<!-- Share strip: copy link + social channels -->
