@@ -3379,7 +3379,7 @@ button.fcc-reqs-tab {
    ============================================================================= */
 
 .fcc-reqs-export {
-	padding: 0;
+	padding: 0 !important;
 	margin-top: 1rem;
 	overflow: hidden;
 }
@@ -3531,8 +3531,8 @@ button.fcc-reqs-tab {
 	border-color: #245f3f;
 }
 
-/* Date range row */
-.fcc-reqs-export__daterange {
+/* Date range row — old v1 */
+.fcc-reqs-export:not(.fcc-reqs-export--v2) .fcc-reqs-export__daterange {
 	display: flex;
 	align-items: center;
 	gap: 0.75rem;
@@ -3544,7 +3544,7 @@ button.fcc-reqs-tab {
 	border-radius: 8px;
 }
 
-.fcc-reqs-export__date-label {
+.fcc-reqs-export:not(.fcc-reqs-export--v2) .fcc-reqs-export__date-label {
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;
@@ -3555,7 +3555,7 @@ button.fcc-reqs-tab {
 	letter-spacing: 0.04em;
 }
 
-.fcc-reqs-export__date-input {
+.fcc-reqs-export:not(.fcc-reqs-export--v2) .fcc-reqs-export__date-input {
 	padding: 0.35rem 0.625rem;
 	font-size: 0.8125rem;
 	border: 1px solid #d1d5db;
@@ -3565,7 +3565,7 @@ button.fcc-reqs-tab {
 	cursor: pointer;
 }
 
-.fcc-reqs-export__date-sep {
+.fcc-reqs-export:not(.fcc-reqs-export--v2) .fcc-reqs-export__date-sep {
 	font-size: 1rem;
 	color: #9ca3af;
 	margin-top: 1.1rem;
@@ -3617,9 +3617,9 @@ button.fcc-reqs-tab {
 }
 
 @media screen and (max-width: 700px) {
-	.fcc-reqs-export__filter-bar { flex-direction: column; gap: 0.875rem; }
-	.fcc-reqs-export__btns { flex-direction: column; }
-	.fcc-reqs-export-btn { width: 100%; justify-content: center; }
+	.fcc-reqs-export:not(.fcc-reqs-export--v2) .fcc-reqs-export__filter-bar { flex-direction: column; gap: 0.875rem; }
+	.fcc-reqs-export:not(.fcc-reqs-export--v2) .fcc-reqs-export__btns { flex-direction: column; }
+	.fcc-reqs-export:not(.fcc-reqs-export--v2) .fcc-reqs-export-btn { width: 100%; justify-content: center; }
 }
 
 /* =============================================================================
@@ -7299,6 +7299,32 @@ button.fcc-reqs-tab {
 .fcc-reqs-export__pill input:checked + span { background: #2D7A4F; color: #fff; }
 
 /* ── Date inputs v2 ── */
+.fcc-reqs-export--v2 .fcc-reqs-export__daterange {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	margin-bottom: 0.75rem;
+	padding: 10px 14px;
+	background: #f0faf4;
+	border: 1px solid #d1fae5;
+	border-radius: 8px;
+}
+.fcc-reqs-export--v2 .fcc-reqs-export__date-label {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: #555;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+}
+.fcc-reqs-export--v2 .fcc-reqs-export__date-sep {
+	font-size: 1rem;
+	color: #aaa;
+	margin-top: 14px;
+}
 .fcc-reqs-export__date-input--v2 {
 	padding: 6px 10px;
 	border: 1px solid #ddd;
