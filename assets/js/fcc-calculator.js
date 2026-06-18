@@ -1336,10 +1336,49 @@
 		return url.toString();
 	}
 
-	function updateShareUrl() {
-		// Intentionally empty — we do not push state to the URL during normal use.
-		// URL params are only used for explicit share links (see shareBtn click handler).
-		// Keeping params in the URL would restore the selection on page reload.
+	function updateShareUrl() {}
+
+	// -------------------------------------------------------------------------
+	// Social share buttons (Email, WhatsApp, Facebook, X)
+	// -------------------------------------------------------------------------
+	function buildShareText() {
+		if ( ! state.food ) return '';
+		var f = state.food;
+		var q = state.quantity || 100;
+		var u = state.unit === 'oz' ? 'oz' : 'g';
+		var factor = state.unit === 'oz' ? ( q * OZ_TO_G ) / 100 : q / 100;
+		return f.name + ' — ' + fmt( ( f.energy_kcal || 0 ) * factor, 0 ) + ' kcal per ' + q + u
+			+ '\nProtein ' + fmt( ( f.protein_g || 0 ) * factor, 1 ) + 'g'
+			+ ' | Carbs ' + fmt( ( f.carbohydrate_g || 0 ) * factor, 1 ) + 'g'
+			+ ' | Fat ' + fmt( ( f.fat_g || 0 ) * factor, 1 ) + 'g';
+	}
+
+	var shareGroup = root.querySelector( '.fcc-share-group' );
+	if ( shareGroup ) {
+		shareGroup.querySelectorAll( '.fcc-share-icon' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				var channel = this.dataset.channel;
+				var text    = buildShareText();
+				var url     = buildShareUrl();
+				var title   = state.food ? state.food.name + ' — Nutrition Facts' : 'Food Calorie Calculator';
+
+				switch ( channel ) {
+					case 'email':
+						window.location.href = 'mailto:?subject=' + encodeURIComponent( title )
+							+ '&body=' + encodeURIComponent( text + '\n\nCalculate any food:\n' + url );
+						break;
+					case 'whatsapp':
+						window.open( 'https://wa.me/?text=' + encodeURIComponent( text + '\n\n' + url ), '_blank' );
+						break;
+					case 'facebook':
+						window.open( 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent( url ), '_blank', 'width=600,height=400' );
+						break;
+					case 'x':
+						window.open( 'https://x.com/intent/tweet?text=' + encodeURIComponent( text ) + '&url=' + encodeURIComponent( url ), '_blank', 'width=600,height=400' );
+						break;
+				}
+			} );
+		} );
 	}
 
 	// Load popular foods on page init.
@@ -1558,9 +1597,9 @@
 	// -------------------------------------------------------------------------
 	var origRenderResults = null;
 	function showActionButtons() {
-		[ '.fcc-copy-nutrition-btn', '.fcc-favourite-btn', '.fcc-compare-shortcut-btn', '.fcc-add-to-meal--action' ].forEach( function ( sel ) {
-			var btn = root.querySelector( sel );
-			if ( btn ) btn.hidden = ! state.food;
+		[ '.fcc-copy-nutrition-btn', '.fcc-favourite-btn', '.fcc-compare-shortcut-btn', '.fcc-add-to-meal--action', '.fcc-share-group' ].forEach( function ( sel ) {
+			var el = root.querySelector( sel );
+			if ( el ) el.hidden = ! state.food;
 		} );
 		updateFavBtn();
 	}
