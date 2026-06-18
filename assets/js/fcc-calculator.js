@@ -1585,37 +1585,67 @@
 	// Compare Shortcut
 	// -------------------------------------------------------------------------
 	var compareShortcutBtns = root.querySelectorAll( '.fcc-compare-shortcut-btn' );
+	var _cmpOrigHTML = compareShortcutBtns.length ? compareShortcutBtns[0].innerHTML : '';
+
+	function resetCompareBtn() {
+		compareShortcutBtns.forEach( function ( b ) {
+			b.innerHTML = _cmpOrigHTML;
+			b.classList.remove( 'fcc-action-btn--waiting' );
+		} );
+	}
+
+	function flashCompareBtn( text, ms ) {
+		compareShortcutBtns.forEach( function ( b ) {
+			var prev = b.innerHTML;
+			b.textContent = text;
+			b.disabled = true;
+			setTimeout( function () { b.innerHTML = prev; b.disabled = false; }, ms || 2000 );
+		} );
+	}
+
 	compareShortcutBtns.forEach( function ( btn ) {
 		btn.addEventListener( 'click', function () {
 			if ( ! state.food ) return;
 
-			var slot = ( ! state.compareA ) ? 'a' : 'b';
-
+			// Both slots full → reset
 			if ( state.compareA && state.compareB ) {
 				state.compareA = null;
 				state.compareB = null;
-				slot = 'a';
+				resetCompareBtn();
 			}
 
-			try {
-				selectCompareFood( slot, state.food );
-			} catch ( e ) {}
+			// Slot A empty → fill A
+			if ( ! state.compareA ) {
+				try { selectCompareFood( 'a', state.food ); } catch ( e ) {}
+				// Persistent "waiting for B" state
+				compareShortcutBtns.forEach( function ( b ) {
+					b.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Slot B';
+					b.classList.add( 'fcc-action-btn--waiting' );
+				} );
+				return;
+			}
 
-			var lbl = slot === 'a' ? 'Slot A ✓ — now pick food B' : 'Slot B ✓';
-			var origHTML = btn.innerHTML;
-			btn.textContent = lbl;
-			btn.disabled = true;
+			// Slot A filled, trying to fill B — check duplicate
+			if ( state.compareA.id === state.food.id ) {
+				flashCompareBtn( '⚠ Same food — pick different', 2000 );
+				return;
+			}
+
+			// Fill Slot B → switch to Compare tab
+			try { selectCompareFood( 'b', state.food ); } catch ( e ) {}
+			resetCompareBtn();
+
+			// Pulse Slot B column in Compare tab
+			var slotBCol = root.querySelector( '.fcc-compare-col[data-slot="b"]' );
+			if ( slotBCol ) {
+				slotBCol.classList.add( 'fcc-compare-col--pulse' );
+				setTimeout( function () { slotBCol.classList.remove( 'fcc-compare-col--pulse' ); }, 3000 );
+			}
+
 			setTimeout( function () {
-				btn.innerHTML = origHTML;
-				btn.disabled = false;
-			}, 2000 );
-
-			if ( slot === 'b' ) {
-				setTimeout( function () {
-					var compareTab = root.querySelector( '.fcc-tab-btn[data-tab="compare"]' );
-					if ( compareTab ) compareTab.click();
-				}, 300 );
-			}
+				var compareTab = root.querySelector( '.fcc-tab-btn[data-tab="compare"]' );
+				if ( compareTab ) compareTab.click();
+			}, 200 );
 		} );
 	} );
 
@@ -1629,6 +1659,13 @@
 			if ( el ) el.hidden = ! state.food;
 		} );
 		updateFavBtn();
+		// Restore Compare button "waiting for B" state if Slot A is filled
+		if ( state.food && state.compareA && ! state.compareB ) {
+			compareShortcutBtns.forEach( function ( b ) {
+				b.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Slot B';
+				b.classList.add( 'fcc-action-btn--waiting' );
+			} );
+		}
 	}
 
 	var _origResultsSec = root.querySelector( '.fcc-results-section' );
@@ -1674,6 +1711,14 @@
 				tabPanels.forEach( function ( panel ) {
 					panel.hidden = panel.dataset.panel !== target;
 				} );
+				// Pulse Slot B when switching to Compare with only Slot A filled
+				if ( target === 'compare' && state.compareA && ! state.compareB ) {
+					var slotBCol = root.querySelector( '.fcc-compare-col[data-slot="b"]' );
+					if ( slotBCol ) {
+						slotBCol.classList.add( 'fcc-compare-col--pulse' );
+						setTimeout( function () { slotBCol.classList.remove( 'fcc-compare-col--pulse' ); }, 3000 );
+					}
+				}
 			} );
 		} );
 	}
@@ -2119,15 +2164,25 @@
 			showCompareDropdown( s );
 			return;
 		}
+		var otherSlotKey = s === 'a' ? 'compareB' : 'compareA';
+		var otherFood    = state[ otherSlotKey ];
 		foods.forEach( function ( food ) {
+			var isDuplicate = otherFood && otherFood.id === food.id;
 			var li = document.createElement( 'li' );
 			li.setAttribute( 'role', 'option' );
 			li.setAttribute( 'aria-selected', 'false' );
 			li.dataset.id = food.id;
-			li.innerHTML =
-				'<span class="fcc-result-name">' + escHtml( food.name ) + '</span>' +
-				'<span class="fcc-result-kcal">' + fmt( food.energy_kcal ) + ' kcal</span>';
-			li.addEventListener( 'click', function () { selectCompareFood( s, food ); } );
+			if ( isDuplicate ) {
+				li.className = 'fcc-compare-result--disabled';
+				li.innerHTML =
+					'<span class="fcc-result-name">' + escHtml( food.name ) + '</span>' +
+					'<span class="fcc-result-kcal" style="color:#999">Already in Slot ' + ( s === 'a' ? 'B' : 'A' ) + '</span>';
+			} else {
+				li.innerHTML =
+					'<span class="fcc-result-name">' + escHtml( food.name ) + '</span>' +
+					'<span class="fcc-result-kcal">' + fmt( food.energy_kcal ) + ' kcal</span>';
+				li.addEventListener( 'click', function () { selectCompareFood( s, food ); } );
+			}
 			sl.dropdown.appendChild( li );
 		} );
 		showCompareDropdown( s );
