@@ -7087,3 +7087,86 @@ button.fcc-reqs-tab {
 .fcc-ie-history__num--ok   { color: #27ae60; }
 .fcc-ie-history__num--warn { color: #e74c3c; }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOD REQUESTS ENHANCEMENTS
+   ─────────────────────────────────────────────────────────────── */
+
+/* ── Requests toolbar (search + bulk bar) ── */
+.fcc-reqs-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 0;
+	flex-wrap: wrap;
+}
+.fcc-reqs-search-input {
+	padding: 6px 12px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	font-size: 0.78rem;
+	width: 200px;
+	background: #fff;
+	transition: border-color .15s;
+}
+.fcc-reqs-search-input:focus { border-color: #2D7A4F; outline: none; box-shadow: 0 0 0 2px rgba(45,122,79,.12); }
+
+/* ── Bulk action bar ── */
+.fcc-reqs-bulk-bar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: #555;
+	background: #eef6ff;
+	padding: 6px 12px;
+	border-radius: 8px;
+	border: 1px solid #bee3f8;
+}
+.fcc-reqs-bulk-bar__count { font-weight: 800; color: #2c5282; }
+.fcc-reqs-bulk-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 10px;
+	border-radius: 6px;
+	border: none;
+	font-size: 0.72rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background .15s;
+}
+.fcc-reqs-bulk-btn--added { background: #d1fae5; color: #065f46; }
+.fcc-reqs-bulk-btn--added:hover { background: #a7f3d0; }
+.fcc-reqs-bulk-btn--dismiss { background: #f3f4f6; color: #555; }
+.fcc-reqs-bulk-btn--dismiss:hover { background: #e5e7eb; }
+
+/* ── Checkbox column ── */
+.fcc-reqs-th--check { width: 32px; text-align: center; }
+.fcc-reqs-td--check { text-align: center; }
+
+/* ── Email link ── */
+.fcc-reqs-email-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 5px;
+	color: #3498db;
+	margin-left: 4px;
+	vertical-align: middle;
+	transition: background .15s;
+}
+.fcc-reqs-email-link:hover { background: #eef6ff; }
+
+/* ── Resolution rate stat (green icon variant) ── */
+.fcc-reqs-stat-card__icon--green { color: #16a085; background: #ecfdf5; }
+.fcc-reqs-stat-card__sub { font-size: 0.68rem; color: #999; display: block; margin-top: 1px; }
+
+/* ── Stat grid 4 columns ── */
+.fcc-reqs-stat-grid { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .fcc-reqs-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .fcc-reqs-stat-grid { grid-template-columns: 1fr; } }
+

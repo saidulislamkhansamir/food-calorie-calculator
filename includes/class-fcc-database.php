@@ -1026,7 +1026,11 @@ class Database {
 			(SELECT note FROM {$table} r2
 			 WHERE LOWER(r2.food_name) = LOWER(r.food_name)
 			   AND r2.note != ''
-			 ORDER BY r2.created_at DESC LIMIT 1) AS latest_note
+			 ORDER BY r2.created_at DESC LIMIT 1) AS latest_note,
+			(SELECT requester_email FROM {$table} r3
+			 WHERE LOWER(r3.food_name) = LOWER(r.food_name)
+			   AND r3.requester_email != ''
+			 ORDER BY r3.created_at DESC LIMIT 1) AS latest_email
 		FROM {$table} r{$where}
 		GROUP BY LOWER(food_name){$having_sql}
 		ORDER BY {$order}

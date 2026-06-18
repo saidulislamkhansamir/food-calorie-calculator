@@ -82,6 +82,24 @@ endif;
 <?php else : ?>
 	<div class="fcc-reqs-table-wrap">
 
+		<!-- Search + Bulk actions bar -->
+		<div class="fcc-reqs-toolbar">
+			<input type="text" class="fcc-reqs-search-input" id="fcc-reqs-search"
+				placeholder="<?php esc_attr_e( 'Filter by food name…', 'food-calorie-calculator' ); ?>">
+			<div class="fcc-reqs-bulk-bar" id="fcc-reqs-bulk-bar" hidden>
+				<span class="fcc-reqs-bulk-bar__count" id="fcc-reqs-selected-count">0</span>
+				<?php esc_html_e( 'selected', 'food-calorie-calculator' ); ?> —
+				<button type="button" class="fcc-reqs-bulk-btn fcc-reqs-bulk-btn--added" data-bulk-action="mark_added">
+					<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+					<?php esc_html_e( 'Mark Added', 'food-calorie-calculator' ); ?>
+				</button>
+				<button type="button" class="fcc-reqs-bulk-btn fcc-reqs-bulk-btn--dismiss" data-bulk-action="dismiss">
+					<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+					<?php esc_html_e( 'Dismiss', 'food-calorie-calculator' ); ?>
+				</button>
+			</div>
+		</div>
+
 		<!-- Top pagination bar -->
 		<div class="fcc-reqs-table-footer fcc-reqs-table-header">
 			<p class="fcc-reqs-count">
@@ -99,6 +117,7 @@ endif;
 		<table class="fcc-reqs-table">
 			<thead>
 				<tr>
+					<th class="fcc-reqs-th--check"><input type="checkbox" class="fcc-reqs-select-all" aria-label="<?php esc_attr_e( 'Select all', 'food-calorie-calculator' ); ?>"></th>
 					<th class="fcc-reqs-th--num">#</th>
 					<th class="fcc-reqs-th--name"><?php esc_html_e( 'Food Name', 'food-calorie-calculator' ); ?></th>
 					<th class="fcc-reqs-th--count"><?php esc_html_e( 'Requests', 'food-calorie-calculator' ); ?></th>
@@ -122,13 +141,23 @@ endif;
 					$note_short = mb_strlen( $note ) > 60 ? mb_substr( $note, 0, 60 ) . '…' : $note;
 					$has_more   = mb_strlen( $note ) > 60;
 				?>
-				<tr class="fcc-reqs-row<?php echo 'pending' === $gs ? ' fcc-reqs-row--pending' : ''; ?>">
+				<tr class="fcc-reqs-row<?php echo 'pending' === $gs ? ' fcc-reqs-row--pending' : ''; ?>"
+					data-food="<?php echo esc_attr( $req['food_name'] ); ?>">
+					<td class="fcc-reqs-td--check">
+						<input type="checkbox" class="fcc-reqs-row-check" value="<?php echo esc_attr( $req['food_name'] ); ?>">
+					</td>
 					<td class="fcc-reqs-td--num">
 						<span class="fcc-reqs-rownum"><?php echo (int) $row_num; ?></span>
 					</td>
 					<td class="fcc-reqs-td--name">
 						<div class="fcc-reqs-name-wrap">
 							<strong><?php echo esc_html( $req['food_name'] ); ?></strong>
+							<?php if ( ! empty( $req['latest_email'] ) ) : ?>
+								<a href="mailto:<?php echo esc_attr( $req['latest_email'] ); ?>?subject=<?php echo esc_attr( rawurlencode( 'Your food request: ' . $req['food_name'] ) ); ?>"
+									class="fcc-reqs-email-link" title="<?php echo esc_attr( $req['latest_email'] ); ?>">
+									<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+								</a>
+							<?php endif; ?>
 							<?php if ( $note ) : ?>
 								<div class="fcc-reqs-note">
 									<svg class="fcc-reqs-note__icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -156,7 +185,7 @@ endif;
 					</td>
 					<td class="fcc-reqs-td--actions">
 						<div class="fcc-reqs-actions">
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods' ) ); ?>"
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods&action=add&food_name=' . urlencode( $req['food_name'] ) ) ); ?>"
 								target="_blank"
 								rel="noopener"
 								class="fcc-reqs-btn fcc-reqs-btn--add">

@@ -10,9 +10,12 @@ defined( 'ABSPATH' ) || exit;
 $per_page = 20;
 
 // ---- Hero stats ----
-$stat_pending  = \FCC\Database::count_food_requests( [ 'status' => 'pending' ] );
+$stat_pending   = \FCC\Database::count_food_requests( [ 'status' => 'pending' ] );
 $stat_active_ms = \FCC\Database::count_active_missed_searches();
-$stat_hot      = \FCC\Database::count_high_priority_missed_searches( 5 );
+$stat_hot       = \FCC\Database::count_high_priority_missed_searches( 5 );
+$stat_done      = \FCC\Database::count_food_requests_grouped( [ 'status' => 'done' ] );
+$stat_total_grp = \FCC\Database::count_food_requests_grouped( [] );
+$stat_resolve_pct = $stat_total_grp > 0 ? round( $stat_done / $stat_total_grp * 100 ) : 0;
 
 // ---- User Requests: initial load ----
 $reqs_status   = '';
@@ -112,6 +115,17 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 			<div>
 				<strong class="fcc-reqs-stat-card__value"><?php echo (int) $stat_hot; ?></strong>
 				<span class="fcc-reqs-stat-card__label"><?php esc_html_e( 'High Priority (5+ searches)', 'food-calorie-calculator' ); ?></span>
+			</div>
+		</div>
+
+		<div class="fcc-reqs-stat-card">
+			<div class="fcc-reqs-stat-card__icon fcc-reqs-stat-card__icon--green" aria-hidden="true">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+			</div>
+			<div>
+				<strong class="fcc-reqs-stat-card__value"><?php echo $stat_resolve_pct; ?>%</strong>
+				<span class="fcc-reqs-stat-card__label"><?php esc_html_e( 'Resolution Rate', 'food-calorie-calculator' ); ?></span>
+				<span class="fcc-reqs-stat-card__sub"><?php echo $stat_done; ?>/<?php echo $stat_total_grp; ?> <?php esc_html_e( 'foods added', 'food-calorie-calculator' ); ?></span>
 			</div>
 		</div>
 

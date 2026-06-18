@@ -732,6 +732,71 @@
 		);
 	} );
 
+	// Food Requests — inline search filter (client-side).
+	$( document ).on( 'input', '#fcc-reqs-search', function () {
+		var q = this.value.toLowerCase();
+		$( '#fcc-reqs-list .fcc-reqs-row' ).each( function () {
+			var food = ( $( this ).data( 'food' ) || '' ).toString().toLowerCase();
+			$( this ).toggle( food.indexOf( q ) !== -1 );
+		} );
+	} );
+
+	// Food Requests — select-all checkbox.
+	$( document ).on( 'change', '.fcc-reqs-select-all', function () {
+		var checked = this.checked;
+		$( '#fcc-reqs-list .fcc-reqs-row-check' ).prop( 'checked', checked );
+		updateReqsBulkBar();
+	} );
+	$( document ).on( 'change', '.fcc-reqs-row-check', function () {
+		updateReqsBulkBar();
+	} );
+
+	function updateReqsBulkBar() {
+		var $checks  = $( '#fcc-reqs-list .fcc-reqs-row-check:checked' );
+		var $bar     = $( '#fcc-reqs-bulk-bar' );
+		var $counter = $( '#fcc-reqs-selected-count' );
+		if ( $checks.length > 0 ) {
+			$bar.removeAttr( 'hidden' );
+			$counter.text( $checks.length );
+		} else {
+			$bar.attr( 'hidden', '' );
+		}
+	}
+
+	// Food Requests — batch actions (Mark Added / Dismiss for selected rows).
+	$( document ).on( 'click', '.fcc-reqs-bulk-btn', function () {
+		var bulkAction = $( this ).data( 'bulk-action' );
+		var foods = [];
+		$( '#fcc-reqs-list .fcc-reqs-row-check:checked' ).each( function () {
+			foods.push( $( this ).val() );
+		} );
+		if ( ! foods.length ) return;
+
+		var $section = $( '#fcc-reqs-section' );
+		var nonce    = $section.data( 'nonce' );
+		var ajaxAction = bulkAction === 'mark_added' ? 'fcc_ajax_mark_group_added' : 'fcc_ajax_dismiss_group';
+
+		// Process sequentially (simple approach — one per food name).
+		var $btn = $( this );
+		$btn.prop( 'disabled', true );
+		var done = 0;
+
+		function next() {
+			if ( done >= foods.length ) {
+				// Reload the table via the existing AJAX paginator.
+				$( '#fcc-reqs-list .fcc-reqs-page-btn--active' ).trigger( 'click' );
+				$btn.prop( 'disabled', false );
+				return;
+			}
+			$.post( fccAdmin.ajaxUrl, {
+				action:      ajaxAction,
+				_ajax_nonce: nonce,
+				food_name:   foods[ done ],
+			}, function () { done++; next(); } ).fail( function () { done++; next(); } );
+		}
+		next();
+	} );
+
 	// Food Requests — group action buttons (Mark Added / Dismiss).
 	$( document ).on( 'click', '#fcc-reqs-list .fcc-reqs-group-btn', function () {
 		const $btn    = $( this );

@@ -58,7 +58,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 					<div class="fcc-field fcc-field--required">
 						<label for="food_name"><?php esc_html_e( 'Name', 'food-calorie-calculator' ); ?> <span class="required">*</span></label>
 						<input type="text" id="food_name" name="name" required
-							value="<?php echo $is_edit ? esc_attr( $food['name'] ) : ''; ?>"
+							value="<?php echo $is_edit ? esc_attr( $food['name'] ) : esc_attr( sanitize_text_field( $_GET['food_name'] ?? '' ) ); ?>"
 							class="regular-text">
 					</div>
 					<div class="fcc-field">
