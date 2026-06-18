@@ -1433,7 +1433,10 @@ class Database {
 	public static function get_email_subscribers( array $args = [] ): array {
 		global $wpdb;
 		$table = self::requests_table();
-		$args  = wp_parse_args( $args, [ 'food_name' => '', 'per_page' => 20, 'page' => 1 ] );
+		$args  = wp_parse_args( $args, [
+			'food_name' => '', 'search' => '', 'status' => '',
+			'per_page' => 20, 'page' => 1, 'orderby' => 'created_at', 'order' => 'DESC',
+		] );
 
 		$parts = [ "marketing_optin = 1 AND requester_email != ''" ];
 		$vals  = [];
@@ -1441,6 +1444,21 @@ class Database {
 			$parts[] = 'LOWER(food_name) = LOWER(%s)';
 			$vals[]  = $args['food_name'];
 		}
+		if ( ! empty( $args['search'] ) ) {
+			$parts[] = '(requester_email LIKE %s OR food_name LIKE %s)';
+			$like    = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$vals[]  = $like;
+			$vals[]  = $like;
+		}
+		if ( ! empty( $args['status'] ) ) {
+			$parts[] = 'status = %s';
+			$vals[]  = $args['status'];
+		}
+
+		$allowed_order = [ 'created_at', 'requester_email', 'food_name', 'status' ];
+		$orderby = in_array( $args['orderby'], $allowed_order, true ) ? $args['orderby'] : 'created_at';
+		$order   = 'ASC' === strtoupper( $args['order'] ) ? 'ASC' : 'DESC';
+
 		$where  = ' WHERE ' . implode( ' AND ', $parts );
 		$offset = ( max( 1, (int) $args['page'] ) - 1 ) * (int) $args['per_page'];
 		$vals[] = (int) $args['per_page'];
@@ -1449,14 +1467,14 @@ class Database {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT id, food_name, note, requester_email, status, created_at FROM {$table}{$where} ORDER BY created_at DESC LIMIT %d OFFSET %d",
+				"SELECT id, food_name, note, requester_email, status, created_at FROM {$table}{$where} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
 				$vals
 			),
 			ARRAY_A
 		) ?: [];
 	}
 
-	/** Count opted-in subscribers (with optional food_name filter). */
+	/** Count opted-in subscribers (with filters). */
 	public static function count_email_subscribers( array $args = [] ): int {
 		global $wpdb;
 		$table  = self::requests_table();
@@ -1465,6 +1483,16 @@ class Database {
 		if ( ! empty( $args['food_name'] ) ) {
 			$parts[] = 'LOWER(food_name) = LOWER(%s)';
 			$vals[]  = $args['food_name'];
+		}
+		if ( ! empty( $args['search'] ) ) {
+			$parts[] = '(requester_email LIKE %s OR food_name LIKE %s)';
+			$like    = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$vals[]  = $like;
+			$vals[]  = $like;
+		}
+		if ( ! empty( $args['status'] ) ) {
+			$parts[] = 'status = %s';
+			$vals[]  = $args['status'];
 		}
 		$where = ' WHERE ' . implode( ' AND ', $parts );
 		if ( $vals ) {
