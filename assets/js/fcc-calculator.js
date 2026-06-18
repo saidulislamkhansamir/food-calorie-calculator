@@ -130,7 +130,7 @@
 		showPopular();
 		if ( qtySection     ) qtySection.hidden    = true;
 		if ( resultsSection ) resultsSection.hidden = true;
-		if ( addToMealBtn   ) addToMealBtn.hidden   = true;
+		root.querySelectorAll( '.fcc-add-to-meal' ).forEach( function ( b ) { b.hidden = true; } );
 		if ( foodNameEl ) {
 			const bar = foodNameEl.parentNode.querySelector( '.fcc-sponsor-bar' );
 			if ( bar ) bar.remove();
@@ -411,7 +411,7 @@
 			}
 		}
 		if ( qtySection ) qtySection.hidden = false;
-		if ( addToMealBtn && features.meal_builder ) addToMealBtn.hidden = false;
+		if ( features.meal_builder ) root.querySelectorAll( '.fcc-add-to-meal' ).forEach( function ( b ) { b.hidden = false; } );
 
 		renderResults();
 		updateShareUrl();
@@ -982,10 +982,11 @@
 	// -------------------------------------------------------------------------
 	const addToMealOriginalHTML = addToMealBtn ? addToMealBtn.innerHTML : '';
 
-	if ( addToMealBtn ) {
-		addToMealBtn.addEventListener( 'click', function () {
+	root.querySelectorAll( '.fcc-add-to-meal' ).forEach( function ( btn ) {
+		var origHTML = btn.innerHTML;
+		btn.addEventListener( 'click', function () {
 			if ( ! state.food ) return;
-			const grams = quantityInGrams();
+			var grams = quantityInGrams();
 			state.meal.push( {
 				food:  Object.assign( {}, state.food ),
 				grams: grams,
@@ -993,16 +994,15 @@
 			} );
 			renderMeal();
 
-			// Inline confirmation — same pattern as Share button.
-			addToMealBtn.innerHTML =
-				'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Added!';
-			addToMealBtn.disabled = true;
+			btn.innerHTML =
+				'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Added!';
+			btn.disabled = true;
 			setTimeout( function () {
-				addToMealBtn.innerHTML = addToMealOriginalHTML;
-				addToMealBtn.disabled  = false;
+				btn.innerHTML = origHTML;
+				btn.disabled  = false;
 			}, 1500 );
 		} );
-	}
+	} );
 
 	function renderMeal() {
 		if ( ! mealSection ) return;
