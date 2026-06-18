@@ -606,6 +606,87 @@ class Database {
 		return (bool) $wpdb->delete( self::categories_table(), [ 'id' => $id ], [ '%d' ] );
 	}
 
+	/**
+	 * Per-category stats: food count, search total, complete/incomplete counts.
+	 *
+	 * @return array<int,array{food_count:int,total_searches:int,complete:int,incomplete:int}>
+	 */
+	public static function get_category_stats(): array {
+		global $wpdb;
+		$ft = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			"SELECT category_id,
+			    COUNT(*) AS food_count,
+			    COALESCE(SUM(search_count), 0) AS total_searches,
+			    SUM(CASE WHEN energy_kcal IS NOT NULL AND protein_g IS NOT NULL AND carbohydrate_g IS NOT NULL
+			         AND fat_g IS NOT NULL AND fibre_g IS NOT NULL AND salt_g IS NOT NULL THEN 1 ELSE 0 END) AS complete
+			 FROM {$ft} GROUP BY category_id",
+			ARRAY_A
+		) ?: [];
+
+		$out = [];
+		foreach ( $rows as $r ) {
+			$c = (int) $r['complete'];
+			$t = (int) $r['food_count'];
+			$out[ (int) $r['category_id'] ] = [
+				'food_count'      => $t,
+				'total_searches'  => (int) $r['total_searches'],
+				'complete'        => $c,
+				'incomplete'      => $t - $c,
+			];
+		}
+		return $out;
+	}
+
+	/**
+	 * Most-searched food per category.
+	 *
+	 * @return array<int,array{name:string,search_count:int}>
+	 */
+	public static function get_top_food_per_category(): array {
+		global $wpdb;
+		$ft = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			"SELECT f.category_id, f.name, f.search_count
+			 FROM {$ft} f
+			 INNER JOIN (
+			     SELECT category_id, MAX(search_count) AS max_sc
+			     FROM {$ft} WHERE search_count > 0
+			     GROUP BY category_id
+			 ) m ON f.category_id = m.category_id AND f.search_count = m.max_sc
+			 GROUP BY f.category_id",
+			ARRAY_A
+		) ?: [];
+
+		$out = [];
+		foreach ( $rows as $r ) {
+			$out[ (int) $r['category_id'] ] = [
+				'name'         => $r['name'],
+				'search_count' => (int) $r['search_count'],
+			];
+		}
+		return $out;
+	}
+
+	/**
+	 * Merge source category into target: move all foods, delete source.
+	 *
+	 * @return int Foods moved count.
+	 */
+	public static function merge_categories( int $source_id, int $target_id ): int {
+		global $wpdb;
+		$ft = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$moved = (int) $wpdb->query( $wpdb->prepare(
+			"UPDATE {$ft} SET category_id = %d WHERE category_id = %d",
+			$target_id, $source_id
+		) );
+		self::delete_category( $source_id );
+		return $moved;
+	}
+
 	// -------------------------------------------------------------------------
 	// Seeder helpers.
 	// -------------------------------------------------------------------------

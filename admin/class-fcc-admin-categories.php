@@ -12,10 +12,11 @@ defined( 'ABSPATH' ) || exit;
 class Categories {
 
 	public function register( \FCC\Loader $loader ): void {
-		$loader->add_action( 'admin_post_fcc_save_category',     $this, 'handle_save_category' );
-		$loader->add_action( 'admin_post_fcc_delete_category',   $this, 'handle_delete_category' );
-		$loader->add_action( 'wp_ajax_fcc_ajax_save_category',   $this, 'ajax_save_category' );
-		$loader->add_action( 'wp_ajax_fcc_ajax_delete_category', $this, 'ajax_delete_category' );
+		$loader->add_action( 'admin_post_fcc_save_category',       $this, 'handle_save_category' );
+		$loader->add_action( 'admin_post_fcc_delete_category',     $this, 'handle_delete_category' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_save_category',     $this, 'ajax_save_category' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_delete_category',   $this, 'ajax_delete_category' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_merge_category',    $this, 'ajax_merge_category' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -136,21 +137,33 @@ class Categories {
 		] );
 	}
 
+	public function ajax_merge_category(): void {
+		check_ajax_referer( 'fcc_ajax_cats' );
+		if ( ! current_user_can( 'manage_options' ) ) { wp_send_json_error( 'Permission denied.', 403 ); }
+
+		$source = absint( $_POST['source_id'] ?? 0 );
+		$target = absint( $_POST['target_id'] ?? 0 );
+		if ( ! $source || ! $target || $source === $target ) { wp_send_json_error( 'Invalid category IDs.' ); }
+
+		$moved = \FCC\Database::merge_categories( $source, $target );
+
+		wp_send_json_success( [
+			'html'    => $this->render_grid_html(),
+			'message' => sprintf( __( 'Merged — %d food(s) moved.', 'food-calorie-calculator' ), $moved ),
+		] );
+	}
+
 	// -------------------------------------------------------------------------
 	// Helpers.
 	// -------------------------------------------------------------------------
 
 	private function render_grid_html(): string {
-		global $wpdb;
-
 		$categories  = \FCC\Database::get_all_categories();
-		$counts_raw  = $wpdb->get_results(
-			"SELECT category_id, COUNT(*) AS cnt FROM {$wpdb->prefix}fcc_foods GROUP BY category_id",
-			ARRAY_A
-		);
+		$cat_stats   = \FCC\Database::get_category_stats();
+		$top_foods   = \FCC\Database::get_top_food_per_category();
 		$food_counts = [];
-		foreach ( (array) $counts_raw as $row ) {
-			$food_counts[ (int) $row['category_id'] ] = (int) $row['cnt'];
+		foreach ( $cat_stats as $cid => $st ) {
+			$food_counts[ $cid ] = $st['food_count'];
 		}
 
 		$palette = [

@@ -373,6 +373,80 @@
 	}
 
 	// -------------------------------------------------------------------------
+	// Category filter — instant JS hide/show cards by name
+	// -------------------------------------------------------------------------
+	$( document ).on( 'input', '#fcc-cat-filter', function () {
+		var q = this.value.toLowerCase();
+		$( '#fcc-cats-grid .fcc-cat-card' ).each( function () {
+			var name = ( $( this ).data( 'cat-name' ) || '' ).toString().toLowerCase();
+			$( this ).toggle( name.indexOf( q ) !== -1 );
+		} );
+	} );
+
+	// -------------------------------------------------------------------------
+	// Category sort — reorder cards by data attribute
+	// -------------------------------------------------------------------------
+	$( document ).on( 'click', '.fcc-cats-sort-btn', function () {
+		$( '.fcc-cats-sort-btn' ).removeClass( 'fcc-cats-sort-btn--active' );
+		$( this ).addClass( 'fcc-cats-sort-btn--active' );
+
+		var key   = $( this ).data( 'sort' );
+		var $grid = $( '#fcc-cats-grid' );
+		var $cards = $grid.children( '.fcc-cat-card' ).detach().sort( function ( a, b ) {
+			var $a = $( a ), $b = $( b );
+			if ( key === 'name' )     return ( $a.data('cat-name') || '' ).toString().localeCompare( ( $b.data('cat-name') || '' ).toString() );
+			if ( key === 'foods' )    return ( parseInt( $b.data('foods'), 10 ) || 0 ) - ( parseInt( $a.data('foods'), 10 ) || 0 );
+			if ( key === 'searches' ) return ( parseInt( $b.data('searches'), 10 ) || 0 ) - ( parseInt( $a.data('searches'), 10 ) || 0 );
+			return ( parseInt( $a.data('cat-order'), 10 ) || 0 ) - ( parseInt( $b.data('cat-order'), 10 ) || 0 );
+		} );
+		$grid.append( $cards );
+	} );
+
+	// -------------------------------------------------------------------------
+	// Category merge — move foods from source into target, delete source
+	// -------------------------------------------------------------------------
+	$( document ).on( 'click', '.fcc-cat-merge-btn', function () {
+		var $card  = $( this ).closest( '.fcc-cat-card' );
+		var srcId  = $card.data( 'cat-id' );
+		var srcName = $card.data( 'cat-name' );
+
+		// Build list of other categories.
+		var opts = '';
+		$( '#fcc-cats-grid .fcc-cat-card' ).each( function () {
+			var cid  = $( this ).data( 'cat-id' );
+			var name = $( this ).data( 'cat-name' );
+			if ( cid !== srcId ) {
+				opts += name + ' (#' + cid + ')\n';
+			}
+		} );
+
+		var target = prompt(
+			'Merge "' + srcName + '" into which category?\n\nAll foods will be moved, then "' + srcName + '" will be deleted.\n\nEnter the target category ID number:\n\n' + opts
+		);
+		if ( ! target ) return;
+		var targetId = parseInt( target.replace( /\D/g, '' ), 10 );
+		if ( ! targetId || targetId === srcId ) { alert( 'Invalid category ID.' ); return; }
+
+		var $region = $( '#fcc-cats-region' );
+		$region.addClass( 'fcc-loading' );
+
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_ajax_merge_category',
+			_ajax_nonce: $region.data( 'nonce' ),
+			source_id:   srcId,
+			target_id:   targetId,
+		}, function ( res ) {
+			$region.removeClass( 'fcc-loading' );
+			if ( res.success ) {
+				$region.html( res.data.html );
+				if ( typeof showToast === 'function' ) showToast( res.data.message );
+			} else {
+				alert( res.data || 'Merge failed.' );
+			}
+		} ).fail( function () { $region.removeClass( 'fcc-loading' ); } );
+	} );
+
+	// -------------------------------------------------------------------------
 	// AJAX Settings save — inline feedback, no reload
 	// -------------------------------------------------------------------------
 	$( document ).on( 'submit', '#fcc-stg-form', function ( e ) {

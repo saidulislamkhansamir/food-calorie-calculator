@@ -14,14 +14,12 @@ $edit_cat   = $edit_id > 0 ? FCC\Database::get_category( $edit_id ) : null;
 
 global $wpdb;
 
-// Food counts per category (one query).
-$counts_raw  = $wpdb->get_results(
-	"SELECT category_id, COUNT(*) AS cnt FROM {$wpdb->prefix}fcc_foods GROUP BY category_id",
-	ARRAY_A
-);
+// Per-category stats (one query).
+$cat_stats   = FCC\Database::get_category_stats();
+$top_foods   = FCC\Database::get_top_food_per_category();
 $food_counts = [];
-foreach ( (array) $counts_raw as $row ) {
-	$food_counts[ (int) $row['category_id'] ] = (int) $row['cnt'];
+foreach ( $cat_stats as $cid => $st ) {
+	$food_counts[ $cid ] = $st['food_count'];
 }
 
 // Total food count for hero stat.
