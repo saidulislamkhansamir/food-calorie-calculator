@@ -186,10 +186,9 @@ $list_url = admin_url( 'admin.php?page=fcc-foods' );
 
 		<span class="fcc-foods-perpage">
 			<label for="fcc-perpage"><?php esc_html_e( 'Show', 'food-calorie-calculator' ); ?></label>
-			<select id="fcc-perpage" onchange="location.href=this.value">
+			<select id="fcc-perpage">
 				<?php foreach ( [ 20, 50, 100 ] as $pp ) : ?>
-					<option value="<?php echo esc_url( add_query_arg( 'per_page', $pp, $list_url ) ); ?>"
-						<?php selected( $per_page, $pp ); ?>><?php echo $pp; ?></option>
+					<option value="<?php echo $pp; ?>" <?php selected( $per_page, $pp ); ?>><?php echo $pp; ?></option>
 				<?php endforeach; ?>
 			</select>
 		</span>

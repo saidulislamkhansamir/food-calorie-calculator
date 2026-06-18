@@ -216,6 +216,34 @@
 	} );
 
 	// -------------------------------------------------------------------------
+	// Per-page selector — AJAX reload (no full page refresh)
+	// -------------------------------------------------------------------------
+	$( document ).on( 'change', '#fcc-perpage', function () {
+		var pp    = parseInt( $( this ).val(), 10 ) || 20;
+		var $list = $( '#fcc-foods-list' );
+		$list.data( 'per-page', pp );
+
+		$list.addClass( 'fcc-loading' );
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_foods_page',
+			_ajax_nonce: $list.data( 'nonce' ),
+			paged:       1,
+			s:           $list.data( 'search' ),
+			category_id: $list.data( 'cat' ),
+			orderby:     $list.data( 'orderby' ),
+			order:       $list.data( 'order' ),
+			per_page:    pp,
+			status:      $list.data( 'status' ) || '',
+		}, function ( res ) {
+			$list.removeClass( 'fcc-loading' );
+			if ( res.success ) {
+				$list.html( res.data.html );
+				$list[0].scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+			}
+		} ).fail( function () { $list.removeClass( 'fcc-loading' ); } );
+	} );
+
+	// -------------------------------------------------------------------------
 	// Bulk Action — show/hide category picker when "Change Category" selected
 	// -------------------------------------------------------------------------
 	$( document ).on( 'change', '#fcc-bulk-action', function () {
