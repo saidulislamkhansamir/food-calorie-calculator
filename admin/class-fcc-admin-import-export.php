@@ -15,10 +15,11 @@ defined( 'ABSPATH' ) || exit;
 class Import_Export {
 
 	public function register( \FCC\Loader $loader ): void {
-		$loader->add_action( 'admin_post_fcc_import',      $this, 'handle_import' );
-		$loader->add_action( 'admin_post_fcc_export_csv',  $this, 'handle_export_csv' );
-		$loader->add_action( 'admin_post_fcc_export_xlsx', $this, 'handle_export_xlsx' );
-		$loader->add_action( 'wp_ajax_fcc_ajax_import',    $this, 'ajax_import' );
+		$loader->add_action( 'admin_post_fcc_import',            $this, 'handle_import' );
+		$loader->add_action( 'admin_post_fcc_export_csv',        $this, 'handle_export_csv' );
+		$loader->add_action( 'admin_post_fcc_export_xlsx',       $this, 'handle_export_xlsx' );
+		$loader->add_action( 'admin_post_fcc_download_template', $this, 'handle_download_template' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_import',          $this, 'ajax_import' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -88,8 +89,9 @@ class Import_Export {
 			$result['skipped']
 		);
 
+		self::log_import( $name, $result['imported'], $result['skipped'] );
+
 		if ( $result['errors'] ) {
-			// Pass errors via transient (can be long).
 			set_transient( 'fcc_import_errors', $result['errors'], 60 );
 		}
 
@@ -152,6 +154,8 @@ class Import_Export {
 			$result['skipped']
 		);
 
+		self::log_import( $name, $result['imported'], $result['skipped'] );
+
 		wp_send_json_success( [
 			'message' => $msg,
 			'errors'  => $result['errors'] ?? [],
@@ -176,6 +180,49 @@ class Import_Export {
 		}
 		check_admin_referer( 'fcc_export_xlsx' );
 		\FCC\Import_Export::export_xlsx();
+	}
+
+	/** Download a sample CSV template with headers + 1 example row. */
+	public function handle_download_template(): void {
+		if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'Permission denied.' ); }
+		check_admin_referer( 'fcc_download_template' );
+
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="fcc-import-template.csv"' );
+
+		$out = fopen( 'php://output', 'w' );
+		fprintf( $out, "\xEF\xBB\xBF" );
+
+		$cols = \FCC\Import_Export::columns();
+		fputcsv( $out, array_keys( $cols ) );
+		fputcsv( $out, [
+			'Chicken Breast (raw)', 'Meat & Poultry', '165', '690', '31.0', '0.0',
+			'0.0', '3.6', '1.0', '0', '1.0', '', '', '', '', '',
+			'[{"label":"1 breast","grams":174}]', 'USDA FoodData Central',
+		] );
+		fclose( $out );
+		exit;
+	}
+
+	/**
+	 * Log an import event to the history option.
+	 *
+	 * @param string $filename  Original file name.
+	 * @param int    $imported  Count of foods imported.
+	 * @param int    $skipped   Count of rows skipped.
+	 */
+	public static function log_import( string $filename, int $imported, int $skipped ): void {
+		$history = get_option( 'fcc_import_history', [] );
+		if ( ! is_array( $history ) ) { $history = []; }
+		array_unshift( $history, [
+			'file'     => $filename,
+			'imported' => $imported,
+			'skipped'  => $skipped,
+			'date'     => current_time( 'mysql' ),
+			'user'     => wp_get_current_user()->display_name,
+		] );
+		$history = array_slice( $history, 0, 10 );
+		update_option( 'fcc_import_history', $history );
 	}
 
 	// -------------------------------------------------------------------------

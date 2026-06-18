@@ -6975,3 +6975,115 @@ button.fcc-reqs-tab {
 	.fcc-cats-sort-btns { width: 100%; }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   IMPORT/EXPORT ENHANCEMENTS v1.18
+   ─────────────────────────────────────────────────────────────── */
+
+/* ── Template download row ── */
+.fcc-ie-template-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 0.75rem;
+	padding: 8px 12px;
+	background: #f8fafc;
+	border: 1px dashed #d4e8da;
+	border-radius: 8px;
+}
+.fcc-ie-template-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 5px 12px;
+	border-radius: 6px;
+	border: 1px solid #2D7A4F;
+	background: #fff;
+	color: #2D7A4F;
+	font-size: 0.78rem;
+	font-weight: 600;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background .15s, color .15s;
+}
+.fcc-ie-template-btn:hover { background: #2D7A4F; color: #fff; }
+.fcc-ie-template-hint { font-size: 0.72rem; color: #888; }
+
+/* ── Export category filter ── */
+.fcc-ie-export-filter {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 0.75rem;
+	padding: 8px 0;
+}
+.fcc-ie-export-filter__label {
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: #555;
+	white-space: nowrap;
+}
+.fcc-ie-export-filter__select {
+	padding: 5px 10px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 0.78rem;
+	background: #fff;
+	flex: 1;
+	max-width: 220px;
+}
+
+/* ── Import History ── */
+.fcc-ie-history {
+	background: #fff;
+	border: 1px solid #eef2ee;
+	border-radius: 14px;
+	box-shadow: 0 1px 5px rgba(0,0,0,.04);
+	margin-top: 1.5rem;
+	overflow: hidden;
+}
+.fcc-ie-history__hd {
+	padding: 14px 18px;
+	border-bottom: 1px solid #f0f4f0;
+}
+.fcc-ie-history__title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.95rem;
+	font-weight: 700;
+	margin: 0;
+}
+.fcc-ie-history__table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.82rem;
+}
+.fcc-ie-history__table th {
+	padding: 8px 14px;
+	text-align: left;
+	font-size: 0.7rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	color: #888;
+	background: #f8faf8;
+	border-bottom: 1px solid #eee;
+}
+.fcc-ie-history__table td {
+	padding: 8px 14px;
+	border-bottom: 1px solid #f5f5f5;
+	vertical-align: middle;
+}
+.fcc-ie-history__date { color: #666; white-space: nowrap; }
+.fcc-ie-history__file {
+	background: #f1f5f9;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	color: #555;
+}
+.fcc-ie-history__num { font-weight: 700; text-align: center; }
+.fcc-ie-history__num--ok   { color: #27ae60; }
+.fcc-ie-history__num--warn { color: #e74c3c; }
+

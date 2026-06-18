@@ -15,8 +15,11 @@ if ( $import_errors ) {
 $columns = FCC\Import_Export::columns();
 
 global $wpdb;
-$food_count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_foods" );
-$cat_count  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_categories" );
+$food_count     = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_foods" );
+$cat_count      = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_categories" );
+$categories     = FCC\Database::get_all_categories();
+$import_history = get_option( 'fcc_import_history', [] );
+if ( ! is_array( $import_history ) ) { $import_history = []; }
 ?>
 <div class="wrap fcc-admin-wrap fcc-ie-page">
 
@@ -135,6 +138,15 @@ $cat_count  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_cat
 						</li>
 					</ul>
 
+					<div class="fcc-ie-template-row">
+						<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=fcc_download_template' ), 'fcc_download_template' ) ); ?>"
+							class="fcc-ie-template-btn">
+							<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+							<?php esc_html_e( 'Download Template CSV', 'food-calorie-calculator' ); ?>
+						</a>
+						<span class="fcc-ie-template-hint"><?php esc_html_e( 'Headers + 1 example row — fill in and import', 'food-calorie-calculator' ); ?></span>
+					</div>
+
 					<button type="submit" class="fcc-ie-import-btn" id="fcc-import-btn" disabled>
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
 						<?php esc_html_e( 'Import Foods', 'food-calorie-calculator' ); ?>
@@ -163,11 +175,21 @@ $cat_count  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_cat
 
 				<p class="fcc-ie-export-summary">
 					<?php printf(
-						/* translators: %d: food count */
 						esc_html__( 'Your export will include all %d foods. NULL values export as empty cells so they round-trip cleanly on re-import.', 'food-calorie-calculator' ),
 						$food_count
 					); ?>
 				</p>
+
+				<!-- Category filter for export -->
+				<div class="fcc-ie-export-filter">
+					<label for="fcc-export-cat" class="fcc-ie-export-filter__label"><?php esc_html_e( 'Filter by category:', 'food-calorie-calculator' ); ?></label>
+					<select id="fcc-export-cat" class="fcc-ie-export-filter__select">
+						<option value="0"><?php esc_html_e( 'All Categories', 'food-calorie-calculator' ); ?></option>
+						<?php foreach ( $categories as $cat ) : ?>
+							<option value="<?php echo absint( $cat['id'] ); ?>"><?php echo esc_html( $cat['name'] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
 
 				<!-- CSV option -->
 				<div class="fcc-ie-export-row">
@@ -262,6 +284,42 @@ $cat_count  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_cat
 		</div>
 
 	</div><!-- .fcc-ie-colref -->
+
+	<?php if ( ! empty( $import_history ) ) : ?>
+	<!-- ======================================================================
+	     Import History
+	     ====================================================================== -->
+	<div class="fcc-ie-history">
+		<div class="fcc-ie-history__hd">
+			<h2 class="fcc-ie-history__title">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				<?php esc_html_e( 'Import History', 'food-calorie-calculator' ); ?>
+			</h2>
+		</div>
+		<table class="fcc-ie-history__table">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Date', 'food-calorie-calculator' ); ?></th>
+					<th><?php esc_html_e( 'File', 'food-calorie-calculator' ); ?></th>
+					<th><?php esc_html_e( 'Imported', 'food-calorie-calculator' ); ?></th>
+					<th><?php esc_html_e( 'Skipped', 'food-calorie-calculator' ); ?></th>
+					<th><?php esc_html_e( 'User', 'food-calorie-calculator' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $import_history as $h ) : ?>
+					<tr>
+						<td class="fcc-ie-history__date"><?php echo esc_html( date_i18n( 'M j, Y H:i', strtotime( $h['date'] ) ) ); ?></td>
+						<td><code class="fcc-ie-history__file"><?php echo esc_html( $h['file'] ); ?></code></td>
+						<td class="fcc-ie-history__num fcc-ie-history__num--ok"><?php echo (int) $h['imported']; ?></td>
+						<td class="fcc-ie-history__num <?php echo $h['skipped'] > 0 ? 'fcc-ie-history__num--warn' : ''; ?>"><?php echo (int) $h['skipped']; ?></td>
+						<td><?php echo esc_html( $h['user'] ?? '—' ); ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+	<?php endif; ?>
 
 </div><!-- .wrap -->
 
