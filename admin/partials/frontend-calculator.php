@@ -412,18 +412,18 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 						</button>
 						<?php endif; ?>
 
-						<button type="button" class="fcc-action-btn fcc-action-btn--outline fcc-copy-nutrition-btn">
+						<button type="button" class="fcc-action-btn fcc-action-btn--ghost fcc-copy-nutrition-btn">
 							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
 							<span class="fcc-copy-nutrition-label"><?php esc_html_e( 'Copy Data', 'food-calorie-calculator' ); ?></span>
 						</button>
 
-						<button type="button" class="fcc-action-btn fcc-action-btn--outline fcc-favourite-btn">
+						<button type="button" class="fcc-action-btn fcc-action-btn--ghost fcc-favourite-btn">
 							<span class="fcc-favourite-icon">&#9825;</span>
 							<span class="fcc-favourite-label"><?php esc_html_e( 'Save', 'food-calorie-calculator' ); ?></span>
 						</button>
 
 						<?php if ( $has_compare ) : ?>
-						<button type="button" class="fcc-action-btn fcc-action-btn--outline fcc-compare-shortcut-btn">
+						<button type="button" class="fcc-action-btn fcc-action-btn--ghost fcc-compare-shortcut-btn">
 							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
 							<?php esc_html_e( 'Compare', 'food-calorie-calculator' ); ?>
 						</button>
