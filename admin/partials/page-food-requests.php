@@ -409,13 +409,22 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 					</label>
 				</div>
 				<div class="fcc-reqs-export__filter-col">
-					<label class="fcc-reqs-export__flabel" for="fcc-reqs-export-status"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></label>
-					<select name="req_status" id="fcc-reqs-export-status" class="fcc-reqs-export__select--v2">
-						<option value=""><?php esc_html_e( 'All statuses', 'food-calorie-calculator' ); ?></option>
-						<option value="pending"><?php esc_html_e( 'Pending', 'food-calorie-calculator' ); ?></option>
-						<option value="done"><?php esc_html_e( 'Added', 'food-calorie-calculator' ); ?></option>
-						<option value="dismissed"><?php esc_html_e( 'Dismissed', 'food-calorie-calculator' ); ?></option>
-					</select>
+					<span class="fcc-reqs-export__flabel"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></span>
+					<div class="fcc-reqs-export__pills fcc-reqs-export__pills--status">
+						<?php
+						$statuses = [
+							''          => __( 'All', 'food-calorie-calculator' ),
+							'pending'   => __( 'Pending', 'food-calorie-calculator' ),
+							'done'      => __( 'Added', 'food-calorie-calculator' ),
+							'dismissed' => __( 'Dismissed', 'food-calorie-calculator' ),
+						];
+						foreach ( $statuses as $val => $lbl ) : ?>
+							<label class="fcc-reqs-export__pill">
+								<input type="radio" name="req_status" value="<?php echo esc_attr( $val ); ?>"<?php checked( $val, '' ); ?>>
+								<span><?php echo esc_html( $lbl ); ?></span>
+							</label>
+						<?php endforeach; ?>
+					</div>
 				</div>
 			</div>
 
