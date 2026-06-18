@@ -1079,8 +1079,10 @@
    -------------------------------------------------------------------------- */
 .fcc-traffic-lights {
 	margin-bottom: 1.25rem;
-	padding-bottom: 1.25rem;
-	border-bottom: 1px solid var(--fcc-border);
+	padding: 1rem;
+	background: linear-gradient(135deg, #f8fafc 0%, #f0faf4 100%);
+	border: 1px solid var(--fcc-border);
+	border-radius: 12px;
 }
 
 .fcc-tl-label {
@@ -1103,8 +1105,10 @@
 	align-items: center;
 	gap: 0.5rem;
 	padding: 0.5rem 0.875rem 0.5rem 0.625rem;
-	border-radius: 24px;
-	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	border: 1.5px solid #e2e8f0;
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(0,0,0,.04);
 	background: #f8fafc;
 	transition: transform var(--fcc-transition);
 	cursor: default;
@@ -1190,7 +1194,12 @@
 /* --------------------------------------------------------------------------
    Nutrition Table
    -------------------------------------------------------------------------- */
-.fcc-nutrition-table-wrapper { overflow-x: auto; }
+.fcc-nutrition-table-wrapper {
+	overflow-x: auto;
+	border: 1.5px solid var(--fcc-border);
+	border-radius: 12px;
+	overflow: hidden;
+}
 
 .fcc-nutrition-table {
 	width: 100%;
@@ -1200,23 +1209,23 @@
 
 .fcc-nutrition-table th,
 .fcc-nutrition-table td {
-	padding: 0.55rem 0.875rem;
-	border-bottom: 1px solid var(--fcc-border);
+	padding: 0.6rem 0.875rem;
+	border-bottom: 1px solid #eef4ee;
 	text-align: left;
 }
 
 .fcc-nutrition-table thead th {
-	background: linear-gradient(to bottom, #f0faf4, #dcfce7);
+	background: var(--fcc-primary, #2D7A4F);
 	font-weight: 700;
 	font-size: 0.72rem;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	color: var(--fcc-primary);
-	border-bottom: 2px solid #86efac;
+	color: #fff;
+	border-bottom: none;
 }
 
-.fcc-nutrition-table tbody tr:nth-child(even) { background: #f8fafc; }
-.fcc-nutrition-table tbody tr:hover { background: #f0faf4; }
+.fcc-nutrition-table tbody tr:nth-child(even) { background: #f8faf8; }
+.fcc-nutrition-table tbody tr:hover { background: #ecf7f0; }
 
 .fcc-col-per,
 .fcc-col-per100,
