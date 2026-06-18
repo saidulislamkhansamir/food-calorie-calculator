@@ -1195,11 +1195,10 @@
    Nutrition Table
    -------------------------------------------------------------------------- */
 .fcc-nutrition-table-wrapper {
-	overflow-x: auto;
 	border: 2px solid var(--fcc-primary, #075B5E);
-	border-radius: 14px;
+	border-radius: 16px;
 	overflow: hidden;
-	box-shadow: 0 2px 10px rgba(7,91,94,.08);
+	box-shadow: 0 4px 16px rgba(7,91,94,.1);
 }
 
 .fcc-nutrition-table {
@@ -1210,36 +1209,63 @@
 
 .fcc-nutrition-table th,
 .fcc-nutrition-table td {
-	padding: 0.7rem 1rem;
-	border-bottom: 1px solid #e0ece0;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid #e6eded;
 	text-align: left;
 }
 
 .fcc-nutrition-table thead th {
-	background: linear-gradient(135deg, #043e40 0%, #075B5E 60%, #0a7a7e 100%);
+	background: linear-gradient(135deg, #043e40 0%, #075B5E 50%, #0a7a7e 100%);
 	font-weight: 700;
-	font-size: 0.72rem;
+	font-size: 0.7rem;
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
+	letter-spacing: 0.07em;
 	color: #fff;
 	border-bottom: none;
-	padding: 0.75rem 1rem;
+	padding: 0.8rem 1rem;
+	position: sticky;
+	top: 0;
+	z-index: 1;
 }
 
-.fcc-nutrition-table tbody tr { transition: background .15s; }
-.fcc-nutrition-table tbody tr:nth-child(even) { background: #f0f7f7; }
-.fcc-nutrition-table tbody tr:hover { background: #dcfce7; }
+.fcc-nutrition-table tbody tr {
+	transition: background .15s, transform .15s;
+}
+.fcc-nutrition-table tbody tr:nth-child(even) {
+	background: linear-gradient(to right, #f5fafa 0%, #fafcfc 100%);
+}
+.fcc-nutrition-table tbody tr:hover {
+	background: linear-gradient(to right, #e0f2f2 0%, #edf8f8 100%);
+}
 
+/* Nutrient name column */
 .fcc-nutrition-table tbody td:first-child {
 	font-weight: 600;
-	color: var(--fcc-text, #1E2A1E);
+	color: var(--fcc-text, #1a2e2f);
+	position: relative;
 }
+
+/* Left accent bar on nutrient name */
+.fcc-nutrition-table tbody td:first-child::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 25%;
+	height: 50%;
+	width: 3px;
+	border-radius: 0 2px 2px 0;
+	background: var(--fcc-primary, #075B5E);
+	opacity: 0;
+	transition: opacity .15s;
+}
+.fcc-nutrition-table tbody tr:hover td:first-child::before { opacity: 1; }
 
 .fcc-col-per,
 .fcc-col-per100,
 .fcc-col-ri { text-align: right; }
 
-.fcc-col-per100 { color: var(--fcc-text-muted, #6b7c6b); }
+.fcc-col-per { font-weight: 600; color: var(--fcc-text, #1a2e2f); }
+.fcc-col-per100 { color: var(--fcc-text-muted, #4a6365); font-size: 0.82rem; }
 
 .fcc-col-ri { vertical-align: middle; }
 
@@ -1249,20 +1275,20 @@
 	flex-direction: column;
 	align-items: flex-end;
 	gap: 4px;
-	min-width: 56px;
+	min-width: 58px;
 }
 
 .fcc-ri-val {
 	font-weight: 800;
 	font-size: 0.9rem;
-	color: var(--fcc-primary);
 	line-height: 1;
+	color: var(--fcc-primary, #075B5E);
 }
 
 .fcc-ri-bar {
 	width: 100%;
-	height: 5px;
-	background: #e8f0e8;
+	height: 6px;
+	background: #e0eaea;
 	border-radius: 3px;
 	overflow: hidden;
 }
@@ -1270,29 +1296,51 @@
 .fcc-ri-bar__fill {
 	height: 100%;
 	border-radius: 3px;
-	transition: width 0.45s ease;
+	transition: width 0.5s ease;
 }
 
-/* Energy rows: highlighted */
-.fcc-row--energy th,
-.fcc-row--energy td {
+/* Energy rows: prominent band */
+.fcc-row--energy td,
+.fcc-row--energy th {
 	font-weight: 700;
-	background: linear-gradient(to right, #e8f5ee 0%, #f0f7f7 50%, transparent 100%) !important;
-	border-bottom: 1.5px solid #c6e7d0;
+	background: linear-gradient(to right, var(--fcc-bg, #FFE6E1) 0%, #faf5f4 60%, transparent 100%) !important;
+	border-bottom: 2px solid rgba(7,91,94,.15);
 }
 
+/* Sub-rows: indented, muted */
+.fcc-row--sub td:first-child,
 .fcc-row--sub th {
 	padding-left: 2rem;
-	color: var(--fcc-text-muted);
+	color: var(--fcc-text-muted, #4a6365);
 	font-weight: 400;
 	font-style: italic;
 }
+.fcc-row--sub td:first-child::before { display: none; }
 
 .fcc-ri-footnote {
 	font-size: 0.72rem;
-	color: var(--fcc-text-light);
-	margin: 0.5rem 0 0;
+	color: var(--fcc-text-light, #7a9a8a);
+	margin: 0.625rem 0 0;
 	padding: 0;
+}
+
+/* ── Nutrition table mobile ── */
+@media (max-width: 480px) {
+	.fcc-nutrition-table-wrapper { border-radius: 12px; border-width: 1.5px; }
+	.fcc-nutrition-table th,
+	.fcc-nutrition-table td { padding: 0.55rem 0.5rem; font-size: 0.78rem; }
+	.fcc-nutrition-table thead th { font-size: 0.6rem; padding: 0.6rem 0.5rem; }
+	.fcc-col-per100 { display: none; }
+	.fcc-ri-cell { min-width: 44px; }
+	.fcc-ri-val { font-size: 0.78rem; }
+	.fcc-ri-bar { height: 4px; }
+	.fcc-row--sub td:first-child,
+	.fcc-row--sub th { padding-left: 1.25rem; }
+}
+@media (max-width: 360px) {
+	.fcc-nutrition-table th,
+	.fcc-nutrition-table td { padding: 0.45rem 0.35rem; font-size: 0.72rem; }
+	.fcc-col-per { font-size: 0.72rem; }
 }
 
 .fcc-serving-desc {
