@@ -1945,8 +1945,9 @@
 }
 
 .fcc-dash-hero__stats {
-	display: flex;
-	gap: 12px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
 	flex-shrink: 0;
 }
 
@@ -1955,15 +1956,16 @@
 	-webkit-backdrop-filter: blur(8px);
 	backdrop-filter: blur(8px);
 	border: 1px solid rgba(255,255,255,.2);
-	border-radius: 12px;
-	padding: 14px 22px;
+	border-radius: 10px;
+	padding: 10px 16px;
 	text-align: center;
-	min-width: 90px;
+	min-width: 80px;
+	text-decoration: none;
 }
 
 .fcc-dash-hero-stat__value {
 	display: block;
-	font-size: 1.7rem;
+	font-size: 1.4rem;
 	font-weight: 700;
 	color: #fff;
 	line-height: 1;
@@ -2206,8 +2208,8 @@
 
 @media screen and (max-width: 720px) {
 	.fcc-dash-hero__inner { flex-direction: column; align-items: flex-start; padding: 1.5rem; gap: 1.25rem; }
-	.fcc-dash-hero__stats { align-self: stretch; }
-	.fcc-dash-hero-stat   { flex: 1; min-width: 70px; }
+	.fcc-dash-hero__stats { align-self: stretch; grid-template-columns: repeat(3, 1fr); }
+	.fcc-dash-hero-stat   { min-width: unset; }
 	.fcc-dash-grid        { grid-template-columns: 1fr; }
 	.fcc-dash-card--howto { grid-column: auto; }
 }
@@ -6373,7 +6375,6 @@ button.fcc-reqs-tab {
    ─────────────────────────────────────────────────────────────── */
 
 /* ── Hero stats expansion (6 stats) ── */
-.fcc-dash-hero__stats { flex-wrap: wrap; }
 .fcc-dash-hero-stat { text-decoration: none; cursor: pointer; transition: background .15s; }
 .fcc-dash-hero-stat:hover { background: rgba(255,255,255,.18); }
 
@@ -6653,6 +6654,8 @@ button.fcc-reqs-tab {
 	.fcc-dash-widgets > :last-child { grid-column: auto; }
 	.fcc-dash-revenue-row { grid-template-columns: 1fr; }
 	.fcc-dash-actions-grid--6 { grid-template-columns: repeat(2, 1fr); }
-	.fcc-dash-hero__stats { gap: 6px; }
+	.fcc-dash-hero__stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+	.fcc-dash-hero-stat { padding: 8px 10px; }
+	.fcc-dash-hero-stat__value { font-size: 1.1rem; }
 }
 
