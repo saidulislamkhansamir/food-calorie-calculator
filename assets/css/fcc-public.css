@@ -3467,6 +3467,10 @@ select.fcc-bmr-input {
 .fcc-share-icon--facebook:hover    { background: #eef4ff; }
 .fcc-share-icon--x svg             { fill: #14171A; }
 .fcc-share-icon--x:hover           { background: #f5f5f5; }
+.fcc-share-icon--linkedin svg      { fill: #0A66C2; }
+.fcc-share-icon--linkedin:hover    { background: #e8f0fe; }
+.fcc-share-icon--reddit svg        { fill: #FF4500; }
+.fcc-share-icon--reddit:hover      { background: #fff0eb; }
 
 @media (max-width: 480px) {
 	.fcc-share-icon { width: 30px; height: 30px; }

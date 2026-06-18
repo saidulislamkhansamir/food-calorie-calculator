@@ -1376,6 +1376,12 @@
 					case 'x':
 						window.open( 'https://x.com/intent/tweet?text=' + encodeURIComponent( text ) + '&url=' + encodeURIComponent( url ), '_blank', 'width=600,height=400' );
 						break;
+					case 'linkedin':
+						window.open( 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent( url ), '_blank', 'width=600,height=500' );
+						break;
+					case 'reddit':
+						window.open( 'https://www.reddit.com/submit?url=' + encodeURIComponent( url ) + '&title=' + encodeURIComponent( title ), '_blank', 'width=600,height=500' );
+						break;
 				}
 			} );
 		} );
