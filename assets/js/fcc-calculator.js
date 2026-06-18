@@ -55,8 +55,8 @@
 	const searchClearBtn = root.querySelector( '.fcc-search-clear' );
 	const dropdown       = root.querySelector( '.fcc-results-dropdown' );
 	const spinner        = root.querySelector( '.fcc-search-spinner' );
-	const popularSection = root.querySelector( '.fcc-popular-section' );
-	const popularChips   = root.querySelector( '.fcc-popular-chips' );
+	const popularSection = root.querySelector( '#fcc-popular-section' );
+	const popularChips   = root.querySelector( '#fcc-popular-chips' );
 	const requestPanel   = root.querySelector( '.fcc-request-panel' );
 	const requestForm    = root.querySelector( '#fcc-request-form' );
 	const reqFoodInput   = root.querySelector( '#fcc-req-food-input' );

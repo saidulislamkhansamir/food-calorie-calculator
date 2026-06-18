@@ -124,7 +124,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 					<p class="fcc-search-hint"><?php esc_html_e( 'Type at least 2 characters to search from our UK foods database', 'food-calorie-calculator' ); ?></p>
 					<div id="fcc-favourites-section" class="fcc-favourites-section" hidden>
 						<p class="fcc-popular-label"><?php esc_html_e( 'Your favourites', 'food-calorie-calculator' ); ?> &#9829;</p>
-						<div id="fcc-favourite-chips" class="fcc-popular-chips fcc-favourite-chips"></div>
+						<div id="fcc-favourite-chips" class="fcc-favourite-chips"></div>
 					</div>
 
 					<?php if ( ! isset( $features['popular_foods'] ) || ! empty( $features['popular_foods'] ) ) : ?>
