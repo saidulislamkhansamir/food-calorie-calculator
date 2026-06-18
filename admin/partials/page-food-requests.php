@@ -359,15 +359,38 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 	</div><!-- .fcc-ms-section -->
 
 	<!-- =====================================================================
-	     Export panel
+	     Export panel — redesigned
 	     ===================================================================== -->
-	<div class="fcc-card fcc-reqs-export">
+	<?php
+	$exp_total_contacts = \FCC\Database::count_food_requests();
+	$exp_optins         = \FCC\Database::count_opted_in_requests();
+	$exp_latest         = \FCC\Database::get_recent_optins( 1 );
+	$exp_latest_date    = ! empty( $exp_latest[0]['created_at'] ) ? date_i18n( 'M j, Y', strtotime( $exp_latest[0]['created_at'] ) ) : '—';
+	?>
+	<div class="fcc-card fcc-reqs-export fcc-reqs-export--v2">
 
-		<div class="fcc-reqs-export__header">
-			<div class="fcc-reqs-export__header-icon" aria-hidden="true">📤</div>
-			<div>
-				<div class="fcc-reqs-export__title"><?php esc_html_e( 'Export Emails', 'food-calorie-calculator' ); ?></div>
-				<p class="fcc-reqs-export__desc"><?php esc_html_e( 'Download contacts collected through food requests for your email campaigns.', 'food-calorie-calculator' ); ?></p>
+		<!-- Header with gradient -->
+		<div class="fcc-reqs-export__header fcc-reqs-export__header--v2">
+			<div class="fcc-reqs-export__header-left">
+				<span class="fcc-reqs-export__header-emoji" aria-hidden="true">📧</span>
+				<div>
+					<div class="fcc-reqs-export__title"><?php esc_html_e( 'Export Email Contacts', 'food-calorie-calculator' ); ?></div>
+					<p class="fcc-reqs-export__desc"><?php esc_html_e( 'Download contacts for Mailchimp, ConvertKit, or any email platform.', 'food-calorie-calculator' ); ?></p>
+				</div>
+			</div>
+			<div class="fcc-reqs-export__header-stats">
+				<div class="fcc-reqs-export__mini-stat">
+					<span class="fcc-reqs-export__mini-val"><?php echo $exp_total_contacts; ?></span>
+					<span class="fcc-reqs-export__mini-lbl"><?php esc_html_e( 'Total', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-reqs-export__mini-stat fcc-reqs-export__mini-stat--green">
+					<span class="fcc-reqs-export__mini-val"><?php echo $exp_optins; ?></span>
+					<span class="fcc-reqs-export__mini-lbl"><?php esc_html_e( 'Opted-in', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-reqs-export__mini-stat">
+					<span class="fcc-reqs-export__mini-val"><?php echo esc_html( $exp_latest_date ); ?></span>
+					<span class="fcc-reqs-export__mini-lbl"><?php esc_html_e( 'Latest', 'food-calorie-calculator' ); ?></span>
+				</div>
 			</div>
 		</div>
 
@@ -375,17 +398,19 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 			<input type="hidden" name="action" value="fcc_export_requests">
 			<?php wp_nonce_field( 'fcc_export_requests' ); ?>
 
-			<div class="fcc-reqs-export__filter-bar">
-				<div class="fcc-reqs-export__filter-group">
-					<span class="fcc-reqs-export__filter-label"><?php esc_html_e( 'Contacts', 'food-calorie-calculator' ); ?></span>
-					<label class="fcc-reqs-export__optin-label">
+			<!-- Filters row -->
+			<div class="fcc-reqs-export__filters">
+				<div class="fcc-reqs-export__filter-col">
+					<span class="fcc-reqs-export__flabel"><?php esc_html_e( 'Contacts', 'food-calorie-calculator' ); ?></span>
+					<label class="fcc-reqs-export__optin-toggle">
 						<input type="checkbox" name="optin_only" value="1" checked>
+						<span class="fcc-reqs-export__optin-track"></span>
 						<span><?php esc_html_e( 'Newsletter opt-in only', 'food-calorie-calculator' ); ?></span>
 					</label>
 				</div>
-				<div class="fcc-reqs-export__filter-group">
-					<label class="fcc-reqs-export__filter-label" for="fcc-reqs-export-status"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></label>
-					<select name="req_status" id="fcc-reqs-export-status" class="fcc-reqs-export__select">
+				<div class="fcc-reqs-export__filter-col">
+					<label class="fcc-reqs-export__flabel" for="fcc-reqs-export-status"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></label>
+					<select name="req_status" id="fcc-reqs-export-status" class="fcc-reqs-export__select--v2">
 						<option value=""><?php esc_html_e( 'All statuses', 'food-calorie-calculator' ); ?></option>
 						<option value="pending"><?php esc_html_e( 'Pending', 'food-calorie-calculator' ); ?></option>
 						<option value="done"><?php esc_html_e( 'Added', 'food-calorie-calculator' ); ?></option>
@@ -394,20 +419,21 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 				</div>
 			</div>
 
-			<div class="fcc-reqs-export__period-row">
-				<span class="fcc-reqs-export__filter-label"><?php esc_html_e( 'Period', 'food-calorie-calculator' ); ?></span>
-				<div class="fcc-reqs-export__presets" role="radiogroup">
+			<!-- Period pills -->
+			<div class="fcc-reqs-export__period">
+				<span class="fcc-reqs-export__flabel"><?php esc_html_e( 'Period', 'food-calorie-calculator' ); ?></span>
+				<div class="fcc-reqs-export__pills" role="radiogroup">
 					<?php
 					$presets = [
 						0  => __( 'All time', 'food-calorie-calculator' ),
-						7  => __( 'Last 7 days', 'food-calorie-calculator' ),
-						14 => __( 'Last 14 days', 'food-calorie-calculator' ),
-						30 => __( 'Last 30 days', 'food-calorie-calculator' ),
-						-1 => __( 'Custom range', 'food-calorie-calculator' ),
+						7  => __( '7 days', 'food-calorie-calculator' ),
+						14 => __( '14 days', 'food-calorie-calculator' ),
+						30 => __( '30 days', 'food-calorie-calculator' ),
+						-1 => __( 'Custom', 'food-calorie-calculator' ),
 					];
 					foreach ( $presets as $val => $label ) :
 					?>
-						<label class="fcc-reqs-export__preset">
+						<label class="fcc-reqs-export__pill">
 							<input type="radio" name="days" value="<?php echo esc_attr( $val ); ?>"<?php checked( $val, 0 ); ?>>
 							<span><?php echo esc_html( $label ); ?></span>
 						</label>
@@ -418,38 +444,76 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 			<div class="fcc-reqs-export__daterange" id="fcc-reqs-daterange-export" hidden>
 				<label class="fcc-reqs-export__date-label" for="fcc-exp-date-from">
 					<?php esc_html_e( 'From', 'food-calorie-calculator' ); ?>
-					<input type="date" name="date_from" id="fcc-exp-date-from" class="fcc-reqs-export__date-input" value="">
+					<input type="date" name="date_from" id="fcc-exp-date-from" class="fcc-reqs-export__date-input--v2" value="">
 				</label>
 				<span class="fcc-reqs-export__date-sep" aria-hidden="true">→</span>
 				<label class="fcc-reqs-export__date-label" for="fcc-exp-date-to">
 					<?php esc_html_e( 'To', 'food-calorie-calculator' ); ?>
-					<input type="date" name="date_to" id="fcc-exp-date-to" class="fcc-reqs-export__date-input" value="<?php echo esc_attr( gmdate( 'Y-m-d' ) ); ?>">
+					<input type="date" name="date_to" id="fcc-exp-date-to" class="fcc-reqs-export__date-input--v2" value="<?php echo esc_attr( gmdate( 'Y-m-d' ) ); ?>">
 				</label>
 			</div>
 
-			<div class="fcc-reqs-export__btns">
-				<button type="submit" name="format" value="csv" class="fcc-reqs-export-btn">
-					<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-					<?php esc_html_e( 'Download CSV', 'food-calorie-calculator' ); ?>
+			<!-- Action buttons -->
+			<div class="fcc-reqs-export__actions">
+				<button type="submit" name="format" value="csv" class="fcc-reqs-export__dl fcc-reqs-export__dl--csv">
+					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+					<span>
+						<strong><?php esc_html_e( 'Download CSV', 'food-calorie-calculator' ); ?></strong>
+						<small><?php esc_html_e( 'For any spreadsheet', 'food-calorie-calculator' ); ?></small>
+					</span>
 				</button>
-				<button type="submit" name="format" value="xlsx" class="fcc-reqs-export-btn fcc-reqs-export-btn--xlsx">
-					<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-					<?php esc_html_e( 'Download Excel', 'food-calorie-calculator' ); ?>
+				<button type="submit" name="format" value="xlsx" class="fcc-reqs-export__dl fcc-reqs-export__dl--xlsx">
+					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+					<span>
+						<strong><?php esc_html_e( 'Download Excel', 'food-calorie-calculator' ); ?></strong>
+						<small><?php esc_html_e( 'Office & Google Sheets', 'food-calorie-calculator' ); ?></small>
+					</span>
 				</button>
+				<button type="button" class="fcc-reqs-export__copy" id="fcc-copy-emails-btn"
+					title="<?php esc_attr_e( 'Copy all opt-in emails to clipboard', 'food-calorie-calculator' ); ?>">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+					<span id="fcc-copy-emails-label"><?php esc_html_e( 'Copy Emails', 'food-calorie-calculator' ); ?></span>
+				</button>
+			</div>
+
+			<!-- Integration tip -->
+			<div class="fcc-reqs-export__tip">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+				<?php esc_html_e( 'Import the CSV/Excel into Mailchimp, ConvertKit, or Sendinblue to start your email campaigns.', 'food-calorie-calculator' ); ?>
 			</div>
 		</form>
 	</div><!-- .fcc-reqs-export -->
 
 	<script>
 	( function () {
-		var radios   = document.querySelectorAll( '#fcc-reqs-daterange-export input[name="days"]' );
+		var form     = document.querySelector( '.fcc-reqs-export__form' );
+		var radios   = form ? form.querySelectorAll( 'input[name="days"]' ) : [];
 		var dateWrap = document.getElementById( 'fcc-reqs-daterange-export' );
 		function toggle() {
-			var checked = document.querySelector( '#fcc-reqs-daterange-export input[name="days"]:checked' );
+			var checked = form.querySelector( 'input[name="days"]:checked' );
 			if ( dateWrap ) dateWrap.hidden = ! checked || checked.value !== '-1';
 		}
 		radios.forEach( function ( r ) { r.addEventListener( 'change', toggle ); } );
 		toggle();
+
+		// Copy all opt-in emails to clipboard.
+		var copyBtn  = document.getElementById( 'fcc-copy-emails-btn' );
+		var copyLbl  = document.getElementById( 'fcc-copy-emails-label' );
+		if ( copyBtn ) {
+			copyBtn.addEventListener( 'click', function () {
+				var emails = <?php
+					$all_emails = \FCC\Database::get_email_subscribers( [ 'per_page' => 99999 ] );
+					$list = array_column( $all_emails, 'requester_email' );
+					echo wp_json_encode( implode( ', ', array_filter( $list ) ) );
+				?>;
+				if ( navigator.clipboard ) {
+					navigator.clipboard.writeText( emails ).then( function () {
+						copyLbl.textContent = '<?php echo esc_js( __( 'Copied!', 'food-calorie-calculator' ) ); ?>';
+						setTimeout( function () { copyLbl.textContent = '<?php echo esc_js( __( 'Copy Emails', 'food-calorie-calculator' ) ); ?>'; }, 2000 );
+					} );
+				}
+			} );
+		}
 	}() );
 	</script>
 
