@@ -1612,6 +1612,7 @@
 				state.compareA = null;
 				state.compareB = null;
 				resetCompareBtn();
+				updateCompareDots();
 			}
 
 			// Slot A empty → fill A
@@ -1920,6 +1921,13 @@
 		updateCompareUnitTriggerText( s );
 	}
 
+	function updateCompareDots() {
+		var dotA = root.querySelector( '#fcc-dot-a' );
+		var dotB = root.querySelector( '#fcc-dot-b' );
+		if ( dotA ) dotA.classList.toggle( 'fcc-compare-dot--filled', !! state.compareA );
+		if ( dotB ) dotB.classList.toggle( 'fcc-compare-dot--filled', !! state.compareB );
+	}
+
 	function selectCompareFood( s, food ) {
 		const S = s.toUpperCase();
 		state[ 'compare' + S ]     = food;
@@ -1935,6 +1943,7 @@
 		rebuildCompareUnitSelect( s, food );
 		hideCompareDropdown( s );
 		renderComparison();
+		updateCompareDots();
 	}
 
 	function resolveCompareGrams( s ) {

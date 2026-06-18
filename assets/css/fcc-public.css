@@ -3628,3 +3628,26 @@ select.fcc-bmr-input {
 	background: #f9f9f9 !important;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPARE TAB SLOT INDICATOR DOTS
+   ─────────────────────────────────────────────────────────────── */
+.fcc-compare-dots {
+	display: inline-flex;
+	gap: 3px;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+.fcc-compare-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	border: 1.5px solid var(--fcc-border, #ccc);
+	background: transparent;
+	transition: background .25s, border-color .25s;
+}
+.fcc-compare-dot--filled {
+	background: var(--fcc-primary, #2D7A4F);
+	border-color: var(--fcc-primary, #2D7A4F);
+}
+

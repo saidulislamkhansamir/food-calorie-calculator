@@ -70,6 +70,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 		<button type="button" class="fcc-tab-btn" data-tab="compare" aria-selected="false">
 			<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
 			<?php esc_html_e( 'Compare', 'food-calorie-calculator' ); ?>
+			<span class="fcc-compare-dots"><span class="fcc-compare-dot" id="fcc-dot-a"></span><span class="fcc-compare-dot" id="fcc-dot-b"></span></span>
 		</button>
 		<?php endif; ?>
 		<?php if ( $has_bmr ) : ?>
