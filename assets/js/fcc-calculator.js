@@ -1466,8 +1466,8 @@
 			} );
 			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
 
-			// Strip quantity controls, meal buttons, food header (branded header replaces it).
-			[ '.fcc-qty-controls', '.fcc-quantity-row', '.fcc-quantity-section' ].forEach( function ( sel ) {
+			// Strip quantity section + food header KCAL box (branded header replaces it).
+			[ '.fcc-qty-controls', '.fcc-quantity-row', '.fcc-quantity-section', '.fcc-food-header' ].forEach( function ( sel ) {
 				var el = clone.querySelector( sel );
 				if ( el ) el.remove();
 			} );
