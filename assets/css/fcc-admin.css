@@ -6847,3 +6847,15 @@ button.fcc-reqs-tab {
 	color: #fff !important;
 }
 
+
+/* ── Serial number column ── */
+.fcc-foods-th--serial,
+.fcc-foods-td--serial {
+	width: 38px;
+	text-align: center;
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: #999;
+}
+.fcc-foods-td--serial { cursor: default; }
+

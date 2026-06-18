@@ -152,7 +152,7 @@
 
 		var id   = $row.data( 'id' );
 		var cats = $( '#fcc-bulk-cat' ).html();
-		var qe   = '<tr class="fcc-foods-qe-row"><td colspan="10" class="fcc-foods-qe-cell">'
+		var qe   = '<tr class="fcc-foods-qe-row"><td colspan="11" class="fcc-foods-qe-cell">'
 			+ '<div class="fcc-foods-qe-inner">'
 			+ '<label>Name <input type="text" class="fcc-qe-name" value="' + $row.data('name').toString().replace(/"/g,'&quot;') + '"></label>'
 			+ '<label>Category <select class="fcc-qe-cat">' + cats + '</select></label>'

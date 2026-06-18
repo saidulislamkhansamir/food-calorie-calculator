@@ -134,6 +134,7 @@ endif;
 		<table class="fcc-foods-table">
 			<thead>
 				<tr>
+					<th class="fcc-foods-th fcc-foods-th--serial">#</th>
 					<th class="fcc-foods-th fcc-foods-th--check">
 						<input type="checkbox" id="fcc-select-all"
 							aria-label="<?php esc_attr_e( 'Select all', 'food-calorie-calculator' ); ?>">
@@ -216,7 +217,7 @@ endif;
 			<tbody>
 				<?php if ( empty( $foods ) ) : ?>
 					<tr>
-						<td colspan="10" class="fcc-foods-empty-row">
+						<td colspan="11" class="fcc-foods-empty-row">
 							<div class="fcc-foods-empty">
 								<span class="fcc-foods-empty__icon" aria-hidden="true">&#128269;</span>
 								<p><?php esc_html_e( 'No foods found. Try a different search or filter.', 'food-calorie-calculator' ); ?></p>
@@ -224,7 +225,7 @@ endif;
 						</td>
 					</tr>
 				<?php else : ?>
-					<?php foreach ( $foods as $food ) :
+					<?php foreach ( $foods as $_idx => $food ) :
 						$edit_url   = esc_url( add_query_arg( [ 'action' => 'edit', 'food_id' => $food['id'] ], $list_url ) );
 						$delete_url = esc_url( wp_nonce_url(
 							add_query_arg( [ 'action' => 'fcc_delete_food', 'food_id' => $food['id'] ], admin_url( 'admin-post.php' ) ),
@@ -243,6 +244,9 @@ endif;
 							data-protein="<?php echo esc_attr( $food['protein_g'] ); ?>"
 							data-carbs="<?php echo esc_attr( $food['carbohydrate_g'] ); ?>"
 							data-fat="<?php echo esc_attr( $food['fat_g'] ); ?>">
+							<td class="fcc-foods-td fcc-foods-td--serial" title="ID: <?php echo absint( $food['id'] ); ?>">
+								<?php echo ( ( $paged - 1 ) * $per_page ) + $_idx + 1; ?>
+							</td>
 							<td class="fcc-foods-td fcc-foods-td--check">
 								<input type="checkbox" name="food_ids[]" value="<?php echo absint( $food['id'] ); ?>"
 									aria-label="<?php echo esc_attr( $food['name'] ); ?>">
