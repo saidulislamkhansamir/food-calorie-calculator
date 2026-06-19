@@ -1516,7 +1516,8 @@
 			var qty  = state.quantity || 100;
 			var unit = state.unit === 'oz' ? 'oz' : 'g';
 			var now  = new Date().toLocaleDateString( 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' } );
-			var kcal = food ? Math.round( ( food.energy_kcal || 0 ) * ( grams / 100 ) ) : 0;
+			var printGrams = quantityInGrams();
+			var kcal = food ? Math.round( ( food.energy_kcal || 0 ) * ( printGrams / 100 ) ) : 0;
 			var dailyPct = Math.round( kcal / 2000 * 100 );
 
 			// Branded print header with kcal summary.
