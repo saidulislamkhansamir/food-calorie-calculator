@@ -3922,31 +3922,34 @@ select.fcc-bmr-input {
 	top: 0;
 	bottom: 0;
 	margin: auto;
-	width: 32px;
-	height: 32px;
+	width: 36px;
+	height: 36px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: none;
-	background: transparent;
-	color: var(--fcc-text-muted, #4a6365);
+	border: 1.5px solid var(--fcc-border, #d4ddd8);
+	background: #fff;
 	cursor: pointer;
 	border-radius: 50%;
-	transition: color .15s, background .15s;
+	transition: color .15s, background .15s, border-color .15s, box-shadow .15s;
 }
+.fcc-voice-btn svg { stroke: var(--fcc-primary, #075B5E); }
 .fcc-voice-btn:hover {
-	color: var(--fcc-primary, #075B5E);
-	background: rgba(7,91,94,.06);
+	border-color: var(--fcc-primary, #075B5E);
+	background: rgba(7,91,94,.05);
+	box-shadow: 0 2px 8px rgba(7,91,94,.12);
 }
 
 /* Active / Listening state — red pulse */
 .fcc-voice-btn--active {
-	color: #FF3F33 !important;
+	border-color: #FF3F33 !important;
+	background: #fff5f4 !important;
 	animation: fcc-voice-pulse 1s ease-in-out infinite;
 }
+.fcc-voice-btn--active svg { stroke: #FF3F33 !important; }
 @keyframes fcc-voice-pulse {
-	0%, 100% { background: rgba(255,63,51,.05); }
-	50% { background: rgba(255,63,51,.15); }
+	0%, 100% { box-shadow: 0 0 0 0 rgba(255,63,51,.2); }
+	50% { box-shadow: 0 0 0 6px rgba(255,63,51,.1); }
 }
 
 /* Adjust clear button position to make room */
@@ -3954,6 +3957,6 @@ select.fcc-bmr-input {
 
 /* Mobile */
 @media (max-width: 480px) {
-	.fcc-voice-btn { width: 28px; height: 28px; right: 2.25rem; }
+	.fcc-voice-btn { width: 32px; height: 32px; right: 2.25rem; }
 }
 
