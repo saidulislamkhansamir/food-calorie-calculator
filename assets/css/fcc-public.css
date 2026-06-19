@@ -1195,15 +1195,18 @@
    Nutrition Table
    -------------------------------------------------------------------------- */
 .fcc-nutrition-table-wrapper {
-	border: 2px solid var(--fcc-primary, #075B5E);
 	border-radius: 16px;
 	overflow: hidden;
 	box-shadow: 0 4px 16px rgba(7,91,94,.1);
+	padding: 2px;
+	background: linear-gradient(135deg, #043e40 0%, #075B5E 50%, #9FC87E 100%);
 }
 
 .fcc-nutrition-table {
 	width: 100%;
 	border-collapse: collapse;
+	border-radius: 14px;
+	overflow: hidden;
 	font-size: 0.875rem;
 }
 
@@ -1229,8 +1232,9 @@
 	white-space: nowrap;
 }
 
+.fcc-nutrition-table tbody { background: #fff; }
 .fcc-nutrition-table tbody tr {
-	transition: background .15s, transform .15s;
+	transition: background .15s;
 }
 .fcc-nutrition-table tbody tr:nth-child(even) {
 	background: linear-gradient(to right, #f5fafa 0%, #fafcfc 100%);
@@ -1327,7 +1331,8 @@
 
 /* ── Nutrition table mobile ── */
 @media (max-width: 480px) {
-	.fcc-nutrition-table-wrapper { border-radius: 12px; border-width: 1.5px; }
+	.fcc-nutrition-table-wrapper { border-radius: 12px; padding: 1.5px; }
+	.fcc-nutrition-table { border-radius: 10px; }
 	.fcc-nutrition-table th,
 	.fcc-nutrition-table td { padding: 0.55rem 0.5rem; font-size: 0.78rem; }
 	.fcc-nutrition-table thead th { font-size: 0.6rem; padding: 0.6rem 0.5rem; }
