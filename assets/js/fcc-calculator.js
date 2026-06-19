@@ -262,6 +262,38 @@
 		} );
 	}
 
+	// -------------------------------------------------------------------------
+	// Voice Search (Web Speech API)
+	// -------------------------------------------------------------------------
+	var VoiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+	var voiceBtn = root.querySelector( '#fcc-voice-btn' );
+	if ( VoiceRecognition && voiceBtn ) {
+		voiceBtn.hidden = false;
+		voiceBtn.addEventListener( 'click', function () {
+			var rec = new VoiceRecognition();
+			rec.lang = 'en-GB';
+			rec.interimResults = false;
+			rec.maxAlternatives = 1;
+
+			voiceBtn.classList.add( 'fcc-voice-btn--active' );
+
+			rec.onresult = function ( e ) {
+				var text = e.results[0][0].transcript.trim();
+				if ( text && searchInput ) {
+					searchInput.value = text;
+					updateClearBtn();
+					hidePopular();
+					doSearch( text );
+				}
+				voiceBtn.classList.remove( 'fcc-voice-btn--active' );
+			};
+			rec.onerror = function () { voiceBtn.classList.remove( 'fcc-voice-btn--active' ); };
+			rec.onend   = function () { voiceBtn.classList.remove( 'fcc-voice-btn--active' ); };
+
+			rec.start();
+		} );
+	}
+
 	var missedSearchLog = {};
 
 	function logMissedSearch( q ) {

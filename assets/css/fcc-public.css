@@ -3912,3 +3912,48 @@ select.fcc-bmr-input {
 	border-color: var(--fcc-primary, #075B5E);
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   VOICE SEARCH BUTTON
+   ─────────────────────────────────────────────────────────────── */
+.fcc-voice-btn {
+	position: absolute;
+	right: 2.75rem;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: transparent;
+	color: var(--fcc-text-muted, #4a6365);
+	cursor: pointer;
+	border-radius: 50%;
+	transition: color .15s, background .15s;
+}
+.fcc-voice-btn:hover {
+	color: var(--fcc-primary, #075B5E);
+	background: rgba(7,91,94,.06);
+}
+
+/* Active / Listening state — red pulse */
+.fcc-voice-btn--active {
+	color: #FF3F33 !important;
+	animation: fcc-voice-pulse 1s ease-in-out infinite;
+}
+@keyframes fcc-voice-pulse {
+	0%, 100% { background: rgba(255,63,51,.05); }
+	50% { background: rgba(255,63,51,.15); }
+}
+
+/* Adjust clear button position to make room */
+.fcc-voice-btn + .fcc-search-clear { right: 0.5rem; }
+
+/* Mobile */
+@media (max-width: 480px) {
+	.fcc-voice-btn { width: 28px; height: 28px; right: 2.25rem; }
+}
+
