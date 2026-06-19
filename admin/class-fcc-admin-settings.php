@@ -161,7 +161,7 @@ class Settings_Page {
 			'ri_display', 'macro_chart', 'omega3_display', 'caffeine_display',
 			'meal_builder', 'print_pdf', 'share_link', 'add_custom_food', 'json_ld_schema',
 			'compare_foods', 'health_highlights', 'popular_foods',
-			'food_request_form', 'powered_by_footer',
+			'food_request_form', 'powered_by_footer', 'voice_search',
 		];
 
 		$sanitised = [];
@@ -189,6 +189,11 @@ class Settings_Page {
 			'results_animation' => ! empty( $post['results_animation'] ),
 			'card_style'        => in_array( $post['card_style'] ?? '', [ 'elevated', 'flat', 'outlined' ], true )
 									? sanitize_key( $post['card_style'] ) : 'elevated',
+			'voice_icon'        => in_array( $post['voice_icon'] ?? '', [ 'emoji', 'svg', 'text' ], true )
+									? sanitize_key( $post['voice_icon'] ) : 'emoji',
+			'voice_colour'      => $this->sanitise_hex_colour( $post['voice_colour'] ?? '#075B5E', '#075B5E' ),
+			'voice_size'        => in_array( $post['voice_size'] ?? '', [ 'small', 'medium', 'large' ], true )
+									? sanitize_key( $post['voice_size'] ) : 'medium',
 			// Allow limited CSS; strip script tags but permit valid CSS.
 			'custom_css'        => self::sanitise_custom_css( wp_strip_all_tags( $post['custom_css'] ?? '' ) ),
 		];

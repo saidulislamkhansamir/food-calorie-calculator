@@ -272,6 +272,9 @@ class Shortcode {
 					'layout'             => sanitize_key( $appearance['layout']           ?? 'standard' ),
 					'resultsAnimation'   => ! empty( $appearance['results_animation'] ?? true ),
 					'cardStyle'          => sanitize_key( $appearance['card_style']       ?? 'elevated' ),
+					'voiceIcon'          => sanitize_key( $appearance['voice_icon']       ?? 'emoji' ),
+					'voiceColour'        => esc_attr( $appearance['voice_colour']         ?? '#075B5E' ),
+					'voiceSize'          => sanitize_key( $appearance['voice_size']        ?? 'medium' ),
 				],
 				'advanced'    => [
 					'healthThresholds' => [

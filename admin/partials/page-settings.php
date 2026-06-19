@@ -342,6 +342,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						'popular_foods'          => [ 'label' => __( 'Popular Foods',                    'food-calorie-calculator' ), 'hint' => __( 'Popular searches below input', 'food-calorie-calculator' ) ],
 						'food_request_form'      => [ 'label' => __( 'Food Request Form',               'food-calorie-calculator' ), 'hint' => __('"Can\'t find your food?" form', 'food-calorie-calculator' ) ],
 						'powered_by_footer'      => [ 'label' => __( 'Powered-by Footer',               'food-calorie-calculator' ), 'hint' => __( 'Attribution footer link',   'food-calorie-calculator' ) ],
+					'voice_search'           => [ 'label' => __( 'Voice Search',                    'food-calorie-calculator' ), 'hint' => __( 'Microphone button for speech-to-search', 'food-calorie-calculator' ) ],
 					];
 					foreach ( $feature_labels as $key => $data ) : ?>
 						<div class="fcc-stg-feature <?php echo ! empty( $features[ $key ] ) ? 'fcc-stg-feature--on' : ''; ?>">
@@ -517,6 +518,49 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 									<?php checked( ! empty( $appearance['results_animation'] ?? true ) ); ?>>
 								<span class="fcc-stg-toggle__track"></span>
 							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Voice Search Customisation -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Voice Search Button', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Customise the microphone button appearance. Enable/disable in the Features tab.', 'food-calorie-calculator' ); ?></p>
+				</div>
+				<div class="fcc-stg-rows">
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="voice_icon"><?php esc_html_e( 'Icon Style', 'food-calorie-calculator' ); ?></label>
+						</div>
+						<div class="fcc-stg-row__control">
+							<select id="voice_icon" name="voice_icon" class="fcc-stg-select">
+								<option value="emoji" <?php selected( $appearance['voice_icon'] ?? '', 'emoji' ); ?>><?php esc_html_e( 'Emoji (🎙)', 'food-calorie-calculator' ); ?></option>
+								<option value="svg"   <?php selected( $appearance['voice_icon'] ?? '', 'svg' ); ?>><?php esc_html_e( 'SVG Icon', 'food-calorie-calculator' ); ?></option>
+								<option value="text"  <?php selected( $appearance['voice_icon'] ?? '', 'text' ); ?>><?php esc_html_e( 'Text (Mic)', 'food-calorie-calculator' ); ?></option>
+							</select>
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="voice_colour"><?php esc_html_e( 'Button Colour', 'food-calorie-calculator' ); ?></label>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="text" id="voice_colour" name="voice_colour" class="fcc-color-picker"
+								value="<?php echo esc_attr( $appearance['voice_colour'] ?? '#075B5E' ); ?>">
+						</div>
+					</div>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="voice_size"><?php esc_html_e( 'Button Size', 'food-calorie-calculator' ); ?></label>
+						</div>
+						<div class="fcc-stg-row__control">
+							<select id="voice_size" name="voice_size" class="fcc-stg-select">
+								<option value="small"  <?php selected( $appearance['voice_size'] ?? '', 'small' ); ?>><?php esc_html_e( 'Small (30px)', 'food-calorie-calculator' ); ?></option>
+								<option value="medium" <?php selected( $appearance['voice_size'] ?? '', 'medium' ); ?>><?php esc_html_e( 'Medium (38px)', 'food-calorie-calculator' ); ?></option>
+								<option value="large"  <?php selected( $appearance['voice_size'] ?? '', 'large' ); ?>><?php esc_html_e( 'Large (46px)', 'food-calorie-calculator' ); ?></option>
+							</select>
 						</div>
 					</div>
 				</div>

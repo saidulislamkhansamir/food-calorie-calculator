@@ -267,8 +267,23 @@
 	// -------------------------------------------------------------------------
 	var VoiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 	var voiceBtn = root.querySelector( '#fcc-voice-btn' );
-	if ( VoiceRecognition && voiceBtn ) {
+	if ( VoiceRecognition && voiceBtn && features.voice_search !== false ) {
 		voiceBtn.hidden = false;
+
+		// Apply settings from appearance.
+		var vIcon = appearance.voiceIcon || 'emoji';
+		var vColour = appearance.voiceColour || '#075B5E';
+		var vSize = appearance.voiceSize || 'medium';
+		var iconEl = voiceBtn.querySelector( '.fcc-voice-icon' );
+		if ( iconEl ) {
+			if ( vIcon === 'svg' ) iconEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
+			else if ( vIcon === 'text' ) { iconEl.textContent = 'Mic'; iconEl.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:.03em;'; }
+		}
+		voiceBtn.style.background = vColour;
+		var sizes = { small: '30px', medium: '38px', large: '46px' };
+		voiceBtn.style.width = sizes[ vSize ] || '38px';
+		voiceBtn.style.height = sizes[ vSize ] || '38px';
+
 		voiceBtn.addEventListener( 'click', function () {
 			var rec = new VoiceRecognition();
 			rec.lang = 'en-GB';
