@@ -3929,12 +3929,12 @@ select.fcc-bmr-input {
 	justify-content: center;
 	border: none;
 	background: var(--fcc-primary, #075B5E);
+	color: #fff;
 	cursor: pointer;
 	border-radius: 50%;
 	box-shadow: 0 2px 6px rgba(7,91,94,.2);
 	transition: background .15s, box-shadow .15s, transform .15s;
 }
-.fcc-voice-btn svg { stroke: #fff; stroke-width: 2.5; }
 .fcc-voice-btn:hover {
 	background: #044547;
 	box-shadow: 0 3px 10px rgba(7,91,94,.3);
@@ -3947,7 +3947,7 @@ select.fcc-bmr-input {
 	background: #fff5f4 !important;
 	animation: fcc-voice-pulse 1s ease-in-out infinite;
 }
-.fcc-voice-btn--active svg { stroke: #FF3F33 !important; }
+.fcc-voice-btn--active { color: #fff !important; }
 @keyframes fcc-voice-pulse {
 	0%, 100% { box-shadow: 0 0 0 0 rgba(255,63,51,.2); }
 	50% { box-shadow: 0 0 0 6px rgba(255,63,51,.1); }
