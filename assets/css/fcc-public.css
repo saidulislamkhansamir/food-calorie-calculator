@@ -2450,15 +2450,16 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-omega3-cards { break-inside: avoid; }
 
 	/* ── Branded print header ── */
+	/* ── Branded print header ── */
 	.fcc-print-header {
 		display: flex !important;
 		justify-content: space-between;
 		align-items: center;
-		padding: 12px 16px;
-		margin-bottom: 12px;
-		background: #075B5E !important;
+		padding: 14px 18px;
+		margin-bottom: 10px;
+		background: linear-gradient(135deg, #043e40, #075B5E) !important;
 		color: #fff;
-		border-radius: 8px;
+		border-radius: 10px;
 	}
 	.fcc-print-header__brand {
 		display: flex;
@@ -2466,28 +2467,77 @@ select.fcc-bmr-input {
 		gap: 2px;
 	}
 	.fcc-print-header__brand strong { font-size: 13pt; }
-	.fcc-print-header__brand span { font-size: 8pt; opacity: 0.75; }
+	.fcc-print-header__brand span { font-size: 7pt; opacity: 0.7; }
 	.fcc-print-header__info {
 		text-align: right;
 		display: flex;
 		flex-direction: column;
-		gap: 2px;
+		gap: 3px;
 	}
-	.fcc-print-header__food { font-size: 11pt; font-weight: 700; }
-	.fcc-print-header__date { font-size: 8pt; opacity: 0.75; }
+	.fcc-print-header__food { font-size: 12pt; font-weight: 700; }
+	.fcc-print-header__kcal {
+		font-size: 8pt;
+		opacity: 0.85;
+		background: rgba(255,255,255,.15);
+		padding: 2px 8px;
+		border-radius: 10px;
+		display: inline-block;
+	}
+	.fcc-print-header__date { font-size: 7pt; opacity: 0.6; }
 
-	/* ── Branded print footer ── */
+	/* ── Compact chart for print ── */
+	.fcc-print-clone .fcc-print-chart-img {
+		display: block !important;
+		width: 130px !important;
+		height: 130px !important;
+		margin: 0 auto !important;
+	}
+	.fcc-print-clone .fcc-macro-chart-wrapper {
+		padding: 8px !important;
+		margin-bottom: 6px !important;
+		gap: 8px !important;
+		background: #fafafa !important;
+		border: 1px solid #e0e0e0 !important;
+		border-radius: 8px !important;
+	}
+	.fcc-print-clone .fcc-macro-chart-wrapper::before { display: none !important; }
+	.fcc-print-clone .fcc-macro-legend-item { padding: 2px 6px !important; font-size: 8pt !important; }
+	.fcc-print-clone .fcc-macro-detail__row { padding: 3px 6px !important; font-size: 8pt !important; }
+
+	/* ── Branded print footer with CTA ── */
 	.fcc-print-footer {
 		display: block !important;
+		margin-top: 12px;
+		border-top: 2px solid #075B5E;
+		padding-top: 8px;
+	}
+	.fcc-print-footer__cta {
 		text-align: center;
-		padding: 10px 0;
-		margin-top: 16px;
-		border-top: 1.5px solid #075B5E;
-		font-size: 8pt;
-		color: #666;
+		font-size: 9pt;
+		color: #075B5E;
+		padding: 6px 0;
+		margin-bottom: 4px;
+	}
+	.fcc-print-footer__line {
+		text-align: center;
+		font-size: 7pt;
+		color: #999;
 	}
 
-	@page { margin: 1.2cm 1.5cm; }
+	/* Compact spacing for single-page fit */
+	.fcc-print-clone .fcc-section-title { font-size: 12pt !important; margin-bottom: 4px !important; }
+	.fcc-print-clone .fcc-health-highlights { padding: 6px 8px !important; margin-bottom: 6px !important; }
+	.fcc-print-clone .fcc-traffic-lights { padding: 6px 8px !important; margin-bottom: 6px !important; }
+	.fcc-print-clone .fcc-tl-row { gap: 4px !important; }
+	.fcc-print-clone .fcc-tl-item { padding: 3px 6px !important; font-size: 8pt !important; }
+	.fcc-print-clone .fcc-nutrition-table th,
+	.fcc-print-clone .fcc-nutrition-table td { padding: 4px 8px !important; font-size: 9pt !important; }
+	.fcc-print-clone .fcc-nutrition-table-wrapper { margin-bottom: 6px !important; }
+	.fcc-print-clone .fcc-ri-footnote { font-size: 7pt !important; margin: 2px 0 !important; }
+	.fcc-print-clone .fcc-omega3-section { margin-top: 4px !important; }
+	.fcc-print-clone .fcc-omega3-card { padding: 6px !important; }
+
+	@page { margin: 1cm 1.2cm; }
 }
 
 /* ==========================================================================
