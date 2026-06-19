@@ -3962,3 +3962,146 @@ select.fcc-bmr-input {
 	.fcc-voice-btn { width: 32px; height: 32px; right: 2.25rem; }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   MEAL CATEGORIES + TEMPLATES
+   ─────────────────────────────────────────────────────────────── */
+
+/* ── Category pills ── */
+.fcc-meal-cat-pills {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 0.75rem 1rem;
+	flex-wrap: wrap;
+}
+.fcc-meal-cat-label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: var(--fcc-text-muted, #4a6365);
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	margin-right: 4px;
+}
+.fcc-meal-cat-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 5px 12px;
+	border: 1.5px solid var(--fcc-border, #d4ddd8);
+	border-radius: 20px;
+	background: var(--fcc-surface, #fff);
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: var(--fcc-text, #1a2e2f);
+	cursor: pointer;
+	transition: background .15s, border-color .15s, box-shadow .15s;
+}
+.fcc-meal-cat-pill:hover {
+	border-color: var(--fcc-primary, #075B5E);
+	box-shadow: 0 1px 4px rgba(7,91,94,.1);
+}
+.fcc-meal-cat-pill--active {
+	background: var(--fcc-primary, #075B5E);
+	border-color: var(--fcc-primary, #075B5E);
+	color: #fff;
+	box-shadow: 0 2px 6px rgba(7,91,94,.2);
+}
+
+/* ── Category group headers in meal list ── */
+.fcc-meal-cat-header {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	margin-top: 8px;
+	background: linear-gradient(to right, var(--fcc-bg, #FFE6E1), transparent);
+	border-radius: 8px;
+	font-size: 0.78rem;
+	font-weight: 700;
+	color: var(--fcc-text, #1a2e2f);
+}
+.fcc-meal-cat-header:first-child { margin-top: 0; }
+.fcc-meal-cat-header__emoji { font-size: 1rem; }
+.fcc-meal-cat-header__label { flex: 1; }
+.fcc-meal-cat-header__kcal {
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: var(--fcc-primary, #075B5E);
+	background: rgba(7,91,94,.08);
+	padding: 2px 8px;
+	border-radius: 10px;
+}
+
+/* ── Save as Template button ── */
+.fcc-meal-save-tpl {
+	padding: 8px 0 0;
+	border-top: 1px solid var(--fcc-border, #e6eded);
+	margin-top: 8px;
+	text-align: center;
+}
+.fcc-meal-save-tpl__btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 16px;
+	border: 1.5px solid var(--fcc-border, #d4ddd8);
+	border-radius: 8px;
+	background: var(--fcc-surface, #fff);
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: var(--fcc-text-muted, #4a6365);
+	cursor: pointer;
+	transition: border-color .15s, color .15s;
+}
+.fcc-meal-save-tpl__btn:hover {
+	border-color: var(--fcc-primary, #075B5E);
+	color: var(--fcc-primary, #075B5E);
+}
+
+/* ── Templates section ── */
+.fcc-meal-templates {
+	padding: 0.75rem 1rem 0;
+}
+.fcc-meal-templates__label {
+	font-size: 0.68rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	color: var(--fcc-text-muted, #4a6365);
+	margin: 0 0 6px;
+}
+.fcc-meal-templates__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+.fcc-meal-tpl-chip {
+	display: inline-flex;
+	align-items: center;
+	border: 1.5px solid var(--fcc-border, #d4ddd8);
+	border-radius: 20px;
+	overflow: hidden;
+}
+.fcc-meal-tpl-chip__load {
+	padding: 4px 10px;
+	border: none;
+	background: var(--fcc-surface, #fff);
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--fcc-primary, #075B5E);
+	cursor: pointer;
+}
+.fcc-meal-tpl-chip__load:hover { background: rgba(7,91,94,.05); }
+.fcc-meal-tpl-chip__count { color: var(--fcc-text-muted); font-weight: 400; }
+.fcc-meal-tpl-chip__del {
+	padding: 4px 8px;
+	border: none;
+	border-left: 1px solid var(--fcc-border, #e6eded);
+	background: transparent;
+	color: #ccc;
+	font-size: 0.85rem;
+	cursor: pointer;
+}
+.fcc-meal-tpl-chip__del:hover { color: #e74c3c; background: #fff5f5; }
+

@@ -1032,15 +1032,42 @@
 	// -------------------------------------------------------------------------
 	const addToMealOriginalHTML = addToMealBtn ? addToMealBtn.innerHTML : '';
 
+	// ── Meal Category State ──
+	var mealCatPills = root.querySelectorAll( '.fcc-meal-cat-pill' );
+	var currentMealCat = 'breakfast';
+
+	function autoSelectMealCat() {
+		var h = new Date().getHours();
+		if ( h >= 5 && h < 11 ) currentMealCat = 'breakfast';
+		else if ( h >= 11 && h < 15 ) currentMealCat = 'lunch';
+		else if ( h >= 15 && h < 17 ) currentMealCat = 'snack';
+		else if ( h >= 17 && h < 22 ) currentMealCat = 'dinner';
+		else currentMealCat = 'snack';
+
+		mealCatPills.forEach( function ( p ) {
+			p.classList.toggle( 'fcc-meal-cat-pill--active', p.dataset.cat === currentMealCat );
+		} );
+	}
+	autoSelectMealCat();
+
+	mealCatPills.forEach( function ( pill ) {
+		pill.addEventListener( 'click', function () {
+			currentMealCat = pill.dataset.cat;
+			mealCatPills.forEach( function ( p ) { p.classList.remove( 'fcc-meal-cat-pill--active' ); } );
+			pill.classList.add( 'fcc-meal-cat-pill--active' );
+		} );
+	} );
+
 	root.querySelectorAll( '.fcc-add-to-meal' ).forEach( function ( btn ) {
 		var origHTML = btn.innerHTML;
 		btn.addEventListener( 'click', function () {
 			if ( ! state.food ) return;
 			var grams = quantityInGrams();
 			state.meal.push( {
-				food:  Object.assign( {}, state.food ),
-				grams: grams,
-				label: state.food.name + ' (' + fmt( grams, 0 ) + 'g)',
+				food:     Object.assign( {}, state.food ),
+				grams:    grams,
+				label:    state.food.name + ' (' + fmt( grams, 0 ) + 'g)',
+				category: currentMealCat,
 			} );
 			renderMeal();
 
@@ -1086,11 +1113,22 @@
 		let omega3HasData = false;
 		let caffeineHasData = false;
 
-		state.meal.forEach( function ( item, i ) {
-			const f      = item.food;
-			const factor = item.grams / 100;
+		var catEmojis = { breakfast: '🌅', lunch: '🍽️', dinner: '🌙', snack: '🍎' };
+		var catLabels = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snack' };
+		var catOrder  = [ 'breakfast', 'lunch', 'snack', 'dinner' ];
 
-			// Accumulate.
+		// Group items by category.
+		var groups = {};
+		state.meal.forEach( function ( item, i ) {
+			var cat = item.category || 'snack';
+			if ( ! groups[ cat ] ) groups[ cat ] = [];
+			groups[ cat ].push( { item: item, idx: i } );
+		} );
+
+		// Accumulate totals.
+		state.meal.forEach( function ( item ) {
+			var f = item.food;
+			var factor = item.grams / 100;
 			Object.keys( totals ).forEach( function ( k ) {
 				if ( f[ k ] !== null && f[ k ] !== undefined ) {
 					totals[ k ] += f[ k ] * factor;
@@ -1098,19 +1136,36 @@
 					if ( k === 'caffeine_mg'     ) caffeineHasData = true;
 				}
 			} );
+		} );
 
-			// Render item row with number badge + X icon.
-			const div = document.createElement( 'div' );
-			div.className = 'fcc-meal-item';
-			div.setAttribute( 'role', 'listitem' );
-			div.innerHTML =
-				'<span class="fcc-meal-item__num">' + ( i + 1 ) + '</span>' +
-				'<span class="fcc-meal-item__name">' + escHtml( item.label ) + '</span>' +
-				'<span class="fcc-meal-item__kcal">' + fmt( f.energy_kcal * factor, 0 ) + ' kcal</span>' +
-				'<button type="button" class="fcc-meal-item__remove" data-idx="' + i + '" aria-label="Remove ' + escHtml( f.name ) + '">' +
-				'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-				'</button>';
-			itemsEl.appendChild( div );
+		// Render grouped items.
+		catOrder.forEach( function ( cat ) {
+			if ( ! groups[ cat ] ) return;
+			var catKcal = 0;
+			groups[ cat ].forEach( function ( g ) { catKcal += ( g.item.food.energy_kcal || 0 ) * ( g.item.grams / 100 ); } );
+
+			var header = document.createElement( 'div' );
+			header.className = 'fcc-meal-cat-header';
+			header.innerHTML = '<span class="fcc-meal-cat-header__emoji">' + ( catEmojis[ cat ] || '' ) + '</span>'
+				+ '<span class="fcc-meal-cat-header__label">' + ( catLabels[ cat ] || cat ) + '</span>'
+				+ '<span class="fcc-meal-cat-header__kcal">' + fmt( catKcal, 0 ) + ' kcal</span>';
+			itemsEl.appendChild( header );
+
+			groups[ cat ].forEach( function ( g ) {
+				var f = g.item.food;
+				var factor = g.item.grams / 100;
+				var div = document.createElement( 'div' );
+				div.className = 'fcc-meal-item';
+				div.setAttribute( 'role', 'listitem' );
+				div.innerHTML =
+					'<span class="fcc-meal-item__num">' + ( g.idx + 1 ) + '</span>' +
+					'<span class="fcc-meal-item__name">' + escHtml( g.item.label ) + '</span>' +
+					'<span class="fcc-meal-item__kcal">' + fmt( f.energy_kcal * factor, 0 ) + ' kcal</span>' +
+					'<button type="button" class="fcc-meal-item__remove" data-idx="' + g.idx + '" aria-label="Remove ' + escHtml( f.name ) + '">' +
+					'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+					'</button>';
+				itemsEl.appendChild( div );
+			} );
 		} );
 
 		// Update header total kcal.
@@ -1162,6 +1217,93 @@
 			renderMeal();
 		} );
 	}
+
+	// -------------------------------------------------------------------------
+	// Meal Templates (localStorage)
+	// -------------------------------------------------------------------------
+	var TPL_KEY = 'fcc_meal_templates';
+	var TPL_MAX = 10;
+	var tplSection = root.querySelector( '#fcc-meal-templates' );
+	var tplList    = root.querySelector( '#fcc-meal-templates-list' );
+	var tplSaveBtn = root.querySelector( '#fcc-save-tpl-btn' );
+
+	function getTemplates() {
+		try { return JSON.parse( localStorage.getItem( TPL_KEY ) ) || []; } catch ( e ) { return []; }
+	}
+	function saveTemplates( arr ) { localStorage.setItem( TPL_KEY, JSON.stringify( arr.slice( 0, TPL_MAX ) ) ); }
+
+	function renderTemplates() {
+		var tpls = getTemplates();
+		if ( ! tplSection || ! tplList ) return;
+		if ( ! tpls.length ) { tplSection.hidden = true; return; }
+		tplSection.hidden = false;
+		tplList.innerHTML = tpls.map( function ( t, i ) {
+			return '<div class="fcc-meal-tpl-chip">'
+				+ '<button type="button" class="fcc-meal-tpl-chip__load" data-tpl-idx="' + i + '">'
+				+ escHtml( t.name ) + ' <span class="fcc-meal-tpl-chip__count">(' + t.items.length + ')</span>'
+				+ '</button>'
+				+ '<button type="button" class="fcc-meal-tpl-chip__del" data-tpl-idx="' + i + '" title="Delete">×</button>'
+				+ '</div>';
+		} ).join( '' );
+	}
+
+	if ( tplSaveBtn ) {
+		tplSaveBtn.addEventListener( 'click', function () {
+			if ( ! state.meal.length ) return;
+			var catLabels = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snack' };
+			var defaultName = 'My ' + ( catLabels[ currentMealCat ] || 'Meal' );
+			var name = prompt( 'Template name:', defaultName );
+			if ( ! name ) return;
+			var tpls = getTemplates();
+			tpls.unshift( {
+				name: name,
+				items: state.meal.map( function ( m ) {
+					return { food: m.food, grams: m.grams, label: m.label, category: m.category };
+				} ),
+			} );
+			saveTemplates( tpls );
+			renderTemplates();
+			tplSaveBtn.textContent = '✓ Saved!';
+			setTimeout( function () {
+				tplSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Save as Template';
+			}, 1500 );
+		} );
+	}
+
+	if ( tplList ) {
+		tplList.addEventListener( 'click', function ( e ) {
+			var loadBtn = e.target.closest( '.fcc-meal-tpl-chip__load' );
+			var delBtn  = e.target.closest( '.fcc-meal-tpl-chip__del' );
+
+			if ( loadBtn ) {
+				var idx = parseInt( loadBtn.dataset.tplIdx, 10 );
+				var tpls = getTemplates();
+				if ( tpls[ idx ] ) {
+					tpls[ idx ].items.forEach( function ( item ) {
+						state.meal.push( {
+							food:     item.food,
+							grams:    item.grams,
+							label:    item.label,
+							category: item.category || 'snack',
+						} );
+					} );
+					renderMeal();
+					var mealTab = root.querySelector( '.fcc-tab-btn[data-tab="meal"]' );
+					if ( mealTab ) mealTab.click();
+				}
+			}
+
+			if ( delBtn ) {
+				var idx = parseInt( delBtn.dataset.tplIdx, 10 );
+				var tpls = getTemplates();
+				tpls.splice( idx, 1 );
+				saveTemplates( tpls );
+				renderTemplates();
+			}
+		} );
+	}
+
+	renderTemplates();
 
 	// -------------------------------------------------------------------------
 	// BMR / TDEE (Mifflin-St Jeor)

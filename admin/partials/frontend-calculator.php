@@ -488,6 +488,21 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<p class="fcc-meal-empty__hint"><?php esc_html_e( 'Go to "Food Lookup", select a food and click "+ Add to Meal" to start building.', 'food-calorie-calculator' ); ?></p>
 			</div>
 
+			<!-- Meal templates (localStorage) -->
+			<div class="fcc-meal-templates" id="fcc-meal-templates" hidden>
+				<p class="fcc-meal-templates__label"><?php esc_html_e( 'Saved Templates', 'food-calorie-calculator' ); ?></p>
+				<div class="fcc-meal-templates__list" id="fcc-meal-templates-list"></div>
+			</div>
+
+			<!-- Meal category selector -->
+			<div class="fcc-meal-cat-pills" id="fcc-meal-cat-pills">
+				<span class="fcc-meal-cat-label"><?php esc_html_e( 'Adding to:', 'food-calorie-calculator' ); ?></span>
+				<button type="button" class="fcc-meal-cat-pill fcc-meal-cat-pill--active" data-cat="breakfast">🌅 <?php esc_html_e( 'Breakfast', 'food-calorie-calculator' ); ?></button>
+				<button type="button" class="fcc-meal-cat-pill" data-cat="lunch">🍽️ <?php esc_html_e( 'Lunch', 'food-calorie-calculator' ); ?></button>
+				<button type="button" class="fcc-meal-cat-pill" data-cat="dinner">🌙 <?php esc_html_e( 'Dinner', 'food-calorie-calculator' ); ?></button>
+				<button type="button" class="fcc-meal-cat-pill" data-cat="snack">🍎 <?php esc_html_e( 'Snack', 'food-calorie-calculator' ); ?></button>
+			</div>
+
 			<!-- Meal items (shown when ≥1 item) -->
 			<section class="fcc-section fcc-meal-section" aria-label="<?php esc_attr_e( 'Meal builder', 'food-calorie-calculator' ); ?>" hidden>
 
@@ -539,6 +554,14 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 					<table class="fcc-nutrition-table fcc-meal-totals-table">
 						<tbody class="fcc-meal-totals-body"></tbody>
 					</table>
+				</div>
+
+				<!-- Save as Template -->
+				<div class="fcc-meal-save-tpl">
+					<button type="button" class="fcc-meal-save-tpl__btn" id="fcc-save-tpl-btn">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+						<?php esc_html_e( 'Save as Template', 'food-calorie-calculator' ); ?>
+					</button>
 				</div>
 
 			</section>
