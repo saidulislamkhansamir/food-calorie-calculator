@@ -1364,11 +1364,21 @@
 	align-items: center;
 	gap: 1.5rem;
 	margin: 1.25rem 0 0;
-	padding: 1.25rem 1.5rem;
-	background: linear-gradient(135deg, #f0f7f7 0%, #e8f8ef 100%);
-	border: 1.5px solid #dcfce7;
-	border-radius: 14px;
+	padding: 1.5rem;
+	background: linear-gradient(135deg, #f7fafa 0%, var(--fcc-bg, #FFE6E1) 50%, #f7fafa 100%);
+	border: 2px solid transparent;
+	border-radius: 16px;
 	flex-wrap: wrap;
+	background-clip: padding-box;
+	position: relative;
+}
+.fcc-macro-chart-wrapper::before {
+	content: '';
+	position: absolute;
+	inset: -2px;
+	border-radius: 18px;
+	background: linear-gradient(135deg, #043e40, #075B5E, #9FC87E);
+	z-index: -1;
 }
 
 .fcc-macro-chart { flex-shrink: 0; }
@@ -1399,53 +1409,63 @@
 	flex-shrink: 0;
 }
 
-/* Macro detail panel — gram + kcal breakdown next to legend */
+/* Macro detail panel — gram + kcal breakdown */
 .fcc-macro-detail {
 	display: flex;
 	flex-direction: column;
-	gap: 0.375rem;
+	gap: 0.4rem;
 	margin-left: auto;
-	min-width: 170px;
+	min-width: 180px;
 }
 .fcc-macro-detail__row {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	font-size: 0.8125rem;
-	padding: 0.3rem 0.625rem;
-	background: rgba(255,255,255,.75);
-	border: 1px solid rgba(0,0,0,.06);
-	border-radius: 8px;
+	font-size: 0.82rem;
+	padding: 0.45rem 0.75rem;
+	background: #fff;
+	border: 1.5px solid #e6eded;
+	border-radius: 10px;
+	transition: border-color .15s, box-shadow .15s;
+}
+.fcc-macro-detail__row:hover {
+	border-color: var(--fcc-primary, #075B5E);
+	box-shadow: 0 2px 8px rgba(7,91,94,.08);
 }
 .fcc-macro-detail__dot {
-	width: 8px;
-	height: 8px;
+	width: 10px;
+	height: 10px;
 	border-radius: 50%;
 	flex-shrink: 0;
 }
 .fcc-macro-detail__lbl {
 	font-weight: 600;
-	color: var(--fcc-text);
-	min-width: 48px;
+	color: var(--fcc-text, #1a2e2f);
+	min-width: 50px;
 }
 .fcc-macro-detail__val {
-	font-weight: 700;
-	color: var(--fcc-text);
+	font-weight: 800;
+	font-size: 0.9rem;
+	color: var(--fcc-text, #1a2e2f);
 	margin-left: auto;
 }
 .fcc-macro-detail__kcal {
 	font-size: 0.7rem;
-	color: var(--fcc-text-muted);
-	min-width: 48px;
+	font-weight: 500;
+	color: var(--fcc-text-muted, #4a6365);
+	min-width: 50px;
 	text-align: right;
+	padding: 2px 6px;
+	background: #f5fafa;
+	border-radius: 6px;
 }
 .fcc-macro-detail__footer {
 	text-align: center;
-	font-size: 0.75rem;
-	font-weight: 600;
-	color: var(--fcc-text-muted);
-	padding-top: 0.25rem;
-	border-top: 1px solid rgba(0,0,0,.06);
+	font-size: 0.78rem;
+	font-weight: 700;
+	color: var(--fcc-primary, #075B5E);
+	padding: 0.35rem 0;
+	border-top: 1.5px solid #e6eded;
 	margin-top: 0.125rem;
 }
 

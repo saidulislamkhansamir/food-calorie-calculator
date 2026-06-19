@@ -72,7 +72,7 @@
 
 		// Centre text
 		ctx.fillStyle = getComputedStyle( canvas.closest( '.fcc-calculator' ) || document.body )
-			.getPropertyValue( '--fcc-primary' ).trim() || '#005EB8';
+			.getPropertyValue( '--fcc-primary' ).trim() || '#075B5E';
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 		ctx.font = 'bold ' + Math.round( inner * 0.32 ) + 'px sans-serif';

@@ -555,7 +555,7 @@
 				var cG = fmt( ( food.carbohydrate_g || 0 ) * factor, d );
 				var fG = fmt( ( food.fat_g || 0 ) * factor, d );
 				var totalKcal = Math.round( protein_kcal + carbs_kcal + fat_kcal );
-				var cPerG = totalKcal > 0 && state.quantity > 0 ? fmt( totalKcal / state.quantity, 1 ) : '—';
+				var cPerG = totalKcal > 0 && grams > 0 ? fmt( totalKcal / grams, 1 ) : '—';
 				macroDetail.innerHTML =
 					'<div class="fcc-macro-detail__row">'
 					+  '<span class="fcc-macro-detail__dot" style="background:' + chartColors.protein + '"></span>'
