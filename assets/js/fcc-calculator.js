@@ -1035,13 +1035,27 @@
 	// ── Meal Category State ──
 	var mealCatPills = root.querySelectorAll( '.fcc-meal-cat-pill' );
 	var currentMealCat = 'breakfast';
+	var mealCatCfg = ( advanced && advanced.mealCategories ) ? advanced.mealCategories : {};
+
+	// Hide category pills if feature disabled.
+	var catPillsContainer = root.querySelector( '#fcc-meal-cat-pills' );
+	if ( features.meal_categories === false && catPillsContainer ) catPillsContainer.hidden = true;
+
+	// Apply custom labels/emojis from settings to pills.
+	mealCatPills.forEach( function ( pill ) {
+		var cat = pill.dataset.cat;
+		var cfg = mealCatCfg[ cat ];
+		if ( cfg ) pill.innerHTML = ( cfg.emoji || '' ) + ' ' + ( cfg.label || cat );
+	} );
 
 	function autoSelectMealCat() {
 		var h = new Date().getHours();
-		if ( h >= 5 && h < 11 ) currentMealCat = 'breakfast';
-		else if ( h >= 11 && h < 15 ) currentMealCat = 'lunch';
-		else if ( h >= 15 && h < 17 ) currentMealCat = 'snack';
-		else if ( h >= 17 && h < 22 ) currentMealCat = 'dinner';
+		var bk = mealCatCfg.breakfast || { start: 5, end: 11 };
+		var ln = mealCatCfg.lunch     || { start: 11, end: 15 };
+		var dn = mealCatCfg.dinner    || { start: 17, end: 22 };
+		if ( h >= bk.start && h < bk.end ) currentMealCat = 'breakfast';
+		else if ( h >= ln.start && h < ln.end ) currentMealCat = 'lunch';
+		else if ( h >= dn.start && h < dn.end ) currentMealCat = 'dinner';
 		else currentMealCat = 'snack';
 
 		mealCatPills.forEach( function ( p ) {
@@ -1113,8 +1127,12 @@
 		let omega3HasData = false;
 		let caffeineHasData = false;
 
-		var catEmojis = { breakfast: '🌅', lunch: '🍽️', dinner: '🌙', snack: '🍎' };
-		var catLabels = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snack' };
+		var catEmojis = {}, catLabels = {};
+		[ 'breakfast', 'lunch', 'dinner', 'snack' ].forEach( function ( c ) {
+			var cfg = mealCatCfg[ c ] || {};
+			catEmojis[ c ] = cfg.emoji || '';
+			catLabels[ c ] = cfg.label || c.charAt(0).toUpperCase() + c.slice(1);
+		} );
 		var catOrder  = [ 'breakfast', 'lunch', 'snack', 'dinner' ];
 
 		// Group items by category.
@@ -1222,7 +1240,7 @@
 	// Meal Templates (localStorage)
 	// -------------------------------------------------------------------------
 	var TPL_KEY = 'fcc_meal_templates';
-	var TPL_MAX = 10;
+	var TPL_MAX = ( advanced && advanced.mealMaxTemplates ) ? advanced.mealMaxTemplates : 10;
 	var tplSection = root.querySelector( '#fcc-meal-templates' );
 	var tplList    = root.querySelector( '#fcc-meal-templates-list' );
 	var tplSaveBtn = root.querySelector( '#fcc-save-tpl-btn' );

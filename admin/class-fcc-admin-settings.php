@@ -162,6 +162,7 @@ class Settings_Page {
 			'meal_builder', 'print_pdf', 'share_link', 'add_custom_food', 'json_ld_schema',
 			'compare_foods', 'health_highlights', 'popular_foods',
 			'food_request_form', 'powered_by_footer', 'voice_search',
+			'meal_categories',
 		];
 
 		$sanitised = [];
@@ -238,6 +239,17 @@ class Settings_Page {
 		foreach ( $hl_fields as $field ) {
 			$sanitised[ $field ] = max( 0, (float) ( $post[ $field ] ?? $defaults[ $field ] ?? 0 ) );
 		}
+
+		$meal_cats = [ 'breakfast', 'lunch', 'dinner', 'snack' ];
+		foreach ( $meal_cats as $cat ) {
+			$sanitised[ 'meal_cat_' . $cat . '_label' ] = sanitize_text_field( $post[ 'meal_cat_' . $cat . '_label' ] ?? $defaults[ 'meal_cat_' . $cat . '_label' ] ?? '' );
+			$sanitised[ 'meal_cat_' . $cat . '_emoji' ] = sanitize_text_field( $post[ 'meal_cat_' . $cat . '_emoji' ] ?? $defaults[ 'meal_cat_' . $cat . '_emoji' ] ?? '' );
+			if ( $cat !== 'snack' ) {
+				$sanitised[ 'meal_cat_' . $cat . '_start' ] = max( 0, min( 23, absint( $post[ 'meal_cat_' . $cat . '_start' ] ?? $defaults[ 'meal_cat_' . $cat . '_start' ] ?? 0 ) ) );
+				$sanitised[ 'meal_cat_' . $cat . '_end' ]   = max( 0, min( 23, absint( $post[ 'meal_cat_' . $cat . '_end' ] ?? $defaults[ 'meal_cat_' . $cat . '_end' ] ?? 0 ) ) );
+			}
+		}
+		$sanitised['meal_max_templates'] = max( 1, min( 20, absint( $post['meal_max_templates'] ?? 10 ) ) );
 
 		return $sanitised;
 	}

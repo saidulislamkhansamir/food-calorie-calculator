@@ -292,6 +292,31 @@ class Shortcode {
 					'bmrFormula'            => sanitize_key( $advanced['bmr_formula'] ?? 'mifflin' ),
 					'calorieGoalAdjustment' => absint( $advanced['calorie_goal_adjustment'] ?? 500 ),
 					'searchMinChars'        => absint( $advanced['search_min_chars'] ?? 2 ),
+					'mealCategories'        => [
+						'breakfast' => [
+							'label' => sanitize_text_field( $advanced['meal_cat_breakfast_label'] ?? 'Breakfast' ),
+							'emoji' => sanitize_text_field( $advanced['meal_cat_breakfast_emoji'] ?? '🌅' ),
+							'start' => absint( $advanced['meal_cat_breakfast_start'] ?? 5 ),
+							'end'   => absint( $advanced['meal_cat_breakfast_end'] ?? 11 ),
+						],
+						'lunch' => [
+							'label' => sanitize_text_field( $advanced['meal_cat_lunch_label'] ?? 'Lunch' ),
+							'emoji' => sanitize_text_field( $advanced['meal_cat_lunch_emoji'] ?? '🍽️' ),
+							'start' => absint( $advanced['meal_cat_lunch_start'] ?? 11 ),
+							'end'   => absint( $advanced['meal_cat_lunch_end'] ?? 15 ),
+						],
+						'dinner' => [
+							'label' => sanitize_text_field( $advanced['meal_cat_dinner_label'] ?? 'Dinner' ),
+							'emoji' => sanitize_text_field( $advanced['meal_cat_dinner_emoji'] ?? '🌙' ),
+							'start' => absint( $advanced['meal_cat_dinner_start'] ?? 17 ),
+							'end'   => absint( $advanced['meal_cat_dinner_end'] ?? 22 ),
+						],
+						'snack' => [
+							'label' => sanitize_text_field( $advanced['meal_cat_snack_label'] ?? 'Snack' ),
+							'emoji' => sanitize_text_field( $advanced['meal_cat_snack_emoji'] ?? '🍎' ),
+						],
+					],
+					'mealMaxTemplates' => absint( $advanced['meal_max_templates'] ?? 10 ),
 				],
 				'wl'          => $wl_active ? $wl_active['wl_data'] : null,
 				'affiliates'  => \FCC\Admin\Affiliates::get_enabled_for_frontend(),

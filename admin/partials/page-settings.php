@@ -343,6 +343,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						'food_request_form'      => [ 'label' => __( 'Food Request Form',               'food-calorie-calculator' ), 'hint' => __('"Can\'t find your food?" form', 'food-calorie-calculator' ) ],
 						'powered_by_footer'      => [ 'label' => __( 'Powered-by Footer',               'food-calorie-calculator' ), 'hint' => __( 'Attribution footer link',   'food-calorie-calculator' ) ],
 					'voice_search'           => [ 'label' => __( 'Voice Search',                    'food-calorie-calculator' ), 'hint' => __( 'Microphone button for speech-to-search', 'food-calorie-calculator' ) ],
+					'meal_categories'        => [ 'label' => __( 'Meal Categories',                 'food-calorie-calculator' ), 'hint' => __( 'Breakfast/Lunch/Dinner/Snack grouping in Meal Builder', 'food-calorie-calculator' ) ],
 					];
 					foreach ( $feature_labels as $key => $data ) : ?>
 						<div class="fcc-stg-feature <?php echo ! empty( $features[ $key ] ) ? 'fcc-stg-feature--on' : ''; ?>">
@@ -682,6 +683,63 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						<div class="fcc-stg-row__control">
 							<input type="number" id="calorie_goal_adjustment" name="calorie_goal_adjustment" min="100" max="2000" step="50"
 								value="<?php echo absint( $advanced['calorie_goal_adjustment'] ?? 500 ); ?>" class="fcc-stg-number">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Meal Categories -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Meal Categories', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Customise category names, emojis, and time windows for auto-selection. Enable/disable in Features tab.', 'food-calorie-calculator' ); ?></p>
+				</div>
+				<div class="fcc-stg-rows">
+					<?php
+					$meal_cats = [
+						'breakfast' => __( 'Breakfast', 'food-calorie-calculator' ),
+						'lunch'     => __( 'Lunch', 'food-calorie-calculator' ),
+						'dinner'    => __( 'Dinner', 'food-calorie-calculator' ),
+						'snack'     => __( 'Snack', 'food-calorie-calculator' ),
+					];
+					foreach ( $meal_cats as $cat_key => $cat_default ) :
+						$lbl   = $advanced[ 'meal_cat_' . $cat_key . '_label' ] ?? $cat_default;
+						$emoji = $advanced[ 'meal_cat_' . $cat_key . '_emoji' ] ?? '';
+						$start = $advanced[ 'meal_cat_' . $cat_key . '_start' ] ?? 0;
+						$end   = $advanced[ 'meal_cat_' . $cat_key . '_end' ] ?? 0;
+					?>
+						<div class="fcc-stg-row">
+							<div class="fcc-stg-row__label">
+								<label><?php echo esc_html( $cat_default ); ?></label>
+							</div>
+							<div class="fcc-stg-row__control" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+								<input type="text" name="meal_cat_<?php echo esc_attr( $cat_key ); ?>_emoji"
+									value="<?php echo esc_attr( $emoji ); ?>" class="fcc-stg-number" style="width:50px;text-align:center"
+									placeholder="🍽️" title="<?php esc_attr_e( 'Emoji', 'food-calorie-calculator' ); ?>">
+								<input type="text" name="meal_cat_<?php echo esc_attr( $cat_key ); ?>_label"
+									value="<?php echo esc_attr( $lbl ); ?>" class="fcc-stg-number" style="width:100px"
+									placeholder="<?php echo esc_attr( $cat_default ); ?>">
+								<?php if ( $cat_key !== 'snack' ) : ?>
+									<span style="font-size:0.72rem;color:#888"><?php esc_html_e( 'Hours:', 'food-calorie-calculator' ); ?></span>
+									<input type="number" name="meal_cat_<?php echo esc_attr( $cat_key ); ?>_start"
+										value="<?php echo absint( $start ); ?>" min="0" max="23" class="fcc-stg-number" style="width:55px">
+									<span style="font-size:0.75rem;color:#888">–</span>
+									<input type="number" name="meal_cat_<?php echo esc_attr( $cat_key ); ?>_end"
+										value="<?php echo absint( $end ); ?>" min="0" max="23" class="fcc-stg-number" style="width:55px">
+								<?php else : ?>
+									<span style="font-size:0.72rem;color:#888;font-style:italic"><?php esc_html_e( 'Anytime (fills gaps)', 'food-calorie-calculator' ); ?></span>
+								<?php endif; ?>
+							</div>
+						</div>
+					<?php endforeach; ?>
+					<div class="fcc-stg-row">
+						<div class="fcc-stg-row__label">
+							<label for="meal_max_templates"><?php esc_html_e( 'Max Templates', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Maximum saved meal templates per user (1–20).', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control">
+							<input type="number" id="meal_max_templates" name="meal_max_templates" min="1" max="20"
+								value="<?php echo absint( $advanced['meal_max_templates'] ?? 10 ); ?>" class="fcc-stg-number">
 						</div>
 					</div>
 				</div>
