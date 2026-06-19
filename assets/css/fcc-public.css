@@ -3927,17 +3927,18 @@ select.fcc-bmr-input {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 1.5px solid var(--fcc-border, #d4ddd8);
-	background: #fff;
+	border: none;
+	background: var(--fcc-primary, #075B5E);
 	cursor: pointer;
 	border-radius: 50%;
-	transition: color .15s, background .15s, border-color .15s, box-shadow .15s;
+	box-shadow: 0 2px 6px rgba(7,91,94,.2);
+	transition: background .15s, box-shadow .15s, transform .15s;
 }
-.fcc-voice-btn svg { stroke: var(--fcc-primary, #075B5E); }
+.fcc-voice-btn svg { stroke: #fff; stroke-width: 2.5; }
 .fcc-voice-btn:hover {
-	border-color: var(--fcc-primary, #075B5E);
-	background: rgba(7,91,94,.05);
-	box-shadow: 0 2px 8px rgba(7,91,94,.12);
+	background: #044547;
+	box-shadow: 0 3px 10px rgba(7,91,94,.3);
+	transform: scale(1.05);
 }
 
 /* Active / Listening state — red pulse */
