@@ -5786,4 +5786,97 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 30 );
 	}
+
+	/** Seed v31: 50 more unique foods. */
+	public static function seed_v31(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 31 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ── SQUASH & GOURD (6) ──
+			['Butternut Squash (raw)',$fv,45,188,1.0,11.7,2.2,0.1,0.0,2.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Acorn Squash (baked)',$fv,56,234,1.1,14.6,0.0,0.1,0.0,4.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Spaghetti Squash (cooked)',$fv,31,130,0.6,6.9,2.8,0.6,0.1,1.5,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Pattypan Squash (cooked)',$fv,20,84,1.2,4.3,2.0,0.3,0.1,1.1,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Kabocha Squash (cooked)',$fv,34,142,0.7,8.0,3.5,0.1,0.0,1.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Bitter Melon (raw)',$fv,17,71,1.0,3.7,0.0,0.2,0.0,2.8,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+
+			// ── SEAWEED & ALGAE (5) ──
+			['Nori (dried sheet, per 100g)',$fv,190,795,30.7,44.3,3.5,0.3,0.1,0.3,1.8, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Wakame (rehydrated)',$fv,45,188,3.0,9.1,0.5,0.6,0.1,0.5,6.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Dulse (dried)',$fv,250,1046,20.0,44.0,3.0,3.0,0.5,8.0,4.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Spirulina (dried powder)',$fv,290,1213,57.5,23.9,3.1,7.7,2.7,3.6,2.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kelp (raw)',$fv,43,180,1.7,9.6,0.6,0.6,0.2,1.3,2.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── MIDDLE EASTERN SWEETS & PASTRIES (5) ──
+			['Kunafa (cheese)',$sc,400,1674,7.0,42.0,25.0,23.0,10.0,1.0,0.5, 0,0,1,0,1,1,0,0, 0,0,1,1,0,1],
+			['Basbousa (semolina cake)',$sc,330,1381,4.0,48.0,30.0,14.0,6.0,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Ma\'amoul (date-filled)',$sc,380,1590,5.5,52.0,28.0,17.0,4.5,2.0,0.1, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Lokum (rose flavour)',$sc,350,1464,0.5,88.0,75.0,0.1,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Qatayef (stuffed pancake)',$sc,310,1297,6.0,42.0,22.0,13.0,5.0,1.5,0.2, 0,0,1,0,1,1,0,0, 0,0,1,1,0,1],
+
+			// ── MILK ALTERNATIVES & DAIRY DRINKS (6) ──
+			['Rice Milk (unsweetened)',$dr,47,197,0.3,9.2,4.0,1.0,0.1,0.3,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Hemp Milk (unsweetened)',$dr,39,163,0.8,1.0,0.0,2.8,0.3,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Cashew Milk (unsweetened)',$dr,18,75,0.5,1.5,0.0,1.2,0.2,0.0,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1],
+			['Buttermilk',$de,40,167,3.3,4.8,4.8,0.9,0.5,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Lassi (sweet, mango)',$dr,72,301,2.0,13.0,12.5,1.5,1.0,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Ayran (Turkish yoghurt drink)',$dr,36,151,1.7,2.5,2.5,2.0,1.3,0.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── CHARCUTERIE & DELI (6) ──
+			['Pepperoni',$mp,494,2067,20.0,4.0,1.5,44.0,17.0,0.0,3.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Turkey Breast (deli sliced)',$mp,104,435,17.0,3.5,1.5,2.0,0.5,0.5,1.5, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0],
+			['Roast Beef (deli sliced)',$mp,130,544,21.0,1.0,0.5,4.5,1.8,0.0,1.2, 0,0,0,0,0,0,0,0, 0,1,1,1,0,0],
+			['Chorizo',$mp,455,1904,24.0,2.0,1.0,38.5,14.5,0.0,3.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Serrano Ham',$mp,241,1008,31.0,0.5,0.0,12.5,4.5,0.0,5.0, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0],
+			['Lardo (cured pork fat)',$mp,810,3389,1.5,0.0,0.0,90.0,35.0,0.0,2.5, 0,0,0,0,0,0,0,0, 1,0,0,0,0,0],
+
+			// ── COOKING OILS (6) ──
+			['Avocado Oil',$fo,884,3699,0.0,0.0,0.0,100.0,12.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Walnut Oil',$fo,884,3699,0.0,0.0,0.0,100.0,9.0,0.0,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1],
+			['Flaxseed Oil',$fo,884,3699,0.0,0.0,0.0,100.0,9.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Ghee (clarified butter)',$fo,900,3766,0.0,0.0,0.0,99.5,62.0,0.0,0.0, 0,0,1,0,0,0,0,0, 1,1,1,1,0,1],
+			['Toasted Sesame Oil',$fo,884,3699,0.0,0.0,0.0,100.0,14.2,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Truffle Oil',$fo,884,3699,0.0,0.0,0.0,100.0,14.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+
+			// ── VINEGARS (4) ──
+			['Balsamic Vinegar',$co,88,368,0.5,17.0,15.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Apple Cider Vinegar',$co,22,92,0.0,0.9,0.4,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Rice Vinegar',$co,18,75,0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Red Wine Vinegar',$co,19,79,0.0,0.6,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── SPECIALITY GRAINS & SEEDS (6) ──
+			['Amaranth (raw)',$bc,371,1552,13.6,65.3,1.7,7.0,1.5,6.7,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Teff (raw)',$bc,367,1536,13.3,73.1,1.8,2.4,0.4,8.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Freekeh (dry)',$bc,330,1381,14.0,63.0,1.0,3.0,0.5,13.0,0.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Spelt (raw grain)',$bc,338,1414,14.6,70.2,6.8,2.4,0.4,10.7,0.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Millet (raw)',$bc,378,1582,11.0,72.8,1.7,4.2,0.7,8.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Buckwheat Groats (raw)',$bc,343,1435,13.3,71.5,0.0,3.4,0.7,10.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'M&W 8th ed. / USDA FDC. Seeded v31.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 31 );
+	}
 }
