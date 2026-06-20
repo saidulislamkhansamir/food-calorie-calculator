@@ -989,6 +989,11 @@ class Database {
 		$wpdb->delete( self::requests_table(), [ 'id' => $id ], [ '%d' ] );
 	}
 
+	public static function delete_requests_by_status( string $status ): int {
+		global $wpdb;
+		return (int) $wpdb->query( $wpdb->prepare( "DELETE FROM " . self::requests_table() . " WHERE status = %s", $status ) ); // phpcs:ignore
+	}
+
 	public static function count_pending_requests(): int {
 		global $wpdb;
 		$table = self::requests_table();
@@ -1247,6 +1252,11 @@ class Database {
 	public static function delete_missed_search( int $id ): void {
 		global $wpdb;
 		$wpdb->delete( self::missed_searches_table(), [ 'id' => $id ], [ '%d' ] );
+	}
+
+	public static function delete_missed_searches_by_status( string $status ): int {
+		global $wpdb;
+		return (int) $wpdb->query( $wpdb->prepare( "DELETE FROM " . self::missed_searches_table() . " WHERE status = %s", $status ) ); // phpcs:ignore
 	}
 
 	// -------------------------------------------------------------------------

@@ -30,6 +30,8 @@ class Food_Requests {
 		$loader->add_action( 'wp_ajax_fcc_ajax_mark_ms_added',      $this, 'ajax_mark_ms_added' );
 		$loader->add_action( 'wp_ajax_fcc_ajax_dismiss_ms',         $this, 'ajax_dismiss_ms' );
 		$loader->add_action( 'wp_ajax_fcc_ajax_delete_ms',          $this, 'ajax_delete_ms' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_bulk_delete_dismissed_ms',   $this, 'ajax_bulk_delete_dismissed_ms' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_bulk_delete_dismissed_reqs', $this, 'ajax_bulk_delete_dismissed_reqs' );
 
 		// Export.
 		$loader->add_action( 'admin_post_fcc_export_requests',      $this, 'handle_export_requests' );
@@ -213,6 +215,28 @@ class Food_Requests {
 		}
 		Database::delete_missed_search( $id );
 		wp_send_json_success( [ 'message' => __( 'Deleted.', 'food-calorie-calculator' ) ] );
+	}
+
+	// -------------------------------------------------------------------------
+	// Bulk delete dismissed.
+	// -------------------------------------------------------------------------
+
+	public function ajax_bulk_delete_dismissed_ms(): void {
+		check_ajax_referer( 'fcc_ajax_ms' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => 'Unauthorized' ], 403 );
+		}
+		$deleted = Database::delete_missed_searches_by_status( 'dismissed' );
+		wp_send_json_success( [ 'message' => sprintf( __( '%d dismissed searches deleted.', 'food-calorie-calculator' ), $deleted ), 'deleted' => $deleted ] );
+	}
+
+	public function ajax_bulk_delete_dismissed_reqs(): void {
+		check_ajax_referer( 'fcc_ajax_reqs' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => 'Unauthorized' ], 403 );
+		}
+		$deleted = Database::delete_requests_by_status( 'dismissed' );
+		wp_send_json_success( [ 'message' => sprintf( __( '%d dismissed requests deleted.', 'food-calorie-calculator' ), $deleted ), 'deleted' => $deleted ] );
 	}
 
 	// -------------------------------------------------------------------------

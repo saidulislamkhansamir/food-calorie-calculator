@@ -858,6 +858,35 @@
 		} ).fail( function () { $btn.prop( 'disabled', false ); } );
 	} );
 
+	// Bulk Delete All Dismissed — both Missed Searches and User Requests.
+	$( document ).on( 'click', '.fcc-bulk-delete-dismissed-btn', function () {
+		var $btn    = $( this );
+		var region  = $btn.data( 'region' );
+		if ( ! window.confirm( 'Delete ALL dismissed entries? This cannot be undone.' ) ) return;
+		$btn.prop( 'disabled', true ).text( 'Deleting…' );
+		var ajaxAction = region === 'ms' ? 'fcc_ajax_bulk_delete_dismissed_ms' : 'fcc_ajax_bulk_delete_dismissed_reqs';
+		var nonceKey   = region === 'ms' ? $( '#fcc-ms-list' ).data( 'nonce' ) : $( '#fcc-reqs-list' ).data( 'nonce' );
+		$.post( fccAdmin.ajaxUrl, {
+			action:      ajaxAction,
+			_ajax_nonce: nonceKey,
+		}, function ( response ) {
+			if ( response.success ) {
+				showToast( response.data.message || 'Deleted.' );
+				if ( region === 'ms' ) {
+					$( '#fcc-ms-list' ).data( 'status', 'dismissed' );
+					loadMsPage( 1 );
+				} else {
+					$( '#fcc-reqs-list' ).data( 'status', 'dismissed' );
+					loadReqsPage( 1 );
+				}
+				$btn.remove();
+			} else {
+				$btn.prop( 'disabled', false ).text( 'Delete All Dismissed' );
+				showToast( ( response.data && response.data.message ) || 'Error' );
+			}
+		} ).fail( function () { $btn.prop( 'disabled', false ).text( 'Delete All Dismissed' ); } );
+	} );
+
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
