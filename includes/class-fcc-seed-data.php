@@ -8499,4 +8499,157 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 48 );
 	}
+
+	/** Seed v49: Malaysian, Singaporean, Filipino, Indonesian & Bruneian foods. */
+	public static function seed_v49(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 49 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── MALAYSIA (25) ──
+			// ══════════════════════════════════════
+			['Nasi Lemak (coconut rice, full set)',$tk,195,816,7.5,24.0,2.0,8.0,3.5,1.5,1.0, 1,1,0,1,1,0,0,0, 0,0,1,0,0,0],
+			['Char Kway Teow (Penang fried noodles)',$tk,175,732,7.0,20.0,2.0,8.0,2.0,0.5,2.0, 0,1,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Laksa Lemak (Nyonya curry laksa)',$tk,100,418,5.5,8.5,1.5,5.5,3.5,0.5,1.2, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Assam Laksa (Penang sour laksa)',$tk,85,356,5.0,10.0,2.0,3.0,0.5,0.5,1.5, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Rendang Daging (Malaysian dry beef curry)',$mp,200,837,18.0,5.0,2.0,12.0,7.5,1.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Satay (Malaysian, chicken, 10 sticks)',$mp,185,774,16.0,8.0,5.0,10.5,3.0,0.5,0.8, 0,0,0,0,1,0,1,0, 0,0,1,0,0,0],
+			['Roti Canai (Malaysian flatbread)',$bc,300,1255,7.0,38.0,2.0,13.5,5.0,1.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Roti Telur (egg roti)',$bc,330,1381,9.0,36.0,2.0,16.5,6.0,1.0,0.6, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Mee Goreng Mamak (Indian-Malay fried noodles)',$tk,180,753,7.0,22.0,3.0,7.5,1.5,1.0,2.0, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Nasi Kandar (rice with mixed curries)',$tk,210,879,10.0,24.0,2.0,8.5,3.0,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Hokkien Mee (KL-style dark noodles)',$tk,165,690,8.5,18.0,2.0,7.0,2.0,0.5,2.5, 0,1,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Bak Kut Teh (pork rib herbal soup)',$tk,85,356,7.5,2.0,0.5,5.5,2.0,0.3,0.8, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Curry Mee (curry noodle soup)',$tk,115,481,6.0,10.0,1.5,6.5,4.0,0.5,1.5, 0,1,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Ayam Percik (flame-grilled chicken)',$mp,175,732,20.0,5.0,3.0,8.5,4.0,0.0,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ikan Bakar (charcoal grilled fish)',$fs,130,544,18.0,3.0,2.0,5.5,1.0,0.0,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Rojak (fruit & veg salad, shrimp paste)',$fv,115,481,3.0,14.0,10.0,5.5,1.0,2.0,1.5, 0,1,0,0,1,0,0,0, 0,0,1,0,1,1],
+			['Cendol (shaved ice dessert)',$sc,130,544,1.0,28.0,20.0,3.0,2.5,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kuih Lapis (layered steamed cake)',$sc,270,1130,2.0,40.0,25.0,11.5,8.0,0.0,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Apam Balik (peanut pancake turnover)',$sc,295,1234,6.0,40.0,18.0,13.0,3.5,2.0,0.3, 0,0,0,1,1,1,0,0, 0,0,1,1,0,1],
+			['Ondeh-Ondeh (palm sugar glutinous balls)',$sc,210,879,2.0,38.0,18.0,5.5,4.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Teh Tarik (pulled milk tea)',$dr,65,272,1.5,12.0,11.5,1.5,1.0,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Kopi-O (Malaysian black coffee, sweet)',$dr,30,126,0.2,7.5,7.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sirap Bandung (rose syrup milk)',$dr,75,314,1.5,16.0,15.5,1.0,0.6,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Air Mata Kucing (longan drink)',$dr,45,188,0.2,11.0,10.0,0.0,0.0,0.3,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Nasi Goreng Kampung (village fried rice)',$tk,180,753,6.5,24.0,1.5,6.5,1.5,1.0,1.5, 1,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+
+			// ══════════════════════════════════════
+			// ── SINGAPORE (15) ──
+			// ══════════════════════════════════════
+			['Chilli Crab (Singapore)',$fs,145,607,11.0,10.0,6.0,7.0,1.0,0.5,2.0, 0,1,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Black Pepper Crab',$fs,140,586,12.0,6.0,2.0,7.5,1.5,0.5,1.5, 0,1,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Hainanese Chicken Rice (Singapore)',$tk,160,669,10.5,22.0,0.5,3.5,0.8,0.5,0.8, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Laksa (Singapore curry)',$tk,105,439,6.0,9.0,1.5,5.5,3.5,0.5,1.2, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kaya Toast (with soft-boiled eggs)',$bc,250,1046,7.0,32.0,12.0,10.5,5.5,0.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Carrot Cake (chai tow kway, fried)',$tk,165,690,4.0,18.0,1.5,9.0,1.5,0.5,1.5, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Bak Chor Mee (minced pork noodles)',$tk,155,649,8.0,18.0,1.5,6.0,1.5,0.5,2.0, 0,0,0,0,0,1,1,0, 0,0,0,0,0,0],
+			['Wanton Mee (Singapore, dry)',$tk,160,669,7.5,20.0,2.0,5.5,1.5,0.5,2.0, 0,1,0,0,0,1,1,0, 0,0,0,0,0,0],
+			['Nasi Biryani (Singapore Indian)',$tk,185,774,10.0,22.0,1.0,6.5,2.0,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Mee Siam (spicy vermicelli)',$tk,145,607,5.0,20.0,3.0,5.0,1.0,0.5,1.5, 0,1,0,0,1,0,1,0, 0,0,1,0,0,0],
+			['Fish Head Curry (Singapore)',$tk,105,439,8.5,5.0,2.0,6.0,3.0,0.5,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Oyster Omelette (or luak)',$tk,185,774,8.0,14.0,0.5,11.0,2.5,0.3,1.5, 1,1,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Popiah (fresh spring roll, Singaporean)',$tk,95,397,3.5,14.0,2.0,2.5,0.4,1.5,0.8, 0,1,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Ice Kachang (ABC, shaved ice)',$sc,120,502,2.0,26.0,20.0,1.5,1.0,1.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Kopi (Singapore coffee, sweet)',$dr,55,230,1.5,8.0,7.5,2.0,1.2,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ══════════════════════════════════════
+			// ── PHILIPPINES (25) ──
+			// ══════════════════════════════════════
+			['Adobo (chicken, Filipino national dish)',$mp,175,732,16.0,3.0,1.0,11.0,3.0,0.0,2.0, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Adobo (pork)',$mp,210,879,14.0,3.0,1.0,16.0,5.5,0.0,2.0, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Sinigang na Baboy (sour pork soup)',$tk,55,230,4.0,4.5,2.0,2.5,0.8,1.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Sinigang na Hipon (sour prawn soup)',$tk,45,188,4.5,4.0,2.0,1.5,0.3,1.0,0.8, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kare-Kare (oxtail peanut stew)',$tk,135,565,8.0,8.0,2.0,8.5,2.5,1.5,1.0, 0,1,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Lechon (whole roast pig, per 100g)',$mp,270,1130,22.0,0.5,0.0,20.0,7.5,0.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Sisig (sizzling pork)',$mp,235,983,15.0,5.0,1.0,18.0,6.5,0.0,1.5, 0,0,0,1,0,0,1,0, 0,0,0,0,0,0],
+			['Lumpia Shanghai (fried spring rolls, 5 pcs)',$tk,270,1130,8.0,22.0,1.0,17.0,3.5,0.5,0.8, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Lumpia Sariwa (fresh spring roll)',$tk,95,397,3.5,14.0,3.0,2.5,0.4,1.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Pancit Canton (stir-fried noodles)',$tk,160,669,6.5,22.0,2.0,5.5,1.0,0.5,1.5, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Pancit Bihon (rice noodles stir-fried)',$tk,145,607,5.0,22.0,1.5,4.0,0.8,0.5,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Tinola (ginger chicken soup)',$tk,60,251,6.0,3.5,0.5,2.5,0.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Caldereta (beef stew, Filipino)',$tk,125,523,9.0,6.0,2.0,7.5,2.5,1.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bistek Tagalog (Filipino beef steak)',$mp,170,711,16.0,5.0,2.0,9.5,3.5,0.5,2.0, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Mechado (tomato beef stew)',$tk,115,481,9.0,5.0,2.5,6.5,2.5,0.5,0.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Laing (taro leaves in coconut)',$fv,105,439,4.0,5.0,1.5,8.0,5.5,3.0,0.5, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pinakbet (mixed vegetable stew)',$fv,60,251,3.0,6.0,2.0,2.5,0.5,2.5,1.5, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bibingka (rice cake)',$sc,265,1109,4.5,40.0,15.0,10.0,5.5,0.5,0.3, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Puto (steamed rice cake)',$sc,205,858,3.5,38.0,12.0,4.0,2.0,0.5,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Leche Flan (Filipino caramel custard)',$sc,255,1067,5.5,32.0,30.0,12.0,6.0,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Halo-Halo (mixed shaved ice dessert)',$sc,130,544,2.5,26.0,20.0,3.0,1.5,1.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Ube Halaya (purple yam jam)',$sc,210,879,1.5,42.0,28.0,4.5,2.5,1.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Ensaymada (Filipino brioche)',$bc,345,1443,6.5,42.0,12.0,16.5,8.5,1.0,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Taho (silken tofu with syrup)',$sc,85,356,3.5,15.0,10.0,1.5,0.2,0.3,0.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Calamansi Juice (Filipino limeade)',$dr,35,146,0.2,8.5,7.5,0.0,0.0,0.2,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── INDONESIA (25) ──
+			// ══════════════════════════════════════
+			['Nasi Goreng (Indonesian fried rice)',$tk,175,732,6.5,24.0,2.0,6.0,1.0,1.0,1.5, 0,1,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Rendang Padang (West Sumatran beef)',$mp,205,858,18.0,5.0,2.0,13.0,8.0,1.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Satay Ayam (Indonesian chicken, peanut sauce)',$mp,190,795,15.0,8.5,5.0,11.0,2.5,0.5,0.8, 0,0,0,0,1,0,1,0, 0,0,1,0,0,0],
+			['Soto Ayam (Indonesian chicken soup)',$tk,60,251,5.0,4.5,0.5,2.5,0.5,0.5,0.8, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Soto Betawi (Jakarta milk-based soup)',$tk,95,397,6.0,4.0,1.0,6.5,3.5,0.3,0.5, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Rawon (black nut beef soup)',$tk,90,377,7.5,3.5,0.5,5.5,2.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Gado-Gado (Indonesian peanut salad)',$fv,165,690,7.0,12.0,5.0,10.5,2.0,3.0,0.5, 0,0,0,0,1,0,1,0, 0,0,1,1,1,1],
+			['Bakso (Indonesian meatball soup)',$tk,75,314,5.0,8.0,0.5,2.5,0.8,0.5,1.5, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Mie Goreng (Indonesian fried noodles)',$tk,180,753,6.0,24.0,2.5,7.0,1.5,1.0,1.5, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Bakmi Goreng (Chinese-Indonesian noodles)',$tk,175,732,7.0,22.0,2.0,6.5,1.5,0.5,1.5, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Nasi Uduk (coconut steamed rice)',$bc,185,774,3.5,28.0,0.5,6.5,4.5,0.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Nasi Padang (Padang rice plate, avg)',$tk,215,900,10.0,22.0,1.5,10.0,4.0,0.5,0.8, 0,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Ayam Goreng (Indonesian fried chicken)',$mp,245,1025,18.0,8.0,1.0,15.5,4.0,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Pecel (Javanese peanut veg salad)',$fv,145,607,5.5,10.0,3.0,9.5,1.5,3.0,0.5, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Gudeg (Javanese jackfruit stew)',$fv,125,523,3.0,16.0,10.0,5.5,3.5,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tempeh Goreng (fried tempeh)',$lp,225,941,18.0,10.0,1.0,13.5,2.5,5.0,0.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Martabak Manis (sweet thick pancake)',$sc,345,1443,6.0,42.0,22.0,17.0,7.5,1.0,0.3, 0,0,1,1,1,1,0,0, 0,0,1,1,0,1],
+			['Martabak Telur (savoury stuffed pancake)',$tk,270,1130,10.0,22.0,2.0,16.0,5.0,1.0,0.8, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Klepon (pandan glutinous balls)',$sc,215,900,2.0,40.0,18.0,5.0,3.5,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Es Teler (mixed fruit ice drink)',$dr,95,397,1.5,18.0,15.0,2.5,1.5,1.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Es Cendol (Indonesian iced cendol)',$sc,135,565,1.0,28.0,20.0,3.0,2.5,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Bandrek (ginger spice drink)',$dr,45,188,0.2,11.0,10.0,0.2,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Teh Botol (Indonesian sweet bottled tea)',$dr,30,126,0.0,7.5,7.5,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sambal Terasi (shrimp paste chilli)',$co,85,356,2.5,8.0,4.0,5.0,0.5,1.5,3.0, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kecap Manis (sweet soy sauce)',$co,250,1046,4.0,55.0,48.0,0.5,0.1,0.5,6.0, 0,0,0,0,0,1,1,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── BRUNEI (10) ──
+			// ══════════════════════════════════════
+			['Ambuyat (sago starch staple)',$bc,130,544,0.5,32.0,0.5,0.1,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Nasi Katok (Brunei rice & fried chicken)',$tk,235,983,12.0,28.0,1.0,8.5,2.5,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kelupis (glutinous rice in palm leaves)',$bc,195,816,3.5,38.0,1.0,3.5,2.0,1.0,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kuih Cincin (ring-shaped doughnut)',$sc,380,1590,4.0,50.0,15.0,18.5,4.0,0.5,0.2, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Soto Brunei (local chicken soup)',$tk,65,272,5.5,4.5,0.5,3.0,0.8,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Rendang Bruneian (drier style)',$mp,210,879,18.5,5.0,2.0,13.5,8.0,1.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Daging Masak Lada Hitam (black pepper beef)',$mp,165,690,15.0,5.0,1.5,9.5,3.5,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Puding Di Raja (Brunei royal pudding)',$sc,280,1172,4.0,38.0,28.0,13.0,8.5,0.5,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Pengat Pisang (banana in coconut milk)',$sc,145,607,1.0,26.0,18.0,4.5,3.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Teh C Special (Brunei layered tea)',$dr,70,293,1.5,12.0,11.5,2.0,1.2,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'MyFCD Malaysia / USDA FDC. Seeded v49.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 49 );
+	}
 }
