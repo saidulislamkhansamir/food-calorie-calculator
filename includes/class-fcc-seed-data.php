@@ -8767,4 +8767,132 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 50 );
 	}
+
+	/** Seed v51: Vanuatu, New Caledonia, Fiji, Wallis & Futuna, Samoa, Niue, Cook Islands, Norfolk Island. */
+	public static function seed_v51(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 51 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── VANUATU (10) ──
+			// ══════════════════════════════════════
+			['Laplap (Vanuatu national dish, taro/banana)',$fv,145,607,2.0,28.0,3.0,3.5,2.5,2.0,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Nalot (pounded breadfruit & coconut)',$fv,160,669,1.5,24.0,5.0,7.0,5.5,3.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Tuluk (meat-filled laplap roll)',$tk,155,649,6.0,22.0,2.0,5.0,2.5,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Simboro (Vanuatu leaf-wrapped banana)',$fv,130,544,1.0,28.0,8.0,3.0,2.0,2.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kava (Vanuatu, traditional drink)',$dr,10,42,0.0,1.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Lap Lap Banana (sweet variety)',$sc,155,649,1.0,30.0,10.0,4.0,3.0,2.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Island Cabbage (Vanuatu, in coconut)',$fv,50,209,2.5,3.5,0.5,3.0,2.5,1.5,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Navara (Vanuatu wild yam, baked)',$fv,120,502,1.5,28.0,1.0,0.2,0.0,3.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Nangai Nut (Vanuatu Canarium)',$ns,565,2364,7.5,11.0,2.0,55.0,8.0,5.5,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1],
+			['Coconut Crab (Vanuatu, steamed)',$fs,120,502,15.0,1.0,0.0,6.5,1.5,0.0,1.0, 0,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+
+			// ══════════════════════════════════════
+			// ── NEW CALEDONIA (8) ──
+			// ══════════════════════════════════════
+			['Bougna (Kanak earth-oven stew)',$tk,120,502,6.5,14.0,2.0,4.5,3.0,2.0,0.3, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bougna Végétarien (taro & yam in coconut)',$fv,130,544,2.0,22.0,2.5,4.5,3.5,2.5,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Poisson Cru (NC raw fish in lime & coconut)',$fs,110,460,13.0,4.0,2.0,5.5,4.0,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Cerf Rôti (NC venison roast)',$mp,150,628,28.0,0.0,0.0,4.0,1.5,0.0,0.2, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Taro Gratiné (NC taro gratin, French-style)',$fv,140,586,3.5,18.0,1.0,6.5,4.0,1.5,0.4, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Crabe de Cocotier (NC coconut crab)',$fs,125,523,15.0,1.5,0.0,7.0,1.5,0.0,1.0, 0,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Soupe de Poisson Calédonienne',$tk,55,230,5.5,3.5,0.5,2.0,0.4,0.3,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pain Coco (NC coconut bread)',$bc,290,1213,5.0,38.0,10.0,13.5,10.0,1.0,0.4, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ══════════════════════════════════════
+			// ── FIJI (12) ──
+			// ══════════════════════════════════════
+			['Kokoda (Fijian raw fish in coconut)',$fs,115,481,12.0,4.0,2.0,6.5,4.5,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Lovo Feast (Fijian earth oven, avg)',$tk,120,502,8.0,12.0,2.0,4.5,2.0,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Palusami (taro leaves & coconut cream)',$fv,110,460,3.0,6.0,1.5,8.5,7.0,2.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Rourou (Fijian taro leaf curry)',$fv,80,335,3.5,5.0,1.0,5.5,4.0,2.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Cassava Cake (Fijian, sweet)',$sc,185,774,1.5,32.0,14.0,6.0,4.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Vakalolo (Fijian coconut cassava dessert)',$sc,175,732,1.0,30.0,14.0,6.0,5.0,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Duruka (Fijian wild sugarcane flower)',$fv,20,84,1.5,3.5,0.5,0.2,0.0,2.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Nama (Fijian sea grapes)',$fv,12,50,1.0,1.5,0.0,0.1,0.0,0.5,2.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Fiji Butter Chicken',$tk,145,607,12.0,6.0,2.5,8.5,4.5,0.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Roti (Fiji Indian flatbread)',$bc,255,1067,7.5,44.0,1.5,5.0,0.8,3.0,0.3, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Dhal (Fiji Indian lentil)',$lp,95,397,5.5,13.0,1.0,2.5,0.4,2.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Yaqona / Kava (Fijian ceremony drink)',$dr,10,42,0.0,1.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── WALLIS & FUTUNA (5) ──
+			// ══════════════════════════════════════
+			['Umu (Wallis earth-oven pork & taro)',$tk,125,523,8.0,12.0,1.5,5.0,2.0,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Poisson Cru Wallisien (coconut fish)',$fs,110,460,13.0,4.0,2.0,5.5,4.0,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Lu (Wallisian taro leaf & coconut)',$fv,105,439,3.0,5.5,1.0,8.0,6.5,2.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Talo (Wallisian pounded taro)',$fv,130,544,1.0,30.0,0.5,0.3,0.1,2.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Kava (Wallis & Futuna)',$dr,10,42,0.0,1.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── SAMOA (10) ──
+			// ══════════════════════════════════════
+			['Oka I\'a (Samoan raw fish salad)',$fs,100,418,13.0,4.0,2.0,4.0,3.0,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Palusami (Samoan, corned beef & coconut)',$tk,155,649,6.0,5.0,1.0,13.0,9.0,1.5,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Sapasui (Samoan chop suey)',$tk,110,460,6.5,14.0,1.5,3.5,1.0,0.5,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Fa\'alifu Fa\'i (Samoan banana in coconut)',$sc,140,586,1.0,24.0,12.0,5.0,4.0,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Koko Samoa (Samoan cocoa drink)',$dr,65,272,1.5,8.0,5.0,3.5,2.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Panipopo (Samoan coconut bun)',$bc,280,1172,5.5,38.0,15.0,12.0,8.5,1.0,0.4, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Suafa\'i (Samoan banana soup)',$sc,115,481,1.0,22.0,12.0,3.5,2.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Pisupo (Samoan corned beef, canned)',$mp,210,879,14.0,1.0,0.5,17.0,7.0,0.0,2.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Umu Feast (Samoan earth oven, avg)',$tk,125,523,8.0,12.0,2.0,5.0,2.0,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ava (Samoan kava ceremony drink)',$dr,10,42,0.0,1.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── NIUE (5) ──
+			// ══════════════════════════════════════
+			['Uga (Niuean coconut crab)',$fs,120,502,15.0,1.0,0.0,6.5,1.5,0.0,1.0, 0,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Takihi (Niuean green banana & taro in coconut)',$fv,135,565,1.5,22.0,3.0,5.0,4.0,2.5,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Luku (Niuean fermented coconut cream)',$fo,245,1025,2.0,5.0,3.0,25.0,21.0,0.0,0.3, 0,0,0,0,0,0,0,0, 1,0,1,1,1,1],
+			['Poke (Niuean fermented breadfruit)',$fv,95,397,0.8,22.0,3.0,0.5,0.2,3.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Ika Mata (Niuean raw fish in coconut)',$fs,105,439,13.0,3.5,1.5,5.0,3.5,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+
+			// ══════════════════════════════════════
+			// ── COOK ISLANDS (8) ──
+			// ══════════════════════════════════════
+			['Ika Mata (Cook Islands raw fish)',$fs,100,418,13.0,4.0,2.0,4.5,3.0,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Rukau (Cook Islands taro leaf in coconut)',$fv,95,397,3.0,5.5,1.0,7.0,5.5,2.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Umu Kai (Cook Islands earth oven, avg)',$tk,120,502,7.5,12.0,2.0,4.5,2.0,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Poke (Cook Islands fermented breadfruit)',$fv,90,377,0.8,21.0,2.5,0.5,0.2,3.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Mitiore (Cook Islands coconut sauce)',$co,195,816,2.0,5.0,3.0,19.0,16.0,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Mamoe Tunu (Cook Islands roast lamb)',$mp,230,962,22.0,0.0,0.0,15.5,7.0,0.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ariki Banana Cake (Cook Islands)',$sc,285,1193,3.5,42.0,22.0,12.5,7.0,2.0,0.2, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Tumunu (Cook Islands homebrew, orange)',$dr,50,209,0.2,8.0,7.0,0.0,0.0,0.3,0.0, 0,0,0,0,0,0,0,0, 0,0,0,0,1,1],
+
+			// ══════════════════════════════════════
+			// ── NORFOLK ISLAND (5) ──
+			// ══════════════════════════════════════
+			['Pilhi (Norfolk Island banana & sweet potato dish)',$fv,125,523,1.0,26.0,8.0,2.5,1.5,2.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Hilli Duff (Norfolk Island steamed pudding)',$sc,285,1193,4.0,45.0,22.0,10.5,6.0,2.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Mudda (Norfolk fish & kumara dish)',$fs,110,460,10.0,12.0,1.5,3.5,0.8,1.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Norfolk Passionfruit Pie',$sc,260,1088,3.5,35.0,20.0,12.5,6.5,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Bunya Pine Nut (Norfolk, roasted)',$ns,185,774,3.5,36.0,6.0,2.5,0.3,3.5,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'FAO Pacific / USDA FDC. Seeded v51.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 51 );
+	}
 }
