@@ -7770,4 +7770,127 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 43 );
 	}
+
+	/** Seed v44: Native & common Portuguese foods. */
+	public static function seed_v44(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 44 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── SOUPS (8) ──
+			// ══════════════════════════════════════
+			['Caldo Verde (traditional, with chouriço)',$tk,58,243,2.5,6.5,0.5,2.5,0.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Sopa da Pedra (stone soup, Ribatejo)',$tk,70,293,4.5,8.0,1.0,2.0,0.5,2.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Açorda Alentejana (bread & garlic soup)',$tk,95,397,4.0,10.0,0.5,4.0,0.7,1.0,0.8, 0,0,0,1,0,1,0,0, 0,0,1,1,0,0],
+			['Canja de Galinha (chicken rice soup)',$tk,45,188,3.5,5.0,0.3,1.0,0.3,0.3,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Sopa de Peixe (Portuguese fish soup)',$tk,55,230,5.5,4.0,0.5,2.0,0.3,0.5,0.6, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Gaspacho Alentejano (bread-thickened)',$tk,80,335,2.0,10.0,2.5,3.5,0.5,1.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Sopa de Legumes (vegetable soup)',$fv,35,146,1.5,5.0,1.5,1.0,0.2,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Creme de Marisco (shellfish bisque)',$tk,85,356,5.0,5.0,1.0,5.0,2.5,0.3,0.8, 1,1,1,0,0,0,0,0, 0,0,1,0,0,0],
+
+			// ── BACALHAU (SALT COD) DISHES (8) ──
+			['Bacalhau à Brás (shredded cod & egg)',$tk,170,711,13.0,8.5,0.5,10.0,1.5,1.0,1.5, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Bacalhau com Natas (cod with cream)',$tk,185,774,12.0,10.0,1.0,11.5,6.0,0.5,1.0, 1,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bacalhau à Gomes de Sá (cod & potato bake)',$tk,140,586,11.0,10.0,0.5,6.5,1.0,1.0,1.5, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Bacalhau à Lagareiro (roasted cod)',$fs,195,816,18.0,5.0,0.5,11.5,1.5,0.5,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bacalhau com Todos (boiled cod dinner)',$tk,120,502,14.0,6.0,0.5,4.5,0.7,1.0,1.5, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Pastéis de Bacalhau (cod fritters)',$tk,265,1109,12.5,18.0,0.5,16.0,2.5,1.0,1.0, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Pataniscas de Bacalhau (cod battered)',$tk,240,1004,12.0,16.0,0.5,14.5,2.0,0.5,1.0, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Bacalhau Espiritual (cod soufflé)',$tk,155,649,11.0,8.0,2.0,9.0,4.5,0.5,0.8, 1,0,1,1,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── SEAFOOD DISHES (8) ──
+			['Cataplana de Marisco (shellfish cataplana)',$tk,100,418,12.0,4.5,1.0,4.0,0.5,0.5,0.8, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Arroz de Marisco (seafood rice)',$tk,135,565,8.5,16.0,0.5,4.0,0.5,0.5,0.8, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Caldeirada (Portuguese fish stew)',$tk,85,356,9.5,4.5,1.0,3.0,0.5,0.5,0.7, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Amêijoas à Bulhão Pato (clams)',$fs,80,335,10.0,2.0,0.3,3.5,0.5,0.0,1.5, 1,1,0,0,0,0,0,0, 1,0,1,0,0,0],
+			['Sardinhas Assadas (grilled sardines)',$fs,195,816,18.5,0.0,0.0,13.0,3.5,0.0,0.8, 1,0,0,0,0,0,0,0, 0,1,1,1,0,0],
+			['Polvo à Lagareiro (roasted octopus)',$fs,130,544,18.0,3.0,0.0,5.0,0.8,0.0,0.8, 1,1,0,0,0,0,0,0, 1,0,1,0,0,0],
+			['Arroz de Tamboril (monkfish rice)',$tk,125,523,9.0,14.0,0.5,3.5,0.5,0.5,0.6, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Percebes (goose barnacles, boiled)',$fs,70,293,14.0,2.0,0.0,1.0,0.2,0.0,2.0, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+
+			// ── MEAT DISHES (10) ──
+			['Cozido à Portuguesa (mixed boil-up)',$tk,115,481,8.0,6.5,0.5,6.5,2.5,1.0,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Leitão da Bairrada (roast suckling pig)',$mp,260,1088,22.0,2.0,0.5,18.5,7.0,0.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Frango no Churrasco (piri piri chicken)',$mp,185,774,24.0,2.0,1.0,9.0,2.0,0.0,1.0, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Chanfana (goat stew, Coimbra)',$mp,155,649,16.0,2.0,0.5,9.5,3.5,0.3,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Alheira de Mirandela (smoked sausage)',$mp,300,1255,14.0,15.0,0.5,20.5,6.5,0.5,2.0, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Chouriço Assado (flamed chorizo)',$mp,390,1632,22.0,2.0,0.5,33.0,12.0,0.0,3.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Rojões à Minhota (fried pork cubes)',$mp,275,1151,18.0,3.0,0.5,21.5,7.5,0.0,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Febras Grelhadas (grilled pork steaks)',$mp,175,732,26.0,0.5,0.0,7.5,2.5,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Carne de Porco à Alentejana (pork & clams)',$tk,165,690,14.0,5.0,0.5,10.0,2.5,0.5,1.0, 1,1,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Feijoada à Transmontana (bean stew)',$tk,135,565,8.5,12.0,0.5,6.0,2.0,4.0,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+
+			// ── SNACKS & PETISCOS (8) ──
+			['Rissóis de Camarão (prawn rissoles)',$tk,270,1130,7.0,24.0,0.5,16.5,3.5,0.5,0.7, 0,1,1,1,0,1,0,0, 0,0,1,0,0,0],
+			['Croquetes de Carne (meat croquettes)',$tk,255,1067,7.5,22.0,0.5,15.5,4.5,0.5,0.7, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Chamuças (Portuguese samosas)',$tk,275,1151,7.0,24.0,1.0,17.0,5.0,1.0,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Prego no Pão (steak sandwich)',$tk,285,1193,16.0,28.0,1.5,12.0,4.0,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Tosta Mista (toasted ham & cheese)',$tk,280,1172,14.0,24.0,2.0,14.0,6.0,0.5,1.5, 0,0,1,0,0,1,0,0, 0,0,0,0,0,0],
+			['Empada de Galinha (chicken pies, 1pc)',$tk,210,879,6.5,18.0,1.0,12.5,4.5,0.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Pica-Pau (sautéed beef strips)',$mp,195,816,18.0,2.0,0.5,12.5,4.0,0.5,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Tremoços (pickled lupin beans)',$lp,115,481,16.0,10.0,0.5,2.5,0.3,4.5,1.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── RICE & SIDES (6) ──
+			['Arroz de Pato (duck rice, traditional)',$tk,180,753,10.0,20.0,0.5,7.0,2.0,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Arroz de Tomate (tomato rice)',$bc,130,544,2.5,22.0,2.5,3.0,0.4,0.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Migas Alentejanas (bread migas)',$bc,175,732,4.0,18.0,1.0,9.5,2.0,1.5,0.8, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Batatas a Murro (punched potatoes)',$fv,110,460,2.0,18.0,0.5,3.5,0.5,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Arroz de Feijão (bean rice)',$lp,135,565,4.5,22.0,0.5,2.5,0.4,3.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Grelos Salteados (sautéed turnip tops)',$fv,50,209,3.0,3.5,0.5,2.5,0.3,3.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── DESSERTS & PASTRIES (12) ──
+			['Pastel de Nata (custard tart, Belém)',$sc,315,1318,4.5,35.0,20.0,17.5,9.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Travesseiro de Sintra (almond pillow)',$sc,400,1674,7.0,42.0,25.0,22.0,8.0,3.0,0.2, 0,0,1,1,1,1,0,0, 0,0,1,1,0,1],
+			['Queijada de Sintra (cheese tart)',$sc,350,1464,6.0,42.0,28.0,17.5,9.0,0.3,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Ovos Moles de Aveiro (egg yolk sweet)',$sc,340,1423,6.0,52.0,42.0,12.0,3.5,0.0,0.1, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Pão de Ló (Portuguese sponge cake)',$sc,310,1297,7.5,50.0,35.0,9.0,2.5,0.5,0.2, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Arroz Doce (Portuguese rice pudding)',$sc,145,607,3.0,22.0,14.0,4.5,2.8,0.2,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Aletria (vermicelli pudding)',$sc,155,649,3.0,25.0,16.0,4.5,2.5,0.2,0.1, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Toucinho do Céu (almond & egg cake)',$sc,385,1611,7.5,48.0,40.0,18.5,5.0,3.5,0.1, 0,0,0,1,1,0,0,0, 0,0,1,1,0,1],
+			['Bola de Berlim (Portuguese doughnut)',$sc,325,1360,5.0,40.0,18.0,16.0,4.5,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Farturas (fried dough, Portuguese churros)',$sc,350,1464,4.0,44.0,16.0,18.0,3.5,1.0,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Serradura (Macau sawdust pudding)',$sc,280,1172,3.0,28.0,18.0,17.5,10.5,0.5,0.1, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Rabanadas (Portuguese French toast)',$sc,290,1213,6.5,35.0,18.0,13.5,4.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── BREADS (4) ──
+			['Broa de Milho (corn bread)',$bc,215,900,5.0,40.0,2.0,3.5,0.5,3.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Pão Alentejano (Alentejo wheat bread)',$bc,260,1088,8.0,50.0,2.0,2.0,0.3,3.0,1.2, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Bolo do Caco (Madeira garlic bread)',$bc,250,1046,5.5,42.0,1.5,6.5,1.0,2.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Regueifa (sweet ring bread)',$bc,310,1297,6.5,52.0,12.0,8.0,3.0,1.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── DRINKS (6) ──
+			['Ginjinha (sour cherry liqueur, per glass)',$dr,175,732,0.0,20.0,18.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Galão (milky coffee, tall glass)',$dr,50,209,2.0,5.0,5.0,2.0,1.2,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Bica (Portuguese espresso)',$dr,3,13,0.2,0.5,0.0,0.1,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Sumo de Laranja Natural (fresh OJ)',$dr,45,188,0.7,10.0,8.5,0.2,0.0,0.2,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Mazagran (iced coffee lemon)',$dr,40,167,0.2,10.0,9.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Licor Beirão (herbal liqueur, per glass)',$dr,165,690,0.0,18.0,16.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'INSA Portugal / USDA FDC. Seeded v44.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 44 );
+	}
 }
