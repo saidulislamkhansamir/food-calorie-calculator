@@ -9028,4 +9028,140 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 52 );
 	}
+
+	/** Seed v53: Caucasus & Central Asian foods — Georgia, Azerbaijan, Kazakhstan, Uzbekistan, Turkmenistan, Kyrgyzstan, Tajikistan. */
+	public static function seed_v53(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 53 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── GEORGIA (15) ──
+			// ══════════════════════════════════════
+			['Khachapuri Adjaruli (cheese boat bread)',$bc,290,1213,10.5,28.0,2.0,15.0,8.0,0.5,1.0, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Khachapuri Imeruli (cheese flatbread)',$bc,270,1130,10.0,28.0,2.0,13.0,7.0,0.5,0.9, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Khinkali (Georgian soup dumplings, 1pc)',$tk,65,272,3.5,7.5,0.3,2.0,0.8,0.3,0.3, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Lobio (Georgian bean stew)',$lp,105,439,5.5,14.0,1.0,3.0,0.5,4.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Satsivi (walnut chicken sauce)',$tk,165,690,12.0,5.0,1.5,11.5,1.5,1.5,0.5, 0,0,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Mtsvadi (Georgian shashlik/kebab)',$mp,210,879,22.0,1.0,0.5,13.0,5.5,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pkhali (walnut & vegetable pâté)',$fv,120,502,4.5,6.0,1.5,9.0,1.0,3.0,0.5, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Badrijani Nigvzit (aubergine walnut rolls)',$fv,145,607,3.5,5.0,2.0,12.5,1.5,2.0,0.4, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Chakhokhbili (chicken tomato stew)',$tk,110,460,12.0,4.0,2.5,5.5,1.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ostri (Georgian spicy beef stew)',$tk,120,502,10.0,5.0,2.5,6.5,2.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Churchkhela (walnut grape candy)',$sc,390,1632,6.5,52.0,40.0,17.0,1.5,3.0,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Shotis Puri (Georgian clay oven bread)',$bc,265,1109,8.0,52.0,2.0,1.5,0.3,2.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Tkemali (sour plum sauce)',$co,55,230,0.5,12.0,8.0,0.5,0.1,1.5,1.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Adjika (Georgian chilli paste)',$co,60,251,2.0,8.0,4.0,2.5,0.3,3.0,3.5, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Georgian Wine (Saperavi, per glass 150ml)',$dr,110,460,0.0,3.5,1.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── AZERBAIJAN (12) ──
+			// ══════════════════════════════════════
+			['Plov (Azerbaijani, lamb & saffron)',$tk,185,774,8.5,24.0,2.0,6.5,2.0,0.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Shah Plov (pastry-wrapped pilaf)',$tk,215,900,8.0,28.0,3.0,8.5,3.0,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Dolma (Azerbaijani, vine leaves & lamb)',$tk,195,816,8.0,12.0,2.0,13.0,5.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Qutab (thin flatbread, meat or herb)',$bc,250,1046,7.0,26.0,1.0,13.0,3.5,1.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Dushbara (tiny lamb dumplings in broth)',$tk,75,314,4.5,7.0,0.3,3.0,1.0,0.3,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Piti (Azerbaijani lamb shank soup)',$tk,95,397,7.0,5.0,0.5,5.5,2.0,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Lyulya Kebab (Azerbaijani minced lamb)',$mp,255,1067,16.0,2.0,0.5,20.5,9.0,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Lavangi (stuffed chicken with walnuts)',$mp,185,774,18.0,5.0,2.0,10.5,2.5,1.0,0.5, 0,0,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Dovga (yoghurt & herb soup)',$tk,35,146,2.0,3.5,2.0,1.5,0.8,0.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Pakhlava (Azerbaijani baklava)',$sc,420,1757,6.5,45.0,32.0,24.0,5.0,2.5,0.1, 0,0,1,1,1,1,0,0, 0,0,1,1,0,1],
+			['Shekerbura (crescent pastry, nut-filled)',$sc,395,1653,6.0,48.0,25.0,20.0,4.0,2.0,0.1, 0,0,1,0,1,1,0,0, 0,0,1,1,0,1],
+			['Sherbet (Azerbaijani fruit drink)',$dr,40,167,0.1,10.0,9.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── KAZAKHSTAN (10) ──
+			// ══════════════════════════════════════
+			['Beshbarmak (national dish, meat & noodles)',$tk,175,732,12.0,16.0,0.5,8.0,3.0,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Kazy (horse meat sausage)',$mp,340,1423,16.0,0.0,0.0,30.5,12.0,0.0,2.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kurt (dried fermented cheese balls)',$de,350,1464,25.0,12.0,5.0,22.0,14.0,0.0,4.0, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Baursak (fried dough, Kazakh)',$sc,340,1423,6.0,42.0,3.0,17.0,3.5,0.5,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Lagman (Kazakh pulled noodle soup)',$tk,90,377,5.0,10.0,1.5,3.0,1.0,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Kuurdak (fried organ meat & potato)',$tk,165,690,12.0,8.0,0.5,10.0,4.0,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Shubat (fermented camel milk)',$dr,55,230,2.5,5.0,4.5,2.5,1.5,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Kumiss (fermented mare\'s milk)',$dr,50,209,2.0,5.0,4.5,1.5,1.0,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Nauryz Kozhe (7-ingredient festival soup)',$tk,65,272,3.5,8.0,1.0,2.0,0.5,1.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tandyr Nan (Kazakh clay oven bread)',$bc,275,1151,8.0,52.0,2.0,4.0,0.5,2.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── UZBEKISTAN (12) ──
+			// ══════════════════════════════════════
+			['Plov (Uzbek, national dish, lamb & rice)',$tk,190,795,9.0,22.0,2.0,7.5,2.0,0.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Shashlik (Uzbek, marinated lamb)',$mp,215,900,20.0,2.0,1.0,14.0,6.0,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Manti (Uzbek, steamed dumplings, 1pc)',$tk,70,293,3.5,7.5,0.3,2.5,1.0,0.3,0.3, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Samsa (Uzbek, lamb in pastry, 1pc)',$tk,285,1193,9.0,24.0,1.0,17.5,7.0,0.5,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Lagman (Uzbek, pulled noodle stew)',$tk,95,397,5.5,10.0,1.5,3.5,1.0,1.0,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Norin (cold horsemeat & noodles)',$tk,155,649,12.0,16.0,0.5,5.0,1.5,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Dimlama (Uzbek layered vegetable & meat)',$tk,95,397,6.5,7.0,1.5,4.5,1.5,1.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Naryn (hand-pulled noodles with horse)',$tk,150,628,11.0,16.0,0.5,4.5,1.5,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Obi Non (Uzbek round bread)',$bc,270,1130,8.5,50.0,2.0,3.5,0.5,2.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Chuchvara (tiny Uzbek dumplings in broth)',$tk,70,293,4.0,7.0,0.3,2.5,0.8,0.3,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Halvaitar (Uzbek flour halva)',$sc,440,1841,5.0,52.0,35.0,24.0,5.0,1.0,0.0, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Green Tea (Uzbek, unsweetened)',$dr,1,4,0.1,0.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── TURKMENISTAN (8) ──
+			// ══════════════════════════════════════
+			['Plov (Turkmen, lamb & carrot)',$tk,185,774,8.5,22.0,2.0,7.5,2.0,0.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Dograma (Turkmen bread & meat soup)',$tk,100,418,7.0,10.0,0.5,3.5,1.5,0.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Ishlekli (Turkmen meat pie)',$tk,265,1109,10.0,24.0,1.0,14.5,5.5,0.5,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Gutap (Turkmen stuffed flatbread, herb)',$bc,240,1004,5.0,28.0,1.0,12.5,3.0,2.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Shurpa (Turkmen lamb soup)',$tk,60,251,4.5,4.0,1.0,3.0,1.2,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Chorek (Turkmen flatbread)',$bc,275,1151,8.0,52.0,2.0,4.0,0.5,2.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Chal (fermented camel milk, Turkmen)',$dr,50,209,2.5,5.0,4.5,2.0,1.2,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Gara Ash (Turkmen thick herb soup)',$tk,70,293,3.5,9.0,0.5,2.5,0.5,2.0,0.5, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+
+			// ══════════════════════════════════════
+			// ── KYRGYZSTAN (10) ──
+			// ══════════════════════════════════════
+			['Beshbarmak (Kyrgyz, mutton & noodles)',$tk,180,753,13.0,16.0,0.5,8.5,3.5,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Kuurdak (Kyrgyz fried lamb & offal)',$mp,185,774,14.0,5.0,0.5,12.5,5.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Oromo (Kyrgyz steamed meat roll)',$tk,175,732,8.0,18.0,0.5,8.0,3.0,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Ashlyam-Fu (cold Kyrgyz noodle dish)',$tk,85,356,3.5,12.0,1.0,2.5,0.5,1.0,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Samsa (Kyrgyz, baked meat pastry)',$tk,280,1172,9.0,24.0,1.0,16.5,6.5,0.5,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Shorpo (Kyrgyz lamb broth)',$tk,55,230,4.5,3.5,0.5,2.5,1.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kumiss (Kyrgyz fermented mare milk)',$dr,48,201,2.0,5.0,4.5,1.5,0.8,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Boorsok (Kyrgyz fried dough)',$sc,340,1423,6.0,42.0,3.0,17.0,3.5,0.5,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Maksym (Kyrgyz fermented grain drink)',$dr,30,126,0.5,6.5,2.0,0.2,0.0,0.5,0.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Lepyoshka (Kyrgyz round bread)',$bc,280,1172,8.5,50.0,2.0,5.0,0.8,2.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── TAJIKISTAN (8) ──
+			// ══════════════════════════════════════
+			['Qurutob (Tajik national dish, bread & yoghurt)',$tk,135,565,5.5,14.0,2.0,6.5,3.5,1.0,0.8, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Oshi Palav (Tajik pilaf, lamb)',$tk,190,795,9.0,24.0,2.0,7.0,2.0,0.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Sambusa (Tajik baked pastry, meat)',$tk,275,1151,8.5,24.0,1.0,16.5,6.0,0.5,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Tuhum Barak (Tajik egg dumplings)',$tk,170,711,6.5,18.0,0.5,8.0,2.5,0.5,0.4, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Shurbo (Tajik mutton & veg soup)',$tk,65,272,5.0,4.5,1.0,3.0,1.0,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Mastoba (Tajik rice & meat soup)',$tk,75,314,4.5,8.0,0.5,2.5,0.8,0.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Non (Tajik round flatbread)',$bc,270,1130,8.5,50.0,2.0,3.5,0.5,2.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Shirchoy (Tajik milk tea with butter)',$dr,55,230,1.5,3.0,2.5,4.0,2.5,0.0,0.3, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'USDA FDC / FAO CENTAL. Seeded v53.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 53 );
+	}
 }
