@@ -952,7 +952,7 @@
 			var html = '';
 			allergens.forEach( function ( a ) {
 				if ( food[ a.key ] === 1 || food[ a.key ] === '1' ) {
-					html += '<span class="fcc-allergen-badge fcc-allergen-badge--contains">⚠️ ' + a.label + '</span>';
+					html += '<span class="fcc-allergen-badge fcc-allergen-badge--contains">Contains ' + a.label + '</span>';
 				} else if ( food[ a.key ] === 0 || food[ a.key ] === '0' ) {
 					html += '<span class="fcc-allergen-badge fcc-allergen-badge--free">✅ ' + a.label.split(' ')[1] + '-Free</span>';
 				}
