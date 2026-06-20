@@ -1839,9 +1839,42 @@
 				+ fmt( ( f.energy_kcal || 0 ) * factor, 0 ) + ' kcal'
 				+ ' | Protein ' + fmt( ( f.protein_g || 0 ) * factor, 1 ) + 'g'
 				+ ' | Carbs ' + fmt( ( f.carbohydrate_g || 0 ) * factor, 1 ) + 'g'
-				+ ' | Fat ' + fmt( ( f.fat_g || 0 ) * factor, 1 ) + 'g'
-				+ '\nFibre ' + fmt( ( f.fibre_g || 0 ) * factor, 1 ) + 'g'
+				+ ( f.of_which_sugars_g != null ? ' (Sugars ' + fmt( ( f.of_which_sugars_g ) * factor, 1 ) + 'g)' : '' )
+				+ '\nFat ' + fmt( ( f.fat_g || 0 ) * factor, 1 ) + 'g'
+				+ ( f.of_which_saturates_g != null ? ' (Saturates ' + fmt( ( f.of_which_saturates_g ) * factor, 1 ) + 'g)' : '' )
+				+ ' | Fibre ' + fmt( ( f.fibre_g || 0 ) * factor, 1 ) + 'g'
 				+ ' | Salt ' + fmt( ( f.salt_g || 0 ) * factor, 1 ) + 'g';
+
+			var allergenNames = [];
+			var allergenMap = { allergen_fish:'Fish', allergen_shellfish:'Shellfish', allergen_dairy:'Dairy', allergen_eggs:'Eggs', allergen_nuts:'Tree Nuts', allergen_gluten:'Gluten', allergen_soy:'Soy', allergen_celery:'Celery' };
+			for ( var ak in allergenMap ) { if ( f[ak] === 1 || f[ak] === '1' ) allergenNames.push( allergenMap[ak] ); }
+			var dietNames = [];
+			var dietMap = { diet_keto:'Keto', diet_paleo:'Paleo', diet_halal:'Halal', diet_kosher:'Kosher', diet_vegan:'Vegan', diet_vegetarian:'Vegetarian' };
+			for ( var dk in dietMap ) { if ( f[dk] === 1 || f[dk] === '1' ) dietNames.push( dietMap[dk] ); }
+			if ( allergenNames.length || dietNames.length ) {
+				text += '\n';
+				if ( allergenNames.length ) text += '⚠️ Contains: ' + allergenNames.join( ', ' );
+				if ( allergenNames.length && dietNames.length ) text += ' | ';
+				if ( dietNames.length ) text += '✅ ' + dietNames.join( ', ' );
+			}
+
+			if ( features.fsa_traffic_lights ) {
+				var tlItems = [
+					{ label: 'Fat', val: f.fat_g, low: fsa.fat_low, high: fsa.fat_high },
+					{ label: 'Saturates', val: f.of_which_saturates_g, low: fsa.saturates_low, high: fsa.saturates_high },
+					{ label: 'Sugars', val: f.of_which_sugars_g, low: fsa.sugars_low, high: fsa.sugars_high },
+					{ label: 'Salt', val: f.salt_g, low: fsa.salt_low, high: fsa.salt_high },
+				];
+				var tlParts = [];
+				tlItems.forEach( function ( t ) {
+					if ( t.val == null ) return;
+					var emoji = t.val <= t.low ? '🟢' : ( t.val > t.high ? '🔴' : '🟡' );
+					tlParts.push( emoji + ' ' + t.label );
+				} );
+				if ( tlParts.length ) text += '\n' + tlParts.join( ' ' );
+			}
+
+			text += '\n— foodcaloriecalculator.co.uk';
 			if ( navigator.clipboard ) {
 				navigator.clipboard.writeText( text ).then( function () {
 					if ( copyNutrLbl ) {
