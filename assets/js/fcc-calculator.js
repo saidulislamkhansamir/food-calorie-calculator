@@ -1853,7 +1853,7 @@
 			for ( var dk in dietMap ) { if ( f[dk] === 1 || f[dk] === '1' ) dietNames.push( dietMap[dk] ); }
 			if ( allergenNames.length || dietNames.length ) {
 				text += '\n';
-				if ( allergenNames.length ) text += '⚠️ Contains: ' + allergenNames.join( ', ' );
+				if ( allergenNames.length ) text += 'Contains: ' + allergenNames.join( ', ' );
 				if ( allergenNames.length && dietNames.length ) text += ' | ';
 				if ( dietNames.length ) text += '✅ ' + dietNames.join( ', ' );
 			}
@@ -1865,16 +1865,19 @@
 					{ label: 'Sugars', val: f.of_which_sugars_g, low: fsa.sugars_low, high: fsa.sugars_high },
 					{ label: 'Salt', val: f.salt_g, low: fsa.salt_low, high: fsa.salt_high },
 				];
-				var tlParts = [];
+				var tlEmojis = [];
+				var tlLabels = [];
 				tlItems.forEach( function ( t ) {
 					if ( t.val == null ) return;
 					var emoji = t.val <= t.low ? '🟢' : ( t.val > t.high ? '🔴' : '🟡' );
-					tlParts.push( emoji + ' ' + t.label );
+					var rating = t.val <= t.low ? 'Low' : ( t.val > t.high ? 'High' : 'Med' );
+					tlEmojis.push( emoji );
+					tlLabels.push( t.label + ' ' + rating );
 				} );
-				if ( tlParts.length ) text += '\n' + tlParts.join( ' ' );
+				if ( tlLabels.length ) text += '\n' + tlEmojis.join( '' ) + ' ' + tlLabels.join( ' | ' );
 			}
 
-			text += '\n— foodcaloriecalculator.co.uk';
+			text += '\n📊 Calculate yours → foodcaloriecalculator.co.uk';
 			if ( navigator.clipboard ) {
 				navigator.clipboard.writeText( text ).then( function () {
 					if ( copyNutrLbl ) {
