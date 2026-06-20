@@ -7246,4 +7246,147 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 39 );
 	}
+
+	/** Seed v40: Native & common Korean foods. */
+	public static function seed_v40(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 40 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── RICE DISHES (BAP) (10) ──
+			// ══════════════════════════════════════
+			['Bibimbap (dolsot, stone pot)',$tk,160,669,8.5,22.0,2.5,4.5,1.0,2.0,0.8, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Bokkeumbap (kimchi fried rice)',$tk,175,732,6.0,24.0,2.0,6.0,1.5,1.0,1.5, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Gimbap (Korean rice roll, 1 roll)',$tk,145,607,5.5,24.0,2.0,3.0,0.5,1.0,0.8, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Juk (Korean rice porridge, plain)',$bc,50,209,1.0,11.0,0.1,0.2,0.0,0.2,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Hobakjuk (pumpkin porridge)',$bc,65,272,1.5,14.0,3.0,0.5,0.1,1.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Patjuk (red bean porridge)',$bc,85,356,3.0,17.0,4.0,0.3,0.1,2.5,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Cupbap (rice bowl with toppings)',$tk,155,649,7.0,22.0,2.0,4.0,1.0,1.5,1.0, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Omurice (Korean omelette rice)',$tk,180,753,7.5,22.0,3.0,7.0,2.0,0.5,0.8, 0,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Kongnamul Bap (bean sprout rice)',$bc,140,586,5.0,24.0,0.5,2.0,0.3,1.5,0.8, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Dolsot Bap (stone pot mixed rice)',$bc,150,628,4.5,28.0,0.5,2.0,0.3,1.5,0.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+
+			// ── STEWS & SOUPS (JJIGAE & GUK) (15) ──
+			['Doenjang Jjigae (soybean paste stew)',$tk,55,230,4.0,4.5,1.0,2.5,0.5,1.0,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,1,1],
+			['Sundubu Jjigae (soft tofu stew, seafood)',$tk,70,293,6.0,3.5,1.0,3.5,0.8,0.5,1.2, 1,1,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Budae Jjigae (army stew)',$tk,95,397,6.5,7.0,2.0,5.0,1.5,1.0,2.0, 0,0,1,0,0,1,1,0, 0,0,0,0,0,0],
+			['Gamjatang (pork bone soup)',$tk,80,335,6.5,4.5,0.5,4.5,1.5,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Samgyetang (ginseng chicken soup)',$tk,110,460,10.0,8.0,0.5,4.5,1.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Seolleongtang (ox bone soup)',$tk,65,272,5.5,2.0,0.0,4.0,1.8,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Galbitang (short rib soup)',$tk,85,356,7.0,3.0,0.5,5.0,2.0,0.3,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Yukgaejang (spicy beef soup)',$tk,70,293,6.5,3.5,1.0,3.5,1.2,1.0,1.0, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Miyeok Guk (seaweed birthday soup)',$tk,30,126,2.5,1.5,0.0,1.5,0.5,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Tteokguk (rice cake soup, New Year)',$tk,90,377,4.5,14.0,0.5,1.5,0.5,0.3,1.0, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Manduguk (dumpling soup)',$tk,75,314,4.5,8.0,0.5,2.5,0.8,0.5,1.0, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Gopchang Jeongol (tripe hot pot)',$tk,95,397,8.0,4.0,1.0,5.5,2.0,0.5,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Kkotge Tang (blue crab soup)',$tk,45,188,5.5,2.5,0.5,1.5,0.3,0.3,1.2, 0,1,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Cheonggukjang Jjigae (fast-fermented bean stew)',$tk,60,251,5.0,4.0,1.0,3.0,0.5,1.5,1.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Kongnamul Guk (bean sprout soup)',$tk,20,84,1.5,2.0,0.3,0.5,0.1,0.5,0.8, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+
+			// ── GRILLED & BBQ (GUI) (10) ──
+			['Bulgogi (marinated beef, BBQ)',$mp,160,669,18.0,8.0,6.0,6.0,2.0,0.5,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Galbi (beef short ribs, BBQ)',$mp,235,983,17.0,8.0,6.5,15.0,6.0,0.0,1.2, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Samgyeopsal (grilled pork belly)',$mp,330,1381,15.0,0.0,0.0,30.0,11.0,0.0,0.5, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0],
+			['Dwaeji Bulgogi (spicy pork)',$mp,185,774,16.0,8.0,5.5,10.0,3.5,0.5,1.5, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Dak Galbi (spicy chicken stir-fry)',$tk,145,607,14.0,10.0,5.0,5.5,1.0,1.0,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Dakgangjeong (crispy sweet chicken)',$mp,250,1046,14.0,22.0,14.0,12.0,2.5,0.5,1.0, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Jeyuk Bokkeum (spicy pork stir-fry)',$mp,180,753,15.0,8.0,5.0,10.0,3.5,0.5,1.5, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Galbi Jjim (braised short ribs)',$mp,195,816,16.0,10.0,6.0,10.0,4.0,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Bossam (boiled pork belly wraps)',$mp,220,920,18.0,4.0,2.0,15.0,5.5,0.0,1.0, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Yangnyeom Chicken (sweet & spicy fried)',$mp,255,1067,15.0,18.0,12.0,14.0,3.0,0.5,1.2, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+
+			// ── NOODLE DISHES (8) ──
+			['Japchae (sweet potato glass noodles)',$tk,140,586,3.5,22.0,6.0,4.5,0.8,1.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Jajangmyeon (black bean noodles)',$tk,165,690,6.0,26.0,4.0,4.5,1.0,1.0,1.5, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Naengmyeon (cold buckwheat noodles)',$tk,115,481,5.0,22.0,2.0,1.0,0.2,1.5,1.5, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Bibim Naengmyeon (spicy cold noodles)',$tk,130,544,5.0,22.0,4.0,2.0,0.3,1.5,1.5, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Kalguksu (knife-cut noodle soup)',$tk,85,356,4.0,14.0,0.5,1.5,0.3,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Ramyeon (Korean instant noodles)',$tk,145,607,4.0,20.0,2.0,5.5,2.5,0.5,2.5, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Jjamppong (spicy seafood noodle soup)',$tk,95,397,6.5,10.0,1.5,3.0,0.8,0.5,1.5, 1,1,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Sujebi (hand-torn noodle soup)',$tk,70,293,3.0,12.0,0.5,1.0,0.2,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── PANCAKES & FRIED (JEON) (8) ──
+			['Pajeon (scallion pancake)',$tk,200,837,5.0,24.0,2.5,9.5,1.5,1.5,1.0, 0,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Haemul Pajeon (seafood pancake)',$tk,195,816,8.0,20.0,2.0,9.0,1.5,1.0,1.0, 1,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Kimchi Jeon (kimchi pancake)',$tk,185,774,4.5,22.0,2.5,9.0,1.5,1.5,1.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Bindaetteok (mung bean pancake)',$lp,210,879,8.0,18.0,1.0,12.0,2.0,2.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Gamja Jeon (potato pancake)',$fv,165,690,2.5,22.0,1.0,7.5,1.0,1.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Twigim (Korean tempura, mixed)',$tk,235,983,5.0,24.0,1.5,13.5,2.0,1.5,0.5, 0,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Hotteok (sweet filled pancake)',$sc,275,1151,4.5,38.0,18.0,12.0,2.5,1.0,0.3, 0,0,0,0,1,1,0,0, 0,0,1,1,0,1],
+			['Buchimgae (Korean savoury pancake, mixed)',$tk,190,795,5.5,22.0,2.0,9.0,1.5,1.5,0.8, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+
+			// ── SIDE DISHES (BANCHAN) (12) ──
+			['Kimchi (napa cabbage, tongbaechu)',$fv,25,105,1.5,3.0,1.5,0.5,0.1,1.5,2.5, 1,1,0,0,0,0,0,0, 0,0,1,0,1,1],
+			['Kkakdugi (cubed radish kimchi)',$fv,22,92,1.0,3.5,2.0,0.3,0.0,1.5,2.5, 1,1,0,0,0,0,0,0, 0,0,1,0,1,1],
+			['Kongnamul Muchim (seasoned bean sprouts)',$fv,35,146,2.5,3.5,0.5,1.5,0.2,1.0,0.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Sigeumchi Namul (spinach side)',$fv,35,146,2.5,2.5,0.3,2.0,0.3,1.5,0.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Musaengchae (spicy radish salad)',$fv,30,126,0.5,6.0,3.5,0.5,0.1,1.5,1.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Japchae (glass noodle banchan)',$fv,135,565,3.0,20.0,5.5,4.5,0.8,1.0,0.8, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Gyeran Mari (rolled egg omelette)',$de,155,649,10.0,3.0,1.5,11.0,3.0,0.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Eomuk Bokkeum (stir-fried fish cake)',$fs,115,481,8.0,12.0,4.0,3.5,0.8,0.5,1.5, 1,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Gamja Jorim (braised potatoes)',$fv,95,397,1.5,16.0,4.0,2.5,0.3,1.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Myeolchi Bokkeum (stir-fried anchovies)',$fs,210,879,18.0,10.0,5.0,11.0,2.0,1.0,2.0, 1,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Pickled Radish (danmuji)',$fv,18,75,0.3,4.0,3.5,0.1,0.0,0.5,1.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Perilla Leaves (pickled, kkaennip)',$fv,40,167,2.0,4.0,0.5,1.5,0.2,2.0,2.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+
+			// ── STREET FOOD & SNACKS (10) ──
+			['Tteokbokki (spicy rice cakes)',$tk,195,816,4.0,40.0,8.0,2.0,0.3,1.0,1.5, 1,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Odeng / Eomuk (fish cake on stick)',$fs,90,377,7.0,10.0,2.0,2.0,0.5,0.5,1.5, 1,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Sundae (Korean blood sausage)',$mp,220,920,10.0,22.0,0.5,10.5,3.5,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Bungeoppang (fish-shaped pastry)',$sc,260,1088,5.0,42.0,18.0,7.5,2.0,2.0,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Gyeranppang (egg bread)',$bc,245,1025,9.0,30.0,5.0,10.0,3.0,0.5,0.6, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Corn Dog (Korean, mozzarella)',$sc,310,1297,9.0,32.0,5.0,16.0,6.0,1.0,1.0, 0,0,1,1,0,1,0,0, 0,0,1,0,0,0],
+			['Tornado Potato (spiral on stick)',$sc,280,1172,3.0,35.0,0.5,14.5,2.0,2.0,0.8, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Dakgochi (chicken skewer, street)',$mp,180,753,16.0,6.0,4.0,10.0,2.5,0.0,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Mandu (Korean dumpling, fried, 1pc)',$tk,55,230,2.5,5.5,0.3,2.5,0.5,0.3,0.4, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Hoddeok (brown sugar pancake)',$sc,280,1151,4.0,40.0,20.0,12.0,2.5,1.0,0.3, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── KOREAN CONDIMENTS & SAUCES (6) ──
+			['Gochujang (red chilli paste)',$co,175,732,4.5,35.0,15.0,2.0,0.3,3.0,5.0, 0,0,0,0,0,1,1,0, 0,0,1,1,1,1],
+			['Doenjang (soybean paste)',$co,125,523,12.0,13.0,3.0,4.0,0.5,4.0,5.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Ssamjang (wrap sauce)',$co,145,607,6.0,18.0,6.0,5.5,0.8,2.5,4.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Gochugaru (Korean chilli flakes)',$co,310,1297,12.0,55.0,10.0,10.0,1.5,25.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sesame Oil (chamgireum)',$fo,884,3699,0.0,0.0,0.0,100.0,14.2,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Perilla Oil (deulgireum)',$fo,884,3699,0.0,0.0,0.0,100.0,8.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+
+			// ── KOREAN DESSERTS & DRINKS (11) ──
+			['Bingsu (patbingsu, red bean shaved ice)',$sc,155,649,3.5,30.0,20.0,2.5,1.5,2.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Songpyeon (rice cake, Chuseok)',$sc,195,816,3.5,40.0,10.0,2.0,0.3,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Yakgwa (honey cookie)',$sc,400,1674,4.0,55.0,30.0,18.0,3.0,1.0,0.1, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+			['Dasik (pressed tea cookie)',$sc,350,1464,5.0,60.0,25.0,10.0,1.5,2.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Yuja Cha (citron tea)',$dr,60,251,0.2,15.0,14.0,0.0,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sikhye (sweet rice drink)',$dr,50,209,0.5,12.0,10.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sujeonggwa (cinnamon persimmon punch)',$dr,45,188,0.1,11.0,10.0,0.0,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Banana Milk (Korean, Binggrae)',$dr,75,314,1.5,14.0,13.5,1.5,0.8,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Makgeolli (rice wine)',$dr,55,230,0.5,5.0,3.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Soju (per 100ml)',$dr,125,523,0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Omija Tea (five-flavour berry)',$dr,15,63,0.2,3.5,3.0,0.0,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'Rural Dev. Admin. Korea / USDA FDC. Seeded v40.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 40 );
+	}
 }
