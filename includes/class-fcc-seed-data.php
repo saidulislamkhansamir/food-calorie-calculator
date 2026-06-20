@@ -7522,4 +7522,106 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 41 );
 	}
+
+	/** Seed v42: Native & common Canadian foods. */
+	public static function seed_v42(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 42 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── QUÉBÉCOIS & FRENCH-CANADIAN (15) ──
+			// ══════════════════════════════════════
+			['Pâté Chinois (shepherd\'s pie, Québec)',$tk,115,481,6.5,11.0,2.0,5.0,2.0,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pouding Chômeur (poor man\'s pudding)',$sc,310,1297,3.0,48.0,38.0,12.0,7.0,0.3,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Tarte au Sucre (sugar pie)',$sc,380,1590,3.5,55.0,42.0,16.5,9.5,0.3,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Cipaille (layered meat pie)',$tk,210,879,10.0,16.0,1.0,12.0,4.5,0.5,0.8, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Cretons (pork spread)',$mp,250,1046,12.0,3.0,0.5,21.0,8.5,0.0,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Ploye (Acadian buckwheat pancake)',$bc,165,690,4.5,28.0,1.0,3.5,1.0,2.0,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Fèves au Lard (Québec baked beans)',$lp,125,523,5.5,18.0,8.0,3.0,1.0,4.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Oreilles de Crisse (fried pork rinds)',$sc,550,2301,50.0,0.0,0.0,38.0,14.0,0.0,3.0, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0],
+			['Tire d\'Érable (maple taffy on snow)',$sc,355,1485,0.0,90.0,80.0,0.5,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Maple Butter (beurre d\'érable)',$co,310,1297,0.0,76.0,72.0,0.5,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Galvaude (fries, chicken, peas, gravy)',$tk,195,816,9.0,20.0,1.5,9.0,2.5,1.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Poutine Italienne (with meat sauce)',$tk,195,816,9.0,22.0,2.5,8.5,3.5,1.5,1.0, 0,0,1,0,0,1,0,0, 0,0,0,0,0,0],
+			['Montreal Bagel (sesame)',$bc,290,1213,9.5,52.0,5.0,4.0,0.5,2.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Tarte aux Bleuets (blueberry pie)',$sc,280,1172,2.5,42.0,22.0,12.0,5.0,2.0,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Guédilles (lobster roll, Québec)',$tk,230,962,14.0,22.0,2.0,10.0,2.0,0.5,1.0, 0,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── ATLANTIC CANADA (10) ──
+			['Rappie Pie (râpure, Acadian)',$tk,135,565,5.0,18.0,0.5,5.0,1.5,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Donair (Halifax)',$tk,245,1025,12.0,24.0,5.0,11.5,4.5,1.0,1.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Donair Sauce (sweet garlic)',$co,295,1234,2.0,35.0,32.0,17.0,3.0,0.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Garlic Fingers (with donair sauce)',$tk,285,1193,8.0,30.0,4.0,14.5,5.5,1.0,1.2, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Toutons (fried dough, Newfoundland)',$bc,320,1339,5.5,38.0,2.0,16.5,5.0,1.0,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Jiggs Dinner (Newfoundland boiled dinner)',$tk,95,397,6.5,10.0,2.0,3.0,1.0,2.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Hodge Podge (NS vegetable stew)',$fv,65,272,2.0,8.5,3.0,2.5,1.5,2.0,0.3, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Solomon Gundy (pickled herring, NS)',$fs,170,711,14.0,4.0,3.0,11.0,2.5,0.0,3.0, 1,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+			['Lobster Roll (Atlantic)',$tk,240,1004,15.0,22.0,2.0,10.5,2.5,0.5,1.0, 0,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Fish Cakes (Atlantic, pan-fried)',$fs,195,816,10.0,16.0,0.5,10.0,2.0,1.0,0.8, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── WESTERN & PRAIRIE CANADA (8) ──
+			['Calgary Ginger Beef',$tk,210,879,10.0,20.0,12.0,10.0,2.5,0.5,1.5, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Saskatoon Berry Pie',$sc,270,1130,2.5,40.0,20.0,11.5,5.0,2.5,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Perogies (Prairie-style, fried)',$tk,215,900,5.0,28.0,1.0,9.5,3.5,1.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Flapper Pie (Alberta custard & meringue)',$sc,260,1088,4.5,38.0,24.0,10.0,5.0,0.3,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Gopher Hole Doughnuts (style)',$sc,380,1590,4.5,48.0,22.0,19.0,5.0,1.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Bison Burger (Western Canadian)',$tk,210,879,19.0,20.0,2.0,6.0,2.5,1.5,0.7, 0,0,0,0,0,1,0,0, 0,1,1,0,0,0],
+			['Bannock (fried, with jam)',$bc,340,1423,5.5,45.0,10.0,15.5,3.0,1.5,0.6, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+			['Wild Salmon (BC, grilled)',$fs,195,816,22.0,0.0,0.0,11.5,2.0,0.0,0.2, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+
+			// ── CANADIAN SNACKS & CONFECTIONERY (10) ──
+			['Ketchup Chips (per 100g)',$sc,510,2134,5.5,55.0,5.0,30.0,3.0,4.0,1.8, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['All-Dressed Chips (per 100g)',$sc,520,2176,6.0,53.0,4.0,32.0,3.5,4.0,1.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Coffee Crisp (chocolate bar)',$sc,500,2092,5.0,62.0,42.0,25.0,14.0,1.5,0.3, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Caramilk (chocolate bar)',$sc,520,2176,5.5,60.0,50.0,29.0,17.0,0.0,0.3, 0,0,1,0,0,0,1,0, 0,0,1,1,0,1],
+			['Jos Louis (snack cake)',$sc,395,1653,3.5,55.0,35.0,18.5,10.0,1.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['May West (snack cake)',$sc,405,1694,3.5,52.0,32.0,20.5,12.0,1.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Eat-More (chocolate bar)',$sc,410,1715,6.0,58.0,38.0,18.0,8.0,3.0,0.3, 0,0,1,0,1,0,0,0, 0,0,1,1,0,1],
+			['Smarties (Canadian, Nestlé)',$sc,480,2008,4.5,65.0,58.0,21.5,13.0,0.5,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Hickory Sticks (snack)',$sc,510,2134,6.0,56.0,2.0,29.5,4.0,3.5,2.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Hawkins Cheezies',$sc,530,2217,8.0,48.0,2.0,34.0,7.0,1.0,2.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── CANADIAN BREAKFAST & BRUNCH (5) ──
+			['Peameal Bacon (grilled)',$mp,140,586,22.0,2.0,0.5,5.0,1.5,0.5,2.5, 0,0,0,0,0,0,0,0, 0,1,0,0,0,0],
+			['Peameal Bacon Sandwich (Toronto)',$tk,255,1067,16.0,28.0,3.0,8.0,2.5,1.5,2.0, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Eggs Benedict (Canadian back bacon)',$tk,260,1088,13.0,18.0,1.5,16.0,6.5,0.5,1.2, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Pancakes with Maple Syrup (Canadian)',$sc,265,1109,5.0,45.0,25.0,7.0,2.5,0.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Maple Baked Beans',$lp,135,565,5.5,22.0,12.0,1.5,0.3,4.0,0.6, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+
+			// ── CANADIAN DRINKS (7) ──
+			['Caesar (cocktail, Canadian Bloody Mary)',$dr,85,356,0.5,10.0,6.0,0.2,0.0,0.5,2.5, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tim Hortons Double-Double (coffee)',$dr,55,230,1.5,7.0,7.0,2.5,1.5,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Canadian Club Ginger Ale',$dr,35,146,0.0,8.5,8.5,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Spruce Beer (traditional)',$dr,35,146,0.0,8.0,7.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Iced Capp (Tim Hortons, medium)',$dr,125,523,2.0,22.0,20.0,3.5,2.0,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['London Fog (Earl Grey latte)',$dr,50,209,2.0,8.0,7.5,1.5,0.8,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Labatt Blue (beer, per 100ml)',$dr,43,180,0.3,3.5,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,1,0,0, 0,0,0,0,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'Health Canada CNF / USDA FDC. Seeded v42.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 42 );
+	}
 }
