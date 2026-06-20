@@ -7389,4 +7389,137 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 40 );
 	}
+
+	/** Seed v41: Native & common Russian foods. */
+	public static function seed_v41(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 41 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── SOUPS (10) ──
+			// ══════════════════════════════════════
+			['Borscht (Russian, with smetana)',$tk,45,188,2.0,6.5,3.5,1.5,0.5,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Shchi (cabbage soup)',$tk,35,146,2.0,4.0,1.5,1.0,0.4,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Solyanka (meat & pickle soup)',$tk,55,230,4.5,3.0,1.0,3.0,1.0,0.5,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Ukha (fish soup)',$tk,40,167,4.5,2.5,0.5,1.5,0.3,0.3,0.5, 1,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+			['Rassolnik (pickle soup)',$tk,40,167,2.5,5.0,1.0,1.0,0.3,1.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Okroshka (cold kvas soup)',$tk,50,209,2.5,6.0,2.0,1.5,0.5,0.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,0,0,0],
+			['Svekolnik (cold beetroot soup)',$tk,35,146,1.5,5.5,3.5,0.5,0.2,1.0,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Lapsha (chicken noodle soup)',$tk,50,209,3.5,6.0,0.5,1.5,0.4,0.3,0.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Kharcho (Georgian-Russian spiced soup)',$tk,65,272,5.0,4.5,1.0,3.0,1.0,0.5,0.6, 0,0,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Mushroom Soup (Russian, with barley)',$tk,45,188,1.5,7.0,0.5,1.5,0.3,1.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+
+			// ── DUMPLINGS & PASTRIES (12) ──
+			['Pelmeni (Siberian, pork & beef)',$tk,215,900,9.5,24.0,0.5,9.0,3.5,1.0,0.6, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Vareniki (potato & onion)',$tk,180,753,4.5,28.0,1.0,5.5,2.0,1.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Vareniki (cherry, sweet)',$sc,200,837,4.0,35.0,12.0,4.5,1.5,1.0,0.2, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Vareniki (tvorog/curd cheese)',$tk,195,816,7.5,26.0,3.0,6.5,3.0,0.5,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Pirozhki (cabbage filling)',$tk,245,1025,5.5,28.0,2.0,12.5,3.5,1.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Pirozhki (meat filling, baked)',$tk,260,1088,9.0,26.0,1.5,13.5,4.5,1.0,0.7, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Chebureki (deep-fried meat turnover)',$tk,310,1297,9.5,26.0,1.0,19.0,6.0,1.0,0.7, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Belyashi (fried meat bun)',$tk,280,1172,9.0,26.0,1.0,16.0,5.0,0.5,0.7, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Kulebyaka (salmon pie)',$tk,240,1004,10.0,22.0,1.5,12.5,5.0,1.0,0.6, 1,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Rasstegai (open fish pie)',$tk,225,941,9.5,22.0,1.0,11.5,4.0,0.5,0.6, 1,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Kurnik (layered chicken pie)',$tk,260,1088,10.0,24.0,1.5,14.0,5.5,0.5,0.6, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Samsa (Central Asian pastry, lamb)',$tk,295,1234,9.0,24.0,1.0,18.5,7.5,1.0,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── MAIN DISHES (12) ──
+			['Beef Stroganoff (classic)',$tk,150,628,11.0,5.0,1.5,10.0,5.0,0.3,0.5, 0,0,1,0,0,1,0,0, 0,0,0,0,0,0],
+			['Chicken Kiev (kotleta po-kievski)',$mp,265,1109,15.0,12.0,0.5,18.0,8.5,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Kotlety (Russian meat patties)',$mp,210,879,14.0,8.0,0.5,14.0,5.5,0.5,0.7, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Golubtsy (stuffed cabbage rolls)',$tk,105,439,6.0,10.0,2.0,4.5,1.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Plov (Russian pilaf, Uzbek-style)',$tk,175,732,7.5,22.0,1.5,6.5,2.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Zrazy (stuffed meat rolls)',$mp,195,816,14.0,8.0,1.0,12.0,4.5,0.5,0.6, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Bitochki (breaded meat cutlets)',$mp,230,962,13.0,12.0,0.5,15.0,4.5,0.5,0.7, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Shashlik (marinated grilled meat)',$mp,200,837,20.0,2.0,1.0,12.5,5.0,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Zharkoye (Russian pot roast)',$tk,110,460,8.5,7.0,1.0,5.5,2.0,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pelmeni v Bulyione (dumplings in broth)',$tk,95,397,5.5,8.5,0.3,4.5,1.5,0.3,0.8, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Zapekanka (tvorog bake)',$sc,190,795,9.0,22.0,10.0,7.5,3.5,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Draniki (potato pancakes, Belarusian)',$fv,180,753,3.0,22.0,1.0,9.0,1.5,1.5,0.4, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── SALADS & COLD DISHES (10) ──
+			['Olivier Salad (Russian salad)',$fv,130,544,4.5,8.0,2.0,9.0,1.5,1.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Vinegret (beetroot vinaigrette)',$fv,75,314,1.5,12.0,4.0,2.5,0.3,2.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Shuba (herring under fur coat)',$fv,145,607,5.0,10.0,3.0,9.5,1.5,1.5,0.8, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Holodets (meat jelly/aspic)',$mp,85,356,10.0,0.5,0.0,5.0,2.0,0.0,0.8, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Ikra (aubergine caviar spread)',$fv,75,314,1.0,5.5,3.5,5.5,0.7,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Forshmak (herring pâté)',$fs,180,753,10.0,5.0,2.0,13.5,3.5,0.5,2.0, 1,0,1,0,0,1,0,0, 0,0,0,0,0,0],
+			['Mimosa Salad (layered fish salad)',$fv,155,649,6.0,6.0,1.5,12.0,2.0,0.5,0.5, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Selyodka pod Shuboy (herring coat)',$fv,145,607,5.0,10.0,3.0,9.5,1.5,1.5,0.8, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Krasnaya Ikra (red caviar, per 100g)',$fs,245,1025,32.0,0.5,0.0,13.0,2.5,0.0,4.5, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Salo (cured pork fat)',$mp,770,3222,1.5,0.0,0.0,85.0,33.0,0.0,4.0, 0,0,0,0,0,0,0,0, 1,0,0,0,0,0],
+
+			// ── BREADS & BAKERY (8) ──
+			['Borodinsky Bread (rye, dark)',$bc,205,858,6.5,40.0,5.0,1.0,0.2,6.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Kalach (white bread ring)',$bc,285,1193,8.0,52.0,3.0,4.5,1.0,2.0,0.8, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Karavai (celebration bread)',$bc,295,1234,7.5,50.0,8.0,6.5,2.5,1.5,0.6, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Lavash (thin flatbread)',$bc,275,1151,8.5,52.0,1.5,3.0,0.5,2.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Pryanik (Russian gingerbread)',$sc,350,1464,4.5,72.0,35.0,4.5,1.0,1.5,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Sushki (dried bread rings)',$sc,360,1506,10.0,70.0,8.0,3.5,0.8,3.0,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Bubliki (boiled bread ring)',$bc,310,1297,9.0,58.0,5.0,4.0,1.0,2.0,0.6, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Lepyoshka (Central Asian flatbread)',$bc,290,1213,8.0,52.0,2.0,5.5,1.0,2.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+
+			// ── PANCAKES & CREPES (6) ──
+			['Blini (Russian, buckwheat)',$bc,220,920,6.5,30.0,3.0,8.5,3.0,1.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Blini with Smetana & Red Caviar',$tk,255,1067,10.0,25.0,2.0,13.0,5.0,0.5,1.5, 1,0,1,1,0,0,0,0, 0,0,0,0,0,0],
+			['Oladyi (thick pancakes)',$sc,240,1004,5.0,32.0,6.0,10.0,3.0,0.5,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Syrniki (curd cheese fritters)',$sc,220,920,10.0,22.0,6.0,10.5,4.5,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Nalesniki (filled crepes, sweet)',$sc,210,879,6.0,28.0,10.0,8.0,3.5,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Blini with Mushrooms & Smetana',$tk,195,816,5.0,24.0,2.0,9.0,3.5,1.0,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── DESSERTS & SWEETS (10) ──
+			['Medovik (honey cake)',$sc,360,1506,5.0,50.0,32.0,16.0,8.0,0.5,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Napoleon Cake (mille-feuille)',$sc,350,1464,5.0,38.0,20.0,20.0,12.5,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Ptichye Moloko (bird\'s milk cake)',$sc,320,1339,5.5,42.0,35.0,15.0,9.0,0.0,0.2, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Praga Cake (Prague chocolate cake)',$sc,380,1590,5.0,45.0,30.0,20.5,12.0,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Pastila (fruit marshmallow)',$sc,310,1297,0.5,80.0,70.0,0.2,0.0,1.0,0.0, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Zefir (Russian marshmallow)',$sc,326,1364,1.0,79.5,72.0,0.1,0.0,1.0,0.0, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Vatrushka (curd pastry)',$sc,270,1130,8.0,34.0,10.0,11.0,5.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Ponchiki (Russian doughnuts)',$sc,340,1423,5.0,42.0,15.0,16.5,4.0,0.5,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Halva (sunflower seed, Russian)',$sc,505,2113,12.0,50.0,38.0,29.0,5.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kartoshka (chocolate potato cake)',$sc,380,1590,5.0,48.0,32.0,19.0,10.0,1.5,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── DAIRY & FERMENTED (6) ──
+			['Smetana (sour cream, 20%)',$de,206,862,2.5,3.5,3.5,20.0,12.5,0.0,0.1, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Tvorog (Russian curd cheese)',$de,155,649,18.0,3.0,3.0,8.0,5.0,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Kefir (Russian, 3.2%)',$de,59,247,3.0,4.0,4.0,3.2,2.0,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Ryazhenka (baked fermented milk)',$de,67,280,3.0,4.0,4.0,4.0,2.5,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Prostokvasha (clotted sour milk)',$de,55,230,3.0,4.5,4.5,2.5,1.5,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Sgushyonka (condensed milk)',$de,320,1339,7.0,56.0,56.0,8.5,5.5,0.0,0.2, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── DRINKS (6) ──
+			['Kvas (bread-fermented drink)',$dr,27,113,0.2,6.5,5.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Kompot (stewed fruit drink)',$dr,40,167,0.1,10.0,9.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Mors (berry drink, cranberry)',$dr,30,126,0.1,7.5,6.5,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kissel (berry, thick)',$dr,68,285,0.3,17.0,12.0,0.1,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sbiten (honey spiced drink)',$dr,55,230,0.2,14.0,13.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Samovar Tea (Russian black tea)',$dr,1,4,0.1,0.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'Russian nutrition tables / USDA FDC. Seeded v41.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 41 );
+	}
 }
