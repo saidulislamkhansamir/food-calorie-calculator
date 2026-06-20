@@ -8338,4 +8338,165 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 47 );
 	}
+
+	/** Seed v48: Lao, Thai, Cambodian & Vietnamese foods. */
+	public static function seed_v48(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 48 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── LAOS (20) ──
+			// ══════════════════════════════════════
+			['Khao Niaw (Lao sticky rice)',$bc,170,711,3.5,37.0,0.0,0.3,0.1,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Laab (Lao minced meat salad)',$mp,130,544,14.0,3.0,1.0,7.0,2.5,0.5,1.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Laab Pla (fish laab)',$fs,110,460,14.0,3.0,1.0,5.0,1.0,0.5,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tam Mak Hoong (Lao papaya salad)',$fv,65,272,2.0,12.0,7.0,1.0,0.2,2.5,2.0, 1,1,0,0,1,0,0,0, 0,0,1,0,1,1],
+			['Or Lam (Luang Prabang stew)',$tk,95,397,7.0,5.0,1.0,5.5,1.5,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ping Kai (Lao grilled chicken)',$mp,175,732,22.0,3.0,2.0,8.5,2.0,0.0,1.2, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Khao Piak Sen (Lao noodle soup)',$tk,75,314,4.5,10.0,0.5,2.0,0.5,0.3,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Khao Poon (Lao rice vermicelli soup)',$tk,80,335,4.0,10.0,1.0,2.5,1.5,0.5,1.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Mok Pa (steamed fish in banana leaf)',$fs,120,502,14.0,3.0,0.5,6.0,1.5,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Sai Oua (Lao herb sausage)',$mp,275,1151,14.0,5.0,1.5,22.0,7.5,0.5,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Jaew Bong (roasted chilli dip)',$co,55,230,1.5,8.0,3.0,2.0,0.3,1.5,2.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kaeng Nor Mai (bamboo shoot soup)',$tk,40,167,2.5,4.0,0.5,1.5,0.5,2.0,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Khao Jee (Lao grilled sticky rice)',$bc,185,774,3.0,35.0,0.5,4.0,1.0,0.5,0.2, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Naem Khao (crispy rice salad)',$tk,190,795,6.0,22.0,2.0,9.0,2.0,1.0,1.5, 0,0,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Phan Phak (Lao spring rolls, fresh)',$fv,85,356,3.5,14.0,1.5,1.5,0.3,1.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Ping Sin (Lao grilled beef)',$mp,195,816,24.0,3.0,2.0,9.5,3.5,0.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Khai Paen (fried river weed snack)',$sc,230,962,8.0,30.0,1.0,10.0,1.5,3.0,1.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Khao Lam (bamboo sticky rice)',$sc,200,837,3.0,38.0,8.0,4.0,2.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Lao Beer (per 100ml)',$dr,42,176,0.3,3.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,1,0,0, 0,0,0,0,1,1],
+			['Lao Lao (rice whisky, per 100ml)',$dr,230,962,0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,0,0,1,1],
+
+			// ══════════════════════════════════════
+			// ── THAILAND (30) ──
+			// ══════════════════════════════════════
+			// -- Curries --
+			['Panang Curry (beef)',$tk,165,690,10.0,6.0,3.0,11.5,7.5,0.5,1.0, 1,0,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Yellow Curry (chicken)',$tk,120,502,8.0,8.0,3.0,6.5,4.5,0.5,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Jungle Curry (pork, no coconut)',$tk,85,356,9.0,4.0,1.5,3.5,0.8,1.5,1.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kaeng Khiao Wan (green curry, authentic)',$tk,135,565,8.5,6.5,3.0,8.5,5.5,0.8,1.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Khao Soi (Chiang Mai curry noodle)',$tk,175,732,9.0,18.0,2.5,8.0,5.0,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Gaeng Hung Lay (Northern pork curry)',$mp,165,690,12.0,8.0,5.0,10.0,3.5,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			// -- Stir-fry & Mains --
+			['Pad Krapao (holy basil stir-fry)',$tk,155,649,12.0,12.0,2.0,7.5,1.5,0.5,2.0, 1,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Pad See Ew (wide noodle stir-fry)',$tk,165,690,7.5,22.0,3.0,5.5,1.0,0.5,2.0, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Pad Pak Ruam (mixed vegetable stir-fry)',$fv,60,251,2.5,5.0,2.0,3.5,0.5,2.0,1.0, 1,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Kai Med Ma Muang (cashew chicken, Thai)',$tk,180,753,14.0,10.0,3.5,9.5,1.5,1.0,1.5, 0,0,0,0,1,0,1,0, 0,0,1,0,0,0],
+			['Pla Pao (salt-crusted grilled fish)',$fs,110,460,20.0,0.0,0.0,3.0,0.5,0.0,2.0, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Mu Ping (Thai grilled pork skewer)',$mp,195,816,18.0,8.0,6.0,10.0,3.5,0.0,1.5, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Khao Man Gai (Thai chicken rice)',$tk,160,669,10.5,22.0,0.5,3.5,0.8,0.5,0.8, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Kai Yang (Thai grilled chicken)',$mp,170,711,22.0,3.0,2.0,7.5,2.0,0.0,1.2, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			// -- Soups --
+			['Tom Yum Goong (hot & sour prawn soup)',$tk,55,230,5.5,4.0,1.5,2.0,0.3,0.5,1.5, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tom Kha Gai (coconut chicken soup)',$tk,90,377,5.5,5.0,2.0,6.0,4.5,0.5,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kaeng Jued (Thai clear soup)',$tk,30,126,2.5,2.5,0.5,1.0,0.3,0.5,0.8, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			// -- Salads --
+			['Som Tam Thai (papaya salad, peanut)',$fv,65,272,2.5,11.0,8.0,1.5,0.2,2.0,2.0, 1,1,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Yam Nua (Thai beef salad)',$mp,115,481,14.0,5.0,3.0,4.5,1.5,1.0,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Yam Woon Sen (glass noodle salad)',$tk,95,397,5.0,12.0,3.0,3.0,0.5,0.5,1.5, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Laab Gai (Thai chicken laab)',$mp,125,523,14.0,4.0,1.5,6.0,1.5,0.5,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			// -- Snacks & Street --
+			['Moo Satay (pork satay, 4 sticks)',$mp,190,795,15.0,8.0,5.0,11.5,3.0,0.5,0.8, 0,0,0,0,1,0,1,0, 0,0,1,0,0,0],
+			['Tod Mun Pla (Thai fish cakes)',$fs,195,816,11.0,12.0,2.0,11.5,2.0,1.0,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Poh Pia Tod (Thai spring rolls, fried)',$tk,230,962,4.5,24.0,2.0,13.0,2.0,1.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Kanom Krok (coconut pancake cups)',$sc,195,816,2.5,22.0,10.0,11.0,8.5,0.5,0.2, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Roti Sai Mai (cotton candy roti)',$sc,335,1402,4.0,48.0,22.0,14.5,5.0,0.5,0.2, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+			// -- Sweets & Drinks --
+			['Mango Sticky Rice (khao niao mamuang)',$sc,175,732,2.5,32.0,14.0,4.5,3.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Thai Iced Tea (cha yen)',$dr,85,356,1.5,16.0,15.0,2.0,1.2,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Nam Manao (Thai limeade)',$dr,40,167,0.1,10.0,9.0,0.0,0.0,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Bua Loy (glutinous rice balls in coconut)',$sc,165,690,2.0,28.0,14.0,5.5,4.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── CAMBODIA (20) ──
+			// ══════════════════════════════════════
+			['Fish Amok (Khmer steamed curry)',$fs,125,523,10.0,5.0,2.0,7.5,5.0,0.5,0.8, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Lok Lak (stir-fried beef, pepper-lime)',$mp,155,649,16.0,6.0,2.0,7.5,2.5,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Bai Sach Chrouk (pork & rice, breakfast)',$tk,175,732,10.0,24.0,1.0,4.5,1.5,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Kuy Teav (Khmer noodle soup)',$tk,80,335,5.0,10.0,0.5,2.0,0.5,0.5,1.2, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Samlor Korko (Khmer stirring soup)',$tk,50,209,3.0,6.0,1.5,1.5,0.3,2.0,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Samlor Machu (sour soup)',$tk,40,167,3.5,4.0,1.5,1.0,0.2,1.0,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Nom Banh Chok (Khmer noodles, green curry)',$tk,95,397,3.5,15.0,1.0,2.5,1.5,1.0,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Prahok Ktiss (prahok dip with pork)',$co,130,544,10.0,5.0,2.0,8.0,2.5,0.5,3.5, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Cha Kroeung Sach Ko (lemongrass beef)',$mp,160,669,16.0,5.0,2.0,8.5,2.5,0.5,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pleah Sach Ko (Khmer raw beef salad)',$mp,135,565,16.0,5.0,2.5,6.0,2.0,1.0,1.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ang Dtray-Meuk (grilled squid)',$fs,115,481,16.0,3.0,1.0,4.5,0.8,0.0,1.0, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Cha Traop Dot (stuffed aubergine)',$fv,85,356,4.5,6.0,2.0,5.0,1.5,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Num Pang (Khmer baguette sandwich)',$tk,250,1046,10.0,30.0,3.0,10.0,2.0,1.5,1.2, 0,0,0,0,0,1,1,0, 0,0,0,0,0,0],
+			['Kampot Pepper Crab',$fs,125,523,12.0,5.0,1.0,6.5,1.0,0.5,1.5, 0,1,0,0,0,0,0,0, 1,0,1,0,0,0],
+			['Trey Aing (grilled fish, Cambodian)',$fs,110,460,20.0,1.0,0.5,3.0,0.5,0.0,1.0, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Nom Krok (Khmer coconut cake)',$sc,185,774,2.5,20.0,8.0,10.5,8.0,0.5,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Num Ansorm (Khmer sticky rice cake)',$sc,195,816,3.0,36.0,5.0,4.5,2.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Cha Houy Teuk (Khmer jelly dessert)',$sc,85,356,0.5,20.0,16.0,0.5,0.3,0.3,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Tuk-a-Loc (Cambodian fruit shake)',$dr,95,397,2.0,16.0,14.0,2.5,1.5,0.5,0.0, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Kampot Pepper (whole, dried)',$co,255,1067,10.0,64.0,0.6,3.3,1.0,26.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── VIETNAM (30) ──
+			// ══════════════════════════════════════
+			// -- Soups & Noodles --
+			['Pho Bo (beef pho)',$tk,55,230,4.5,6.0,0.5,1.5,0.5,0.3,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pho Ga (chicken pho)',$tk,50,209,4.0,6.0,0.5,1.0,0.3,0.3,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bun Bo Hue (spicy beef noodle soup)',$tk,70,293,5.5,7.0,0.5,2.5,0.8,0.5,1.0, 1,1,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Bun Rieu (crab & tomato noodle soup)',$tk,60,251,4.5,6.0,1.5,2.0,0.4,0.5,0.8, 0,1,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Bun Cha (grilled pork & noodles, Hanoi)',$tk,140,586,10.0,16.0,3.0,4.5,1.5,0.5,1.5, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Cao Lau (Hoi An noodles)',$tk,155,649,8.0,20.0,1.0,5.0,1.5,0.5,1.5, 0,0,0,0,0,1,1,0, 0,0,0,0,0,0],
+			['Mi Quang (turmeric noodles, Da Nang)',$tk,145,607,7.5,18.0,1.0,5.0,1.0,1.0,1.0, 0,1,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Hu Tieu (Southern pork noodle soup)',$tk,65,272,4.0,8.5,0.5,1.5,0.5,0.3,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			// -- Main Dishes --
+			['Banh Mi (classic pork)',$tk,240,1004,12.0,28.0,5.0,9.0,2.0,1.5,1.2, 0,0,0,0,0,1,1,0, 0,0,0,0,0,0],
+			['Com Tam (broken rice with pork chop)',$tk,175,732,10.0,24.0,1.0,5.0,1.5,0.5,1.5, 1,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Bo Luc Lac (shaking beef)',$mp,185,774,18.0,5.0,2.0,10.5,3.5,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Ca Kho To (caramelised fish in clay pot)',$fs,155,649,16.0,8.0,6.0,6.5,1.5,0.0,2.0, 1,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+			['Thit Kho (caramelised pork belly)',$mp,250,1046,14.0,8.0,6.5,18.0,6.5,0.0,1.5, 0,0,0,1,0,0,1,0, 0,0,0,0,0,0],
+			['Bo Kho (Vietnamese beef stew)',$tk,100,418,8.0,6.0,2.0,5.0,2.0,1.0,0.6, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Ga Nuong (Vietnamese roast chicken)',$mp,175,732,22.0,3.0,2.0,8.0,2.0,0.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Canh Chua (sour fish soup, southern)',$tk,50,209,5.0,5.0,2.0,1.5,0.3,1.0,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			// -- Rolls & Wraps --
+			['Goi Cuon (fresh spring rolls, 2 pcs)',$tk,85,356,5.0,13.0,1.0,1.0,0.2,1.0,0.8, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Cha Gio (fried spring rolls, 2 pcs)',$tk,210,879,5.5,18.0,1.0,13.5,2.5,0.5,0.6, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Banh Cuon (steamed rice crepes)',$tk,115,481,5.0,16.0,0.5,3.5,0.8,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bo La Lot (grilled beef in betel leaf)',$mp,195,816,15.0,3.0,1.0,14.0,5.5,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			// -- Snacks --
+			['Banh Xeo (Vietnamese sizzling crepe)',$tk,200,837,6.0,18.0,1.5,12.0,4.0,1.5,0.8, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Banh Khot (mini crispy pancakes)',$tk,185,774,4.5,18.0,1.0,10.5,6.0,0.5,0.5, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Xoi (sticky rice with toppings)',$bc,185,774,5.0,32.0,2.0,4.0,1.0,0.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			// -- Condiments --
+			['Nuoc Cham (fish dipping sauce)',$co,40,167,2.5,7.5,6.0,0.0,0.0,0.0,6.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Nuoc Mam (fish sauce)',$co,35,146,5.0,3.5,0.0,0.0,0.0,0.0,23.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			// -- Sweets & Drinks --
+			['Che Ba Mau (three-colour dessert)',$sc,120,502,2.5,22.0,14.0,2.5,1.5,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Banh Flan (Vietnamese crème caramel)',$sc,145,607,4.0,20.0,18.0,5.5,2.5,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Ca Phe Sua Da (Vietnamese iced coffee)',$dr,75,314,1.5,14.0,13.0,1.5,1.0,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Sinh To Bo (avocado smoothie)',$dr,115,481,1.5,12.0,10.0,7.0,2.0,1.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Tra Da (Vietnamese iced tea)',$dr,1,4,0.0,0.2,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'FAO SMILING / USDA FDC. Seeded v48.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 48 );
+	}
 }
