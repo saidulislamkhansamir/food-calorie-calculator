@@ -5703,4 +5703,87 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 29 );
 	}
+
+	/** Seed v30: 50 more unique foods. */
+	public static function seed_v30(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 30 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ── EAST EUROPEAN & SCANDINAVIAN (10) ──
+			['Blini (buckwheat, plain)',$bc,215,900,6.0,30.0,2.5,8.0,2.5,1.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Pelmeni (Russian dumplings)',$tk,210,879,9.0,24.0,0.5,8.5,3.5,1.0,0.6, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Stroopwafel',$sc,450,1883,4.0,62.0,32.0,20.5,11.0,1.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Gravlax (cured salmon)',$fs,175,732,20.0,3.0,2.5,9.5,1.5,0.0,3.0, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Swedish Meatballs',$mp,195,816,15.0,8.0,1.5,12.0,5.5,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Knäckebröd (crispbread)',$bc,340,1423,9.5,65.0,2.5,2.0,0.3,14.0,1.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Kissel (berry dessert)',$sc,65,272,0.3,16.0,12.0,0.1,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kalakukko (Finnish fish bread)',$tk,195,816,10.0,28.0,1.0,5.0,1.0,1.5,0.8, 1,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Smørrebrød (open sandwich, avg)',$tk,230,962,11.0,20.0,2.0,12.0,4.0,1.5,1.5, 1,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Varenyky (cherry, sweet)',$sc,195,816,4.0,35.0,12.0,4.0,1.5,1.0,0.2, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── JAPANESE EXTRAS (10) ──
+			['Mochi (plain rice cake)',$sc,225,941,4.0,50.0,18.0,0.5,0.1,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Daifuku (red bean mochi)',$sc,240,1004,5.0,52.0,25.0,0.5,0.1,2.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Taiyaki (custard-filled)',$sc,265,1109,5.5,42.0,18.0,8.0,2.0,1.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Onigiri (salmon)',$bc,155,649,5.5,28.0,0.5,2.0,0.3,0.5,0.8, 1,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+			['Edamame (salted, shelled)',$lp,122,510,11.0,8.9,2.2,5.2,0.6,5.2,0.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Tempura Prawns (2 pcs)',$tk,230,962,9.0,20.0,0.5,13.0,2.0,0.5,0.6, 1,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Udon Noodles (cooked)',$bc,105,439,3.0,22.0,0.5,0.5,0.1,0.8,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Soba Noodles (cooked)',$bc,99,414,5.0,21.4,0.0,0.1,0.0,0.0,0.3, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Tonkatsu (pork cutlet)',$mp,275,1151,16.0,15.0,2.0,17.5,4.5,0.5,0.8, 0,0,0,1,0,1,1,0, 0,0,0,0,0,0],
+			['Dorayaki (pancake, red bean)',$sc,260,1088,5.5,45.0,22.0,5.5,1.5,2.0,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── KOREAN (8) ──
+			['Bulgogi (beef)',$mp,155,649,18.0,8.0,6.0,5.5,2.0,0.5,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Japchae (glass noodles)',$tk,135,565,3.0,22.0,6.0,4.0,0.5,1.0,1.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+			['Tteokbokki (rice cakes)',$tk,190,795,4.0,40.0,8.0,1.5,0.3,1.0,1.5, 1,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Korean Fried Chicken (yangnyeom)',$tk,250,1046,15.0,18.0,10.0,13.5,3.0,0.5,1.2, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Kimchi Jjigae (stew)',$tk,55,230,4.0,4.5,1.5,2.5,0.5,1.0,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Kimbap (1 roll, sliced)',$tk,140,586,5.0,24.0,2.0,2.5,0.5,1.0,0.8, 1,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Pajeon (Korean pancake)',$tk,195,816,5.0,24.0,2.5,9.0,1.5,1.5,1.0, 0,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Sundubu-jjigae (soft tofu stew)',$tk,65,272,5.5,3.5,1.0,3.5,0.8,0.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,0,1,1],
+
+			// ── SUGAR & SWEETENERS (6) ──
+			['Golden Syrup',$co,325,1360,0.0,79.0,79.0,0.0,0.0,0.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Maple Syrup',$co,260,1088,0.0,67.0,60.0,0.1,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Agave Nectar',$co,310,1297,0.1,76.0,68.0,0.5,0.0,0.2,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Treacle (black)',$co,290,1213,1.8,68.0,65.0,0.0,0.0,0.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Stevia (granulated blend)',$co,0,0,0.0,1.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Icing Sugar',$co,398,1665,0.0,99.8,99.8,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── TINNED / JARRED FISH (6) ──
+			['Anchovies (in oil, drained)',$fs,210,879,28.9,0.0,0.0,9.7,2.2,0.0,6.0, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Sardines in Olive Oil',$fs,208,870,24.6,0.0,0.0,11.5,2.8,0.0,0.8, 1,0,0,0,0,0,0,0, 0,1,1,1,0,0],
+			['Mackerel in Tomato Sauce',$fs,178,745,14.0,3.5,2.5,12.0,2.8,0.0,0.6, 1,0,0,0,0,0,0,0, 0,1,1,1,0,0],
+			['Pilchards in Tomato Sauce',$fs,155,649,14.5,2.0,1.5,10.0,3.0,0.0,0.6, 1,0,0,0,0,0,0,0, 0,1,1,1,0,0],
+			['Crab Meat (canned)',$fs,81,339,18.1,0.0,0.0,0.9,0.2,0.0,0.8, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Salmon (canned, pink)',$fs,135,565,20.0,0.0,0.0,6.0,1.4,0.0,0.5, 1,0,0,0,0,0,0,0, 0,1,1,1,0,0],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'M&W 8th ed. / USDA FDC. Seeded v30.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 30 );
+	}
 }
