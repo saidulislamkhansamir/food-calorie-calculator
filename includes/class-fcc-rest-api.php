@@ -310,7 +310,7 @@ class Rest_Api {
 	private function format_food( array $food ): array {
 		return [
 			'id'                   => (int) $food['id'],
-			'name'                 => esc_html( $food['name'] ),
+			'name'                 => $food['name'],
 			'slug'                 => $food['slug'],
 			'category_id'          => (int) $food['category_id'],
 			'serving_sizes'        => $food['serving_sizes'] ?? [],
