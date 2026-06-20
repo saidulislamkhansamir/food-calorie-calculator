@@ -8652,4 +8652,119 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 49 );
 	}
+
+	/** Seed v50: Pacific Island foods — PNG, Solomon Islands, Nauru, Tonga, Tuvalu, Tokelau. */
+	public static function seed_v50(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 50 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── PAPUA NEW GUINEA (20) ──
+			// ══════════════════════════════════════
+			['Mumu (PNG earth oven, mixed, per 100g)',$tk,115,481,7.5,12.0,2.0,4.0,1.5,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kaukau (PNG sweet potato, roasted)',$fv,105,439,1.5,24.0,6.5,0.2,0.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Sago (PNG, processed starch)',$bc,355,1485,0.2,88.0,0.0,0.1,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Sago Pancake (PNG)',$bc,175,732,0.5,42.0,0.5,0.2,0.0,0.3,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Tulip (canned meat, PNG staple)',$mp,260,1088,12.0,4.0,1.0,22.0,9.0,0.0,2.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Buai (betel nut, chewed)',$sc,55,230,1.0,10.0,2.0,1.5,0.5,2.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+			['Kokoda (PNG raw fish in coconut)',$fs,115,481,12.0,4.0,2.0,6.0,4.0,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Taro (PNG, boiled)',$fv,115,481,0.5,27.0,0.5,0.1,0.0,2.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Banana (cooking, PNG, boiled)',$fv,115,481,1.0,30.0,3.0,0.2,0.1,1.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Aibika (PNG spinach-like greens)',$fv,25,105,3.0,3.0,0.5,0.3,0.1,2.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Galip Nut (Canarium, PNG)',$ns,580,2427,8.0,10.0,2.0,57.0,8.0,5.0,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1],
+			['Lamb Flap (PNG imported, grilled)',$mp,315,1318,12.0,0.0,0.0,30.0,14.0,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Coconut Cream (fresh, PNG)',$fo,195,816,2.0,3.0,2.0,20.0,17.5,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Breadfruit (PNG, roasted)',$fv,110,460,1.5,28.0,5.0,0.3,0.1,4.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Yam (PNG, boiled)',$fv,115,481,1.5,27.5,0.5,0.2,0.0,3.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Tapiok (cassava, boiled, PNG)',$fv,155,649,1.0,38.0,1.5,0.3,0.1,1.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Smoked Fish (PNG river fish)',$fs,165,690,28.0,0.0,0.0,5.5,1.0,0.0,2.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Tinned Fish and Rice (PNG common meal)',$tk,145,607,7.5,20.0,0.5,4.0,0.8,0.5,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kumu (PNG pumpkin tips, cooked)',$fv,20,84,2.5,2.5,0.5,0.3,0.1,1.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Pitpit (wild sugarcane shoot, PNG)',$fv,25,105,1.5,5.0,1.0,0.2,0.0,2.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── SOLOMON ISLANDS (10) ──
+			// ══════════════════════════════════════
+			['Poi (Solomon Islands taro pudding)',$fv,135,565,1.0,32.0,5.0,0.5,0.2,2.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Kumara (SI sweet potato, baked)',$fv,100,418,1.5,23.0,6.0,0.2,0.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Cassava Pudding (Solomon Islands)',$sc,165,690,1.0,35.0,12.0,3.5,2.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Ngali Nut (Canarium, Solomon Islands)',$ns,570,2385,7.5,10.0,2.0,56.0,8.0,5.0,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1],
+			['Fish in Coconut Cream (SI)',$fs,135,565,14.0,3.0,1.5,7.5,5.5,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Slippery Cabbage (SI, cooked in coconut)',$fv,55,230,2.5,3.5,0.5,3.5,2.5,1.5,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Banana Pudding (SI, baked)',$sc,140,586,1.0,28.0,12.0,3.5,2.5,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Tuna Loin (SI, grilled, fresh)',$fs,130,544,28.0,0.0,0.0,1.5,0.3,0.0,0.2, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Simboro (SI leaf-wrapped rice)',$bc,150,628,3.0,28.0,0.5,3.0,2.0,1.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Coconut Toddy (SI, fresh)',$dr,35,146,0.3,8.0,7.0,0.2,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── NAURU (6) ──
+			// ══════════════════════════════════════
+			['Coconut Fish (Nauruan, raw in lime)',$fs,105,439,13.0,3.0,1.5,5.0,3.5,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Pandanus Fruit Paste (Nauruan)',$fv,135,565,1.0,32.0,15.0,1.5,0.3,5.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Fried Breadfruit (Nauruan)',$fv,175,732,1.5,25.0,4.0,8.0,2.0,4.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Toddy Syrup (Nauruan, from coconut)',$co,280,1172,0.5,70.0,65.0,0.2,0.1,0.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Baked Taro (Nauruan style)',$fv,120,502,1.0,28.0,0.5,0.2,0.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Grilled Reef Fish (Nauruan)',$fs,100,418,20.0,0.0,0.0,2.0,0.4,0.0,0.5, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+
+			// ══════════════════════════════════════
+			// ── TONGA (10) ──
+			// ══════════════════════════════════════
+			['Lu Pulu (corned beef in taro leaves)',$tk,145,607,8.0,4.0,0.5,11.0,5.5,1.5,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Lu Sipi (lamb in taro leaves)',$tk,140,586,9.0,3.5,0.5,10.5,5.0,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ota Ika (Tongan raw fish salad)',$fs,95,397,12.0,4.0,2.0,4.0,3.0,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Topai (Tongan dumplings in coconut)',$sc,185,774,2.5,30.0,10.0,6.5,5.0,0.5,0.0, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+			['Feke (Tongan octopus in coconut)',$fs,110,460,14.0,4.0,1.5,4.5,3.0,0.0,0.5, 1,1,0,0,0,0,0,0, 1,0,1,0,0,0],
+			['Umu Feast (Tongan earth oven, avg)',$tk,120,502,8.0,12.0,2.0,4.5,2.0,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Vai Siaine (banana in coconut cream)',$sc,130,544,1.0,24.0,14.0,4.0,3.0,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kapisi Pulu (cabbage & corned beef)',$tk,85,356,5.0,4.5,1.5,5.5,2.5,1.5,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Keke (Tongan deep-fried dough)',$sc,350,1464,5.0,42.0,10.0,18.0,4.0,0.5,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Otai (Tongan fruit coconut drink)',$dr,75,314,0.5,14.0,12.0,2.5,2.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── TUVALU (6) ──
+			// ══════════════════════════════════════
+			['Pulaka (swamp taro, Tuvalu, boiled)',$fv,125,523,1.0,30.0,0.5,0.2,0.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Fakkai (Tuvalu coconut & taro dessert)',$sc,160,669,1.5,28.0,12.0,5.0,4.0,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Ika Mata (Tuvalu raw fish in coconut)',$fs,100,418,12.0,3.5,1.5,5.0,3.5,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Pani Popo (Tuvalu coconut bread rolls)',$bc,285,1193,6.0,38.0,15.0,12.5,8.5,1.0,0.4, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Fried Flying Fish (Tuvalu)',$fs,185,774,18.0,6.0,0.5,10.0,1.5,0.5,0.5, 1,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Toddy (Tuvalu coconut sap drink)',$dr,40,167,0.3,9.5,8.5,0.2,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── TOKELAU (6) ──
+			// ══════════════════════════════════════
+			['Coconut Crab (Tokelau, boiled)',$fs,125,523,15.0,1.0,0.0,7.0,1.5,0.0,1.0, 0,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Takihi (Tokelau breadfruit & coconut)',$fv,145,607,1.5,22.0,5.0,6.0,5.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kanava (Tokelau clam, raw)',$fs,75,314,12.0,3.5,0.0,1.0,0.2,0.0,1.0, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Poke (Tokelau, fermented breadfruit)',$fv,95,397,0.8,22.0,3.0,0.5,0.2,3.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Aku (Tokelau skipjack tuna, grilled)',$fs,130,544,28.0,0.0,0.0,1.5,0.4,0.0,0.3, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Karewe (Tokelau fermented toddy)',$dr,45,188,0.3,10.0,9.0,0.2,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,0,0,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'FAO Pacific / USDA FDC. Seeded v50.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 50 );
+	}
 }
