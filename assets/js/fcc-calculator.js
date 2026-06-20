@@ -569,6 +569,7 @@
 
 		// Health highlights.
 		renderHealthHighlights( food );
+		renderAllergenDietBadges( food );
 
 		// FSA traffic lights.
 		if ( trafficLights && features.fsa_traffic_lights ) {
@@ -927,6 +928,66 @@
 
 		healthHighlights.innerHTML = html;
 		healthHighlights.hidden = false;
+	}
+
+	// -------------------------------------------------------------------------
+	// Allergen & Dietary Badges
+	// -------------------------------------------------------------------------
+	var allergenEl = root.querySelector( '.fcc-allergen-badges' );
+	var dietEl     = root.querySelector( '.fcc-diet-badges' );
+
+	function renderAllergenDietBadges( food ) {
+		// Allergens
+		if ( allergenEl ) {
+			var allergens = [
+				{ key: 'allergen_fish',      label: '🐟 Fish' },
+				{ key: 'allergen_shellfish',  label: '🦐 Shellfish' },
+				{ key: 'allergen_dairy',      label: '🥛 Dairy' },
+				{ key: 'allergen_eggs',       label: '🥚 Eggs' },
+				{ key: 'allergen_nuts',       label: '🥜 Tree Nuts' },
+				{ key: 'allergen_gluten',     label: '🌾 Gluten' },
+				{ key: 'allergen_soy',        label: '🫘 Soy' },
+				{ key: 'allergen_celery',     label: '🥬 Celery' },
+			];
+			var html = '';
+			allergens.forEach( function ( a ) {
+				if ( food[ a.key ] === 1 || food[ a.key ] === '1' ) {
+					html += '<span class="fcc-allergen-badge fcc-allergen-badge--contains">⚠️ ' + a.label + '</span>';
+				} else if ( food[ a.key ] === 0 || food[ a.key ] === '0' ) {
+					html += '<span class="fcc-allergen-badge fcc-allergen-badge--free">✅ ' + a.label.split(' ')[1] + '-Free</span>';
+				}
+			} );
+			if ( html ) {
+				allergenEl.innerHTML = '<span class="fcc-badge-label">Allergens:</span>' + html;
+				allergenEl.hidden = false;
+			} else {
+				allergenEl.hidden = true;
+			}
+		}
+
+		// Dietary tags
+		if ( dietEl ) {
+			var diets = [
+				{ key: 'diet_keto',       label: '🥑 Keto-Friendly' },
+				{ key: 'diet_paleo',      label: '🍖 Paleo' },
+				{ key: 'diet_halal',      label: '☪️ Halal' },
+				{ key: 'diet_kosher',     label: '✡️ Kosher' },
+				{ key: 'diet_vegan',      label: '🌱 Vegan' },
+				{ key: 'diet_vegetarian', label: '🥬 Vegetarian' },
+			];
+			var dhtml = '';
+			diets.forEach( function ( d ) {
+				if ( food[ d.key ] === 1 || food[ d.key ] === '1' ) {
+					dhtml += '<span class="fcc-diet-badge">' + d.label + '</span>';
+				}
+			} );
+			if ( dhtml ) {
+				dietEl.innerHTML = '<span class="fcc-badge-label">Dietary:</span>' + dhtml;
+				dietEl.hidden = false;
+			} else {
+				dietEl.hidden = true;
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------

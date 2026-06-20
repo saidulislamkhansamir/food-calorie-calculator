@@ -276,6 +276,20 @@ class Foods {
 			'sponsor_logo_id'    => absint( $post['sponsor_logo_id'] ?? 0 ) ?: null,
 			'sponsor_url'        => esc_url_raw( $post['sponsor_url'] ?? '' ),
 			'sponsor_expires_at' => sanitize_text_field( $post['sponsor_expires_at'] ?? '' ),
+			'allergen_fish'      => isset( $post['allergen_fish'] ) ? 1 : null,
+			'allergen_shellfish' => isset( $post['allergen_shellfish'] ) ? 1 : null,
+			'allergen_dairy'     => isset( $post['allergen_dairy'] ) ? 1 : null,
+			'allergen_eggs'      => isset( $post['allergen_eggs'] ) ? 1 : null,
+			'allergen_nuts'      => isset( $post['allergen_nuts'] ) ? 1 : null,
+			'allergen_gluten'    => isset( $post['allergen_gluten'] ) ? 1 : null,
+			'allergen_soy'       => isset( $post['allergen_soy'] ) ? 1 : null,
+			'allergen_celery'    => isset( $post['allergen_celery'] ) ? 1 : null,
+			'diet_keto'          => isset( $post['diet_keto'] ) ? 1 : null,
+			'diet_paleo'         => isset( $post['diet_paleo'] ) ? 1 : null,
+			'diet_halal'         => isset( $post['diet_halal'] ) ? 1 : null,
+			'diet_kosher'        => isset( $post['diet_kosher'] ) ? 1 : null,
+			'diet_vegan'         => isset( $post['diet_vegan'] ) ? 1 : null,
+			'diet_vegetarian'    => isset( $post['diet_vegetarian'] ) ? 1 : null,
 		];
 
 		foreach ( $nullable_float_fields as $field ) {

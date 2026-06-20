@@ -3812,4 +3812,22 @@ class Seed_Data {
 		Database::create_wl_licenses_table();
 		update_option( 'fcc_seed_version', 18 );
 	}
+
+	public static function seed_v19(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 19 ) {
+			return;
+		}
+		global $wpdb;
+		$table = $wpdb->prefix . 'fcc_foods';
+		$cols  = [
+			'allergen_fish', 'allergen_shellfish', 'allergen_dairy', 'allergen_eggs',
+			'allergen_nuts', 'allergen_gluten', 'allergen_soy', 'allergen_celery',
+			'diet_keto', 'diet_paleo', 'diet_halal', 'diet_kosher', 'diet_vegan', 'diet_vegetarian',
+		];
+		foreach ( $cols as $col ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "ALTER TABLE {$table} ADD COLUMN IF NOT EXISTS {$col} tinyint(1) DEFAULT NULL" );
+		}
+		update_option( 'fcc_seed_version', 19 );
+	}
 }

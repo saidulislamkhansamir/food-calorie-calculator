@@ -177,6 +177,55 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 					</div>
 				</div>
 
+				<!-- Allergens & Dietary Tags -->
+				<div class="fcc-card">
+					<h2 class="fcc-card__title"><?php esc_html_e( 'Allergens & Dietary Tags', 'food-calorie-calculator' ); ?></h2>
+					<div class="fcc-field">
+						<label><?php esc_html_e( 'Contains Allergens', 'food-calorie-calculator' ); ?></label>
+						<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+							<?php
+							$allergens = [
+								'allergen_fish'      => __( '🐟 Fish', 'food-calorie-calculator' ),
+								'allergen_shellfish' => __( '🦐 Shellfish', 'food-calorie-calculator' ),
+								'allergen_dairy'     => __( '🥛 Dairy', 'food-calorie-calculator' ),
+								'allergen_eggs'      => __( '🥚 Eggs', 'food-calorie-calculator' ),
+								'allergen_nuts'      => __( '🥜 Tree Nuts', 'food-calorie-calculator' ),
+								'allergen_gluten'    => __( '🌾 Gluten', 'food-calorie-calculator' ),
+								'allergen_soy'       => __( '🫘 Soy', 'food-calorie-calculator' ),
+								'allergen_celery'    => __( '🥬 Celery', 'food-calorie-calculator' ),
+							];
+							foreach ( $allergens as $key => $label ) : ?>
+								<label style="display:flex;align-items:center;gap:4px;font-size:13px">
+									<input type="checkbox" name="<?php echo esc_attr( $key ); ?>" value="1"
+										<?php checked( $is_edit && ! empty( $food[ $key ] ) ); ?>>
+									<?php echo esc_html( $label ); ?>
+								</label>
+							<?php endforeach; ?>
+						</div>
+					</div>
+					<div class="fcc-field" style="margin-top:16px">
+						<label><?php esc_html_e( 'Dietary Tags', 'food-calorie-calculator' ); ?></label>
+						<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+							<?php
+							$diets = [
+								'diet_keto'       => __( '🥑 Keto', 'food-calorie-calculator' ),
+								'diet_paleo'      => __( '🍖 Paleo', 'food-calorie-calculator' ),
+								'diet_halal'      => __( '☪️ Halal', 'food-calorie-calculator' ),
+								'diet_kosher'     => __( '✡️ Kosher', 'food-calorie-calculator' ),
+								'diet_vegan'      => __( '🌱 Vegan', 'food-calorie-calculator' ),
+								'diet_vegetarian' => __( '🥬 Vegetarian', 'food-calorie-calculator' ),
+							];
+							foreach ( $diets as $key => $label ) : ?>
+								<label style="display:flex;align-items:center;gap:4px;font-size:13px">
+									<input type="checkbox" name="<?php echo esc_attr( $key ); ?>" value="1"
+										<?php checked( $is_edit && ! empty( $food[ $key ] ) ); ?>>
+									<?php echo esc_html( $label ); ?>
+								</label>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				</div>
+
 				<!-- Sponsorship -->
 				<div class="fcc-card fcc-card--sponsorship">
 					<h2 class="fcc-card__title">

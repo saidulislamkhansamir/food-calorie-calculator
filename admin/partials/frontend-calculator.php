@@ -271,6 +271,10 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<div class="fcc-health-highlights" hidden aria-label="<?php esc_attr_e( 'Health highlights', 'food-calorie-calculator' ); ?>"></div>
 				<?php endif; ?>
 
+				<!-- Allergen & Dietary badges -->
+				<div class="fcc-allergen-badges" hidden aria-label="<?php esc_attr_e( 'Allergen information', 'food-calorie-calculator' ); ?>"></div>
+				<div class="fcc-diet-badges" hidden aria-label="<?php esc_attr_e( 'Dietary information', 'food-calorie-calculator' ); ?>"></div>
+
 				<!-- FSA Traffic Lights -->
 				<?php if ( ! empty( $features['fsa_traffic_lights'] ) ) : ?>
 				<div class="fcc-traffic-lights" hidden aria-label="<?php esc_attr_e( 'FSA Traffic Light Labels', 'food-calorie-calculator' ); ?>">

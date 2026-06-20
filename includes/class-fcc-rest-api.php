@@ -336,6 +336,20 @@ class Rest_Api {
 			'sponsor_name'         => ! empty( $food['sponsor_name'] ) ? esc_html( $food['sponsor_name'] ) : null,
 			'sponsor_logo_url'     => ! empty( $food['sponsor_logo_id'] ) ? wp_get_attachment_url( (int) $food['sponsor_logo_id'] ) : null,
 			'sponsor_url'          => ! empty( $food['sponsor_url'] ) ? esc_url( $food['sponsor_url'] ) : null,
+			'allergen_fish'        => isset( $food['allergen_fish'] ) ? (int) $food['allergen_fish'] : null,
+			'allergen_shellfish'   => isset( $food['allergen_shellfish'] ) ? (int) $food['allergen_shellfish'] : null,
+			'allergen_dairy'       => isset( $food['allergen_dairy'] ) ? (int) $food['allergen_dairy'] : null,
+			'allergen_eggs'        => isset( $food['allergen_eggs'] ) ? (int) $food['allergen_eggs'] : null,
+			'allergen_nuts'        => isset( $food['allergen_nuts'] ) ? (int) $food['allergen_nuts'] : null,
+			'allergen_gluten'      => isset( $food['allergen_gluten'] ) ? (int) $food['allergen_gluten'] : null,
+			'allergen_soy'         => isset( $food['allergen_soy'] ) ? (int) $food['allergen_soy'] : null,
+			'allergen_celery'      => isset( $food['allergen_celery'] ) ? (int) $food['allergen_celery'] : null,
+			'diet_keto'            => isset( $food['diet_keto'] ) ? (int) $food['diet_keto'] : null,
+			'diet_paleo'           => isset( $food['diet_paleo'] ) ? (int) $food['diet_paleo'] : null,
+			'diet_halal'           => isset( $food['diet_halal'] ) ? (int) $food['diet_halal'] : null,
+			'diet_kosher'          => isset( $food['diet_kosher'] ) ? (int) $food['diet_kosher'] : null,
+			'diet_vegan'           => isset( $food['diet_vegan'] ) ? (int) $food['diet_vegan'] : null,
+			'diet_vegetarian'      => isset( $food['diet_vegetarian'] ) ? (int) $food['diet_vegetarian'] : null,
 		];
 	}
 }

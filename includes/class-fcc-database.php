@@ -111,6 +111,20 @@ class Database {
   is_fruit_veg tinyint(1) DEFAULT NULL,
   portion_grams decimal(8,2) DEFAULT NULL,
   source_notes text,
+  allergen_fish tinyint(1) DEFAULT NULL,
+  allergen_shellfish tinyint(1) DEFAULT NULL,
+  allergen_dairy tinyint(1) DEFAULT NULL,
+  allergen_eggs tinyint(1) DEFAULT NULL,
+  allergen_nuts tinyint(1) DEFAULT NULL,
+  allergen_gluten tinyint(1) DEFAULT NULL,
+  allergen_soy tinyint(1) DEFAULT NULL,
+  allergen_celery tinyint(1) DEFAULT NULL,
+  diet_keto tinyint(1) DEFAULT NULL,
+  diet_paleo tinyint(1) DEFAULT NULL,
+  diet_halal tinyint(1) DEFAULT NULL,
+  diet_kosher tinyint(1) DEFAULT NULL,
+  diet_vegan tinyint(1) DEFAULT NULL,
+  diet_vegetarian tinyint(1) DEFAULT NULL,
   is_sponsored tinyint(1) NOT NULL DEFAULT 0,
   sponsor_active tinyint(1) NOT NULL DEFAULT 0,
   sponsor_name varchar(200) DEFAULT NULL,
@@ -759,7 +773,9 @@ class Database {
 	 * @return array<int,string>
 	 */
 	private static function food_formats( array $row ): array {
-		$int_cols    = [ 'category_id', 'is_fruit_veg', 'is_sponsored', 'sponsor_active', 'sponsor_logo_id' ];
+		$int_cols    = [ 'category_id', 'is_fruit_veg', 'is_sponsored', 'sponsor_active', 'sponsor_logo_id',
+			'allergen_fish', 'allergen_shellfish', 'allergen_dairy', 'allergen_eggs', 'allergen_nuts', 'allergen_gluten', 'allergen_soy', 'allergen_celery',
+			'diet_keto', 'diet_paleo', 'diet_halal', 'diet_kosher', 'diet_vegan', 'diet_vegetarian' ];
 		$string_cols = [ 'name', 'slug', 'serving_sizes', 'source_notes', 'sponsor_name', 'sponsor_url', 'sponsor_expires_at' ];
 
 		$formats = [];
