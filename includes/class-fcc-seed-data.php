@@ -8206,4 +8206,136 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 46 );
 	}
+
+	/** Seed v47: Nepali, Bhutanese & Myanmar foods. */
+	public static function seed_v47(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 47 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── NEPALI — DAL BHAT & MAINS (12) ──
+			// ══════════════════════════════════════
+			['Dal Bhat (Nepali, lentil soup & rice)',$tk,135,565,5.0,24.0,0.5,2.0,0.3,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Dal Bhat Tarkari (full plate, avg)',$tk,145,607,5.5,22.0,1.0,3.5,0.5,2.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kwati (mixed bean sprouted soup)',$lp,80,335,5.0,11.0,1.0,1.5,0.2,3.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Gundruk Ko Jhol (fermented greens soup)',$fv,25,105,2.0,3.0,0.5,0.5,0.1,2.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Thukpa (Tibetan-Nepali noodle soup)',$tk,85,356,5.0,11.0,0.5,2.5,0.8,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Choila (Newari grilled buffalo meat)',$mp,190,795,22.0,2.0,0.5,10.5,3.5,0.0,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Sekuwa (Nepali grilled meat skewer)',$mp,200,837,22.0,3.0,1.5,11.0,4.0,0.0,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Sukuti (dried meat, Nepali jerky)',$mp,295,1234,50.0,5.0,1.0,8.0,3.0,0.0,3.0, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Gorkhali Lamb Curry',$tk,145,607,12.0,4.0,1.5,9.0,3.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Masura Ko Dal (Nepali red lentil)',$lp,90,377,5.5,13.0,1.0,2.0,0.3,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Alu Tama Bodi (potato, bamboo, beans)',$fv,75,314,3.0,10.0,1.5,2.5,0.4,2.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Achar (Nepali tomato pickle)',$co,55,230,1.0,6.0,4.0,3.0,0.3,1.0,1.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── NEPALI — SNACKS & STREET FOOD (10) ──
+			['Momo (steamed, buff/chicken, 8 pcs)',$tk,185,774,10.0,22.0,1.0,6.5,2.0,0.5,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Momo (fried, 8 pcs)',$tk,265,1109,9.0,24.0,1.0,15.0,3.5,0.5,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Jhol Momo (soup momo, 8 pcs)',$tk,195,816,10.0,22.0,2.0,7.5,2.5,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Kothey Momo (pan-fried, 8 pcs)',$tk,230,962,9.5,22.0,1.0,11.5,3.0,0.5,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Chatamari (Newari rice crepe)',$bc,195,816,7.0,24.0,1.5,8.0,2.0,1.0,0.5, 0,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Bara (Newari lentil patty)',$lp,220,920,8.0,18.0,0.5,13.5,2.5,2.0,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Yomari (Newari rice dumpling, chaku)',$sc,225,941,3.5,40.0,15.0,5.5,1.0,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Samosa (Nepali-style, vegetable)',$tk,255,1067,4.5,26.0,1.5,15.0,2.5,2.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Sel Roti (Nepali rice doughnut)',$sc,310,1297,4.0,48.0,10.0,12.0,2.5,0.5,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Pani Puri (Nepali, gol gappa)',$sc,185,774,3.0,28.0,4.0,7.0,1.0,1.5,1.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+
+			// ── NEPALI — SWEETS & DRINKS (8) ──
+			['Juju Dhau (Bhaktapur king yoghurt)',$de,110,460,4.5,12.0,10.0,5.0,3.0,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Lakhamari (Newari sweet bread)',$sc,395,1653,6.0,60.0,25.0,14.5,5.0,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Sikarni (spiced hung yoghurt)',$de,135,565,4.0,14.0,12.0,7.0,4.0,0.0,0.1, 0,0,1,0,1,0,0,0, 0,0,1,1,0,1],
+			['Kheer (Nepali rice pudding)',$sc,140,586,3.0,20.0,14.0,5.0,3.0,0.2,0.1, 0,0,1,0,1,0,0,0, 0,0,1,1,0,1],
+			['Chaku (jaggery molasses hard candy)',$sc,380,1590,2.0,88.0,80.0,2.0,0.5,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Masala Tea (Nepali chiya)',$dr,50,209,1.5,7.0,6.5,1.5,0.8,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Tongba (millet beer, fermented)',$dr,40,167,0.5,7.0,2.0,0.2,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,0,0,1,1],
+			['Chhyang (Nepali rice wine)',$dr,50,209,0.3,6.0,2.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,0,0,1,1],
+
+			// ══════════════════════════════════════
+			// ── BHUTANESE (20) ──
+			// ══════════════════════════════════════
+			['Ema Datshi (chilli & cheese stew)',$tk,145,607,6.0,5.0,2.0,11.0,7.0,1.5,0.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Kewa Datshi (potato & cheese)',$tk,130,544,5.0,12.0,1.0,7.5,4.5,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Shamu Datshi (mushroom & cheese)',$tk,120,502,5.5,4.0,1.0,9.0,5.5,1.5,0.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Phaksha Paa (pork with chilli)',$mp,195,816,16.0,3.0,1.0,13.5,5.0,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Sikam Paa (dried pork belly stew)',$mp,310,1297,15.0,3.0,0.5,27.0,10.0,0.5,2.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Jasha Maru (spiced chicken stew)',$tk,110,460,12.0,4.0,1.5,5.0,1.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Shakam Ema Datshi (dried beef & chilli cheese)',$tk,175,732,14.0,4.0,1.5,11.5,6.5,0.5,1.5, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Hoentay (buckwheat dumplings, Haa)',$tk,175,732,5.0,22.0,1.0,7.5,1.5,2.0,0.4, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Momos (Bhutanese, cheese & cabbage)',$tk,180,753,6.5,22.0,1.0,7.0,3.5,1.0,0.5, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Juma (Bhutanese blood sausage)',$mp,250,1046,12.0,5.0,0.5,20.0,8.0,0.5,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Red Rice (Bhutanese, cooked)',$bc,115,481,2.5,24.0,0.3,0.8,0.2,1.8,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Ezay (Bhutanese chilli sauce)',$co,35,146,1.0,5.0,3.0,1.0,0.5,1.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Goep (tripe stew, Bhutanese)',$tk,85,356,8.0,3.0,0.5,4.5,1.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Lom (turnip leaf stew)',$fv,40,167,2.0,4.5,1.0,1.5,0.8,2.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Khule (buckwheat pancake)',$bc,185,774,5.5,28.0,1.0,6.0,1.0,3.0,0.3, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Puta (buckwheat noodles, Bhutanese)',$bc,145,607,5.0,28.0,0.5,1.5,0.3,3.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Zow Shungo (rice & veg mixed dish)',$tk,110,460,3.0,18.0,1.5,3.0,1.5,1.5,0.3, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Suja (Bhutanese butter tea)',$dr,55,230,0.5,1.0,0.5,5.5,3.5,0.0,0.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Ara (Bhutanese rice wine)',$dr,65,272,0.2,5.0,1.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,0,0,1,1],
+			['Doma (betel nut chew, Bhutanese)',$sc,50,209,0.5,8.0,2.0,1.5,0.5,1.5,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+
+			// ══════════════════════════════════════
+			// ── MYANMAR / BURMESE (30) ──
+			// ══════════════════════════════════════
+			// -- Salads (Thoke) --
+			['Lahpet Thoke (tea leaf salad)',$fv,120,502,4.5,8.0,1.5,8.5,1.0,3.0,1.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Gin Thoke (ginger salad)',$fv,105,439,3.0,10.0,2.0,6.5,0.8,2.0,1.5, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Kyet Thar Thoke (chicken salad)',$mp,145,607,14.0,6.0,2.0,7.5,1.5,1.0,1.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Samusa Thoke (samosa salad)',$fv,185,774,4.0,18.0,2.5,11.0,2.0,2.0,1.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Tohu Thoke (chickpea tofu salad)',$lp,115,481,5.0,10.0,1.0,6.5,0.8,3.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			// -- Noodles (Khaut Swe) --
+			['Mohinga (fish noodle soup, national dish)',$tk,95,397,6.0,12.0,0.5,3.0,0.5,1.0,1.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Shan Noodles (Shan khaut swe)',$tk,155,649,7.0,22.0,1.5,4.5,1.0,0.5,1.0, 0,0,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Nan Gyi Thoke (thick noodle salad)',$tk,160,669,7.5,20.0,1.5,5.5,1.0,1.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Khow Suey (coconut chicken noodles)',$tk,145,607,7.5,14.0,1.5,7.0,4.5,0.5,0.8, 0,0,0,0,1,1,0,0, 0,0,1,0,0,0],
+			['Meeshay (Shan rice noodles with pork)',$tk,135,565,6.5,18.0,1.0,4.5,1.0,0.5,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			// -- Curries & Mains (Hin) --
+			['Wet Thar Hin (pork curry, Burmese)',$mp,185,774,14.0,4.0,1.5,13.0,4.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Kyet Thar Hin (chicken curry, Burmese)',$tk,140,586,13.0,4.0,1.5,8.0,2.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ametha Hin (beef curry, Burmese)',$mp,155,649,14.0,4.0,1.0,9.5,3.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Nga Thar Hin (fish curry, Burmese)',$fs,115,481,12.0,3.5,1.0,6.0,1.0,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Danpauk (Burmese biryani)',$tk,180,753,8.5,24.0,1.0,6.0,1.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Htamin Jin (Shan rice balls)',$bc,140,586,3.0,26.0,0.5,2.5,0.4,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+			// -- Snacks & Sides --
+			['Samusa (Burmese samosa, 1 pc)',$tk,85,356,2.0,8.5,0.5,5.0,1.0,0.5,0.3, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Mont Lin Maya (stuffed rice pancake pairs)',$sc,195,816,4.5,25.0,1.5,9.0,1.5,0.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['E Kya Kway (Burmese fried dough stick)',$bc,385,1611,7.0,42.0,1.0,22.0,3.5,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Tohu (Shan chickpea tofu)',$lp,100,418,6.0,12.0,0.5,3.5,0.5,3.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Balachaung (dried shrimp chilli relish)',$co,280,1172,18.0,12.0,3.0,18.0,2.5,2.0,4.0, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ngapi Ye (fermented fish paste sauce)',$co,50,209,6.0,3.0,0.5,1.5,0.3,0.0,8.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			// -- Sweets & Drinks --
+			['Mont Lone Yay Paw (glutinous rice balls)',$sc,195,816,2.5,38.0,15.0,4.0,2.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Shwe Yin Aye (golden heart cooler)',$dr,85,356,1.0,18.0,14.0,1.5,1.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Faluda (Burmese, rose milk)',$dr,115,481,2.0,20.0,16.0,3.0,1.5,0.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Htan Yay (toddy palm juice)',$dr,35,146,0.3,8.5,7.5,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Laphet Yay (Burmese green tea)',$dr,1,4,0.1,0.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Mont Sein Baung (semolina cake)',$sc,310,1297,4.0,42.0,22.0,14.5,7.0,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'FAO SMILING / USDA FDC. Seeded v47.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 47 );
+	}
 }
