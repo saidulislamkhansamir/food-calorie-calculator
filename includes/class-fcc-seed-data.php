@@ -9310,4 +9310,80 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 54 );
 	}
+
+	/** Seed v55: Icelandic & Greenlandic foods. */
+	public static function seed_v55(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 55 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── ICELAND (20) ──
+			// ══════════════════════════════════════
+			['Hákarl (fermented shark)',$fs,115,481,22.0,0.0,0.0,3.0,0.5,0.0,3.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Harðfiskur (dried fish jerky)',$fs,340,1423,78.0,0.0,0.0,2.0,0.4,0.0,2.5, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Plokkfiskur (mashed fish & potato)',$tk,105,439,8.0,10.0,0.5,4.0,2.0,1.0,0.6, 1,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Hangikjöt (smoked lamb)',$mp,175,732,28.0,0.0,0.0,7.0,3.0,0.0,2.5, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Svið (singed sheep head, half)',$mp,195,816,22.0,0.0,0.0,12.0,5.0,0.0,0.5, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Kjötsúpa (Icelandic lamb soup)',$tk,55,230,4.5,4.5,1.0,2.0,0.8,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pylsur (Icelandic hot dog)',$tk,260,1088,9.5,24.0,3.0,14.0,5.0,1.0,1.5, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Rúgbrauð (Icelandic rye bread, hot spring)',$bc,220,920,5.5,42.0,8.0,1.0,0.2,6.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Flatkökur (Icelandic flatbread)',$bc,280,1172,7.5,50.0,2.0,5.0,1.5,3.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Skyr (traditional Icelandic)',$de,63,264,11.0,4.0,3.5,0.2,0.1,0.0,0.1, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Skyr Cake (Icelandic cheesecake)',$sc,230,962,8.0,28.0,18.0,10.0,6.0,0.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Kleinur (Icelandic twisted doughnut)',$sc,365,1527,6.0,45.0,15.0,18.0,5.0,0.5,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Pönnukökur (Icelandic thin pancakes)',$sc,215,900,6.0,28.0,8.0,9.0,4.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Brennivín (Icelandic caraway schnapps, 40ml)',$dr,95,397,0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Harðfiskur with Butter',$fs,385,1611,55.0,0.5,0.0,18.0,10.5,0.0,2.0, 1,0,1,0,0,0,0,0, 1,0,1,0,0,0],
+			['Icelandic Lamb Chop (grilled)',$mp,220,920,22.0,0.0,0.0,14.5,6.5,0.0,0.2, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0],
+			['Hrútspungar (pickled ram testicles)',$mp,135,565,15.0,0.5,0.0,8.0,3.0,0.0,2.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Slátur (Icelandic blood pudding)',$mp,280,1172,12.0,18.0,1.0,18.0,7.0,1.0,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Lundi (puffin breast, smoked)',$mp,140,586,23.0,0.0,0.0,5.0,1.5,0.0,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Jolakaka (Icelandic Christmas cake)',$sc,330,1381,5.0,50.0,25.0,12.5,5.0,2.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ══════════════════════════════════════
+			// ── GREENLAND (KALAALLIT NUNAAT) (15) ──
+			// ══════════════════════════════════════
+			['Suaasat (Greenlandic seal/caribou soup)',$tk,70,293,7.0,4.0,0.5,3.0,1.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Mattak (narwhal/whale skin, raw)',$mp,140,586,8.0,0.0,0.0,12.0,2.5,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Tuttu (caribou/reindeer, roasted)',$mp,145,607,27.0,0.0,0.0,4.0,1.5,0.0,0.2, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Ammassat (dried capelin fish)',$fs,310,1297,60.0,0.0,0.0,7.5,1.5,0.0,3.0, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Puisi Suaasat (seal meat soup)',$tk,75,314,8.0,3.5,0.5,3.5,1.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Kiviak (fermented auk, traditional)',$mp,185,774,20.0,0.0,0.0,11.5,3.5,0.0,2.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Arctic Char (grilled, Greenlandic)',$fs,145,607,21.0,0.0,0.0,6.5,1.0,0.0,0.2, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Dried Halibut (Greenlandic)',$fs,325,1360,72.0,0.0,0.0,3.0,0.5,0.0,3.0, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0],
+			['Musk Ox (roasted)',$mp,135,565,25.0,0.0,0.0,3.5,1.0,0.0,0.2, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Crowberry (paarnaqat, raw)',$fv,40,167,0.5,9.0,5.0,0.5,0.0,3.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Greenlandic Shrimp (boiled, cold-water)',$fs,90,377,19.0,0.0,0.0,1.2,0.2,0.0,1.5, 0,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Kaffe Mik (Greenlandic coffee cocktail)',$dr,175,732,0.5,15.0,14.0,5.5,3.5,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Angelica (Greenlandic wild herb, candied)',$sc,280,1172,1.0,68.0,60.0,0.5,0.1,3.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Greenlandic Coffee (with whisky & cream)',$dr,185,774,0.5,14.0,13.0,6.5,4.0,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Whale Blubber (raw, traditional)',$mp,400,1674,3.0,0.0,0.0,43.0,7.0,0.0,0.5, 0,0,0,0,0,0,0,0, 1,0,0,0,0,0],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'Matís Iceland / USDA FDC. Seeded v55.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 55 );
+	}
 }
