@@ -8895,4 +8895,137 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 51 );
 	}
+
+	/** Seed v52: Caribbean foods — Cuba, Jamaica, Haiti, Puerto Rico, Barbados, etc. */
+	public static function seed_v52(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 52 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── CUBA (12) ──
+			// ══════════════════════════════════════
+			['Ropa Vieja (Cuban shredded beef)',$mp,155,649,16.0,5.0,2.0,8.0,2.5,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Moros y Cristianos (black beans & rice)',$lp,145,607,5.0,24.0,0.5,2.5,0.5,4.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Lechón Asado (Cuban roast pork)',$mp,245,1025,24.0,2.0,1.0,15.5,5.5,0.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Cubano Sandwich (pressed)',$tk,310,1297,18.0,26.0,2.0,15.0,5.5,0.5,1.8, 0,0,1,0,0,1,0,0, 0,0,0,0,0,0],
+			['Picadillo (Cuban ground beef hash)',$mp,145,607,12.0,8.0,3.0,7.5,2.5,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Vaca Frita (crispy fried beef)',$mp,220,920,20.0,4.0,1.0,14.0,5.0,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tostones (twice-fried green plantain)',$fv,175,732,1.0,30.0,1.0,6.5,1.5,2.0,0.3, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Yuca con Mojo (cassava with garlic sauce)',$fv,155,649,1.0,32.0,1.5,3.5,0.5,1.5,0.3, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Croquetas de Jamón (Cuban ham croquettes)',$tk,265,1109,8.0,20.0,1.0,17.0,5.0,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Flan Cubano (coconut flan)',$sc,195,816,4.0,28.0,24.0,7.5,4.5,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Cafecito (Cuban espresso, sweetened)',$dr,25,105,0.2,6.0,6.0,0.1,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Mojito (Cuban cocktail, per glass)',$dr,145,607,0.1,12.0,10.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── JAMAICA (10) ──
+			['Jerk Pork',$mp,210,879,20.0,5.0,3.0,12.0,4.5,0.5,1.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ackee and Saltfish (national dish)',$tk,190,795,11.0,3.5,0.5,15.0,3.5,2.5,1.5, 1,0,0,0,0,0,0,0, 1,0,1,0,0,0],
+			['Curry Goat (Jamaican)',$tk,200,837,18.0,5.0,1.0,12.0,4.5,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Oxtail Stew (Jamaican)',$tk,165,690,14.0,6.0,1.5,10.0,4.0,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bammy (cassava flatbread)',$bc,175,732,1.0,40.0,1.0,1.0,0.2,2.0,0.2, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Festival (Jamaican fried dumpling)',$sc,310,1297,3.5,42.0,8.0,14.5,3.0,1.0,0.3, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+			['Escovitch Fish (fried, pickled)',$fs,195,816,15.0,10.0,3.0,11.0,2.0,0.5,0.8, 1,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Jamaican Patty (beef)',$tk,280,1172,8.0,28.0,2.0,15.0,5.5,1.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Sorrel Drink (Jamaican hibiscus)',$dr,45,188,0.2,11.0,10.0,0.0,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Rum Punch (Jamaican, per glass)',$dr,175,732,0.1,18.0,16.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── HAITI (8) ──
+			['Griot (Haitian fried pork)',$mp,285,1193,18.0,5.0,1.0,21.5,7.5,0.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Diri Djon Djon (black mushroom rice)',$bc,160,669,3.5,28.0,0.5,3.5,0.5,1.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Poul ak Nwa (chicken in cashew sauce)',$tk,165,690,14.0,6.0,2.0,9.5,2.0,1.0,0.5, 0,0,0,0,1,0,0,0, 0,0,1,0,0,0],
+			['Soup Joumou (Haitian pumpkin soup, Jan 1st)',$tk,65,272,3.5,8.0,2.0,2.5,0.8,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pikliz (Haitian spicy slaw)',$fv,25,105,0.5,5.0,2.5,0.5,0.1,2.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Bannann Peze (Haitian tostones)',$fv,170,711,1.0,30.0,1.0,6.0,1.5,2.0,0.2, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1],
+			['Akra (Haitian malanga fritters)',$fv,245,1025,3.0,22.0,1.0,16.5,3.0,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kremas (Haitian coconut cream drink)',$dr,165,690,2.0,22.0,20.0,5.5,4.0,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── DOMINICAN REPUBLIC (8) ──
+			['La Bandera (rice, beans & meat, national)',$tk,165,690,8.5,22.0,1.0,5.0,1.5,3.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Mangú (mashed green plantain)',$fv,130,544,1.5,30.0,2.0,2.0,0.5,2.5,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sancocho (Dominican hearty stew)',$tk,95,397,6.0,10.0,1.5,3.5,1.0,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Chimichurri Burger (Dominican street)',$tk,290,1213,13.0,26.0,3.0,15.0,5.0,1.0,1.2, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Mofongo (mashed fried plantain)',$fv,220,920,5.0,30.0,2.0,9.5,2.5,2.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Locrio de Pollo (Dominican chicken rice)',$tk,160,669,9.0,22.0,1.0,4.5,1.0,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Habichuelas con Dulce (sweet bean cream)',$sc,145,607,3.5,24.0,15.0,4.5,2.5,1.5,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Morir Soñando (milk & orange drink)',$dr,85,356,2.0,15.0,14.0,2.0,1.2,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── PUERTO RICO (8) ──
+			['Mofongo (Puerto Rican, with shrimp)',$tk,235,983,8.0,28.0,2.0,11.0,3.0,2.0,1.0, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pernil (PR slow-roasted pork shoulder)',$mp,235,983,24.0,2.0,1.0,14.5,5.0,0.0,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Arroz con Gandules (rice & pigeon peas)',$tk,150,628,4.5,24.0,0.5,3.5,0.8,3.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Alcapurrias (fried plantain & meat fritter)',$tk,270,1130,7.0,26.0,1.0,15.5,3.5,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pastelón (PR plantain lasagne)',$tk,175,732,8.0,18.0,5.0,8.5,3.5,1.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,0,0,0],
+			['Tembleque (coconut pudding)',$sc,145,607,1.0,24.0,16.0,5.5,4.5,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Mallorca (PR sweet bread)',$bc,330,1381,7.0,48.0,15.0,12.5,5.5,1.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Piña Colada (per glass)',$dr,195,816,0.5,28.0,26.0,7.5,6.0,0.3,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── BAHAMAS (5) ──
+			['Conch Salad (Bahamian, raw)',$fs,85,356,14.0,5.0,1.5,1.0,0.2,0.5,0.8, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Conch Fritters (Bahamian)',$fs,235,983,8.0,22.0,1.0,13.5,2.5,0.5,0.8, 1,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Peas and Rice (Bahamian)',$lp,150,628,5.0,24.0,1.0,3.0,0.8,3.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Cracked Conch (fried)',$fs,240,1004,10.0,18.0,0.5,14.0,2.5,0.5,0.8, 1,1,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Guava Duff (Bahamian steamed pudding)',$sc,270,1130,3.5,40.0,22.0,11.0,6.0,2.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── BARBADOS (6) ──
+			['Cou-Cou and Flying Fish (Bajan national)',$tk,135,565,10.0,18.0,0.5,3.5,0.5,2.0,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Macaroni Pie (Bajan)',$tk,250,1046,9.0,26.0,3.0,12.5,6.5,0.5,0.7, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Pudding and Souse (Bajan)',$mp,175,732,12.0,18.0,2.0,5.5,1.5,1.5,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Fish Cakes (Bajan, saltfish fritters)',$fs,260,1088,10.0,20.0,1.0,16.0,2.5,1.0,1.0, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Bajan Pepper Sauce',$co,45,188,0.5,10.0,8.0,0.5,0.1,1.5,2.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Rum Punch (Bajan)',$dr,180,753,0.1,18.0,16.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── GRENADA (5) ──
+			['Oil Down (Grenadian national dish)',$tk,135,565,7.0,14.0,1.5,6.0,4.0,2.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Callaloo Soup (Grenadian)',$tk,55,230,3.5,5.5,1.0,2.5,1.0,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Lambie Souse (conch, Grenada)',$fs,90,377,12.0,5.0,1.5,2.5,0.5,0.5,1.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Nutmeg Ice Cream (Grenada)',$sc,210,879,3.5,24.0,20.0,11.5,7.0,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Spice Cake (Grenada, nutmeg & cinnamon)',$sc,340,1423,4.5,48.0,28.0,15.0,5.0,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── DOMINICA & ST LUCIA (6) ──
+			['Mountain Chicken (Dominica, frog legs)',$mp,75,314,16.5,0.0,0.0,0.5,0.1,0.0,0.2, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Callaloo Soup (Dominican, dasheen)',$tk,50,209,3.0,5.5,1.0,2.0,0.8,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Bouillon (Dominica, thick veg & meat soup)',$tk,80,335,5.0,8.0,1.0,3.0,1.0,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Green Fig and Saltfish (St Lucian national)',$tk,130,544,8.0,18.0,1.0,3.5,0.5,2.5,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Bouyon (St Lucian hearty soup)',$tk,75,314,4.5,8.5,1.0,2.5,0.8,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Cocoa Tea (St Lucian hot chocolate)',$dr,80,335,2.0,12.0,10.0,3.0,2.0,0.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── ARUBA, CAYMAN, TURKS & CAICOS, BVI, MONTSERRAT (10) ──
+			['Keshi Yena (Aruban stuffed cheese)',$tk,210,879,12.0,8.0,3.0,14.0,7.0,0.5,1.0, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pan Bati (Aruban cornmeal pancake)',$bc,195,816,4.0,28.0,3.0,7.5,1.5,1.5,0.4, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Sopi di Giambo (Aruban okra soup)',$tk,50,209,3.0,5.5,1.0,2.0,0.5,2.0,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pastechi (Aruban meat pastry)',$tk,285,1193,8.5,26.0,1.5,16.5,5.0,1.0,0.7, 0,0,1,0,0,1,0,0, 0,0,1,0,0,0],
+			['Turtle Stew (Cayman traditional)',$tk,95,397,12.0,4.0,0.5,3.5,1.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Cayman-style Beef (slow-cooked)',$mp,155,649,16.0,5.0,1.5,8.0,3.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Conch Chowder (Turks & Caicos)',$tk,75,314,5.5,8.0,1.0,2.5,0.5,0.5,0.8, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Peas n\' Hominy (TCI, pigeon peas & corn)',$lp,110,460,4.0,18.0,1.0,2.5,0.5,3.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Fish and Fungi (BVI, cornmeal & okra)',$tk,130,544,8.0,18.0,1.0,3.0,0.5,2.0,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Goat Water (Montserrat, national dish)',$tk,110,460,9.0,5.0,1.0,6.0,2.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'CFNI Caribbean / USDA FDC. Seeded v52.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 52 );
+	}
 }
