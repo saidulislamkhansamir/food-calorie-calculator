@@ -166,7 +166,7 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 					</button>
 				<?php endforeach; ?>
 				<?php if ( $reqs_count_dismissed > 0 ) : ?>
-					<button type="button" class="fcc-reqs-btn fcc-reqs-btn--delete fcc-bulk-delete-dismissed-btn" data-region="reqs" style="margin-left:auto;font-size:12px;padding:4px 10px;">
+					<button type="button" class="fcc-bulk-delete-dismissed-btn" data-region="reqs">
 						<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
 						<?php esc_html_e( 'Delete All Dismissed', 'food-calorie-calculator' ); ?>
 					</button>
@@ -286,7 +286,7 @@ $ms_nonce   = wp_create_nonce( 'fcc_ajax_ms' );
 					</button>
 				<?php endforeach; ?>
 				<?php if ( $ms_count_dismissed > 0 ) : ?>
-					<button type="button" class="fcc-reqs-btn fcc-reqs-btn--delete fcc-bulk-delete-dismissed-btn" data-region="ms" style="margin-left:auto;font-size:12px;padding:4px 10px;">
+					<button type="button" class="fcc-bulk-delete-dismissed-btn" data-region="ms">
 						<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
 						<?php esc_html_e( 'Delete All Dismissed', 'food-calorie-calculator' ); ?>
 					</button>

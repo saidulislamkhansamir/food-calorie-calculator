@@ -3286,7 +3286,29 @@
 	display: flex;
 	gap: 0.375rem;
 	flex-wrap: wrap;
+	align-items: center;
 }
+.fcc-bulk-delete-dismissed-btn {
+	margin-left: auto;
+	font-size: 11px;
+	padding: 4px 12px;
+	background: #fee2e2;
+	color: #b91c1c;
+	border: 1px solid #fca5a5;
+	border-radius: 6px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	white-space: nowrap;
+	line-height: 1.4;
+	transition: background 0.15s, border-color 0.15s;
+}
+.fcc-bulk-delete-dismissed-btn:hover {
+	background: #fecaca;
+	border-color: #f87171;
+}
+.fcc-bulk-delete-dismissed-btn svg { stroke: #b91c1c; }
 
 /* Reset button defaults for tab buttons */
 button.fcc-reqs-tab {
