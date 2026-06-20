@@ -4241,3 +4241,4 @@ class Seed_Data {
 
 		update_option( 'fcc_seed_version', 21 );
 	}
+}
