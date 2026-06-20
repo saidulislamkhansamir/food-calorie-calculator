@@ -7624,4 +7624,150 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 42 );
 	}
+
+	/** Seed v43: Native & common French + Spanish foods. */
+	public static function seed_v43(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 43 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── FRENCH — MAINS & CLASSICS (15) ──
+			// ══════════════════════════════════════
+			['Blanquette de Veau (veal stew)',$tk,120,502,10.0,5.0,1.0,7.0,3.5,0.5,0.5, 0,0,1,0,0,1,0,0, 0,0,0,0,0,0],
+			['Pot-au-Feu (French boiled dinner)',$tk,80,335,7.0,5.0,1.0,3.5,1.5,1.0,0.5, 0,0,0,0,0,0,0,1, 0,0,0,0,0,0],
+			['Steak Frites (with fries)',$tk,250,1046,18.0,20.0,0.5,12.0,4.5,2.0,0.6, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Steak Tartare (raw beef)',$mp,175,732,18.0,1.5,0.5,11.0,4.0,0.0,0.8, 0,0,0,1,0,0,0,0, 0,1,0,0,0,0],
+			['Confit de Canard (duck leg)',$mp,295,1234,18.0,0.0,0.0,24.5,7.5,0.0,1.5, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0],
+			['Choucroute Garnie (sauerkraut & meats)',$tk,125,523,8.0,5.0,1.5,8.5,3.0,2.0,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Moules Marinières (French-style)',$fs,80,335,10.0,4.0,0.5,2.5,0.5,0.0,1.0, 1,1,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Brandade de Morue (salt cod purée)',$fs,150,628,10.0,8.0,0.5,9.0,3.5,0.5,1.5, 1,0,1,0,0,0,0,0, 0,0,0,0,0,0],
+			['Poulet Rôti (French roast chicken)',$mp,175,732,22.0,0.0,0.0,9.5,2.8,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Quenelles de Brochet (pike dumplings)',$fs,155,649,9.0,12.0,0.5,8.0,4.0,0.3,0.6, 1,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Gratin Dauphinois (potato gratin)',$fv,150,628,3.5,14.0,1.0,9.5,6.0,0.8,0.4, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Vol-au-Vent (chicken & mushroom)',$tk,240,1004,10.0,18.0,1.0,14.5,7.5,0.5,0.6, 0,0,1,1,0,1,0,0, 0,0,1,0,0,0],
+			['Flamiche (leek tart, Picardy)',$tk,245,1025,6.5,20.0,1.5,15.5,8.5,1.0,0.6, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Soupe de Poisson (Provençal fish soup)',$tk,50,209,5.0,3.0,0.5,2.0,0.3,0.3,0.8, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Salade Lyonnaise (frisée & lardons)',$fv,155,649,8.0,5.0,1.0,11.5,3.5,1.5,0.8, 0,0,0,1,0,0,0,0, 0,0,0,0,0,0],
+
+			// ── FRENCH — REGIONAL SPECIALITIES (10) ──
+			['Galette Bretonne (buckwheat, ham & cheese)',$bc,230,962,11.0,22.0,1.0,11.0,5.5,1.0,1.0, 0,0,1,1,0,0,0,0, 0,0,1,0,0,0],
+			['Tartiflette (Savoyard potato bake)',$tk,195,816,8.0,14.0,1.0,12.5,7.5,1.0,0.8, 0,0,1,0,0,0,0,0, 0,0,0,0,0,0],
+			['Raclette (French, with charcuterie)',$de,260,1088,12.5,15.0,0.5,17.0,11.0,1.0,1.2, 0,0,1,0,0,0,0,0, 1,0,0,0,0,0],
+			['Aligot (cheesy mashed potato, Auvergne)',$fv,170,711,6.0,16.0,0.5,9.5,6.0,1.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Piperade (Basque pepper & egg)',$fv,95,397,5.0,6.0,4.0,5.5,1.5,1.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Socca (chickpea flatbread, Nice)',$bc,175,732,5.5,18.0,1.0,9.0,1.0,3.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Pissaladière (onion tart, Provençal)',$tk,235,983,5.0,26.0,5.0,12.5,3.0,1.5,1.5, 1,0,0,0,0,1,0,0, 0,0,1,1,0,0],
+			['Tian Provençal (vegetable gratin)',$fv,75,314,2.0,6.0,3.5,5.0,1.5,2.0,0.3, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Quiche Alsacienne (onion & bacon)',$tk,255,1067,9.0,18.0,2.5,16.5,7.5,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Salade Niçoise (traditional)',$fv,120,502,8.0,5.5,2.0,8.0,1.5,1.5,0.8, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+
+			// ── FRENCH — BREADS & BAKERY (8) ──
+			['Baguette (traditional)',$bc,270,1130,9.0,52.0,3.0,1.5,0.3,2.5,1.3, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Brioche',$bc,355,1485,8.0,45.0,8.0,15.0,8.5,1.5,0.6, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Pain de Campagne (country bread)',$bc,255,1067,8.0,50.0,2.0,1.5,0.3,3.5,1.2, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Fougasse (Provençal bread)',$bc,280,1172,7.5,42.0,1.5,9.5,1.2,2.0,1.2, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Gougères (cheese puffs, Burgundy)',$sc,340,1423,12.0,22.0,1.0,23.0,13.5,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Palmier (elephant ear pastry)',$sc,450,1883,4.5,50.0,20.0,26.0,16.0,1.0,0.5, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Kouign-Amann (Breton butter cake)',$sc,430,1799,5.0,48.0,22.0,25.0,16.0,1.0,0.6, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Pain d\'Épices (French gingerbread)',$sc,330,1381,4.0,68.0,35.0,4.0,1.0,2.0,0.4, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── FRENCH — DESSERTS & PÂTISSERIE (12) ──
+			['Soufflé au Chocolat',$sc,250,1046,6.0,28.0,22.0,13.0,7.5,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Mousse au Chocolat',$sc,225,941,4.5,22.0,20.0,14.0,8.5,1.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Île Flottante (floating island)',$sc,155,649,5.0,25.0,22.0,3.5,2.0,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Clafoutis (cherry)',$sc,195,816,5.0,28.0,18.0,7.0,3.5,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Far Breton (Breton flan)',$sc,210,879,5.5,32.0,18.0,6.5,3.5,1.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Canelé (Bordeaux custard cake)',$sc,310,1297,5.0,48.0,32.0,10.5,5.5,0.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Financier (almond cake)',$sc,395,1653,7.0,45.0,28.0,21.0,8.0,2.0,0.3, 0,0,1,1,1,1,0,0, 0,0,1,1,0,1],
+			['Paris-Brest (choux praline)',$sc,350,1464,7.0,32.0,18.0,22.0,10.0,2.0,0.2, 0,0,1,1,1,1,0,0, 0,0,1,1,0,1],
+			['Tarte aux Fraises (strawberry tart)',$sc,220,920,3.0,30.0,18.0,10.0,5.5,1.0,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Gâteau Basque (cherry cream)',$sc,340,1423,5.5,40.0,20.0,18.0,10.0,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Saint-Honoré (choux & caramel)',$sc,320,1339,4.5,38.0,24.0,17.0,10.0,0.5,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Tarte au Citron (lemon tart)',$sc,295,1234,4.0,38.0,25.0,15.0,8.0,0.3,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── FRENCH — SAUCES & CONDIMENTS (6) ──
+			['Béarnaise Sauce',$co,480,2008,2.5,1.0,0.5,50.0,30.0,0.0,0.5, 0,0,1,1,0,0,0,0, 1,0,1,1,0,1],
+			['Béchamel Sauce',$co,115,481,3.5,8.0,3.5,7.5,4.5,0.0,0.4, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Hollandaise Sauce',$co,465,1946,3.0,0.5,0.3,50.0,30.0,0.0,0.5, 0,0,1,1,0,0,0,0, 1,0,1,1,0,1],
+			['Rouille (Provençal garlic sauce)',$co,350,1464,2.0,10.0,0.5,34.0,4.0,0.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Aïoli (garlic mayonnaise)',$co,650,2719,1.5,2.0,0.5,70.0,8.0,0.0,0.8, 0,0,0,1,0,0,0,0, 1,0,1,1,0,1],
+			['Dijon Mustard',$co,66,276,4.0,4.0,3.0,3.5,0.2,3.5,5.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ══════════════════════════════════════
+			// ── SPANISH — TAPAS & APPETISERS (15) ──
+			// ══════════════════════════════════════
+			['Jamón Ibérico (acorn-fed)',$mp,270,1130,33.0,0.0,0.0,15.0,5.5,0.0,5.0, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0],
+			['Pan con Tomate (tomato bread)',$bc,195,816,4.5,28.0,3.5,7.5,1.0,1.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Pulpo a la Gallega (Galician octopus)',$fs,120,502,17.0,3.0,0.0,4.5,0.8,0.0,0.8, 1,1,0,0,0,0,0,0, 1,0,1,0,0,0],
+			['Boquerones en Vinagre (marinated anchovies)',$fs,130,544,15.0,1.0,0.5,7.5,1.5,0.0,2.0, 1,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+			['Albondigas (Spanish meatballs)',$mp,175,732,12.0,8.0,2.5,10.5,3.5,0.5,0.6, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Pimientos del Piquillo Rellenos',$fv,110,460,5.0,6.0,3.5,7.0,3.5,1.0,0.6, 0,0,1,0,0,0,0,0, 0,0,1,0,0,1],
+			['Ensaladilla Rusa (Spanish potato salad)',$fv,140,586,3.0,10.0,1.5,10.0,1.5,1.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Pintxos Gilda (olive, anchovy, pepper)',$tk,130,544,5.0,3.0,1.0,11.0,2.0,1.0,3.0, 1,0,0,0,0,0,0,0, 0,0,1,1,0,0],
+			['Txistorra (Basque thin chorizo)',$mp,400,1674,20.0,3.0,1.0,34.0,13.0,0.0,2.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Callos a la Madrileña (Madrid tripe)',$tk,100,418,8.5,4.0,1.0,5.5,2.0,0.5,1.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Banderillas (pickled skewer)',$fv,50,209,1.5,5.0,2.0,2.5,0.4,1.5,4.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Manchego Cheese (curado)',$de,395,1653,26.0,0.5,0.5,32.0,20.0,0.0,1.6, 0,0,1,0,0,0,0,0, 1,0,0,1,0,1],
+			['Salmorejo (Córdoba cold soup)',$tk,85,356,2.5,8.0,3.5,5.0,0.7,1.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Escalivada (roasted veg, Catalan)',$fv,55,230,1.0,5.0,4.0,3.5,0.5,2.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Espinacas con Garbanzos (spinach & chickpeas)',$lp,105,439,5.5,12.0,1.0,4.0,0.5,4.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── SPANISH — MAIN DISHES (12) ──
+			['Paella Valenciana (rabbit, chicken, snails)',$tk,150,628,9.5,18.0,1.0,4.5,1.0,1.0,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Fideuà (Catalan noodle paella)',$tk,155,649,9.0,18.0,1.0,5.5,0.8,0.8,0.7, 1,1,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Cochinillo Asado (roast suckling pig)',$mp,250,1046,22.0,0.0,0.0,18.0,7.0,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Pisto Manchego (Spanish ratatouille)',$fv,55,230,1.5,6.0,4.0,2.5,0.4,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Migas (fried breadcrumbs with chorizo)',$tk,285,1193,8.0,28.0,1.5,16.0,4.0,1.5,1.5, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Bacalao a la Vizcaína (Basque salt cod)',$fs,130,544,14.0,5.0,2.5,6.0,1.0,0.5,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Suquet de Peix (Catalan fish stew)',$tk,85,356,10.0,4.5,1.0,3.0,0.5,0.5,0.7, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Empanada Gallega (Galician tuna pie)',$tk,255,1067,9.0,26.0,2.0,13.0,2.5,1.0,0.7, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Marmitako (Basque tuna stew)',$tk,100,418,10.0,8.0,1.0,3.5,0.5,1.5,0.6, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Arroz Negro (black squid ink rice)',$tk,155,649,7.5,22.0,0.5,4.0,0.5,0.5,0.8, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Lacón con Grelos (ham with turnip greens)',$mp,125,523,12.0,3.0,0.5,7.5,2.5,2.0,1.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Cordero al Chilindron (lamb with peppers)',$mp,155,649,14.0,4.0,2.5,9.0,3.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+
+			// ── SPANISH — DESSERTS & SWEETS (8) ──
+			['Flan (Spanish egg custard)',$sc,155,649,5.0,22.0,20.0,5.0,2.5,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Turrón de Jijona (soft nougat)',$sc,490,2050,10.0,42.0,35.0,32.0,4.0,5.0,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,0,1],
+			['Turrón de Alicante (hard nougat)',$sc,485,2029,12.0,40.0,35.0,30.0,3.5,4.5,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,0,1],
+			['Ensaïmada (Mallorcan pastry)',$sc,370,1548,6.0,48.0,15.0,17.0,9.0,1.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Arroz con Leche (Spanish rice pudding)',$sc,140,586,3.5,20.0,14.0,5.0,3.0,0.2,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Leche Frita (fried custard)',$sc,250,1046,5.0,32.0,18.0,11.5,5.0,0.3,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Tarta de Santiago (almond cake)',$sc,405,1694,10.0,40.0,30.0,23.0,4.5,4.0,0.2, 0,0,0,1,1,0,0,0, 0,0,1,1,0,1],
+			['Polvorones (crumbly shortbread)',$sc,475,1988,6.0,55.0,22.0,26.0,10.0,2.0,0.1, 0,0,0,0,1,1,0,0, 0,0,1,1,0,1],
+
+			// ── SPANISH — DRINKS (5) ──
+			['Sangria (per glass, 200ml)',$dr,100,418,0.2,12.0,10.0,0.0,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Horchata de Chufa (tiger nut milk)',$dr,65,272,0.5,12.0,10.0,2.5,0.5,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Tinto de Verano (red wine & lemonade)',$dr,55,230,0.0,8.0,7.5,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Café con Leche (Spanish)',$dr,40,167,2.0,4.0,4.0,1.5,0.8,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Agua de Valencia (orange cocktail)',$dr,120,502,0.5,15.0,14.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'ANSES/Ciqual France / AESAN Spain / USDA FDC. Seeded v43.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 43 );
+	}
 }
