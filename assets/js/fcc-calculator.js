@@ -1848,7 +1848,7 @@
 						copyNutrLbl.textContent = 'Copied!';
 						copyNutrBtn.classList.add( 'fcc-btn--copied' );
 						setTimeout( function () {
-							copyNutrLbl.textContent = 'Copy';
+							copyNutrLbl.textContent = 'Copy Nutrition';
 							copyNutrBtn.classList.remove( 'fcc-btn--copied' );
 						}, 2000 );
 					}
