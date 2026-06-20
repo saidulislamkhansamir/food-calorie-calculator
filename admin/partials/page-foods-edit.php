@@ -182,7 +182,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 					<h2 class="fcc-card__title"><?php esc_html_e( 'Allergens & Dietary Tags', 'food-calorie-calculator' ); ?></h2>
 					<div class="fcc-field">
 						<label><?php esc_html_e( 'Contains Allergens', 'food-calorie-calculator' ); ?></label>
-						<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+						<div class="fcc-checkbox-grid">
 							<?php
 							$allergens = [
 								'allergen_fish'      => __( '🐟 Fish', 'food-calorie-calculator' ),
@@ -195,7 +195,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 								'allergen_celery'    => __( '🥬 Celery', 'food-calorie-calculator' ),
 							];
 							foreach ( $allergens as $key => $label ) : ?>
-								<label style="display:flex;align-items:center;gap:4px;font-size:13px">
+								<label class="fcc-checkbox-item">
 									<input type="checkbox" name="<?php echo esc_attr( $key ); ?>" value="1"
 										<?php checked( $is_edit && ! empty( $food[ $key ] ) ); ?>>
 									<?php echo esc_html( $label ); ?>
@@ -203,9 +203,9 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 							<?php endforeach; ?>
 						</div>
 					</div>
-					<div class="fcc-field" style="margin-top:16px">
+					<div class="fcc-field" style="margin-top:12px">
 						<label><?php esc_html_e( 'Dietary Tags', 'food-calorie-calculator' ); ?></label>
-						<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+						<div class="fcc-checkbox-grid">
 							<?php
 							$diets = [
 								'diet_keto'       => __( '🥑 Keto', 'food-calorie-calculator' ),
@@ -216,7 +216,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 								'diet_vegetarian' => __( '🥬 Vegetarian', 'food-calorie-calculator' ),
 							];
 							foreach ( $diets as $key => $label ) : ?>
-								<label style="display:flex;align-items:center;gap:4px;font-size:13px">
+								<label class="fcc-checkbox-item">
 									<input type="checkbox" name="<?php echo esc_attr( $key ); ?>" value="1"
 										<?php checked( $is_edit && ! empty( $food[ $key ] ) ); ?>>
 									<?php echo esc_html( $label ); ?>

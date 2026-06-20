@@ -142,12 +142,14 @@
    -------------------------------------------------------------------------- */
 .fcc-form-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 3fr 2fr;
 	gap: 1.5rem;
 	margin-top: 1rem;
+	max-width: 1200px;
 }
 
 .fcc-form-col--narrow { max-width: 400px; }
+.fcc-form-col .fcc-card { overflow: hidden; word-wrap: break-word; }
 
 .fcc-field {
 	margin-bottom: 1rem;
@@ -258,7 +260,7 @@
    Responsive
    -------------------------------------------------------------------------- */
 @media screen and (max-width: 900px) {
-	.fcc-form-grid { grid-template-columns: 1fr; }
+	.fcc-form-grid { grid-template-columns: 1fr; max-width: 100%; }
 	.fcc-card--links,
 	.fcc-card--info { grid-column: span 1; }
 	.fcc-quick-links { grid-template-columns: 1fr; }
@@ -7710,4 +7712,28 @@ button.fcc-reqs-tab {
 	.fcc-cp-th--bar { display: none; }
 	.fcc-cp-td--bar { display: none; }
 }
+
+
+/* ── Food edit form: checkbox grid for allergens/diet ── */
+.fcc-checkbox-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	gap: 8px;
+	margin-top: 6px;
+}
+.fcc-checkbox-item {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 13px;
+	padding: 5px 8px;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	background: #fafafa;
+	cursor: pointer;
+	transition: border-color .15s, background .15s;
+}
+.fcc-checkbox-item:hover { border-color: #075B5E; background: #f0f7f7; }
+.fcc-checkbox-item input[type="checkbox"] { accent-color: #075B5E; }
+.fcc-checkbox-item input[type="checkbox"]:checked + * { font-weight: 600; }
 
