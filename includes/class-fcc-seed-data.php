@@ -9386,4 +9386,224 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 55 );
 	}
+
+	/** Seed v56: Remaining Europe + Asia — Balkans, Armenia, Malta, Cyprus, Sri Lanka, Lebanon, Israel, Taiwan, etc. */
+	public static function seed_v56(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 56 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ── ALBANIA (5) ──
+			['Tavë Kosi (Albanian baked lamb & yoghurt)',$tk,155,649,12.0,5.0,2.0,10.0,4.5,0.3,0.5, 0,0,1,1,0,0,0,0, 0,0,1,0,0,0],
+			['Byrek (Albanian phyllo pie, cheese)',$tk,255,1067,8.0,22.0,1.5,15.5,7.0,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Fërgesë (Albanian pepper & cheese bake)',$tk,135,565,6.5,5.0,3.0,10.0,5.5,1.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Qofte (Albanian grilled meatballs)',$mp,245,1025,15.0,5.0,0.5,18.5,7.5,0.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Trilece (Albanian three-milk cake)',$sc,215,900,4.5,28.0,24.0,10.0,6.0,0.0,0.2, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── BOSNIA & HERZEGOVINA (5) ──
+			['Ćevapi u Lepinja (Bosnian, with bread)',$tk,270,1130,16.0,22.0,1.0,13.0,5.5,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Burek (Bosnian, meat spiral pie)',$tk,270,1130,10.0,24.0,1.0,15.5,6.0,0.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Bosanski Lonac (Bosnian pot stew)',$tk,85,356,6.5,5.0,1.0,4.5,1.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Begova Čorba (bey\'s soup, chicken cream)',$tk,75,314,4.5,5.0,1.0,4.0,2.0,0.5,0.5, 0,0,1,0,0,1,0,0, 0,0,1,0,0,0],
+			['Tufahije (Bosnian stuffed apple dessert)',$sc,195,816,2.5,32.0,25.0,7.5,1.0,1.5,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+
+			// ── NORTH MACEDONIA (4) ──
+			['Tavče Gravče (Macedonian baked beans)',$lp,110,460,5.5,16.0,1.5,2.5,0.4,5.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Pastrmajlija (Macedonian meat pizza)',$tk,255,1067,12.0,26.0,1.5,12.0,4.5,0.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Turli Tava (Macedonian mixed vegetable bake)',$fv,75,314,3.0,8.0,2.5,3.5,1.0,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pindjur (Macedonian roasted pepper spread)',$co,60,251,1.0,6.0,4.5,3.5,0.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── MONTENEGRO & KOSOVO & SLOVENIA (6) ──
+			['Njeguški Steak (Montenegro stuffed veal)',$mp,270,1130,18.0,3.0,0.5,21.0,10.0,0.0,1.5, 0,0,1,0,0,0,0,0, 0,0,0,0,0,0],
+			['Kačamak (Montenegrin polenta & cheese)',$bc,145,607,5.0,16.0,0.5,7.0,4.0,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Flia (Kosovo layered pancake pie)',$bc,285,1193,7.0,28.0,2.0,16.0,8.5,0.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Flija (Kosovo crepe cake with cream)',$sc,295,1234,6.5,28.0,3.0,17.5,9.5,0.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Potica (Slovenian nut roll)',$sc,380,1590,8.0,48.0,22.0,18.0,4.5,3.0,0.3, 0,0,1,1,1,1,0,0, 0,0,1,1,0,1],
+			['Štruklji (Slovenian rolled dumplings)',$tk,195,816,6.5,26.0,4.0,7.5,3.5,1.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+
+			// ── MALTA (5) ──
+			['Pastizzi (Maltese ricotta pastry, 1pc)',$sc,280,1172,6.0,22.0,1.0,19.0,8.5,0.3,0.6, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Rabbit Stew (Stuffat tal-Fenek, Maltese)',$tk,130,544,14.0,4.0,1.5,6.5,1.5,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ftira (Maltese flatbread with toppings)',$bc,245,1025,7.0,32.0,2.5,10.0,2.0,1.5,1.0, 1,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Ħobż biż-Żejt (Maltese bread with oil & tomato)',$bc,225,941,5.5,28.0,3.0,10.0,1.5,1.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Imqaret (Maltese date diamonds)',$sc,350,1464,3.5,48.0,25.0,16.5,3.5,2.5,0.2, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+
+			// ── CYPRUS (4) ──
+			['Halloumi (Cypriot, grilled, traditional)',$de,325,1360,22.0,1.5,1.0,25.5,16.5,0.0,2.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Souvla (Cypriot charcoal spit roast)',$mp,210,879,24.0,0.0,0.0,12.5,5.0,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Koupepia (Cypriot stuffed vine leaves)',$tk,190,795,5.0,12.0,2.0,14.0,3.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Commandaria (Cypriot dessert wine, 75ml)',$dr,110,460,0.0,14.0,13.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── ARMENIA (5) ──
+			['Khorovats (Armenian grilled meat)',$mp,215,900,22.0,1.0,0.5,13.5,5.5,0.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Harissa (Armenian wheat & chicken porridge)',$tk,115,481,7.5,14.0,0.5,3.0,0.8,2.5,0.4, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Lahmajun (Armenian, thin meat flatbread)',$tk,230,962,9.5,28.0,3.0,9.0,3.5,1.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Gata (Armenian sweet bread)',$sc,360,1506,6.0,48.0,18.0,16.0,8.0,1.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Tahn (Armenian yoghurt drink)',$dr,30,126,1.5,2.5,2.5,1.0,0.6,0.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── LEBANON (6) ──
+			['Kibbeh Nayyeh (Lebanese raw lamb)',$mp,190,795,14.0,12.0,0.5,10.0,3.5,3.0,0.3, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Tabbouleh (Lebanese, traditional)',$fv,95,397,2.5,12.0,2.0,4.5,0.6,3.0,0.4, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Manakish Zaatar (Lebanese)',$bc,305,1276,7.5,38.0,1.5,13.5,2.0,3.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Kebbeh (fried, Lebanese)',$tk,285,1193,10.0,18.0,0.5,19.5,5.0,2.0,0.5, 0,0,0,0,1,1,0,0, 0,0,1,0,0,0],
+			['Sfiha (Lebanese meat pie)',$tk,260,1088,10.0,26.0,2.0,13.0,4.5,1.0,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Knafeh (Lebanese, with cheese)',$sc,400,1674,7.5,42.0,28.0,22.5,10.5,0.5,0.5, 0,0,1,0,1,0,0,0, 0,0,1,1,0,1],
+
+			// ── SYRIA & IRAQ (6) ──
+			['Makdous (Syrian stuffed aubergine pickle)',$fv,185,774,2.5,6.0,2.0,17.0,2.5,2.5,2.0, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Muhammara (Syrian walnut dip)',$co,215,900,3.5,14.0,7.0,16.5,2.0,3.0,0.5, 0,0,0,0,1,1,0,0, 0,0,1,1,1,1],
+			['Masgouf (Iraqi grilled carp)',$fs,160,669,20.0,2.0,1.0,8.0,1.5,0.0,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Dolma (Iraqi, rice-stuffed vegetables)',$fv,130,544,3.0,16.0,2.5,6.0,1.0,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kleicha (Iraqi date cookie)',$sc,380,1590,5.0,55.0,28.0,16.0,4.5,2.5,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Tepsi Baytinijan (Iraqi aubergine casserole)',$tk,110,460,6.0,7.0,3.0,7.0,2.5,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+
+			// ── ISRAEL (6) ──
+			['Shakshuka (Israeli, classic)',$tk,118,494,7.0,8.0,5.0,7.0,1.5,2.0,0.7, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Sabich (Iraqi-Israeli aubergine pitta)',$tk,265,1109,8.0,28.0,3.0,14.0,2.0,3.0,0.6, 0,0,0,1,0,1,0,0, 0,0,1,0,0,1],
+			['Malabi (Israeli milk pudding, rose water)',$sc,125,523,3.5,18.0,14.0,4.5,3.0,0.0,0.1, 0,0,1,0,1,0,0,0, 0,0,1,1,0,1],
+			['Jachnun (Yemeni-Israeli rolled pastry)',$bc,350,1464,6.5,42.0,3.0,18.0,10.0,1.0,0.4, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Rugelach (Israeli crescent pastry)',$sc,375,1569,5.0,45.0,22.0,20.0,10.0,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Limonana (Israeli frozen lemonade)',$dr,40,167,0.1,10.0,9.0,0.0,0.0,0.2,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── SRI LANKA (6) ──
+			['Rice and Curry (Sri Lankan, full plate avg)',$tk,155,649,5.5,22.0,2.0,5.0,2.5,2.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kottu Roti (Sri Lankan chopped roti)',$tk,195,816,8.0,22.0,2.0,8.5,2.5,1.0,1.0, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Hoppers (Sri Lankan rice bowl pancake)',$bc,155,649,3.0,26.0,1.5,4.5,3.0,0.5,0.3, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['String Hoppers (idiyappam, Sri Lankan)',$bc,135,565,2.5,28.0,0.5,1.0,0.2,1.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Lamprais (Sri Lankan Dutch-Burgher rice)',$tk,210,879,9.0,26.0,1.5,8.0,3.0,1.5,0.6, 0,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Watalappam (Sri Lankan coconut custard)',$sc,195,816,4.0,28.0,22.0,8.0,5.5,0.5,0.1, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── TAIWAN (6) ──
+			['Beef Noodle Soup (Taiwanese)',$tk,95,397,6.5,8.0,1.0,4.5,1.5,0.5,1.5, 0,0,0,0,0,1,1,0, 0,0,0,0,0,0],
+			['Gua Bao (Taiwanese pork belly bun)',$tk,245,1025,9.0,28.0,5.0,11.0,3.5,0.5,0.8, 0,0,0,0,1,1,1,0, 0,0,0,0,0,0],
+			['Oyster Omelette (Taiwanese)',$tk,190,795,7.5,14.0,0.5,12.0,2.5,0.3,1.5, 1,1,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Bubble Tea (Taiwanese original)',$dr,85,356,1.0,18.0,14.0,1.5,1.0,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Pineapple Cake (Taiwanese, 1pc)',$sc,350,1464,4.0,52.0,28.0,14.5,7.0,1.5,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Stinky Tofu (Taiwanese, fried)',$lp,200,837,10.0,12.0,0.5,13.0,2.0,1.5,1.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+
+			// ── MALDIVES & TIMOR-LESTE (4) ──
+			['Garudhiya (Maldivian tuna broth)',$tk,40,167,7.0,1.0,0.0,0.8,0.2,0.0,1.0, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Mas Huni (Maldivian tuna & coconut breakfast)',$fs,155,649,12.0,10.0,2.0,8.0,5.5,2.0,1.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Batar Da\'an (Timorese corn & bean stew)',$lp,95,397,4.0,15.0,1.0,2.0,0.3,3.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Ikan Sabuko (Timorese grilled fish)',$fs,110,460,20.0,1.0,0.5,3.0,0.5,0.0,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'USDA FDC / national sources. Seeded v56.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 56 );
+	}
+
+	/** Seed v57: Remaining Americas, Africa & Oceania. */
+	public static function seed_v57(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 57 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ── CENTRAL AMERICA (14 — 2 per country) ──
+			['Pupusa (Salvadoran, cheese & bean)',$tk,230,962,7.5,28.0,1.5,10.0,3.5,3.0,0.6, 0,0,1,0,0,0,0,0, 0,0,1,0,0,1],
+			['Curtido (Salvadoran pickled cabbage)',$fv,15,63,0.5,3.0,1.5,0.1,0.0,1.5,1.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Baleada (Honduran bean & cheese tortilla)',$tk,265,1109,8.0,30.0,1.0,12.5,5.0,4.0,0.6, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Sopa de Caracol (Honduran conch soup)',$tk,70,293,5.0,6.0,1.0,3.0,1.5,0.5,0.7, 0,1,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pepián (Guatemalan spiced meat stew)',$tk,115,481,8.0,8.0,1.5,6.0,1.5,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kak\'ik (Guatemalan turkey soup)',$tk,65,272,6.0,4.0,1.0,3.0,0.8,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Vigorón (Nicaraguan pork rind & yuca salad)',$tk,195,816,8.0,22.0,2.0,8.5,3.0,2.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Nacatamal (Nicaraguan tamale)',$tk,225,941,7.5,24.0,2.0,11.5,3.5,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Gallo Pinto (Costa Rican rice & beans)',$lp,145,607,5.0,24.0,0.5,2.5,0.5,4.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Casado (Costa Rican set meal)',$tk,165,690,9.0,22.0,1.5,5.0,1.5,3.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Sancocho Panameño (Panamanian chicken soup)',$tk,65,272,5.0,6.0,1.0,2.5,0.5,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Hojaldras (Panamanian fried dough)',$sc,340,1423,5.0,40.0,3.0,18.0,4.0,0.5,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Rice and Beans (Belizean, coconut)',$lp,160,669,4.5,26.0,1.0,4.5,2.5,3.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Garnaches (Belizean fried tortilla, bean & cheese)',$tk,230,962,6.5,24.0,1.0,12.5,4.5,2.5,0.6, 0,0,1,0,0,0,0,0, 0,0,1,0,0,1],
+
+			// ── TRINIDAD & TOBAGO, GUYANA, SURINAME (8) ──
+			['Doubles (Trini, curried chickpea in bara)',$tk,245,1025,7.0,30.0,2.0,11.0,2.0,3.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Roti (Trini, with curry filling)',$tk,220,920,9.0,26.0,2.0,9.0,2.5,2.0,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Callaloo (Trinidadian, with crab)',$tk,65,272,4.5,4.0,0.5,3.5,1.0,2.0,0.5, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pelau (Trini rice, meat & pigeon peas)',$tk,155,649,7.5,22.0,1.0,4.5,1.5,2.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pepperpot (Guyanese, cassareep meat stew)',$tk,145,607,12.0,5.0,2.0,9.0,3.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Cook-up Rice (Guyanese one-pot)',$tk,155,649,6.5,22.0,0.5,4.5,2.0,3.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Roti (Surinamese, with curry)',$tk,215,900,8.5,26.0,2.0,8.5,2.5,2.0,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Pom (Surinamese, tayer root casserole)',$tk,140,586,6.0,14.0,2.0,7.0,2.0,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+
+			// ── ECUADOR & PARAGUAY (6) ──
+			['Encebollado (Ecuadorian tuna soup)',$tk,85,356,8.0,8.0,1.0,3.0,0.5,1.0,0.8, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Llapingacho (Ecuadorian potato patty)',$fv,175,732,4.5,20.0,0.5,9.0,3.5,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Ceviche de Camarón (Ecuadorian shrimp)',$fs,80,335,8.5,8.0,3.0,1.5,0.3,0.5,0.5, 0,1,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Sopa Paraguaya (Paraguayan corn bread)',$bc,250,1046,7.0,28.0,3.0,12.5,5.0,1.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Chipa (Paraguayan cheese bread)',$bc,310,1297,5.5,42.0,2.0,13.0,5.5,0.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Tereré (Paraguayan cold yerba mate)',$dr,2,8,0.1,0.3,0.0,0.0,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+
+			// ── REMAINING CARIBBEAN (4) ──
+			['Funchi (Curaçao cornmeal, like polenta)',$bc,75,314,2.0,16.0,0.2,0.5,0.1,1.5,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Roti (Antigua & Barbuda, curry chicken)',$tk,215,900,10.0,24.0,2.0,8.5,2.5,1.5,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Breadfruit Cou-Cou (St Vincent)',$fv,115,481,1.5,24.0,3.0,2.0,0.5,3.0,0.2, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Stew Chicken (St Kitts & Nevis)',$tk,125,523,12.0,4.0,1.5,6.5,1.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+
+			// ── MADAGASCAR, MAURITIUS, SEYCHELLES, CAPE VERDE (8) ──
+			['Romazava (Malagasy beef & greens stew)',$tk,75,314,6.0,4.0,0.5,4.0,1.5,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ravitoto (Malagasy pork & cassava leaf)',$tk,115,481,8.0,5.0,0.5,7.5,2.5,2.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Dholl Puri (Mauritian split pea flatbread)',$bc,230,962,6.5,32.0,1.0,8.5,1.5,3.5,0.4, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Mine Frite (Mauritian fried noodles)',$tk,170,711,6.5,22.0,2.0,6.5,1.5,0.5,1.5, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Octopus Curry (Seychellois, Kari Zourit)',$tk,100,418,12.0,5.0,1.5,4.0,1.5,1.0,0.6, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ladob (Seychellois banana & coconut dessert)',$sc,140,586,1.0,24.0,14.0,5.0,4.0,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Cachupa (Cape Verdean corn & bean stew)',$tk,100,418,5.5,14.0,1.0,2.5,0.5,3.5,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Pastel de Atum (Cape Verdean tuna pasty)',$tk,265,1109,9.0,26.0,1.0,14.0,2.5,1.0,0.7, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── OCEANIA REMAINING (8) ──
+			['Poisson Cru (Tahitian, French Polynesia)',$fs,110,460,13.0,4.0,2.0,5.5,4.0,0.5,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Po\'e (Tahitian baked fruit pudding)',$sc,145,607,1.0,30.0,16.0,3.5,2.5,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Tinola (Palauan chicken ginger soup)',$tk,55,230,5.5,3.5,0.5,2.0,0.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kelaguen (Guam, citrus-cooked chicken)',$mp,130,544,18.0,4.0,2.0,5.0,1.0,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Red Rice (Guam/Chamorro, achote)',$bc,145,607,3.0,26.0,0.5,3.0,0.5,0.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Poke Bowl (Hawaiian, tuna)',$tk,145,607,14.0,16.0,2.0,4.0,0.5,0.5,1.5, 1,0,0,0,0,0,1,0, 0,0,1,0,0,0],
+			['Loco Moco (Hawaiian, rice, burger, egg, gravy)',$tk,195,816,10.0,22.0,1.0,7.5,2.5,0.5,0.8, 0,0,0,1,0,0,1,0, 0,0,0,0,0,0],
+			['Spam Musubi (Hawaiian, 1pc)',$tk,175,732,6.5,26.0,2.0,4.5,1.5,0.3,1.5, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'USDA FDC / FAO regional. Seeded v57.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 57 );
+	}
 }
