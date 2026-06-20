@@ -9164,4 +9164,150 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 53 );
 	}
+
+	/** Seed v54: Mongolia + Northern/Eastern/Southeastern European foods. */
+	public static function seed_v54(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 54 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── MONGOLIA (10) ──
+			// ══════════════════════════════════════
+			['Buuz (Mongolian steamed dumplings, 1pc)',$tk,65,272,3.5,7.0,0.3,2.5,1.0,0.3,0.3, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Khuushuur (Mongolian fried meat pastry)',$tk,280,1172,10.0,24.0,0.5,16.0,5.5,0.5,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Tsuivan (Mongolian stir-fried noodles & meat)',$tk,155,649,8.0,16.0,1.0,7.0,2.5,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Khorkhog (Mongolian hot stone BBQ mutton)',$mp,230,962,20.0,2.0,0.5,16.0,7.0,0.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Boodog (marmot/goat cooked with hot stones)',$mp,215,900,22.0,0.0,0.0,14.0,5.5,0.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Guriltai Shul (Mongolian noodle soup)',$tk,70,293,4.5,8.0,0.5,2.0,0.8,0.3,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Airag (fermented mare\'s milk, Mongolian)',$dr,48,201,2.0,5.0,4.0,1.5,0.8,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Suutei Tsai (Mongolian salt milk tea)',$dr,40,167,1.5,2.5,2.0,2.5,1.5,0.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Aaruul (Mongolian dried curd)',$de,350,1464,30.0,20.0,8.0,16.0,10.0,0.0,2.0, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1],
+			['Boortsog (Mongolian fried biscuit)',$sc,345,1443,6.0,42.0,3.0,17.5,3.5,0.5,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── FINLAND (8) ──
+			['Karjalanpiirakka (Karelian pie, 1pc)',$bc,220,920,5.0,38.0,1.0,4.5,2.0,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Kalakukko (fish-filled bread)',$tk,200,837,10.0,28.0,1.0,5.5,1.0,1.5,0.8, 1,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Lohikeitto (Finnish salmon soup)',$tk,85,356,5.5,5.0,0.5,5.0,2.5,0.5,0.4, 1,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Poronkäristys (sautéed reindeer)',$mp,130,544,22.0,2.0,0.5,4.0,1.0,0.5,0.5, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0],
+			['Hernekeitto (Finnish pea soup)',$lp,85,356,6.0,12.0,1.0,1.5,0.3,3.5,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Mustikkapiirakka (blueberry pie)',$sc,270,1130,3.5,38.0,18.0,12.0,5.5,2.5,0.3, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Korvapuusti (Finnish cinnamon roll)',$sc,340,1423,5.5,46.0,18.0,15.0,8.0,1.5,0.5, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Glögi (Finnish mulled wine/juice)',$dr,85,356,0.1,18.0,16.0,0.0,0.0,0.5,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+
+			// ── ESTONIA (5) ──
+			['Verivorst (Estonian blood sausage)',$mp,295,1234,12.0,20.0,0.5,19.0,7.5,1.0,1.5, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Mulgipuder (Estonian potato & barley mash)',$fv,110,460,3.0,18.0,1.0,3.0,1.5,2.5,0.3, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Kama (Estonian mixed grain flour dessert)',$sc,350,1464,12.0,60.0,8.0,6.0,1.0,8.0,0.0, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Kiluvõileib (sprat sandwich, Estonian)',$tk,215,900,8.0,22.0,1.0,10.5,2.0,1.0,1.5, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Kohuke (Estonian curd snack bar)',$de,350,1464,9.0,32.0,25.0,20.0,12.0,0.5,0.2, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── LATVIA (5) ──
+			['Rupjmaizes Kārtojums (rye bread trifle)',$sc,240,1004,4.0,32.0,18.0,11.0,6.5,2.0,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+			['Sklandrausis (Latvian carrot & potato pie)',$sc,195,816,3.0,30.0,10.0,7.5,2.5,2.0,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Pelēkie Zirņi ar Speķi (grey peas & bacon)',$lp,145,607,7.0,18.0,1.0,5.0,1.5,5.0,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Piragi (Latvian bacon buns, 1pc)',$bc,175,732,5.0,18.0,1.0,9.5,3.5,0.5,0.5, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Aukstā Zupa (Latvian cold beet soup)',$tk,40,167,2.0,5.0,3.0,1.0,0.5,0.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── LITHUANIA (5) ──
+			['Cepelinai (potato dumplings, national)',$tk,165,690,6.0,24.0,0.5,5.0,2.0,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Šaltibarščiai (cold pink beet soup)',$tk,40,167,2.0,5.0,3.0,1.0,0.5,0.5,0.5, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1],
+			['Kibinai (Karaite meat pastry, 1pc)',$tk,250,1046,8.0,22.0,0.5,14.5,5.5,0.5,0.6, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Šakotis (tree cake, Lithuanian)',$sc,390,1632,7.0,48.0,25.0,19.5,10.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Kepta Duona (fried rye bread with garlic)',$sc,350,1464,8.0,45.0,2.0,16.0,3.0,4.0,1.5, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── BELARUS (5) ──
+			['Draniki (Belarusian potato pancakes)',$fv,185,774,3.0,22.0,1.0,9.5,1.5,1.5,0.4, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Machanka (pork in sour cream sauce)',$tk,175,732,10.0,5.0,1.0,13.5,6.0,0.3,0.6, 0,0,1,0,0,0,0,0, 0,0,0,0,0,0],
+			['Kolduny (Belarusian stuffed dumplings)',$tk,185,774,7.5,20.0,0.5,8.5,3.5,1.0,0.5, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+			['Babka (Belarusian potato bake)',$fv,130,544,3.5,16.0,0.5,6.0,2.5,1.5,0.4, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Zhurek (Belarusian sour rye soup)',$tk,40,167,2.5,6.0,0.5,0.8,0.2,0.5,0.8, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0],
+
+			// ── UKRAINE (8) ──
+			['Borscht (Ukrainian, with pampushky)',$tk,50,209,2.5,6.5,3.0,1.5,0.5,1.5,0.5, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Varenyky (Ukrainian, potato & cheese)',$tk,185,774,5.0,28.0,1.0,6.0,2.5,1.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Holubtsi (Ukrainian cabbage rolls)',$tk,100,418,5.5,10.0,2.0,4.0,1.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Salo (Ukrainian cured pork fat, with garlic)',$mp,775,3243,1.5,0.0,0.0,85.0,33.0,0.0,3.5, 0,0,0,0,0,0,0,0, 1,0,0,0,0,0],
+			['Deruny (Ukrainian potato fritters)',$fv,180,753,3.0,20.0,1.0,10.0,2.0,1.5,0.4, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Pampushky (garlic bread rolls)',$bc,275,1151,6.5,42.0,2.0,9.0,2.0,1.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+			['Chicken Kyiv (Ukrainian original)',$mp,270,1130,16.0,12.0,0.5,18.0,9.0,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0],
+			['Uzvar (Ukrainian dried fruit compote)',$dr,35,146,0.2,8.5,7.5,0.0,0.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── CZECHIA (6) ──
+			['Svíčková na Smetaně (sirloin in cream)',$tk,145,607,12.0,8.0,2.5,7.5,3.5,0.5,0.5, 0,0,1,0,0,1,0,0, 0,0,0,0,0,0],
+			['Vepřo Knedlo Zelo (pork, dumplings, sauerkraut)',$tk,165,690,10.0,18.0,1.0,6.0,2.0,2.0,0.8, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0],
+			['Trdelník (chimney cake, Czech)',$sc,350,1464,5.0,52.0,18.0,14.0,5.0,1.0,0.3, 0,0,0,1,1,1,0,0, 0,0,1,1,0,1],
+			['Bramboráky (Czech potato pancakes)',$fv,175,732,3.0,20.0,0.5,9.5,1.5,1.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Smažený Sýr (Czech fried cheese)',$de,330,1381,14.0,16.0,0.5,24.0,12.0,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Koláče (Czech fruit-filled pastry)',$sc,285,1193,5.0,42.0,18.0,11.0,4.5,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── SLOVAKIA (5) ──
+			['Bryndzové Halušky (sheep cheese dumplings)',$tk,195,816,7.5,22.0,1.0,9.0,4.5,1.0,1.0, 0,0,1,0,0,0,0,0, 0,0,1,0,0,1],
+			['Kapustnica (Slovak sauerkraut soup)',$tk,65,272,4.0,4.5,1.0,3.5,1.2,1.5,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Zemiakové Placky (Slovak potato pancakes)',$fv,175,732,3.0,20.0,0.5,9.5,1.5,1.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Parenica (Slovak smoked cheese)',$de,310,1297,25.0,1.0,0.5,23.0,14.5,0.0,2.0, 0,0,1,0,0,0,0,0, 1,0,1,0,0,1],
+			['Šúľance (Slovak poppy seed noodles)',$sc,250,1046,5.5,38.0,10.0,8.5,2.5,2.5,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── CROATIA (5) ──
+			['Ćevapčići (Croatian grilled sausages)',$mp,250,1046,18.0,3.0,0.5,18.5,7.5,0.0,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Peka (Croatian bell-cooked meat & veg)',$tk,120,502,10.0,6.0,1.5,6.0,2.0,1.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Crni Rižot (Croatian squid ink risotto)',$tk,150,628,7.0,20.0,0.5,4.5,0.8,0.5,0.8, 1,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Štrukli (Croatian cheese pastry)',$tk,225,941,8.0,22.0,2.0,12.0,6.5,0.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Fritule (Croatian doughnut balls)',$sc,330,1381,5.0,42.0,15.0,16.0,3.5,1.0,0.3, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+
+			// ── SERBIA (5) ──
+			['Ćevapi (Serbian, 10 pcs with lepinja)',$tk,265,1109,16.0,22.0,1.0,12.5,5.0,0.5,1.0, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0],
+			['Pljeskavica (Serbian spiced meat patty)',$mp,275,1151,17.0,5.0,0.5,21.0,8.5,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Sarma (Serbian stuffed cabbage rolls)',$tk,105,439,6.0,8.0,1.5,5.5,2.0,1.5,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Gibanica (Serbian cheese phyllo pie)',$tk,265,1109,10.0,20.0,2.0,16.5,9.0,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Ajvar (Serbian roasted pepper relish)',$co,65,272,1.0,6.5,5.0,4.0,0.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── ROMANIA (6) ──
+			['Sarmale (Romanian cabbage rolls)',$tk,110,460,6.5,8.0,1.5,6.0,2.0,1.5,0.8, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Mici/Mititei (Romanian grilled sausages)',$mp,255,1067,16.0,3.0,0.5,20.0,8.0,0.5,1.2, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+			['Ciorbă de Burtă (Romanian tripe soup)',$tk,55,230,4.5,3.0,0.5,3.0,1.0,0.3,0.8, 0,0,1,0,0,0,0,0, 0,0,0,0,0,0],
+			['Mămăligă (Romanian polenta)',$bc,75,314,2.0,16.0,0.2,0.5,0.1,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Papanași (Romanian fried cheese doughnuts)',$sc,295,1234,8.0,32.0,12.0,15.0,8.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Cozonac (Romanian sweet bread)',$bc,340,1423,7.5,50.0,20.0,12.0,5.0,1.5,0.4, 0,0,1,1,1,1,0,0, 0,0,1,1,0,1],
+
+			// ── MOLDOVA (4) ──
+			['Mămăligă cu Brânză (polenta with cheese)',$bc,130,544,5.5,16.0,0.5,5.0,3.0,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Plăcinte (Moldovan filled flatbread)',$bc,250,1046,6.5,30.0,3.0,12.0,4.0,1.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Zeamă (Moldovan chicken noodle soup)',$tk,45,188,3.5,4.5,0.5,1.5,0.4,0.3,0.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Sărățele (Moldovan savoury biscuits)',$sc,420,1757,8.0,50.0,3.0,20.0,8.5,1.5,1.5, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+
+			// ── BULGARIA (6) ──
+			['Shopska Salata (Bulgarian national salad)',$fv,70,293,3.5,4.5,3.0,4.5,2.5,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Banitsa (Bulgarian cheese phyllo pie)',$tk,260,1088,8.0,22.0,1.5,16.0,8.0,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1],
+			['Kavarma (Bulgarian clay pot stew)',$tk,125,523,10.0,5.0,2.0,7.5,2.5,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tarator (Bulgarian cold yoghurt soup)',$tk,40,167,1.5,3.0,2.0,2.5,1.0,0.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Kebapche (Bulgarian grilled meat roll)',$mp,250,1046,16.0,3.0,0.5,19.5,8.0,0.5,1.0, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Lukanka (Bulgarian dried sausage)',$mp,380,1590,25.0,2.0,0.5,30.0,12.0,0.0,3.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'USDA FDC / national sources. Seeded v54.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 54 );
+	}
 }
