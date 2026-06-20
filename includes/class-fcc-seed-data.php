@@ -3830,4 +3830,186 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 19 );
 	}
+
+	/**
+	 * Seed v20: Bulk-tag all existing foods with allergen + dietary flags.
+	 */
+	public static function seed_v20(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 20 ) {
+			return;
+		}
+		global $wpdb;
+		$ft = $wpdb->prefix . 'fcc_foods';
+		$ct = $wpdb->prefix . 'fcc_categories';
+
+		// Get category IDs by slug.
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cat_id = [];
+		foreach ( $cats as $c ) { $cat_id[ $c['slug'] ] = (int) $c['id']; }
+
+		$fish_id      = $cat_id['fish-seafood'] ?? 0;
+		$meat_id      = $cat_id['meat-poultry'] ?? 0;
+		$dairy_id     = $cat_id['dairy-eggs'] ?? 0;
+		$fruit_id     = $cat_id['fruit-veg'] ?? 0;
+		$bread_id     = $cat_id['bread-cereals'] ?? 0;
+		$nuts_id      = $cat_id['nuts-seeds'] ?? 0;
+		$fats_id      = $cat_id['fats-oils'] ?? 0;
+		$drinks_id    = $cat_id['drinks'] ?? 0;
+		$snacks_id    = $cat_id['snacks-confectionery'] ?? 0;
+		$takeaway_id  = $cat_id['takeaway'] ?? 0;
+		$legumes_id   = $cat_id['legumes-pulses'] ?? 0;
+		$condiments_id = $cat_id['condiments'] ?? 0;
+
+		// ── Fish & Seafood: allergen_fish=1, most are gluten/dairy/egg-free ──
+		if ( $fish_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=1, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_keto=1, diet_paleo=1, diet_halal=1, diet_vegan=0, diet_vegetarian=0 WHERE category_id={$fish_id}" );
+			// Shellfish: crab, lobster, prawn, shrimp, scampi, mussel, clam, oyster, squid, octopus
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_shellfish=1 WHERE category_id={$fish_id} AND (LOWER(name) LIKE '%crab%' OR LOWER(name) LIKE '%lobster%' OR LOWER(name) LIKE '%prawn%' OR LOWER(name) LIKE '%shrimp%' OR LOWER(name) LIKE '%scampi%' OR LOWER(name) LIKE '%mussel%' OR LOWER(name) LIKE '%clam%' OR LOWER(name) LIKE '%oyster%' OR LOWER(name) LIKE '%squid%' OR LOWER(name) LIKE '%octopus%' OR LOWER(name) LIKE '%langoustine%' OR LOWER(name) LIKE '%crawfish%' OR LOWER(name) LIKE '%crayfish%')" );
+			// Breaded fish = contains gluten
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_gluten=1, diet_keto=0, diet_paleo=0 WHERE category_id={$fish_id} AND (LOWER(name) LIKE '%breaded%' OR LOWER(name) LIKE '%batter%')" );
+			// Caviar/roe = kosher varies, set kosher=0 by default for roe
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_kosher=1 WHERE category_id={$fish_id} AND LOWER(name) NOT LIKE '%shellfish%'" );
+		}
+
+		// ── Meat & Poultry: no fish/shellfish/dairy/gluten/nuts/soy ──
+		if ( $meat_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_keto=1, diet_paleo=1, diet_vegan=0, diet_vegetarian=0 WHERE category_id={$meat_id}" );
+			// Poultry = halal (if slaughtered correctly, assume yes for generic data)
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_halal=1, diet_kosher=0 WHERE category_id={$meat_id} AND (LOWER(name) LIKE '%chicken%' OR LOWER(name) LIKE '%turkey%' OR LOWER(name) LIKE '%duck%')" );
+			// Pork = not halal, not kosher
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_halal=0, diet_kosher=0 WHERE category_id={$meat_id} AND (LOWER(name) LIKE '%pork%' OR LOWER(name) LIKE '%bacon%' OR LOWER(name) LIKE '%ham%' OR LOWER(name) LIKE '%sausage%')" );
+			// Beef/lamb = halal (generic), kosher (generic)
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_halal=1, diet_kosher=1 WHERE category_id={$meat_id} AND (LOWER(name) LIKE '%beef%' OR LOWER(name) LIKE '%lamb%' OR LOWER(name) LIKE '%veal%')" );
+		}
+
+		// ── Dairy & Eggs ──
+		if ( $dairy_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_nuts=0, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_paleo=0, diet_vegan=0, diet_halal=1, diet_kosher=1 WHERE category_id={$dairy_id}" );
+			// Dairy items
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_dairy=1, allergen_eggs=0, diet_vegetarian=1, diet_keto=1 WHERE category_id={$dairy_id} AND LOWER(name) NOT LIKE '%egg%'" );
+			// Egg items
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_eggs=1, allergen_dairy=0, diet_vegetarian=1, diet_keto=1 WHERE category_id={$dairy_id} AND LOWER(name) LIKE '%egg%'" );
+		}
+
+		// ── Fruit & Vegetables: all-clear allergens, vegan/vegetarian ──
+		if ( $fruit_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_vegan=1, diet_vegetarian=1, diet_halal=1, diet_kosher=1, diet_paleo=1 WHERE category_id={$fruit_id}" );
+			// Celery
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_celery=1 WHERE category_id={$fruit_id} AND LOWER(name) LIKE '%celery%'" );
+			// Keto: low-carb fruits/veg only
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_keto=CASE WHEN carbohydrate_g <= 5 THEN 1 ELSE 0 END WHERE category_id={$fruit_id}" );
+		}
+
+		// ── Bread & Cereals: contains gluten ──
+		if ( $bread_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=1, allergen_soy=0, allergen_celery=0, diet_keto=0, diet_paleo=0, diet_vegan=1, diet_vegetarian=1, diet_halal=1, diet_kosher=1 WHERE category_id={$bread_id}" );
+			// Some breads contain dairy/eggs
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_eggs=1 WHERE category_id={$bread_id} AND (LOWER(name) LIKE '%brioche%' OR LOWER(name) LIKE '%cake%' OR LOWER(name) LIKE '%pastry%')" );
+		}
+
+		// ── Nuts & Seeds: allergen_nuts=1, vegan ──
+		if ( $nuts_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=1, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_keto=1, diet_paleo=1, diet_vegan=1, diet_vegetarian=1, diet_halal=1, diet_kosher=1 WHERE category_id={$nuts_id}" );
+			// Seeds are not tree nuts
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_nuts=0 WHERE category_id={$nuts_id} AND (LOWER(name) LIKE '%seed%' OR LOWER(name) LIKE '%chia%' OR LOWER(name) LIKE '%flax%' OR LOWER(name) LIKE '%hemp%' OR LOWER(name) LIKE '%sesame%' OR LOWER(name) LIKE '%sunflower%' OR LOWER(name) LIKE '%pumpkin%')" );
+		}
+
+		// ── Fats & Oils: vegan (plant oils), dairy (butter) ──
+		if ( $fats_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_keto=1, diet_paleo=1, diet_vegan=1, diet_vegetarian=1, diet_halal=1, diet_kosher=1 WHERE category_id={$fats_id}" );
+			// Butter = dairy
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_dairy=1, diet_vegan=0 WHERE category_id={$fats_id} AND (LOWER(name) LIKE '%butter%' OR LOWER(name) LIKE '%ghee%')" );
+		}
+
+		// ── Drinks ──
+		if ( $drinks_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_halal=1, diet_kosher=1, diet_vegetarian=1 WHERE category_id={$drinks_id}" );
+			// Milk drinks = dairy
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_dairy=1, diet_vegan=0 WHERE category_id={$drinks_id} AND (LOWER(name) LIKE '%milk%' OR LOWER(name) LIKE '%latte%' OR LOWER(name) LIKE '%cappuccino%')" );
+			// Plant milks = vegan
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_dairy=0, diet_vegan=1 WHERE category_id={$drinks_id} AND (LOWER(name) LIKE '%oat milk%' OR LOWER(name) LIKE '%almond milk%' OR LOWER(name) LIKE '%soy milk%' OR LOWER(name) LIKE '%coconut milk%')" );
+			// Alcohol = not halal
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_halal=0 WHERE category_id={$drinks_id} AND (LOWER(name) LIKE '%beer%' OR LOWER(name) LIKE '%wine%' OR LOWER(name) LIKE '%vodka%' OR LOWER(name) LIKE '%whisky%' OR LOWER(name) LIKE '%gin%' OR LOWER(name) LIKE '%rum%' OR LOWER(name) LIKE '%cider%' OR LOWER(name) LIKE '%ale%' OR LOWER(name) LIKE '%lager%')" );
+			// Keto drinks = zero/low sugar
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_keto=CASE WHEN carbohydrate_g <= 3 THEN 1 ELSE 0 END WHERE category_id={$drinks_id}" );
+		}
+
+		// ── Legumes & Pulses: vegan, no major allergens ──
+		if ( $legumes_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=0, allergen_celery=0, diet_keto=0, diet_paleo=0, diet_vegan=1, diet_vegetarian=1, diet_halal=1, diet_kosher=1 WHERE category_id={$legumes_id}" );
+			// Soy products
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_soy=1 WHERE category_id={$legumes_id} AND (LOWER(name) LIKE '%soy%' OR LOWER(name) LIKE '%tofu%' OR LOWER(name) LIKE '%edamame%' OR LOWER(name) LIKE '%tempeh%')" );
+		}
+
+		// ── Snacks & Confectionery ──
+		if ( $snacks_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_celery=0, allergen_soy=0, diet_keto=0, diet_paleo=0, diet_halal=1, diet_kosher=1, diet_vegetarian=1 WHERE category_id={$snacks_id}" );
+			// Chocolate = dairy
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_dairy=1, allergen_gluten=0, diet_vegan=0 WHERE category_id={$snacks_id} AND LOWER(name) LIKE '%chocolate%'" );
+			// Crisps = usually vegan, gluten-free
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_gluten=0, allergen_dairy=0, diet_vegan=1 WHERE category_id={$snacks_id} AND LOWER(name) LIKE '%crisp%'" );
+			// Biscuits/cookies = gluten, eggs, dairy
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_gluten=1, allergen_eggs=1, allergen_dairy=1, diet_vegan=0 WHERE category_id={$snacks_id} AND (LOWER(name) LIKE '%biscuit%' OR LOWER(name) LIKE '%cookie%' OR LOWER(name) LIKE '%cake%')" );
+		}
+
+		// ── Condiments & Sauces ──
+		if ( $condiments_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_dairy=0, allergen_eggs=0, allergen_nuts=0, allergen_gluten=0, allergen_soy=0, allergen_celery=0, diet_vegetarian=1, diet_vegan=1, diet_halal=1, diet_kosher=1 WHERE category_id={$condiments_id}" );
+			// Soy sauce = soy + gluten
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_soy=1, allergen_gluten=1 WHERE category_id={$condiments_id} AND LOWER(name) LIKE '%soy sauce%'" );
+			// Mayo = eggs
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_eggs=1, diet_vegan=0 WHERE category_id={$condiments_id} AND LOWER(name) LIKE '%mayo%'" );
+			// Fish sauce = fish
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=1, diet_vegan=0, diet_vegetarian=0 WHERE category_id={$condiments_id} AND LOWER(name) LIKE '%fish sauce%'" );
+			// Keto for condiments: low carb
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET diet_keto=CASE WHEN carbohydrate_g <= 5 THEN 1 ELSE 0 END, diet_paleo=CASE WHEN carbohydrate_g <= 10 THEN 1 ELSE 0 END WHERE category_id={$condiments_id}" );
+		}
+
+		// ── Takeaway & Ready Meals: complex, set conservative defaults ──
+		if ( $takeaway_id ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_fish=0, allergen_shellfish=0, allergen_nuts=0, allergen_celery=0, allergen_soy=0, diet_keto=0, diet_paleo=0, diet_vegan=0, diet_halal=0, diet_kosher=0 WHERE category_id={$takeaway_id}" );
+			// Most contain gluten (breading, wraps, naan)
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "UPDATE {$ft} SET allergen_gluten=1 WHERE category_id={$takeaway_id}" );
+		}
+
+		update_option( 'fcc_seed_version', 20 );
+	}
 }
