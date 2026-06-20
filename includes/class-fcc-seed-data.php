@@ -8059,4 +8059,151 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 45 );
 	}
+
+	/** Seed v46: Native & common Bangladeshi foods. */
+	public static function seed_v46(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 46 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ══════════════════════════════════════
+			// ── FISH CURRIES (MACHHER JHOL) (12) ──
+			// ══════════════════════════════════════
+			['Ilish Bhapa (steamed hilsa in mustard)',$fs,225,941,16.0,2.0,0.5,17.0,4.5,0.0,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ilish Machher Jhol (hilsa curry)',$fs,185,774,14.0,4.0,1.0,13.0,3.5,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Ilish Polao (hilsa with fragrant rice)',$tk,195,816,9.0,24.0,0.5,7.5,2.0,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Rui Machher Jhol (rohu fish curry)',$fs,110,460,12.0,3.5,1.0,5.5,1.0,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Machher Kalia (spicy fish curry)',$fs,135,565,12.5,5.0,1.5,7.5,1.5,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Shorshe Ilish (hilsa in mustard sauce)',$fs,215,900,15.0,3.0,0.5,16.5,4.5,0.0,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Chingri Malai Curry (prawn coconut)',$fs,155,649,12.0,5.0,2.0,10.0,6.5,0.5,0.5, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Machher Jhol (basic fish curry)',$fs,100,418,10.0,4.0,1.0,5.0,1.0,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Doi Maach (fish in yoghurt sauce)',$fs,130,544,12.0,3.5,2.0,7.5,2.5,0.0,0.5, 1,0,1,0,0,0,0,0, 0,0,1,0,0,0],
+			['Shutki Bhuna (dried fish curry)',$fs,175,732,22.0,4.0,1.0,8.0,1.5,0.5,3.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Pabda Machher Jhol (pabda catfish curry)',$fs,95,397,10.5,3.5,0.5,4.5,1.0,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Macher Chop (fish cutlet)',$fs,225,941,10.0,16.0,0.5,13.5,2.5,1.0,0.6, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── MEAT CURRIES & DISHES (10) ──
+			['Kacchi Biryani (Dhaka-style, mutton)',$tk,195,816,10.0,24.0,1.0,7.0,2.5,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Tehari (beef with rice, Old Dhaka)',$tk,185,774,8.5,24.0,1.0,6.5,2.5,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Rezala (white mutton curry)',$tk,155,649,12.0,4.0,1.5,10.5,4.5,0.5,0.5, 0,0,1,0,1,0,0,0, 0,0,1,0,0,0],
+			['Bhuna Khichuri (spiced rice & lentil)',$bc,155,649,5.0,24.0,1.0,4.0,1.0,2.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kala Bhuna (Chittagong dry beef curry)',$mp,185,774,16.0,4.0,1.5,12.0,4.5,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Kosha Mangsho (slow-cooked mutton)',$mp,175,732,14.0,4.0,1.5,11.5,4.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Murgi Roast (Bangladeshi chicken roast)',$mp,185,774,18.0,5.0,2.0,10.0,3.0,0.5,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Moghlai Paratha (egg-stuffed paratha)',$bc,310,1297,8.0,32.0,1.5,16.5,5.0,1.0,0.6, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Shami Kebab (Bangladeshi, lentil & beef)',$mp,235,983,14.0,10.0,1.0,15.5,6.0,1.5,0.7, 0,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+			['Nargisi Kofta (Scotch egg curry)',$tk,195,816,10.0,6.0,2.0,14.0,5.0,0.5,0.5, 0,0,0,1,0,0,0,0, 0,0,1,0,0,0],
+
+			// ── DAL & VEGETABLE DISHES (TORKARI) (12) ──
+			['Masoor Dal (red lentil, Bangladeshi)',$lp,95,397,5.5,13.0,1.0,2.5,0.4,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Mung Dal (yellow, with garlic tarka)',$lp,100,418,6.0,14.0,1.0,2.0,0.3,2.5,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Cholar Dal (Bengal gram, coconut)',$lp,125,523,5.5,16.0,2.0,4.5,2.0,3.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Aloo Bharta (mashed potato with mustard oil)',$fv,110,460,2.0,14.0,0.5,5.5,0.7,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Begun Bharta (mashed aubergine)',$fv,75,314,1.5,5.0,2.5,5.5,0.7,2.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Sheem Bhaji (flat bean curry)',$fv,55,230,2.5,5.5,1.0,2.5,0.3,2.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Lau Ghonto (bottle gourd curry)',$fv,45,188,1.5,5.0,2.0,2.0,0.3,1.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Potol Bhaji (pointed gourd fry)',$fv,65,272,1.5,5.0,1.5,4.5,0.5,1.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Kumra Bhaji (pumpkin curry)',$fv,50,209,1.0,7.0,3.0,2.0,0.3,1.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Chorchori (mixed vegetable stir-fry)',$fv,55,230,2.0,5.5,1.5,3.0,0.4,2.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Shukto (bitter vegetable medley)',$fv,65,272,2.5,6.0,1.5,3.5,0.5,2.5,0.3, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Dhokar Dalna (lentil cake curry)',$lp,130,544,5.5,12.0,1.5,7.0,1.5,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── RICE DISHES (8) ──
+			['Bhaat (plain steamed rice, Bangladeshi)',$bc,130,544,2.5,28.5,0.0,0.3,0.1,0.4,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Polao (Bangladeshi fragrant rice)',$bc,170,711,3.5,28.0,0.5,5.0,1.5,0.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Khichuri (rice & lentil comfort food)',$bc,140,586,4.5,22.0,0.5,3.5,1.0,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Panta Bhat (fermented rice, Pohela Boishakh)',$bc,115,481,2.0,25.0,0.5,0.3,0.1,0.5,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Morog Polao (chicken pulao)',$tk,180,753,9.0,24.0,0.5,5.5,1.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Fried Rice (Bangladeshi-Chinese)',$tk,185,774,6.0,24.0,1.5,7.0,1.5,0.5,1.5, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Bhuna Khichuri with Beef',$tk,175,732,8.5,22.0,1.0,6.0,2.0,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Jorda (sweet saffron rice)',$sc,220,920,2.5,38.0,18.0,6.5,2.0,0.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── BREADS & SNACKS (NASHTA) (12) ──
+			['Luchi (Bengali fried bread)',$bc,350,1464,5.5,40.0,1.0,19.0,3.5,1.5,0.3, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Porota (layered flatbread, Dhaka)',$bc,330,1381,6.5,42.0,1.0,15.0,3.5,2.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1],
+			['Paratha (egg, Bangladeshi)',$bc,310,1297,8.0,35.0,1.0,15.5,4.0,1.5,0.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+			['Singara (Bangladeshi samosa)',$tk,255,1067,4.5,26.0,1.5,15.0,2.5,2.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Piyaju (onion fritters, lentil)',$lp,280,1172,6.0,22.0,2.0,19.0,3.0,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Beguni (aubergine fritters)',$fv,250,1046,3.0,20.0,1.5,17.5,2.5,2.5,0.4, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Alur Chop (potato chop/croquette)',$fv,235,983,4.0,24.0,1.0,14.0,2.0,2.0,0.5, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Fuchka (Bangladeshi pani puri)',$sc,195,816,3.5,28.0,4.0,7.5,1.0,1.5,1.5, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1],
+			['Chotpoti (chickpea & potato snack)',$lp,145,607,4.5,20.0,2.0,5.5,0.8,3.0,1.0, 0,0,0,1,0,0,0,0, 0,0,1,1,0,1],
+			['Jhalmuri (spiced puffed rice mix)',$sc,165,690,4.0,26.0,2.0,5.5,0.8,2.0,1.0, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1],
+			['Chanachur (Bombay mix, Bangladeshi)',$sc,480,2008,12.0,45.0,5.0,28.0,4.5,5.0,2.5, 0,0,0,0,1,1,0,0, 0,0,1,1,1,1],
+			['Dim er Devil (spiced Scotch egg)',$mp,245,1025,11.0,10.0,1.0,18.0,5.5,0.5,0.6, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0],
+
+			// ── SWEETS (MISHTI) (12) ──
+			['Roshogolla (spongy cheese ball)',$sc,180,753,4.0,30.0,26.0,5.0,3.0,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Mishti Doi (sweetened yoghurt)',$de,120,502,3.5,18.0,16.0,3.5,2.0,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Sandesh (fresh cheese sweet)',$sc,310,1297,7.0,45.0,40.0,11.0,7.0,0.0,0.0, 0,0,1,0,1,0,0,0, 0,0,1,1,0,1],
+			['Chomchom (oblong cheese sweet)',$sc,285,1193,5.5,42.0,38.0,10.5,6.5,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Kalojam (dark gulab jamun)',$sc,360,1506,4.5,52.0,42.0,15.0,8.0,0.3,0.1, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1],
+			['Pantua (fried milk ball in syrup)',$sc,345,1443,4.0,50.0,40.0,14.5,8.0,0.3,0.1, 0,0,1,0,0,0,0,0, 0,0,1,0,0,1],
+			['Misti Paan (sweet betel leaf)',$sc,105,439,1.0,22.0,18.0,2.0,0.5,0.5,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,0,1],
+			['Shemai (vermicelli milk dessert)',$sc,155,649,3.0,22.0,16.0,6.0,3.5,0.3,0.1, 0,0,1,0,1,0,0,0, 0,0,1,1,0,1],
+			['Payesh (Bengali rice pudding)',$sc,140,586,3.0,20.0,14.0,5.0,3.0,0.2,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Patishapta (stuffed crepe with kheer)',$sc,200,837,4.5,30.0,16.0,7.0,3.5,0.5,0.1, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1],
+			['Bhapa Pitha (steamed rice cake)',$sc,195,816,3.0,38.0,14.0,3.5,1.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Chitoi Pitha (rice pancake with coconut)',$sc,210,879,3.0,35.0,10.0,7.0,4.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── PITHA (TRADITIONAL CAKES) (6) ──
+			['Nakshi Pitha (decorated rice cake)',$sc,285,1193,3.5,50.0,18.0,8.0,3.0,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Puli Pitha (rice dumpling, jaggery)',$sc,245,1025,2.5,45.0,22.0,6.0,3.5,1.5,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Tel Pitha (fried rice cake, coconut)',$sc,320,1339,3.0,42.0,18.0,15.5,8.5,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Dudh Pitha (milk-soaked rice cake)',$sc,175,732,3.5,28.0,14.0,5.5,3.0,0.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Malpua (Bengali sweet pancake)',$sc,330,1381,4.0,42.0,28.0,16.5,4.5,0.5,0.1, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1],
+			['Rosh Bora (lentil balls in syrup)',$sc,290,1213,5.0,42.0,30.0,11.5,2.0,1.5,0.1, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+
+			// ── CONDIMENTS & SIDES (8) ──
+			['Kasundi (Bengali mustard relish)',$co,75,314,2.5,8.0,4.0,3.5,0.4,1.5,2.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Aam Achar (raw mango pickle)',$co,135,565,1.5,15.0,8.0,8.0,1.0,1.5,4.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Tok Dal (sour lentil, tamarind)',$lp,85,356,5.0,12.0,2.0,1.5,0.2,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Bhorta (generic mash, various veg)',$fv,90,377,2.0,6.0,1.0,6.5,0.8,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Shutki Bhorta (dried fish mash)',$fs,165,690,20.0,3.0,0.5,8.5,1.5,0.5,3.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0],
+			['Narkel Naru (coconut balls)',$sc,385,1611,4.0,42.0,35.0,23.0,18.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Til er Naru (sesame seed balls)',$sc,440,1841,10.0,38.0,28.0,28.0,4.5,5.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Ghee Bhaat (rice with clarified butter)',$bc,175,732,2.5,28.0,0.0,6.5,4.0,0.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── DRINKS (6) ──
+			['Cha (Bangladeshi tea, with condensed milk)',$dr,55,230,1.0,10.0,9.5,1.5,0.8,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Borhani (spiced yoghurt drink)',$dr,30,126,1.5,3.0,2.5,1.0,0.5,0.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+			['Shorbot (lemon sherbet drink)',$dr,30,126,0.0,7.5,7.0,0.0,0.0,0.0,0.3, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Aam er Shorbot (green mango drink)',$dr,35,146,0.2,8.5,7.5,0.1,0.0,0.3,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1],
+			['Dab er Pani (green coconut water)',$dr,19,79,0.7,3.7,2.6,0.2,0.2,1.1,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1],
+			['Faluda (rose milk with vermicelli)',$dr,110,460,2.0,20.0,16.0,2.5,1.5,0.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1],
+
+			// ── BANGLADESHI-CHINESE FUSION (6) ──
+			['Chilli Chicken (Bangladeshi-Chinese)',$tk,195,816,14.0,10.0,4.0,11.0,2.0,0.5,1.5, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Chow Mein (Bangladeshi-style)',$tk,165,690,6.0,22.0,2.5,6.0,1.0,1.0,1.5, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Chicken Lollipop',$mp,240,1004,14.0,12.0,3.0,15.5,3.5,0.5,1.0, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0],
+			['Fried Rice (Bangladeshi-style)',$tk,180,753,5.5,24.0,1.5,7.0,1.5,0.5,1.5, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0],
+			['Sweet and Sour Fish (Bangladeshi)',$fs,185,774,11.0,18.0,10.0,7.0,1.0,0.5,0.8, 1,0,0,0,0,1,1,0, 0,0,1,0,0,0],
+			['Mixed Vegetables (Bangladeshi-Chinese)',$fv,75,314,2.5,7.0,2.5,4.0,0.5,2.0,1.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; } // phpcs:ignore
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'source_notes'=>'FCT Bangladesh / USDA FDC. Seeded v46.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 46 );
+	}
 }
