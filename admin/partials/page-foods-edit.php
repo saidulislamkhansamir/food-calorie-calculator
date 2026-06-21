@@ -171,6 +171,25 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 					<?php fcc_num_field( 'caffeine_mg', 'caffeine_mg', $is_edit ? $food['caffeine_mg'] : null, __( 'Caffeine (mg/100g or 100ml)', 'food-calorie-calculator' ), false, '0.01', __( 'Leave empty if not applicable', 'food-calorie-calculator' ) ); ?>
 				</div>
 
+				<!-- Micronutrients (nullable) -->
+				<div class="fcc-card fcc-card--optional">
+					<h2 class="fcc-card__title">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+						<?php esc_html_e( 'Micronutrients', 'food-calorie-calculator' ); ?>
+						<span class="fcc-badge fcc-badge--optional"><?php esc_html_e( 'Optional — leave empty if no verified data', 'food-calorie-calculator' ); ?></span>
+					</h2>
+					<p class="description">
+						<?php esc_html_e( 'Only populate from a verified published source (e.g. USDA FoodData Central). Leave empty if data is unavailable — the calculator hides the section rather than showing zero.', 'food-calorie-calculator' ); ?>
+					</p>
+					<div class="fcc-nutrient-grid">
+						<?php
+						fcc_num_field( 'iron_mg', 'iron_mg', $is_edit ? $food['iron_mg'] : null, __( 'Iron (mg)', 'food-calorie-calculator' ), false, '0.001', __( 'Leave empty if data unavailable', 'food-calorie-calculator' ) );
+						fcc_num_field( 'calcium_mg', 'calcium_mg', $is_edit ? $food['calcium_mg'] : null, __( 'Calcium (mg)', 'food-calorie-calculator' ), false, '0.001', __( 'Leave empty if data unavailable', 'food-calorie-calculator' ) );
+						fcc_num_field( 'vitamin_c_mg', 'vitamin_c_mg', $is_edit ? $food['vitamin_c_mg'] : null, __( 'Vitamin C (mg)', 'food-calorie-calculator' ), false, '0.01', __( 'Leave empty if data unavailable', 'food-calorie-calculator' ) );
+						?>
+					</div>
+				</div>
+
 				<!-- Source notes -->
 				<div class="fcc-card">
 					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><?php esc_html_e( 'Source / Notes', 'food-calorie-calculator' ); ?></h2>

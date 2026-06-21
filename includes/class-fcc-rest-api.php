@@ -330,6 +330,10 @@ class Rest_Api {
 			'omega3_dha_mg'        => null !== $food['omega3_dha_mg']        ? (float) $food['omega3_dha_mg']        : null,
 			// Caffeine: only present when published data exists.
 			'caffeine_mg'          => null !== $food['caffeine_mg']          ? (float) $food['caffeine_mg']          : null,
+			// Micronutrients: only present when verified data exists.
+			'iron_mg'              => null !== $food['iron_mg']              ? (float) $food['iron_mg']              : null,
+			'calcium_mg'           => null !== $food['calcium_mg']           ? (float) $food['calcium_mg']           : null,
+			'vitamin_c_mg'         => null !== $food['vitamin_c_mg']         ? (float) $food['vitamin_c_mg']         : null,
 			'source_notes'         => ! empty( $food['source_notes'] ) ? esc_html( $food['source_notes'] ) : null,
 			'is_sponsored'         => (bool) ( $food['is_sponsored'] ?? false ),
 			'sponsor_active'       => (bool) ( $food['sponsor_active'] ?? false ),

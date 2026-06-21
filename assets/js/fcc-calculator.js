@@ -76,6 +76,7 @@
 	const macroWrapper  = features.macro_chart  ? root.querySelector( '.fcc-macro-chart-wrapper' ) : null;
 	const omega3Sec     = features.omega3_display  ? root.querySelector( '.fcc-omega3-section' )  : null;
 	const caffeineSec   = features.caffeine_display ? root.querySelector( '.fcc-caffeine-section' ) : null;
+	const microSec      = root.querySelector( '.fcc-micronutrients-section' );
 	const trafficLights    = features.fsa_traffic_lights ? root.querySelector( '.fcc-traffic-lights' ) : null;
 	const healthHighlights = root.querySelector( '.fcc-health-highlights' );
 	const bmrSection    = features.bmr_tdee ? root.querySelector( '.fcc-bmr-section' ) : null;
@@ -643,6 +644,9 @@
 			renderCaffeine( food, factor, d );
 		}
 
+		// Micronutrients.
+		renderMicronutrients( food, factor, d );
+
 		// Show results.
 		if ( resultsSection ) resultsSection.hidden = false;
 
@@ -1091,6 +1095,39 @@
 		const valEl = caffeineSec.querySelector( '.fcc-caffeine-value' );
 		if ( valEl ) {
 			valEl.textContent = fmt( food.caffeine_mg * factor, d ) + ' mg';
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	// Micronutrients (Iron, Calcium, Vitamin C)
+	// -------------------------------------------------------------------------
+	function renderMicronutrients( food, factor, d ) {
+		if ( ! microSec ) return;
+
+		var fields = {
+			iron:      { key: 'iron_mg',      unit: 'mg' },
+			calcium:   { key: 'calcium_mg',   unit: 'mg' },
+			vitamin_c: { key: 'vitamin_c_mg', unit: 'mg' },
+		};
+
+		var hasAny = false;
+		for ( var mk in fields ) {
+			if ( food[ fields[ mk ].key ] !== null && food[ fields[ mk ].key ] !== undefined ) { hasAny = true; break; }
+		}
+		microSec.hidden = ! hasAny;
+		if ( ! hasAny ) return;
+
+		for ( var mk2 in fields ) {
+			var card = microSec.querySelector( '[data-micro="' + mk2 + '"]' );
+			if ( ! card ) continue;
+			var valEl = card.querySelector( '.fcc-micro-val' );
+			var f2 = fields[ mk2 ];
+			if ( food[ f2.key ] === null || food[ f2.key ] === undefined ) {
+				card.style.display = 'none';
+			} else {
+				card.style.display = '';
+				if ( valEl ) valEl.textContent = fmt( food[ f2.key ] * factor, d ) + ' ' + f2.unit;
+			}
 		}
 	}
 

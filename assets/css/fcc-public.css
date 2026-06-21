@@ -1545,6 +1545,49 @@
 .fcc-data-na { color: var(--fcc-text-light); font-style: italic; font-size: 0.8rem; }
 
 /* --------------------------------------------------------------------------
+   Micronutrients (Iron, Calcium, Vitamin C)
+   -------------------------------------------------------------------------- */
+.fcc-micronutrients-section { margin-top: 0.75rem; }
+.fcc-micro-cards {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.625rem;
+}
+.fcc-micro-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0.75rem 0.5rem;
+	border-radius: 12px;
+	background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+	border: 1px solid #bbf7d0;
+	transition: transform 0.15s, box-shadow 0.15s;
+}
+.fcc-micro-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(34,197,94,.15);
+}
+.fcc-micro-card__icon { font-size: 1.25rem; margin-bottom: 0.25rem; }
+.fcc-micro-val {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: var(--fcc-primary, #075B5E);
+}
+.fcc-micro-card__label {
+	font-size: 0.72rem;
+	color: #4b5563;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	margin-top: 0.15rem;
+}
+@media (max-width: 480px) {
+	.fcc-micro-cards { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+	.fcc-micro-card { padding: 0.5rem 0.25rem; }
+	.fcc-micro-val { font-size: 0.95rem; }
+}
+
+/* --------------------------------------------------------------------------
    Action buttons row
    -------------------------------------------------------------------------- */
 .fcc-result-actions {

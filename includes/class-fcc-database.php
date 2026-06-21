@@ -108,6 +108,9 @@ class Database {
   omega3_epa_mg decimal(10,3) DEFAULT NULL,
   omega3_dha_mg decimal(10,3) DEFAULT NULL,
   caffeine_mg decimal(8,2) DEFAULT NULL,
+  iron_mg decimal(8,3) DEFAULT NULL,
+  calcium_mg decimal(10,3) DEFAULT NULL,
+  vitamin_c_mg decimal(8,2) DEFAULT NULL,
   is_fruit_veg tinyint(1) DEFAULT NULL,
   portion_grams decimal(8,2) DEFAULT NULL,
   source_notes text,
@@ -732,7 +735,7 @@ class Database {
 		$nullable_floats = [
 			'of_which_sugars_g', 'of_which_saturates_g', 'fibre_g', 'salt_g',
 			'omega3_total_mg', 'omega3_ala_mg', 'omega3_epa_mg', 'omega3_dha_mg',
-			'caffeine_mg', 'portion_grams',
+			'caffeine_mg', 'iron_mg', 'calcium_mg', 'vitamin_c_mg', 'portion_grams',
 		];
 
 		$row = [
@@ -809,7 +812,7 @@ class Database {
 		$nullable_floats = [
 			'of_which_sugars_g', 'of_which_saturates_g', 'fibre_g', 'salt_g',
 			'omega3_total_mg', 'omega3_ala_mg', 'omega3_epa_mg', 'omega3_dha_mg',
-			'caffeine_mg', 'portion_grams',
+			'caffeine_mg', 'iron_mg', 'calcium_mg', 'vitamin_c_mg', 'portion_grams',
 		];
 		foreach ( $nullable_floats as $col ) {
 			$row[ $col ] = isset( $row[ $col ] ) && null !== $row[ $col ] ? (float) $row[ $col ] : null;

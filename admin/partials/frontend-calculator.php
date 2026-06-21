@@ -391,6 +391,28 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				</div>
 				<?php endif; ?>
 
+				<!-- Micronutrients (Iron, Calcium, Vitamin C) -->
+				<div class="fcc-micronutrients-section" hidden aria-live="polite">
+					<h4 class="fcc-subsection-title"><?php esc_html_e( 'Key Micronutrients', 'food-calorie-calculator' ); ?></h4>
+					<div class="fcc-micro-cards">
+						<div class="fcc-micro-card" data-micro="iron">
+							<span class="fcc-micro-card__icon" aria-hidden="true">🩸</span>
+							<span class="fcc-micro-val"></span>
+							<span class="fcc-micro-card__label"><?php esc_html_e( 'Iron', 'food-calorie-calculator' ); ?></span>
+						</div>
+						<div class="fcc-micro-card" data-micro="calcium">
+							<span class="fcc-micro-card__icon" aria-hidden="true">🦴</span>
+							<span class="fcc-micro-val"></span>
+							<span class="fcc-micro-card__label"><?php esc_html_e( 'Calcium', 'food-calorie-calculator' ); ?></span>
+						</div>
+						<div class="fcc-micro-card" data-micro="vitamin_c">
+							<span class="fcc-micro-card__icon" aria-hidden="true">🍊</span>
+							<span class="fcc-micro-val"></span>
+							<span class="fcc-micro-card__label"><?php esc_html_e( 'Vitamin C', 'food-calorie-calculator' ); ?></span>
+						</div>
+					</div>
+				</div>
+
 				<!-- Affiliate buy buttons (populated by JS from cfg.affiliates) -->
 				<div class="fcc-affiliate-links" hidden aria-label="<?php esc_attr_e( 'Buy this food online', 'food-calorie-calculator' ); ?>">
 					<p class="fcc-affiliate-links__label"><?php esc_html_e( 'Buy online:', 'food-calorie-calculator' ); ?></p>

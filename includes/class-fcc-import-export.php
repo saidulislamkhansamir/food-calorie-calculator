@@ -52,6 +52,9 @@ class Import_Export {
 			'omega3_epa_mg'        => [ 'label' => 'Omega-3 EPA (mg)',           'required' => false, 'nullable' => true,  'type' => 'float'  ],
 			'omega3_dha_mg'        => [ 'label' => 'Omega-3 DHA (mg)',           'required' => false, 'nullable' => true,  'type' => 'float'  ],
 			'caffeine_mg'          => [ 'label' => 'Caffeine (mg)',              'required' => false, 'nullable' => true,  'type' => 'float'  ],
+			'iron_mg'              => [ 'label' => 'Iron (mg)',                  'required' => false, 'nullable' => true,  'type' => 'float'  ],
+			'calcium_mg'           => [ 'label' => 'Calcium (mg)',               'required' => false, 'nullable' => true,  'type' => 'float'  ],
+			'vitamin_c_mg'         => [ 'label' => 'Vitamin C (mg)',             'required' => false, 'nullable' => true,  'type' => 'float'  ],
 			'serving_sizes'        => [ 'label' => 'Serving Sizes (JSON)',       'required' => false, 'nullable' => true,  'type' => 'json'   ],
 			'source_notes'         => [ 'label' => 'Source / Notes',            'required' => false, 'nullable' => true,  'type' => 'string' ],
 		];

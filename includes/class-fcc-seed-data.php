@@ -12006,4 +12006,22 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 71 );
 	}
+
+	/** Seed v72: Add iron_mg, calcium_mg, vitamin_c_mg columns. */
+	public static function seed_v72(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 72 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+		$cols = $wpdb->get_col( "SHOW COLUMNS FROM {$t}" ); // phpcs:ignore
+		if ( ! in_array( 'iron_mg', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN iron_mg decimal(8,3) DEFAULT NULL AFTER caffeine_mg" ); // phpcs:ignore
+		}
+		if ( ! in_array( 'calcium_mg', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN calcium_mg decimal(10,3) DEFAULT NULL AFTER iron_mg" ); // phpcs:ignore
+		}
+		if ( ! in_array( 'vitamin_c_mg', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN vitamin_c_mg decimal(8,2) DEFAULT NULL AFTER calcium_mg" ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 72 );
+	}
 }

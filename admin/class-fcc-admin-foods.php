@@ -257,7 +257,7 @@ class Foods {
 		$nullable_float_fields = [
 			'of_which_sugars_g', 'of_which_saturates_g', 'fibre_g', 'salt_g',
 			'omega3_total_mg', 'omega3_ala_mg', 'omega3_epa_mg', 'omega3_dha_mg',
-			'caffeine_mg', 'portion_grams',
+			'caffeine_mg', 'iron_mg', 'calcium_mg', 'vitamin_c_mg', 'portion_grams',
 		];
 
 		$data = [
