@@ -4137,6 +4137,7 @@ select.fcc-bmr-input {
 	border-top: 1px solid var(--fcc-border, #e6eded);
 	margin-top: 8px;
 }
+.fcc-meal-print-btn,
 .fcc-meal-copy-btn,
 .fcc-meal-share-btn {
 	display: inline-flex;
@@ -4152,6 +4153,7 @@ select.fcc-bmr-input {
 	cursor: pointer;
 	transition: border-color .15s, color .15s, background .15s;
 }
+.fcc-meal-print-btn:hover,
 .fcc-meal-copy-btn:hover,
 .fcc-meal-share-btn:hover {
 	border-color: var(--fcc-primary, #075B5E);

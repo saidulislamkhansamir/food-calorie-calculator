@@ -595,6 +595,12 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 
 				<!-- Meal Actions -->
 				<div class="fcc-meal-actions">
+					<?php if ( ! empty( $features['meal_print'] ) ) : ?>
+					<button type="button" class="fcc-meal-print-btn">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+						<span><?php esc_html_e( 'Print Meal', 'food-calorie-calculator' ); ?></span>
+					</button>
+					<?php endif; ?>
 					<button type="button" class="fcc-meal-save-tpl__btn" id="fcc-save-tpl-btn">
 						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
 						<?php esc_html_e( 'Save as Template', 'food-calorie-calculator' ); ?>

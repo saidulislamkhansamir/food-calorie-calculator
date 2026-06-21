@@ -1436,6 +1436,18 @@
 		} );
 	} )();
 
+	// Meal Print button (inside meal tab).
+	if ( mealSection ) {
+		mealSection.addEventListener( 'click', function ( e ) {
+			var printMealBtn = e.target.closest( '.fcc-meal-print-btn' );
+			if ( ! printMealBtn || ! state.meal.length ) return;
+			// Trigger the main print button logic with meal tab forced active.
+			var mealPanel = root.querySelector( '.fcc-tab-panel[data-panel="meal"]' );
+			if ( mealPanel ) mealPanel.removeAttribute( 'hidden' );
+			if ( printBtn ) printBtn.click();
+		} );
+	}
+
 	// -------------------------------------------------------------------------
 	// Meal Templates (localStorage)
 	// -------------------------------------------------------------------------
