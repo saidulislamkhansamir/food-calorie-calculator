@@ -279,7 +279,9 @@
 					searchInput.value = f.name;
 					updateClearBtn();
 					hidePopular();
-					doSearch( f.name );
+					apiFetch( '/foods/' + f.id ).then( function ( fullFood ) {
+						selectFood( fullFood );
+					} );
 				} );
 				dropdown.appendChild( li );
 			} );
