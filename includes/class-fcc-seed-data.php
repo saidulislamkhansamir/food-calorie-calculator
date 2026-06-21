@@ -10396,4 +10396,197 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 60 );
 	}
+
+	/** Seed v61: Serving sizes batch 4 — remaining foods. */
+	public static function seed_v61(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 61 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── RAW VEGETABLES (remaining) ──
+			'celery'                  => [['label'=>'1 stalk','grams'=>40],['label'=>'3 stalks','grams'=>120]],
+			'spring-onion-raw'        => [['label'=>'1 spring onion','grams'=>15],['label'=>'3 spring onions','grams'=>45]],
+			'shallot-raw'             => [['label'=>'1 shallot','grams'=>30]],
+			'leek-raw'                => [['label'=>'1 leek','grams'=>90]],
+			'beetroot'                => [['label'=>'1 medium','grams'=>80],['label'=>'1 small','grams'=>60]],
+			'radish'                  => [['label'=>'1 radish','grams'=>10],['label'=>'5 radishes','grams'=>50]],
+			'asparagus'               => [['label'=>'5 spears','grams'=>75],['label'=>'1 bunch','grams'=>150]],
+			'green-beans'             => [['label'=>'1 cup','grams'=>100],['label'=>'1 handful','grams'=>60]],
+			'pak-choi-bok-choy'       => [['label'=>'1 head','grams'=>170],['label'=>'1 cup chopped','grams'=>70]],
+			'fennel-raw'              => [['label'=>'1 bulb','grams'=>235],['label'=>'½ bulb','grams'=>117]],
+			'celeriac-raw'            => [['label'=>'½ medium','grams'=>230]],
+			'butternut-squash-raw'    => [['label'=>'1 cup cubed','grams'=>140]],
+			'courgette-zucchini'      => [['label'=>'1 medium','grams'=>200],['label'=>'1 cup sliced','grams'=>115]],
+			'ginger-root'             => [['label'=>'1 inch piece','grams'=>11],['label'=>'1 tablespoon grated','grams'=>6]],
+			'chilli-pepper-red'       => [['label'=>'1 chilli','grams'=>15]],
+			'jalapeno-pepper-raw'     => [['label'=>'1 pepper','grams'=>14]],
+			'rocket-arugula'          => [['label'=>'1 cup','grams'=>20],['label'=>'1 handful','grams'=>10]],
+			'watercress'              => [['label'=>'1 cup','grams'=>34],['label'=>'1 bunch','grams'=>85]],
+			'kale'                    => [['label'=>'1 cup chopped','grams'=>67],['label'=>'1 leaf','grams'=>20]],
+
+			// ── MORE FRUIT ──
+			'fig-fresh'               => [['label'=>'1 fig','grams'=>50],['label'=>'3 figs','grams'=>150]],
+			'plum'                    => [['label'=>'1 plum','grams'=>65]],
+			'apricot'                 => [['label'=>'1 apricot','grams'=>35],['label'=>'3 apricots','grams'=>105]],
+			'cherry'                  => [['label'=>'10 cherries','grams'=>70],['label'=>'1 cup','grams'=>140]],
+			'raspberry'               => [['label'=>'1 cup','grams'=>125],['label'=>'1 handful','grams'=>30]],
+			'blackberry'              => [['label'=>'1 cup','grams'=>145],['label'=>'1 handful','grams'=>35]],
+			'pomegranate'             => [['label'=>'1 pomegranate','grams'=>175],['label'=>'½ cup seeds','grams'=>87]],
+			'passion-fruit'           => [['label'=>'1 fruit','grams'=>18]],
+			'lychee'                  => [['label'=>'5 lychees','grams'=>50],['label'=>'10 lychees','grams'=>100]],
+			'dragon-fruit-pitaya'     => [['label'=>'1 fruit','grams'=>200]],
+			'guava'                   => [['label'=>'1 guava','grams'=>55]],
+			'papaya'                  => [['label'=>'1 cup cubed','grams'=>145],['label'=>'½ papaya','grams'=>150]],
+			'coconut-flesh-raw'       => [['label'=>'1 piece','grams'=>45],['label'=>'1 cup shredded','grams'=>80]],
+			'clementine'              => [['label'=>'1 clementine','grams'=>74],['label'=>'2 clementines','grams'=>148]],
+			'grapefruit'              => [['label'=>'½ grapefruit','grams'=>125],['label'=>'1 grapefruit','grams'=>250]],
+			'plantain-raw'            => [['label'=>'1 plantain','grams'=>180]],
+
+			// ── COOKED VEG DISHES ──
+			'roasted-cauliflower'     => [['label'=>'1 cup','grams'=>125]],
+			'grilled-courgette'       => [['label'=>'1 medium','grams'=>180]],
+			'roasted-beetroot'        => [['label'=>'3 wedges','grams'=>100]],
+			'mushy-peas'              => [['label'=>'1 portion','grams'=>100]],
+			'ratatouille'             => [['label'=>'1 portion','grams'=>200],['label'=>'1 bowl','grams'=>250]],
+			'cauliflower-cheese'      => [['label'=>'1 portion','grams'=>200]],
+			'dauphinoise-potatoes'    => [['label'=>'1 portion','grams'=>150]],
+			'potato-wedges-baked'     => [['label'=>'1 portion','grams'=>150]],
+			'roasted-parsnip'         => [['label'=>'3 pieces','grams'=>100]],
+			'colcannon'               => [['label'=>'1 portion','grams'=>200]],
+			'bubble-and-squeak'       => [['label'=>'1 portion','grams'=>200]],
+			'patatas-bravas'          => [['label'=>'1 portion','grams'=>200]],
+			'tostones-twice-fried-green-plantain' => [['label'=>'5 pieces','grams'=>100]],
+			'kelewele-spiced-fried-plantain' => [['label'=>'1 portion','grams'=>150]],
+
+			// ── MORE CHEESE ──
+			'red-leicester'           => [['label'=>'1 slice','grams'=>20],['label'=>'1 oz','grams'=>28]],
+			'wensleydale'             => [['label'=>'1 slice','grams'=>20]],
+			'stilton-white'           => [['label'=>'1 portion','grams'=>30]],
+			'gruyere'                 => [['label'=>'1 slice','grams'=>20],['label'=>'1 oz','grams'=>28]],
+			'manchego-cheese-curado'  => [['label'=>'1 slice','grams'=>20],['label'=>'1 oz','grams'=>28]],
+			'mascarpone'              => [['label'=>'1 tablespoon','grams'=>15],['label'=>'¼ cup','grams'=>60]],
+			'feta-cheese'             => [['label'=>'1 oz','grams'=>28],['label'=>'1 cup crumbled','grams'=>150]],
+			'cottage-cheese'          => [['label'=>'½ cup','grams'=>113],['label'=>'1 tablespoon','grams'=>14]],
+			'vegan-cheese-cheddar-style' => [['label'=>'1 slice','grams'=>20]],
+
+			// ── SPREADS & JAMS ──
+			'strawberry-jam'          => [['label'=>'1 tablespoon','grams'=>20],['label'=>'1 teaspoon','grams'=>7]],
+			'orange-marmalade'        => [['label'=>'1 tablespoon','grams'=>20],['label'=>'1 teaspoon','grams'=>7]],
+			'lemon-curd'              => [['label'=>'1 tablespoon','grams'=>15]],
+			'chocolate-hazelnut-spread' => [['label'=>'1 tablespoon','grams'=>18],['label'=>'1 teaspoon','grams'=>6]],
+			'dulce-de-leche'          => [['label'=>'1 tablespoon','grams'=>20]],
+
+			// ── MORE DESSERTS & PASTRIES ──
+			'croissant-chocolate'     => [['label'=>'1 croissant','grams'=>75]],
+			'pain-au-raisin'          => [['label'=>'1 pastry','grams'=>90]],
+			'cinnamon-roll'           => [['label'=>'1 roll','grams'=>100]],
+			'danish-pastry'           => [['label'=>'1 pastry','grams'=>70]],
+			'muffin-blueberry'        => [['label'=>'1 muffin','grams'=>110]],
+			'eclair-chocolate'        => [['label'=>'1 eclair','grams'=>80]],
+			'profiteroles'            => [['label'=>'3 profiteroles','grams'=>90],['label'=>'6 profiteroles','grams'=>180]],
+			'rice-pudding'            => [['label'=>'1 bowl','grams'=>200],['label'=>'1 pot','grams'=>150]],
+			'custard-ready-made'      => [['label'=>'1 portion','grams'=>120],['label'=>'1 jug','grams'=>200]],
+			'sorbet-lemon'            => [['label'=>'1 scoop','grams'=>74],['label'=>'2 scoops','grams'=>148]],
+			'frozen-yoghurt'          => [['label'=>'1 scoop','grams'=>70],['label'=>'1 cup','grams'=>140]],
+			'panettone'               => [['label'=>'1 slice','grams'=>80]],
+			'stollen-christmas-bread' => [['label'=>'1 slice','grams'=>70]],
+			'cannoli-sicilian'        => [['label'=>'1 cannoli','grams'=>60]],
+			'kunafa-cheese'           => [['label'=>'1 slice','grams'=>100]],
+			'basbousa-semolina-cake'  => [['label'=>'1 piece','grams'=>60]],
+			'tres-leches-cake'        => [['label'=>'1 slice','grams'=>120]],
+			'brigadeiro-chocolate-truffle-1pc' => [['label'=>'1 piece','grams'=>15],['label'=>'5 pieces','grams'=>75]],
+			'alfajor-dulce-de-leche'  => [['label'=>'1 alfajor','grams'=>50]],
+
+			// ── BREAKFAST ITEMS ──
+			'bircher-muesli'          => [['label'=>'1 bowl','grams'=>200]],
+			'acai-bowl'               => [['label'=>'1 bowl','grams'=>250]],
+			'granola-bar'             => [['label'=>'1 bar','grams'=>30]],
+			'protein-bar'             => [['label'=>'1 bar','grams'=>60]],
+			'energy-ball-date-based'  => [['label'=>'1 ball','grams'=>20],['label'=>'3 balls','grams'=>60]],
+			'french-toast'            => [['label'=>'2 slices','grams'=>120]],
+			'eggs-benedict'           => [['label'=>'1 serving','grams'=>200]],
+			'big-breakfast-aussie-cafe' => [['label'=>'1 plate','grams'=>400]],
+
+			// ── MORE DRINKS ──
+			'lemon-lime-bitters-pub'  => [['label'=>'1 glass','grams'=>250]],
+			'milo-made-with-milk-per-cup' => [['label'=>'1 cup','grams'=>250]],
+			'ginger-beer'             => [['label'=>'1 bottle','grams'=>330],['label'=>'1 glass','grams'=>250]],
+			'tonic-water'             => [['label'=>'1 bottle','grams'=>200],['label'=>'1 can','grams'=>150]],
+			'elderflower-cordial-diluted' => [['label'=>'1 glass','grams'=>250]],
+			'pina-colada-per-glass'   => [['label'=>'1 glass','grams'=>250]],
+			'mojito-cuban-cocktail-per-glass' => [['label'=>'1 glass','grams'=>200]],
+			'sangria-per-glass-200ml' => [['label'=>'1 glass','grams'=>200]],
+			'irish-coffee'            => [['label'=>'1 glass','grams'=>180]],
+			'guarana-soft-drink'      => [['label'=>'1 can','grams'=>350]],
+			'ramune-marble-soda'      => [['label'=>'1 bottle','grams'=>200]],
+			'calpis-milk-based-drink' => [['label'=>'1 glass','grams'=>200]],
+			'amazake-sweet-rice-drink' => [['label'=>'1 cup','grams'=>200]],
+			'kvas-bread-fermented-drink' => [['label'=>'1 glass','grams'=>250]],
+
+			// ── GAME & SPECIALTY MEATS ──
+			'rabbit-roasted'          => [['label'=>'1 portion','grams'=>150]],
+			'pheasant-roasted'        => [['label'=>'1 portion','grams'=>150]],
+			'ostrich-steak-grilled'   => [['label'=>'1 steak','grams'=>150]],
+			'bison-steak-grilled'     => [['label'=>'1 steak','grams'=>170]],
+			'goat-meat-roasted'       => [['label'=>'1 portion','grams'=>120]],
+			'emu-steak-grilled'       => [['label'=>'1 steak','grams'=>150]],
+			'crocodile-meat-grilled'  => [['label'=>'1 portion','grams'=>120]],
+
+			// ── OFFAL ──
+			'chicken-liver-fried'     => [['label'=>'1 portion','grams'=>100]],
+			'lamb-liver-fried'        => [['label'=>'1 portion','grams'=>100]],
+			'black-pudding'           => [['label'=>'1 slice','grams'=>30],['label'=>'2 slices','grams'=>60]],
+			'haggis'                  => [['label'=>'1 portion','grams'=>150]],
+
+			// ── FRESHWATER FISH ──
+			'rainbow-trout-grilled'   => [['label'=>'1 fillet','grams'=>140]],
+			'tilapia-grilled'         => [['label'=>'1 fillet','grams'=>115]],
+
+			// ── SEAWEED ──
+			'nori-dried-sheet-per-100g' => [['label'=>'1 sheet','grams'=>3],['label'=>'5 sheets','grams'=>15]],
+			'wakame-rehydrated'       => [['label'=>'1 tablespoon dry','grams'=>3],['label'=>'¼ cup rehydrated','grams'=>30]],
+			'spirulina-dried-powder'  => [['label'=>'1 teaspoon','grams'=>3],['label'=>'1 tablespoon','grams'=>7]],
+
+			// ── TEA & COFFEE (remaining) ──
+			'earl-grey-tea-brewed-no-sugar' => [['label'=>'1 cup','grams'=>240]],
+			'iced-latte-semi-skimmed' => [['label'=>'1 cup','grams'=>350]],
+			'mocha-with-whipped-cream' => [['label'=>'1 cup','grams'=>300]],
+			'turmeric-latte-golden-milk' => [['label'=>'1 cup','grams'=>250]],
+			'london-fog-earl-grey-latte' => [['label'=>'1 cup','grams'=>300]],
+
+			// ── SUGAR & SWEETENERS ──
+			'caster-sugar'            => [['label'=>'1 teaspoon','grams'=>4],['label'=>'1 tablespoon','grams'=>13]],
+			'demerara-sugar'          => [['label'=>'1 teaspoon','grams'=>5],['label'=>'1 tablespoon','grams'=>15]],
+			'stevia-granulated-blend' => [['label'=>'1 teaspoon','grams'=>1]],
+			'agave-nectar'            => [['label'=>'1 tablespoon','grams'=>21],['label'=>'1 teaspoon','grams'=>7]],
+
+			// ── FERMENTED FOODS ──
+			'sauerkraut'              => [['label'=>'1 tablespoon','grams'=>15],['label'=>'½ cup','grams'=>70]],
+			'kimchi-napa-cabbage-tongbaechu' => [['label'=>'1 tablespoon','grams'=>15],['label'=>'½ cup','grams'=>75]],
+			'kefir-plain'             => [['label'=>'1 glass','grams'=>250],['label'=>'1 cup','grams'=>240]],
+			'natto-fermented-soybean' => [['label'=>'1 pack','grams'=>50]],
+			'pickled-gherkins'        => [['label'=>'1 gherkin','grams'=>30],['label'=>'3 gherkins','grams'=>90]],
+			'pickled-onions'          => [['label'=>'1 onion','grams'=>15],['label'=>'3 onions','grams'=>45]],
+			'olives-green-in-brine'   => [['label'=>'5 olives','grams'=>20],['label'=>'10 olives','grams'=>40]],
+			'olives-black-in-brine'   => [['label'=>'5 olives','grams'=>20],['label'=>'10 olives','grams'=>40]],
+
+			// ── PLANT-BASED ──
+			'tempeh'                  => [['label'=>'1 portion','grams'=>100],['label'=>'½ block','grams'=>150]],
+			'seitan'                  => [['label'=>'1 portion','grams'=>85]],
+			'beyond-burger-raw'       => [['label'=>'1 patty','grams'=>113]],
+			'vegan-sausage-plant-based' => [['label'=>'1 sausage','grams'=>60],['label'=>'2 sausages','grams'=>120]],
+			'nutritional-yeast-flakes' => [['label'=>'1 tablespoon','grams'=>5],['label'=>'2 tablespoons','grams'=>10]],
+			'coconut-yoghurt'         => [['label'=>'1 pot','grams'=>150]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 61 );
+	}
 }
