@@ -10155,4 +10155,245 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 59 );
 	}
+
+	/** Seed v60: Serving sizes batch 3 — ~300 more foods. */
+	public static function seed_v60(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 60 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── SOUTH ASIAN DISHES ──
+			'biryani-karachi-style-mutton' => [['label'=>'1 plate','grams'=>350],['label'=>'1 portion','grams'=>250]],
+			'biryani-sindhi-chicken' => [['label'=>'1 plate','grams'=>350]],
+			'haleem-slow-cooked-wheat-meat' => [['label'=>'1 bowl','grams'=>250]],
+			'seekh-kebab-pakistani-spiced' => [['label'=>'1 skewer','grams'=>100],['label'=>'2 skewers','grams'=>200]],
+			'shami-kebab-lentil-meat-patty' => [['label'=>'1 kebab','grams'=>50],['label'=>'2 kebabs','grams'=>100]],
+			'chicken-tikka-pakistani-charcoal' => [['label'=>'1 portion','grams'=>150],['label'=>'3 pieces','grams'=>120]],
+			'tandoori-chicken' => [['label'=>'1 leg','grams'=>200],['label'=>'1 portion','grams'=>150]],
+			'paratha-layered-with-butter' => [['label'=>'1 paratha','grams'=>80]],
+			'puri-deep-fried-bread-indian' => [['label'=>'1 puri','grams'=>25],['label'=>'4 puris','grams'=>100]],
+			'samosa-lamb' => [['label'=>'1 samosa','grams'=>80]],
+			'dahi-bhalla-yoghurt-lentil-balls' => [['label'=>'3 pieces','grams'=>120]],
+			'chana-chaat-chickpea-salad' => [['label'=>'1 bowl','grams'=>150]],
+			'pani-puri-6-pcs-with-water' => [['label'=>'6 pieces','grams'=>100]],
+			'bhel-puri-puffed-rice-mix' => [['label'=>'1 plate','grams'=>150]],
+			'kheer-pakistani-rice-pudding' => [['label'=>'1 bowl','grams'=>150]],
+			'gulab-jamun-pakistani-style' => [['label'=>'1 piece','grams'=>30],['label'=>'3 pieces','grams'=>90]],
+			'ras-malai-cream-cheese-in-milk' => [['label'=>'1 piece','grams'=>50],['label'=>'2 pieces','grams'=>100]],
+			'kulfi-pakistani-pistachio' => [['label'=>'1 kulfi','grams'=>80]],
+			'lassi-salty-pakistani' => [['label'=>'1 glass','grams'=>250]],
+			'rooh-afza-rose-syrup-drink' => [['label'=>'1 glass','grams'=>250]],
+			'masala-chai-spiced-milk-tea' => [['label'=>'1 cup','grams'=>200]],
+
+			// ── BANGLADESHI ──
+			'ilish-bhapa-steamed-hilsa-in-mustard' => [['label'=>'1 piece','grams'=>120]],
+			'ilish-machher-jhol-hilsa-curry' => [['label'=>'1 bowl','grams'=>250]],
+			'chingri-malai-curry-prawn-coconut' => [['label'=>'1 portion','grams'=>200]],
+			'kacchi-biryani-dhaka-style-mutton' => [['label'=>'1 plate','grams'=>350]],
+			'bhaat-plain-steamed-rice-bangladeshi' => [['label'=>'1 plate','grams'=>250],['label'=>'1 cup','grams'=>185]],
+			'polao-bangladeshi-fragrant-rice' => [['label'=>'1 plate','grams'=>250]],
+			'khichuri-rice-lentil-comfort-food' => [['label'=>'1 plate','grams'=>300]],
+			'luchi-bengali-fried-bread' => [['label'=>'1 luchi','grams'=>30],['label'=>'4 luchis','grams'=>120]],
+			'porota-layered-flatbread-dhaka' => [['label'=>'1 porota','grams'=>80]],
+			'singara-bangladeshi-samosa' => [['label'=>'1 singara','grams'=>60],['label'=>'3 singaras','grams'=>180]],
+			'piyaju-onion-fritters-lentil' => [['label'=>'1 piece','grams'=>30],['label'=>'5 pieces','grams'=>150]],
+			'beguni-aubergine-fritters' => [['label'=>'1 piece','grams'=>25],['label'=>'5 pieces','grams'=>125]],
+			'fuchka-bangladeshi-pani-puri' => [['label'=>'6 pieces','grams'=>100]],
+			'chotpoti-chickpea-potato-snack' => [['label'=>'1 bowl','grams'=>200]],
+			'roshogolla-spongy-cheese-ball' => [['label'=>'1 piece','grams'=>40],['label'=>'3 pieces','grams'=>120]],
+			'mishti-doi-sweetened-yoghurt' => [['label'=>'1 cup','grams'=>100]],
+			'sandesh-fresh-cheese-sweet' => [['label'=>'1 piece','grams'=>25],['label'=>'4 pieces','grams'=>100]],
+			'payesh-bengali-rice-pudding' => [['label'=>'1 bowl','grams'=>150]],
+			'cha-bangladeshi-tea-with-condensed-milk' => [['label'=>'1 cup','grams'=>120]],
+
+			// ── PERSIAN / IRANIAN ──
+			'chelow-iranian-steamed-rice-plain' => [['label'=>'1 plate','grams'=>250],['label'=>'1 cup','grams'=>185]],
+			'tahdig-crispy-rice-crust' => [['label'=>'1 portion','grams'=>80]],
+			'gheimeh-split-pea-meat-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'koobideh-minced-lamb-kebab' => [['label'=>'1 skewer','grams'=>100],['label'=>'2 skewers','grams'=>200]],
+			'joojeh-kebab-saffron-chicken' => [['label'=>'1 skewer','grams'=>120]],
+			'ash-reshteh-noodle-herb-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'sholeh-zard-saffron-rice-pudding' => [['label'=>'1 bowl','grams'=>150]],
+			'faloodeh-rose-water-ice-noodles' => [['label'=>'1 bowl','grams'=>150]],
+			'doogh-yoghurt-soda-drink' => [['label'=>'1 glass','grams'=>250]],
+
+			// ── NEPALI ──
+			'dal-bhat-nepali-lentil-soup-rice' => [['label'=>'1 plate','grams'=>350]],
+			'dal-bhat-tarkari-full-plate-avg' => [['label'=>'1 full plate','grams'=>400]],
+			'momo-steamed-buff-chicken-8-pcs' => [['label'=>'8 momos','grams'=>200],['label'=>'4 momos','grams'=>100]],
+			'momo-fried-8-pcs' => [['label'=>'8 momos','grams'=>220],['label'=>'4 momos','grams'=>110]],
+			'sel-roti-nepali-rice-doughnut' => [['label'=>'1 ring','grams'=>60]],
+			'thukpa-tibetan-nepali-noodle-soup' => [['label'=>'1 bowl','grams'=>350]],
+
+			// ── EAST ASIAN ──
+			'oyakodon-chicken-egg-rice-bowl' => [['label'=>'1 bowl','grams'=>350]],
+			'gyudon-beef-rice-bowl' => [['label'=>'1 bowl','grams'=>350]],
+			'katsudon-pork-cutlet-rice-bowl' => [['label'=>'1 bowl','grams'=>350]],
+			'karaage-japanese-fried-chicken' => [['label'=>'5 pieces','grams'=>125],['label'=>'8 pieces','grams'=>200]],
+			'tonkatsu-deep-fried-pork-cutlet' => [['label'=>'1 cutlet','grams'=>150]],
+			'tempura-mixed-5-pcs' => [['label'=>'5 pieces','grams'=>120]],
+			'sukiyaki-beef-hot-pot' => [['label'=>'1 bowl','grams'=>300]],
+			'onigiri-salmon' => [['label'=>'1 onigiri','grams'=>110]],
+			'onigiri-tuna-mayo' => [['label'=>'1 onigiri','grams'=>110]],
+			'udon-noodles-cooked' => [['label'=>'1 bowl','grams'=>250],['label'=>'1 portion','grams'=>200]],
+			'soba-noodles-cooked' => [['label'=>'1 bowl','grams'=>200]],
+			'mango-sticky-rice-khao-niao-mamuang' => [['label'=>'1 portion','grams'=>200]],
+
+			// ── KOREAN ──
+			'bibimbap-dolsot-stone-pot' => [['label'=>'1 bowl','grams'=>350]],
+			'bulgogi-marinated-beef-bbq' => [['label'=>'1 portion','grams'=>150]],
+			'samgyeopsal-grilled-pork-belly' => [['label'=>'1 portion','grams'=>150],['label'=>'3 slices','grams'=>100]],
+			'tteokbokki-spicy-rice-cakes' => [['label'=>'1 bowl','grams'=>200],['label'=>'1 portion','grams'=>150]],
+			'gimbap-korean-rice-roll-1-roll' => [['label'=>'1 roll','grams'=>230],['label'=>'½ roll','grams'=>115]],
+			'jajangmyeon-black-bean-noodles' => [['label'=>'1 bowl','grams'=>350]],
+			'bingsu-patbingsu-red-bean-shaved-ice' => [['label'=>'1 bowl','grams'=>250]],
+			'yangnyeom-chicken-sweet-spicy-fried' => [['label'=>'1 portion','grams'=>200]],
+			'korean-fried-chicken-yangnyeom' => [['label'=>'1 portion','grams'=>200]],
+
+			// ── CHINESE ──
+			'kung-pao-chicken-sichuan' => [['label'=>'1 portion','grams'=>200]],
+			'mapo-tofu-sichuan' => [['label'=>'1 portion','grams'=>200]],
+			'sweet-and-sour-pork-guobaorou' => [['label'=>'1 portion','grams'=>200]],
+			'red-braised-pork-belly-hong-shao-rou' => [['label'=>'1 portion','grams'=>150]],
+			'cantonese-roast-duck' => [['label'=>'¼ duck','grams'=>200],['label'=>'1 portion','grams'=>120]],
+			'char-siu-cantonese-bbq-pork' => [['label'=>'1 portion','grams'=>120]],
+			'egg-tart-dan-tat-1pc' => [['label'=>'1 tart','grams'=>65]],
+			'tangyuan-glutinous-rice-balls-3-pcs' => [['label'=>'3 balls','grams'=>90],['label'=>'6 balls','grams'=>180]],
+			'jianbing-chinese-crepe' => [['label'=>'1 crepe','grams'=>200]],
+			'rou-jia-mo-chinese-burger' => [['label'=>'1 burger','grams'=>150]],
+			'cong-you-bing-scallion-pancake' => [['label'=>'1 pancake','grams'=>120]],
+			'you-tiao-fried-dough-stick' => [['label'=>'1 stick','grams'=>50],['label'=>'2 sticks','grams'=>100]],
+			'hot-and-sour-soup' => [['label'=>'1 bowl','grams'=>250]],
+
+			// ── SOUTHEAST ASIAN ──
+			'nasi-lemak-coconut-rice-full-set' => [['label'=>'1 plate','grams'=>300]],
+			'char-kway-teow-penang-fried-noodles' => [['label'=>'1 plate','grams'=>300]],
+			'roti-canai-malaysian-flatbread' => [['label'=>'1 roti','grams'=>100]],
+			'satay-malaysian-chicken-10-sticks' => [['label'=>'10 sticks','grams'=>200],['label'=>'5 sticks','grams'=>100]],
+			'nasi-goreng-indonesian-fried-rice' => [['label'=>'1 plate','grams'=>300]],
+			'rendang-padang-west-sumatran-beef' => [['label'=>'1 portion','grams'=>150]],
+			'gado-gado-indonesian-peanut-salad' => [['label'=>'1 plate','grams'=>200]],
+			'satay-ayam-indonesian-chicken-peanut-sauce' => [['label'=>'5 sticks','grams'=>100],['label'=>'10 sticks','grams'=>200]],
+			'adobo-chicken-filipino-national-dish' => [['label'=>'1 portion','grams'=>200]],
+			'sinigang-na-baboy-sour-pork-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'lumpia-shanghai-fried-spring-rolls-5-pcs' => [['label'=>'5 pieces','grams'=>125]],
+			'halo-halo-mixed-shaved-ice-dessert' => [['label'=>'1 cup','grams'=>250]],
+			'fish-amok-khmer-steamed-curry' => [['label'=>'1 portion','grams'=>200]],
+			'lahpet-thoke-tea-leaf-salad' => [['label'=>'1 portion','grams'=>120]],
+
+			// ── MIDDLE EASTERN / ARABIAN ──
+			'hummus' => [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 portion','grams'=>70],['label'=>'1 cup','grams'=>200]],
+			'falafel-fried' => [['label'=>'1 piece','grams'=>17],['label'=>'5 pieces','grams'=>85]],
+			'shawarma-chicken' => [['label'=>'1 wrap','grams'=>250]],
+			'shawarma-lamb' => [['label'=>'1 wrap','grams'=>250]],
+			'mansaf-jordanian-lamb-yoghurt-rice' => [['label'=>'1 plate','grams'=>350]],
+			'kabsa-saudi-rice-chicken' => [['label'=>'1 plate','grams'=>350]],
+			'kushari-egyptian-rice-lentils' => [['label'=>'1 bowl','grams'=>300]],
+			'ful-medames-egyptian-fava-beans' => [['label'=>'1 bowl','grams'=>200]],
+			'luqaimat-sweet-dumplings' => [['label'=>'5 pieces','grams'=>60],['label'=>'10 pieces','grams'=>120]],
+			'knafeh-nabulsieh-cheese-knafeh' => [['label'=>'1 slice','grams'=>100]],
+
+			// ── TURKISH ──
+			'doner-kebab-meat-only' => [['label'=>'1 portion','grams'=>120]],
+			'lahmacun-turkish-pizza' => [['label'=>'1 lahmacun','grams'=>120]],
+			'pide-turkish-flatbread-pizza' => [['label'=>'1 portion','grams'=>200]],
+			'manti-turkish-dumplings' => [['label'=>'1 portion','grams'=>200]],
+			'simit-turkish-sesame-ring' => [['label'=>'1 simit','grams'=>120]],
+			'borek-cheese' => [['label'=>'1 portion','grams'=>150]],
+			'gozleme-spinach-cheese' => [['label'=>'1 gozleme','grams'=>200]],
+			'sutlac-turkish-rice-pudding' => [['label'=>'1 bowl','grams'=>150]],
+			'turkish-coffee-sade' => [['label'=>'1 cup','grams'=>60]],
+			'ayran-turkish-yoghurt-drink' => [['label'=>'1 glass','grams'=>200]],
+
+			// ── AFRICAN ──
+			'jollof-rice-ghanaian' => [['label'=>'1 plate','grams'=>300]],
+			'egusi-soup-melon-seed' => [['label'=>'1 bowl','grams'=>250]],
+			'pounded-yam' => [['label'=>'1 portion','grams'=>200]],
+			'fufu-cassava' => [['label'=>'1 portion','grams'=>200]],
+			'suya-beef-skewers' => [['label'=>'3 sticks','grams'=>100],['label'=>'5 sticks','grams'=>170]],
+			'bobotie-cape-malay-mince' => [['label'=>'1 portion','grams'=>250]],
+			'tagine-chicken-preserved-lemon' => [['label'=>'1 portion','grams'=>250]],
+			'couscous-moroccan-with-veg' => [['label'=>'1 plate','grams'=>300]],
+			'injera-ethiopian-flatbread' => [['label'=>'1 piece','grams'=>100],['label'=>'1 full','grams'=>200]],
+			'doro-wat-chicken-stew' => [['label'=>'1 portion','grams'=>200]],
+
+			// ── LATIN AMERICAN ──
+			'feijoada-black-bean-stew' => [['label'=>'1 bowl','grams'=>300]],
+			'pao-de-queijo-cheese-bread' => [['label'=>'1 piece','grams'=>25],['label'=>'4 pieces','grams'=>100]],
+			'picanha-grilled-rump-cap' => [['label'=>'1 portion','grams'=>150]],
+			'empanada-argentina-beef' => [['label'=>'1 empanada','grams'=>120]],
+			'asado-grilled-beef' => [['label'=>'1 portion','grams'=>200]],
+			'ceviche-peruvian-mixed-fish' => [['label'=>'1 portion','grams'=>150]],
+			'lomo-saltado-stir-fried-beef' => [['label'=>'1 plate','grams'=>300]],
+			'arepas-con-queso' => [['label'=>'1 arepa','grams'=>150]],
+			'bandeja-paisa-platter-per-100g-avg' => [['label'=>'1 plate','grams'=>450]],
+			'gallo-pinto-costa-rican-rice-beans' => [['label'=>'1 plate','grams'=>250]],
+
+			// ── CARIBBEAN ──
+			'jerk-pork' => [['label'=>'1 portion','grams'=>150]],
+			'curry-goat-jamaican' => [['label'=>'1 bowl','grams'=>250]],
+			'oxtail-stew-jamaican' => [['label'=>'1 bowl','grams'=>250]],
+			'jamaican-patty-beef' => [['label'=>'1 patty','grams'=>170]],
+			'ropa-vieja-cuban-shredded-beef' => [['label'=>'1 portion','grams'=>200]],
+			'mofongo-dominican-mashed-fried-plantain' => [['label'=>'1 portion','grams'=>200]],
+			'pernil-pr-slow-roasted-pork-shoulder' => [['label'=>'1 portion','grams'=>150]],
+
+			// ── EUROPEAN (REMAINING) ──
+			'cevapi-serbian-10-pcs-with-lepinja' => [['label'=>'1 portion','grams'=>250]],
+			'mici-mititei-romanian-grilled-sausages' => [['label'=>'3 pieces','grams'=>120],['label'=>'5 pieces','grams'=>200]],
+			'cepelinai-potato-dumplings-national' => [['label'=>'1 piece','grams'=>150],['label'=>'2 pieces','grams'=>300]],
+			'pierogi-potato-cheese' => [['label'=>'5 pieces','grams'=>200],['label'=>'8 pieces','grams'=>320]],
+			'bryndzove-halusky-sheep-cheese-dumplings' => [['label'=>'1 portion','grams'=>250]],
+			'svickova-na-smetane-sirloin-in-cream' => [['label'=>'1 plate','grams'=>300]],
+			'varenyky-ukrainian-potato-cheese' => [['label'=>'6 pieces','grams'=>200],['label'=>'10 pieces','grams'=>330]],
+			'banitsa-bulgarian-cheese-phyllo-pie' => [['label'=>'1 slice','grams'=>150]],
+			'shopska-salata-bulgarian-national-salad' => [['label'=>'1 plate','grams'=>200]],
+			'pastizzi-maltese-ricotta-pastry-1pc' => [['label'=>'1 pastizzi','grams'=>60],['label'=>'2 pastizzi','grams'=>120]],
+
+			// ── RUSSIAN & CENTRAL ASIAN ──
+			'borscht-russian-with-smetana' => [['label'=>'1 bowl','grams'=>250]],
+			'pelmeni-siberian-pork-beef' => [['label'=>'10 pieces','grams'=>200],['label'=>'15 pieces','grams'=>300]],
+			'blini-russian-buckwheat' => [['label'=>'3 blini','grams'=>100],['label'=>'5 blini','grams'=>170]],
+			'syrniki-curd-cheese-fritters' => [['label'=>'3 pieces','grams'=>120]],
+			'medovik-honey-cake' => [['label'=>'1 slice','grams'=>120]],
+			'beshbarmak-national-dish-meat-noodles' => [['label'=>'1 plate','grams'=>350]],
+			'plov-azerbaijani-lamb-saffron' => [['label'=>'1 plate','grams'=>300]],
+
+			// ── AUSTRALIAN & NZ ──
+			'meat-pie-aussie-standard' => [['label'=>'1 pie','grams'=>175]],
+			'chicken-parmigiana' => [['label'=>'1 serve','grams'=>300]],
+			'snag-bbq-sausage-in-bread' => [['label'=>'1 snag','grams'=>150]],
+			'smashed-avo-on-toast' => [['label'=>'1 serve','grams'=>180]],
+			'fairy-bread' => [['label'=>'1 slice','grams'=>25],['label'=>'3 slices','grams'=>75]],
+			'hangi-earth-oven-mixed-per-100g' => [['label'=>'1 plate','grams'=>350]],
+			'kumara-nz-sweet-potato-roasted' => [['label'=>'1 medium','grams'=>200]],
+
+			// ── PACIFIC ISLANDS ──
+			'laplap-vanuatu-national-dish-taro-banana' => [['label'=>'1 portion','grams'=>200]],
+			'kokoda-fijian-raw-fish-in-coconut' => [['label'=>'1 bowl','grams'=>150]],
+			'palusami-samoan-corned-beef-coconut' => [['label'=>'1 portion','grams'=>200]],
+			'oka-ia-samoan-raw-fish-salad' => [['label'=>'1 bowl','grams'=>150]],
+			'lu-pulu-corned-beef-in-taro-leaves' => [['label'=>'1 portion','grams'=>200]],
+
+			// ── MONGOLIAN ──
+			'buuz-mongolian-steamed-dumplings-1pc' => [['label'=>'1 buuz','grams'=>40],['label'=>'6 buuz','grams'=>240]],
+			'khuushuur-mongolian-fried-meat-pastry' => [['label'=>'1 piece','grams'=>80],['label'=>'3 pieces','grams'=>240]],
+			'tsuivan-mongolian-stir-fried-noodles-meat' => [['label'=>'1 plate','grams'=>300]],
+
+			// ── ICELANDIC & GREENLANDIC ──
+			'pylsur-icelandic-hot-dog' => [['label'=>'1 hot dog','grams'=>100]],
+			'kleinur-icelandic-twisted-doughnut' => [['label'=>'1 piece','grams'=>35],['label'=>'3 pieces','grams'=>105]],
+			'suaasat-greenlandic-seal-caribou-soup' => [['label'=>'1 bowl','grams'=>300]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 60 );
+	}
 }
