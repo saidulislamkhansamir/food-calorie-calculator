@@ -11283,4 +11283,156 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 65 );
 	}
+
+	/** Seed v66: Serving sizes batch 9 — mop-up of all remaining gaps. */
+	public static function seed_v66(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 66 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── FAST FOOD & PIZZA ──
+			'double-cheeseburger'     => [['label'=>'1 burger','grams'=>200]],
+			'chicken-burger-breaded'  => [['label'=>'1 burger','grams'=>170]],
+			'veggie-burger'           => [['label'=>'1 burger','grams'=>150]],
+			'hawaiian-pizza-slice'    => [['label'=>'1 slice','grams'=>107],['label'=>'2 slices','grams'=>214]],
+			'garlic-dough-balls-3-pcs' => [['label'=>'3 balls','grams'=>45],['label'=>'6 balls','grams'=>90]],
+			'mozzarella-sticks-4-pcs' => [['label'=>'4 sticks','grams'=>80]],
+			'chicken-wings-bbq-4-pcs' => [['label'=>'4 wings','grams'=>160],['label'=>'8 wings','grams'=>320]],
+			'loaded-fries-cheese-bacon' => [['label'=>'1 portion','grams'=>250]],
+			'corn-dog'                => [['label'=>'1 corn dog','grams'=>100]],
+			'corndog-on-a-stick'      => [['label'=>'1 corn dog','grams'=>100]],
+			'po-boy-fried-shrimp'     => [['label'=>'1 po\' boy','grams'=>250]],
+
+			// ── REMAINING PIES & PASTRIES ──
+			'steak-and-ale-pie'       => [['label'=>'1 pie','grams'=>250]],
+			'game-pie'                => [['label'=>'1 pie','grams'=>250]],
+			'pie-floater-meat-pie-in-pea-soup' => [['label'=>'1 serve','grams'=>350]],
+			'cheese-and-onion-pie'    => [['label'=>'1 pie','grams'=>200]],
+			'bedfordshire-clanger'    => [['label'=>'1 clanger','grams'=>250]],
+			'stargazy-pie'            => [['label'=>'1 portion','grams'=>200]],
+			'forfar-bridie'           => [['label'=>'1 bridie','grams'=>150]],
+			'lardy-cake'              => [['label'=>'1 slice','grams'=>70]],
+			'dundee-cake'             => [['label'=>'1 slice','grams'=>80]],
+			'clootie-dumpling'        => [['label'=>'1 slice','grams'=>100]],
+			'spotted-dick'            => [['label'=>'1 portion','grams'=>120]],
+			'jam-roly-poly'           => [['label'=>'1 portion','grams'=>120]],
+
+			// ── REMAINING LEGUMES ──
+			'cooked-chickpeas'        => [['label'=>'1 cup','grams'=>160],['label'=>'½ can','grams'=>120]],
+			'cooked-black-beans'      => [['label'=>'1 cup','grams'=>170],['label'=>'½ can','grams'=>130]],
+			'cannellini-beans-canned' => [['label'=>'1 cup','grams'=>180],['label'=>'½ can','grams'=>130]],
+			'garden-peas-canned'      => [['label'=>'½ cup','grams'=>80],['label'=>'1 cup','grams'=>160]],
+			'garden-peas-frozen-cooked' => [['label'=>'½ cup','grams'=>80],['label'=>'1 cup','grams'=>145]],
+			'mixed-vegetables-frozen-cooked' => [['label'=>'1 cup','grams'=>150],['label'=>'1 portion','grams'=>80]],
+			'edamame-beans-frozen-cooked' => [['label'=>'½ cup','grams'=>75],['label'=>'1 cup','grams'=>150]],
+			'edamame-salted-in-pod'   => [['label'=>'½ cup','grams'=>75],['label'=>'1 cup','grams'=>150]],
+			'lentil-soup-canned'      => [['label'=>'1 bowl','grams'=>250],['label'=>'½ can','grams'=>200]],
+			'samp-and-beans'          => [['label'=>'1 bowl','grams'=>250]],
+
+			// ── REMAINING SOUPS ──
+			'leek-and-potato-soup'    => [['label'=>'1 bowl','grams'=>250]],
+			'butternut-squash-soup'   => [['label'=>'1 bowl','grams'=>250]],
+			'french-onion-soup'       => [['label'=>'1 bowl','grams'=>250]],
+			'gazpacho'                => [['label'=>'1 bowl','grams'=>250]],
+			'clam-chowder'            => [['label'=>'1 bowl','grams'=>250]],
+			'scotch-broth'            => [['label'=>'1 bowl','grams'=>250]],
+			'cullen-skink-traditional' => [['label'=>'1 bowl','grams'=>250]],
+			'egg-drop-soup-dan-hua-tang' => [['label'=>'1 bowl','grams'=>250]],
+			'winter-melon-soup'       => [['label'=>'1 bowl','grams'=>250]],
+			'corn-soup-chinese-style' => [['label'=>'1 bowl','grams'=>250]],
+			'canja-de-galinha-chicken-rice-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'ajiaco-potato-chicken-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'sancocho-dominican-hearty-stew' => [['label'=>'1 bowl','grams'=>350]],
+			'pepper-soup-goat'        => [['label'=>'1 bowl','grams'=>250]],
+			'groundnut-soup-peanut-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'callaloo-soup-grenadian' => [['label'=>'1 bowl','grams'=>250]],
+
+			// ── REMAINING DIPS & SPREADS ──
+			'baba-ganoush'            => [['label'=>'1 tablespoon','grams'=>15],['label'=>'¼ cup','grams'=>60]],
+			'tzatziki'                => [['label'=>'1 tablespoon','grams'=>15],['label'=>'¼ cup','grams'=>60]],
+			'raita-cucumber'          => [['label'=>'2 tablespoons','grams'=>40]],
+			'mango-chutney'           => [['label'=>'1 tablespoon','grams'=>20]],
+			'lime-pickle'             => [['label'=>'1 teaspoon','grams'=>8]],
+			'chimichurri-sauce'       => [['label'=>'1 tablespoon','grams'=>15]],
+			'hogao-colombian-sofrito' => [['label'=>'1 tablespoon','grams'=>15]],
+			'ajvar-serbian-roasted-pepper-relish' => [['label'=>'1 tablespoon','grams'=>15],['label'=>'¼ cup','grams'=>60]],
+			'tkemali-sour-plum-sauce' => [['label'=>'1 tablespoon','grams'=>15]],
+			'adjika-georgian-chilli-paste' => [['label'=>'1 teaspoon','grams'=>5]],
+			'chermoula-moroccan-marinade' => [['label'=>'1 tablespoon','grams'=>15]],
+			'pikliz-haitian-spicy-slaw' => [['label'=>'2 tablespoons','grams'=>30]],
+			'bajan-pepper-sauce'      => [['label'=>'1 teaspoon','grams'=>5]],
+			'ezay-bhutanese-chilli-sauce' => [['label'=>'1 tablespoon','grams'=>15]],
+			'jaew-bong-roasted-chilli-dip' => [['label'=>'1 tablespoon','grams'=>15]],
+			'prahok-ktiss-prahok-dip-with-pork' => [['label'=>'1 tablespoon','grams'=>15]],
+			'balachaung-dried-shrimp-chilli-relish' => [['label'=>'1 tablespoon','grams'=>10]],
+			'ngapi-ye-fermented-fish-paste-sauce' => [['label'=>'1 teaspoon','grams'=>5]],
+			'doenjang-soybean-paste'  => [['label'=>'1 tablespoon','grams'=>18]],
+			'ssamjang-wrap-sauce'     => [['label'=>'1 tablespoon','grams'=>18]],
+			'gochugaru-korean-chilli-flakes' => [['label'=>'1 tablespoon','grams'=>5]],
+			'furikake-rice-seasoning-mixed' => [['label'=>'1 teaspoon','grams'=>3]],
+			'dashi-stock-kombu-bonito' => [['label'=>'1 cup','grams'=>240]],
+			'xo-sauce'                => [['label'=>'1 tablespoon','grams'=>15]],
+			'doubanjiang-chilli-bean-paste' => [['label'=>'1 tablespoon','grams'=>15]],
+			'shichimi-togarashi-7-spice' => [['label'=>'1 teaspoon','grams'=>2]],
+
+			// ── REMAINING RAW SEAFOOD ──
+			'tuna-raw-sashimi-grade'  => [['label'=>'5 slices','grams'=>80]],
+			'sea-bass-raw'            => [['label'=>'1 fillet','grams'=>150]],
+			'haddock-raw'             => [['label'=>'1 fillet','grams'=>180]],
+			'mackerel-raw'            => [['label'=>'1 fillet','grams'=>100]],
+			'sardines-raw'            => [['label'=>'3 sardines','grams'=>75]],
+			'squid-raw'               => [['label'=>'1 portion','grams'=>100]],
+			'mussels-raw'             => [['label'=>'1 cup meat','grams'=>150]],
+			'crab-meat-canned'        => [['label'=>'1 can','grams'=>170],['label'=>'½ can','grams'=>85]],
+			'anchovies-in-oil-drained' => [['label'=>'3 fillets','grams'=>9],['label'=>'6 fillets','grams'=>18]],
+			'rollmop-herring'         => [['label'=>'1 rollmop','grams'=>60]],
+			'smoked-trout'            => [['label'=>'1 fillet','grams'=>100]],
+			'whitebait-fried'         => [['label'=>'1 portion','grams'=>80]],
+			'cockles-boiled'          => [['label'=>'1 portion','grams'=>50]],
+			'whelks-boiled'           => [['label'=>'1 portion','grams'=>50]],
+			'dover-sole-grilled'      => [['label'=>'1 fish','grams'=>200]],
+			'monkfish-grilled'        => [['label'=>'1 portion','grams'=>150]],
+
+			// ── REMAINING MILK & DAIRY ──
+			'buttermilk'              => [['label'=>'1 glass','grams'=>245],['label'=>'1 cup','grams'=>245]],
+			'smetana-sour-cream-20'   => [['label'=>'1 tablespoon','grams'=>12],['label'=>'2 tablespoons','grams'=>24]],
+			'tvorog-russian-curd-cheese' => [['label'=>'1 portion','grams'=>100],['label'=>'½ cup','grams'=>120]],
+			'kaymak-clotted-cream'    => [['label'=>'1 tablespoon','grams'=>15]],
+			'labneh'                  => [['label'=>'1 tablespoon','grams'=>15],['label'=>'¼ cup','grams'=>60]],
+			'sgushyonka-condensed-milk' => [['label'=>'1 tablespoon','grams'=>20]],
+
+			// ── REMAINING SWEETS & DRINKS ──
+			'maamoul-pistachio-filled' => [['label'=>'1 piece','grams'=>30]],
+			'muhallabia-milk-pudding' => [['label'=>'1 cup','grams'=>150]],
+			'umm-ali-bread-pudding-egyptian' => [['label'=>'1 portion','grams'=>150]],
+			'halawet-el-jibn-cheese-rolls' => [['label'=>'2 pieces','grams'=>60]],
+			'dondurma-turkish-ice-cream' => [['label'=>'1 scoop','grams'=>70],['label'=>'2 scoops','grams'=>140]],
+			'salep-orchid-root-drink' => [['label'=>'1 cup','grams'=>200]],
+			'shalgam-suyu-turnip-juice' => [['label'=>'1 glass','grams'=>200]],
+			'jallab-grape-rose-drink' => [['label'=>'1 glass','grams'=>200]],
+			'qamar-al-din-apricot-nectar' => [['label'=>'1 glass','grams'=>200]],
+			'tella-ethiopian-beer'    => [['label'=>'1 glass','grams'=>250]],
+			'palm-wine-fresh'         => [['label'=>'1 glass','grams'=>200]],
+			'kunu-millet-drink'       => [['label'=>'1 glass','grams'=>250]],
+			'bissap-senegalese-hibiscus' => [['label'=>'1 glass','grams'=>250]],
+			'sorrel-drink-jamaican-hibiscus' => [['label'=>'1 glass','grams'=>250]],
+			'chicha-morada-purple-corn-drink' => [['label'=>'1 glass','grams'=>250]],
+			'aguapanela-sugarcane-drink' => [['label'=>'1 glass','grams'=>250]],
+			'calamansi-juice-filipino-limeade' => [['label'=>'1 glass','grams'=>250]],
+			'bandrek-ginger-spice-drink' => [['label'=>'1 glass','grams'=>200]],
+			'es-teler-mixed-fruit-ice-drink' => [['label'=>'1 glass','grams'=>250]],
+			'shwe-yin-aye-golden-heart-cooler' => [['label'=>'1 glass','grams'=>250]],
+			'htan-yay-toddy-palm-juice' => [['label'=>'1 glass','grams'=>200]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 66 );
+	}
 }
