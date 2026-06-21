@@ -11835,4 +11835,132 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 69 );
 	}
+
+	/** Seed v70: Serving sizes batch 13 — absolute last remaining foods. */
+	public static function seed_v70(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 70 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── REMAINING KEBABS & GRILLS ──
+			'sis-kebab-lamb'          => [['label'=>'1 skewer','grams'=>100],['label'=>'2 skewers','grams'=>200]],
+			'urfa-kebab'              => [['label'=>'1 skewer','grams'=>100]],
+			'beyti-kebab-wrapped-in-lavash' => [['label'=>'1 portion','grams'=>200]],
+			'ali-nazik-kebab'         => [['label'=>'1 portion','grams'=>200]],
+			'tantuni-beef-wrap'       => [['label'=>'1 wrap','grams'=>200]],
+			'cag-kebabi-spit-roasted-lamb' => [['label'=>'1 portion','grams'=>150]],
+			'tavuk-sis-chicken-skewers' => [['label'=>'2 skewers','grams'=>120]],
+			'patlican-kebab-aubergine-meat' => [['label'=>'1 portion','grams'=>200]],
+			'testi-kebabi-pottery-kebab' => [['label'=>'1 portion','grams'=>250]],
+			'kokorec-grilled-offal-wrap' => [['label'=>'½ portion','grams'=>150],['label'=>'1 portion','grams'=>300]],
+			'barg-kebab-lamb-fillet-kebab' => [['label'=>'1 skewer','grams'=>120]],
+			'chenjeh-kebab-lamb-cube-kebab' => [['label'=>'1 skewer','grams'=>120]],
+			'tikka-kebab-afghan-style-lamb' => [['label'=>'1 skewer','grams'=>120]],
+			'lyulya-kebab-azerbaijani-minced-lamb' => [['label'=>'1 skewer','grams'=>100]],
+			'khorovats-armenian-grilled-meat' => [['label'=>'1 portion','grams'=>200]],
+			'mtsvadi-georgian-shashlik-kebab' => [['label'=>'1 skewer','grams'=>100],['label'=>'2 skewers','grams'=>200]],
+			'shashlik-uzbek-marinated-lamb' => [['label'=>'1 skewer','grams'=>100]],
+			'mishkaki-beef-skewers'   => [['label'=>'2 skewers','grams'=>80],['label'=>'4 skewers','grams'=>160]],
+			'brochettes-rwandan-grilled-meat' => [['label'=>'2 skewers','grams'=>100]],
+			'anticuchos-beef-heart-skewers' => [['label'=>'2 skewers','grams'=>100]],
+			'dakgochi-chicken-skewer-street' => [['label'=>'1 skewer','grams'=>60],['label'=>'3 skewers','grams'=>180]],
+
+			// ── REMAINING DUMPLINGS & PASTRIES ──
+			'cheung-fun-rice-noodle-roll-shrimp' => [['label'=>'1 roll','grams'=>100],['label'=>'3 rolls','grams'=>300]],
+			'lo-mai-gai-sticky-rice-in-lotus-leaf' => [['label'=>'1 piece','grams'=>200]],
+			'turnip-cake-lo-bak-go-pan-fried' => [['label'=>'2 slices','grams'=>80],['label'=>'4 slices','grams'=>160]],
+			'phoenix-claws-chicken-feet-braised' => [['label'=>'3 feet','grams'=>60]],
+			'zongzi-sticky-rice-dumpling' => [['label'=>'1 zongzi','grams'=>150]],
+			'wonton-fried-1pc'        => [['label'=>'5 wontons','grams'=>75],['label'=>'10 wontons','grams'=>150]],
+			'shumai-open-top-dumpling-1pc' => [['label'=>'4 pieces','grams'=>80]],
+			'sheng-jian-bao-pan-fried-bun-1pc' => [['label'=>'4 buns','grams'=>200]],
+			'ashak-leek-dumplings'    => [['label'=>'6 pieces','grams'=>180]],
+			'tuhum-barak-tajik-egg-dumplings' => [['label'=>'6 pieces','grams'=>180]],
+			'chuchvara-tiny-uzbek-dumplings-in-broth' => [['label'=>'1 bowl','grams'=>300]],
+			'dushbara-tiny-lamb-dumplings-in-broth' => [['label'=>'1 bowl','grams'=>300]],
+			'oromo-kyrgyz-steamed-meat-roll' => [['label'=>'1 portion','grams'=>200]],
+			'hoentay-buckwheat-dumplings-haa' => [['label'=>'6 pieces','grams'=>200]],
+			'coxinha-chicken-croquette' => [['label'=>'1 piece','grams'=>60],['label'=>'3 pieces','grams'=>180]],
+			'arancini-rice-ball'      => [['label'=>'1 ball','grams'=>80],['label'=>'2 balls','grams'=>160]],
+			'rissois-de-camarao-prawn-rissoles' => [['label'=>'2 pieces','grams'=>60],['label'=>'4 pieces','grams'=>120]],
+			'croquetes-de-carne-meat-croquettes' => [['label'=>'2 pieces','grams'=>50],['label'=>'4 pieces','grams'=>100]],
+			'chamucas-portuguese-samosas' => [['label'=>'2 pieces','grams'=>60]],
+			'empada-de-galinha-chicken-pies-1pc' => [['label'=>'1 pie','grams'=>40],['label'=>'3 pies','grams'=>120]],
+			'sambousek-fried-pastry-meat' => [['label'=>'2 pieces','grams'=>60],['label'=>'5 pieces','grams'=>150]],
+			'fatayer-spinach-pie'     => [['label'=>'1 piece','grams'=>60],['label'=>'3 pieces','grams'=>180]],
+			'kibbeh-fried-stuffed'    => [['label'=>'1 piece','grams'=>50],['label'=>'3 pieces','grams'=>150]],
+			'briouats-stuffed-pastry' => [['label'=>'2 pieces','grams'=>50],['label'=>'5 pieces','grams'=>125]],
+			'samsa-kyrgyz-baked-meat-pastry' => [['label'=>'1 samsa','grams'=>100]],
+			'sambusa-somali-beef'     => [['label'=>'2 pieces','grams'=>80]],
+			'brik-tunisian-fried-pastry' => [['label'=>'1 brik','grams'=>80]],
+
+			// ── REMAINING SALADS ──
+			'niçoise-salad'           => [['label'=>'1 plate','grams'=>250]],
+			'salade-lyonnaise-frisee-lardons' => [['label'=>'1 plate','grams'=>200]],
+			'salade-nicoise-traditional' => [['label'=>'1 plate','grams'=>250]],
+			'vinegret-beetroot-vinaigrette' => [['label'=>'1 portion','grams'=>150]],
+			'olivier-salad-russian-salad' => [['label'=>'1 portion','grams'=>150]],
+			'fattoush-salad'          => [['label'=>'1 plate','grams'=>150]],
+			'panzanella-bread-salad'  => [['label'=>'1 plate','grams'=>200]],
+			'caponata-sicilian-aubergine' => [['label'=>'1 portion','grams'=>120]],
+			'zaalouk-aubergine-salad' => [['label'=>'1 portion','grams'=>100]],
+			'taktouka-pepper-and-tomato-salad' => [['label'=>'1 portion','grams'=>100]],
+			'naem-khao-crispy-rice-salad' => [['label'=>'1 plate','grams'=>150]],
+			'yam-nua-thai-beef-salad' => [['label'=>'1 plate','grams'=>150]],
+			'laab-gai-thai-chicken-laab' => [['label'=>'1 plate','grams'=>120]],
+			'yam-woon-sen-glass-noodle-salad' => [['label'=>'1 plate','grams'=>150]],
+			'gin-thoke-ginger-salad'  => [['label'=>'1 portion','grams'=>100]],
+			'tohu-thoke-chickpea-tofu-salad' => [['label'=>'1 portion','grams'=>120]],
+			'samusa-thoke-samosa-salad' => [['label'=>'1 portion','grams'=>120]],
+			'pleah-sach-ko-khmer-raw-beef-salad' => [['label'=>'1 plate','grams'=>120]],
+			'kisir-bulgur-salad'      => [['label'=>'1 portion','grams'=>120]],
+			'piyaz-white-bean-salad'  => [['label'=>'1 portion','grams'=>120]],
+			'tabbouleh'               => [['label'=>'1 portion','grams'=>130]],
+
+			// ── REMAINING RICE & ONE-POT DISHES ──
+			'claypot-rice-lap-cheong' => [['label'=>'1 pot','grams'=>350]],
+			'hainanese-chicken-rice'  => [['label'=>'1 plate','grams'=>350]],
+			'lu-rou-fan-braised-pork-rice-taiwan' => [['label'=>'1 bowl','grams'=>300]],
+			'congee-century-egg-pork' => [['label'=>'1 bowl','grams'=>350]],
+			'sticky-rice-with-toppings' => [['label'=>'1 portion','grams'=>150]],
+			'sekihan-red-bean-rice'   => [['label'=>'1 bowl','grams'=>200]],
+			'chazuke-tea-over-rice'   => [['label'=>'1 bowl','grams'=>250]],
+			'tamago-kake-gohan-raw-egg-on-rice' => [['label'=>'1 bowl','grams'=>250]],
+			'natto-on-rice'           => [['label'=>'1 bowl','grams'=>250]],
+			'makunouchi-bento-boxed-lunch-avg' => [['label'=>'1 bento','grams'=>350]],
+			'salmon-bento-convenience-store' => [['label'=>'1 bento','grams'=>300]],
+			'omurice-korean-omelette-rice' => [['label'=>'1 plate','grams'=>300]],
+			'cupbap-rice-bowl-with-toppings' => [['label'=>'1 bowl','grams'=>300]],
+			'bokkeumbap-kimchi-fried-rice' => [['label'=>'1 plate','grams'=>300]],
+			'dolsot-bap-stone-pot-mixed-rice' => [['label'=>'1 bowl','grams'=>250]],
+			'kongnamul-bap-bean-sprout-rice' => [['label'=>'1 bowl','grams'=>250]],
+			'hobakjuk-pumpkin-porridge' => [['label'=>'1 bowl','grams'=>250]],
+			'patjuk-red-bean-porridge' => [['label'=>'1 bowl','grams'=>250]],
+			'juk-korean-rice-porridge-plain' => [['label'=>'1 bowl','grams'=>300]],
+			'arroz-de-tomate-tomato-rice' => [['label'=>'1 plate','grams'=>200]],
+			'arroz-de-feijao-bean-rice' => [['label'=>'1 plate','grams'=>250]],
+			'locrio-de-pollo-dominican-chicken-rice' => [['label'=>'1 plate','grams'=>300]],
+			'arroz-con-pollo-peruvian' => [['label'=>'1 plate','grams'=>300]],
+			'dampukht-slow-cooked-lamb-rice' => [['label'=>'1 plate','grams'=>300]],
+			'adas-polo-lentil-rice-with-raisins' => [['label'=>'1 plate','grams'=>250]],
+			'baghali-polo-dill-fava-bean-rice' => [['label'=>'1 plate','grams'=>250]],
+			'zereshk-polo-ba-morgh-barberry-chicken-rice' => [['label'=>'1 plate','grams'=>300]],
+			'wali-wa-nazi-coconut-rice' => [['label'=>'1 plate','grams'=>250]],
+			'nasi-uduk-coconut-steamed-rice' => [['label'=>'1 plate','grams'=>250]],
+			'arroz-negro-black-squid-ink-rice' => [['label'=>'1 plate','grams'=>250]],
+			'diri-djon-djon-black-mushroom-rice' => [['label'=>'1 plate','grams'=>250]],
+			'panta-bhat-fermented-rice-pohela-boishakh' => [['label'=>'1 bowl','grams'=>250]],
+			'htamin-jin-shan-rice-balls' => [['label'=>'3 balls','grams'=>100]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 70 );
+	}
 }
