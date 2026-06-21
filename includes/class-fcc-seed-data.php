@@ -14382,4 +14382,194 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 89 );
 	}
+
+	/** Seed v90: Micronutrient data Phase 2 — 200 more foods (Iron, Calcium, Vitamin C). */
+	public static function seed_v90(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 90 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$data = [
+			// ── MORE FRUITS ──
+			'clementine'           => [0.14, 30.0, 48.8],
+			'tangerine'            => [0.15, 37.0, 26.7],
+			'satsuma'              => [0.10, 37.0, 30.0],
+			'coconut-flesh-raw'    => [2.43, 14.0, 3.3],
+			'lychee'               => [0.31, 5.0, 71.5],
+			'persimmon'            => [0.15, 8.0, 7.5],
+			'jackfruit-raw'        => [0.23, 24.0, 13.7],
+			'starfruit-carambola'  => [0.08, 3.0, 34.4],
+			'plantain-raw'         => [0.60, 3.0, 18.4],
+			'rhubarb-raw'          => [0.22, 86.0, 8.0],
+			'honeydew-melon'       => [0.17, 6.0, 18.0],
+			'cantaloupe-melon'     => [0.21, 9.0, 36.7],
+			'blood-orange'         => [0.10, 40.0, 50.0],
+			'kumquat'              => [0.86, 62.0, 43.9],
+			'quince'               => [0.70, 11.0, 15.0],
+			'acerola-barbados-cherry' => [0.20, 12.0, 1677.6],
+			'golden-kiwi'          => [0.21, 20.0, 161.0],
+			'feijoa-pineapple-guava' => [0.14, 17.0, 32.9],
+			'mangosteen'           => [0.30, 12.0, 2.9],
+			'cherimoya'            => [0.27, 10.0, 12.6],
+
+			// ── MORE VEGETABLES ──
+			'pak-choi-bok-choy'    => [0.80, 105.0, 45.0],
+			'swiss-chard'          => [1.80, 51.0, 30.0],
+			'watercress'           => [0.20, 120.0, 43.0],
+			'rocket-arugula'       => [1.46, 160.0, 15.0],
+			'leek-raw'             => [2.10, 59.0, 12.0],
+			'spring-onion-raw'     => [1.48, 72.0, 18.8],
+			'shallot-raw'          => [1.20, 37.0, 8.0],
+			'ginger-root'          => [0.60, 16.0, 5.0],
+			'parsley-fresh'        => [6.20, 138.0, 133.0],
+			'celeriac-raw'         => [0.70, 43.0, 8.0],
+			'kohlrabi-raw'         => [0.40, 24.0, 62.0],
+			'butternut-squash-raw' => [0.70, 48.0, 21.0],
+			'spaghetti-squash-cooked' => [0.31, 23.0, 2.1],
+			'chayote-raw'          => [0.34, 17.0, 7.7],
+			'jicama-raw'           => [0.60, 12.0, 20.2],
+			'daikon-radish-raw'    => [0.40, 27.0, 22.0],
+			'tomatillo-raw'        => [0.62, 7.0, 11.7],
+			'nopales-cactus-paddle-raw' => [0.59, 164.0, 9.3],
+			'hearts-of-palm-canned' => [3.13, 58.0, 7.9],
+			'snow-peas-raw'        => [2.08, 43.0, 60.0],
+
+			// ── MORE MEAT & POULTRY ──
+			'ground-beef-80-20-raw' => [2.02, 18.0, 0.0],
+			'ground-beef-90-10-raw' => [2.41, 6.0, 0.0],
+			'beef-flank-steak-raw' => [1.57, 5.0, 0.0],
+			'beef-ribeye-steak-raw' => [1.61, 8.0, 0.0],
+			'beef-tenderloin-fillet-raw' => [1.58, 5.0, 0.0],
+			'beef-brisket-raw'     => [1.71, 7.0, 0.0],
+			'lamb-leg-raw'         => [1.60, 7.0, 0.0],
+			'lamb-shoulder-raw'    => [1.55, 9.0, 0.0],
+			'pork-tenderloin-raw'  => [0.67, 4.0, 0.3],
+			'pork-loin-raw'        => [0.51, 5.0, 0.3],
+			'pork-belly-raw'       => [0.42, 4.0, 0.0],
+			'turkey-ground-raw'    => [0.82, 13.0, 0.0],
+			'chicken-ground-raw'   => [0.60, 5.0, 0.0],
+			'goose-roasted'        => [2.87, 13.0, 0.0],
+			'pheasant-roasted'     => [1.40, 14.0, 5.0],
+			'rabbit-roasted'       => [1.57, 12.0, 0.0],
+			'ostrich-steak-grilled' => [3.20, 8.0, 0.0],
+			'bison-steak-grilled'  => [2.86, 8.0, 0.0],
+			'elk-raw'              => [3.00, 4.0, 0.0],
+			'kangaroo-steak-grilled' => [3.20, 4.0, 0.0],
+
+			// ── MORE FISH & SEAFOOD ──
+			'barramundi-grilled'   => [0.42, 27.0, 0.0],
+			'grouper-raw'          => [0.87, 27.0, 0.0],
+			'red-snapper-raw'      => [0.18, 32.0, 1.5],
+			'yellowtail-raw'       => [0.36, 26.0, 2.0],
+			'pollock-raw'          => [0.46, 60.0, 0.0],
+			'flounder-raw'         => [0.18, 21.0, 0.0],
+			'whiting-raw'          => [0.32, 22.0, 0.0],
+			'monkfish-grilled'     => [0.30, 8.0, 0.0],
+			'dover-sole-grilled'   => [0.36, 23.0, 0.0],
+			'rainbow-trout-grilled' => [0.33, 67.0, 2.4],
+			'tilapia-grilled'      => [0.56, 10.0, 0.0],
+			'catfish-fried'        => [0.73, 8.0, 0.7],
+			'carp-baked'           => [1.24, 41.0, 1.6],
+			'clam-raw'             => [13.98, 46.0, 0.0],
+			'crawfish-raw'         => [1.10, 27.0, 1.1],
+			'king-crab-raw'        => [0.59, 46.0, 7.0],
+			'lobster-northern-raw' => [0.29, 96.0, 0.0],
+			'abalone-raw'          => [3.23, 37.0, 2.0],
+			'conch-raw'            => [0.87, 14.0, 1.5],
+			'eel-raw'              => [0.50, 20.0, 1.8],
+
+			// ── MORE DAIRY & EGGS ──
+			'brie'                 => [0.50, 184.0, 0.0],
+			'stilton-blue'         => [0.47, 320.0, 0.0],
+			'red-leicester'        => [0.30, 680.0, 0.0],
+			'wensleydale'          => [0.30, 550.0, 0.0],
+			'gruyere'              => [0.17, 1011.0, 0.0],
+			'manchego-cheese-curado' => [0.50, 760.0, 0.0],
+			'mascarpone'           => [0.20, 68.0, 0.0],
+			'ricotta-cheese-whole-milk' => [0.38, 207.0, 0.0],
+			'gouda-cheese'         => [0.24, 700.0, 0.0],
+			'provolone-cheese'     => [0.52, 756.0, 0.0],
+			'swiss-cheese'         => [0.16, 791.0, 0.0],
+			'edam-cheese'          => [0.44, 731.0, 0.0],
+			'buttermilk'           => [0.04, 116.0, 1.0],
+			'kefir-plain'          => [0.04, 130.0, 0.2],
+			'sour-cream-light'     => [0.06, 90.0, 0.5],
+			'clotted-cream-cornish' => [0.03, 57.0, 0.3],
+			'duck-egg-whole-raw'   => [2.70, 64.0, 0.0],
+			'quail-egg-whole-raw'  => [3.65, 64.0, 0.0],
+
+			// ── MORE GRAINS & CEREALS ──
+			'basmati-rice-raw'     => [0.80, 10.0, 0.0],
+			'wild-rice-cooked'     => [0.60, 3.0, 0.0],
+			'cooked-pearl-barley'  => [1.33, 11.0, 0.0],
+			'cooked-bulgur-wheat'  => [1.00, 10.0, 0.0],
+			'buckwheat-groats-raw' => [2.20, 18.0, 0.0],
+			'amaranth-raw'         => [7.61, 159.0, 4.2],
+			'teff-raw'             => [7.63, 180.0, 0.0],
+			'cornmeal-yellow-whole-grain' => [3.45, 7.0, 0.0],
+			'rye-bread'            => [1.35, 24.0, 0.0],
+			'sourdough-bread'      => [1.20, 20.0, 0.0],
+			'naan-bread-plain'     => [2.23, 48.0, 0.0],
+			'pitta-bread-white'    => [1.40, 35.0, 0.0],
+			'tortilla-flour'       => [2.39, 108.0, 0.0],
+			'croissant'            => [1.20, 22.0, 0.0],
+			'bagel-plain'          => [2.80, 13.0, 0.0],
+
+			// ── MORE NUTS & SEEDS ──
+			'brazil-nuts'          => [2.43, 160.0, 0.7],
+			'pecan-raw'            => [2.53, 70.0, 1.1],
+			'hazelnut-filbert-raw' => [4.70, 114.0, 6.3],
+			'pine-nuts'            => [5.53, 16.0, 0.8],
+			'macadamia-nut-raw'    => [3.69, 85.0, 1.2],
+			'coconut-flour'        => [3.60, 14.0, 0.0],
+			'almond-flour'         => [3.71, 236.0, 0.0],
+			'tahini'               => [8.95, 420.0, 0.0],
+			'hemp-protein-powder'  => [14.0, 60.0, 0.0],
+			'desiccated-coconut'   => [2.43, 14.0, 1.8],
+
+			// ── MORE LEGUMES ──
+			'black-eyed-peas-dry'  => [8.27, 110.0, 1.5],
+			'navy-beans-dry'       => [5.49, 147.0, 0.0],
+			'pinto-beans-dry'      => [5.07, 113.0, 6.3],
+			'lima-beans-dry'       => [7.51, 81.0, 0.0],
+			'split-peas-dry'       => [4.43, 55.0, 1.8],
+			'mung-beans-dry'       => [6.74, 132.0, 4.8],
+			'cooked-chickpeas'     => [2.89, 49.0, 1.3],
+			'cooked-black-beans'   => [2.10, 27.0, 0.0],
+			'tempeh'               => [2.70, 111.0, 0.0],
+			'bean-sprouts-mung-raw' => [0.91, 13.0, 13.2],
+
+			// ── SPICES & HERBS (high in micronutrients) ──
+			'ground-cumin'         => [66.36, 931.0, 7.7],
+			'turmeric-ground'      => [41.42, 183.0, 25.9],
+			'ground-coriander'     => [16.32, 709.0, 21.0],
+			'dried-thyme'          => [123.60, 1890.0, 50.0],
+			'dried-oregano'        => [36.80, 1597.0, 2.3],
+			'dried-basil'          => [89.80, 2240.0, 0.8],
+			'cinnamon-ground'      => [8.32, 1002.0, 3.8],
+			'black-pepper-ground'  => [9.71, 443.0, 0.0],
+			'smoked-paprika'       => [21.14, 229.0, 0.9],
+			'chilli-flakes'        => [7.80, 148.0, 76.4],
+			'curry-powder'         => [29.59, 478.0, 11.4],
+			'garam-masala'         => [10.0, 350.0, 0.0],
+
+			// ── COMMON CONDIMENTS ──
+			'hummus'               => [2.44, 38.0, 0.0],
+			'mustard-english'      => [3.70, 80.0, 1.6],
+			'mayonnaise-full-fat'  => [0.26, 8.0, 0.0],
+			'worcestershire-sauce' => [1.80, 56.0, 0.0],
+			'balsamic-vinegar'     => [0.72, 27.0, 0.0],
+			'miso-paste-white'     => [2.49, 57.0, 0.0],
+			'tahini'               => [8.95, 420.0, 0.0],
+			'tomato-paste'         => [2.98, 36.0, 21.9],
+		];
+
+		foreach ( $data as $slug => $vals ) {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f WHERE slug = %s AND iron_mg IS NULL", // phpcs:ignore
+				$vals[0], $vals[1], $vals[2], $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 90 );
+	}
 }
