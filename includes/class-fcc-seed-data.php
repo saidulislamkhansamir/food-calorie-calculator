@@ -14194,4 +14194,192 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 88 );
 	}
+
+	/** Seed v89: Micronutrient data Phase 1 — 200 common foods (Iron, Calcium, Vitamin C). */
+	public static function seed_v89(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 89 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		// slug => [iron_mg, calcium_mg, vitamin_c_mg] per 100g — USDA FDC data
+		$data = [
+			// ── FRUITS ──
+			'apple'              => [0.12, 6.0, 4.6],
+			'banana'             => [0.26, 5.0, 8.7],
+			'orange'             => [0.10, 40.0, 53.2],
+			'strawberry'         => [0.41, 16.0, 58.8],
+			'blueberry'          => [0.28, 6.0, 9.7],
+			'raspberry'          => [0.69, 25.0, 26.2],
+			'blackberry'         => [0.62, 29.0, 21.0],
+			'mango'              => [0.16, 11.0, 36.4],
+			'pineapple'          => [0.29, 13.0, 47.8],
+			'grapes'             => [0.36, 10.0, 3.2],
+			'watermelon'         => [0.24, 7.0, 8.1],
+			'avocado'            => [0.55, 12.0, 10.0],
+			'kiwi-fruit'         => [0.31, 34.0, 92.7],
+			'peach'              => [0.25, 6.0, 6.6],
+			'pear'               => [0.18, 9.0, 4.3],
+			'cherry'             => [0.36, 13.0, 7.0],
+			'pomegranate'        => [0.30, 10.0, 10.2],
+			'lemon'              => [0.60, 26.0, 53.0],
+			'lime'               => [0.60, 33.0, 29.1],
+			'grapefruit'         => [0.08, 22.0, 31.2],
+			'plum'               => [0.17, 6.0, 9.5],
+			'apricot'            => [0.39, 13.0, 10.0],
+			'fig-fresh'          => [0.37, 35.0, 2.0],
+			'medjool-dates-dried'=> [0.90, 64.0, 0.0],
+			'cranberry-fresh-raw'=> [0.25, 8.0, 13.3],
+			'nectarine'          => [0.28, 6.0, 5.4],
+			'papaya'             => [0.25, 20.0, 60.9],
+			'guava'              => [0.26, 18.0, 228.3],
+			'passion-fruit'      => [1.60, 12.0, 30.0],
+			'dragon-fruit-pitaya'=> [1.90, 8.5, 20.5],
+
+			// ── VEGETABLES ──
+			'potato-boiled'      => [0.31, 5.0, 7.4],
+			'sweet-potato-baked' => [0.69, 38.0, 12.8],
+			'carrot'             => [0.30, 33.0, 5.9],
+			'broccoli'           => [0.73, 47.0, 89.2],
+			'spinach-raw'        => [2.71, 99.0, 28.1],
+			'tomato'             => [0.27, 10.0, 13.7],
+			'cucumber'           => [0.28, 16.0, 2.8],
+			'onion'              => [0.21, 23.0, 7.4],
+			'garlic'             => [1.70, 181.0, 31.2],
+			'mushroom'           => [0.50, 3.0, 2.1],
+			'pepper-red'         => [0.43, 7.0, 127.7],
+			'lettuce-iceberg'    => [0.41, 18.0, 2.8],
+			'cauliflower'        => [0.42, 22.0, 48.2],
+			'courgette-zucchini' => [0.37, 16.0, 17.9],
+			'aubergine'          => [0.23, 9.0, 2.2],
+			'celery'             => [0.20, 40.0, 3.1],
+			'asparagus'          => [2.14, 24.0, 5.6],
+			'green-beans'        => [1.03, 37.0, 12.2],
+			'peas-frozen'        => [1.54, 25.0, 40.0],
+			'sweetcorn-canned'   => [0.52, 2.0, 6.8],
+			'kale'               => [1.47, 150.0, 120.0],
+			'brussels-sprouts-raw'=> [1.40, 42.0, 85.0],
+			'cabbage'            => [0.47, 40.0, 36.6],
+			'beetroot'           => [0.80, 16.0, 4.9],
+			'fennel-raw'         => [0.73, 49.0, 12.0],
+			'radish'             => [0.34, 25.0, 14.8],
+			'turnip-raw'         => [0.30, 30.0, 21.0],
+			'pumpkin-raw'        => [0.80, 21.0, 9.0],
+			'okra-raw'           => [0.62, 82.0, 23.0],
+			'artichoke-globe-raw'=> [1.28, 44.0, 11.7],
+
+			// ── MEAT & POULTRY ──
+			'chicken-breast-raw' => [0.37, 5.0, 0.0],
+			'chicken-breast-grilled-skinless' => [0.40, 6.0, 0.0],
+			'chicken-thigh-raw'  => [0.70, 7.0, 0.0],
+			'chicken-drumstick-raw'=> [0.60, 8.0, 0.0],
+			'minced-beef-raw'    => [1.90, 12.0, 0.0],
+			'roast-beef'         => [2.60, 10.0, 0.0],
+			'beef-steak-sirloin-raw'=> [1.71, 6.0, 0.0],
+			'roast-lamb'         => [1.88, 12.0, 0.0],
+			'lamb-chop-raw'      => [1.55, 8.0, 0.0],
+			'roast-pork'         => [0.87, 7.0, 0.0],
+			'pork-chop-raw'      => [0.50, 5.0, 0.6],
+			'bacon-back-grilled' => [0.60, 5.0, 0.0],
+			'sausage-pork-grilled'=> [0.90, 10.0, 0.0],
+			'ham-sliced'         => [0.70, 5.0, 0.0],
+			'roast-turkey'       => [0.49, 8.0, 0.0],
+			'duck-breast-raw'    => [2.40, 9.0, 2.8],
+			'venison-steak-grilled'=> [3.40, 6.0, 0.0],
+			'chicken-liver-fried'=> [8.99, 8.0, 17.9],
+			'lamb-liver-fried'   => [7.37, 7.0, 12.0],
+
+			// ── FISH & SEAFOOD ──
+			'salmon-raw'         => [0.34, 9.0, 3.9],
+			'grilled-salmon-fillet'=> [0.38, 12.0, 0.0],
+			'tuna-canned-in-brine'=> [0.97, 11.0, 0.0],
+			'cod-raw'            => [0.38, 16.0, 1.0],
+			'steamed-cod'        => [0.38, 16.0, 1.0],
+			'prawns-raw'         => [0.52, 52.0, 0.0],
+			'sardines-in-tomato-sauce'=> [2.92, 382.0, 0.0],
+			'mackerel-raw'       => [1.63, 12.0, 0.4],
+			'smoked-salmon'      => [0.85, 11.0, 0.0],
+			'mahi-mahi-raw'      => [1.13, 18.0, 0.0],
+			'swordfish-raw'      => [0.55, 4.0, 0.0],
+			'halibut-raw'        => [0.16, 7.0, 0.0],
+			'sea-bass-raw'       => [0.29, 10.0, 0.0],
+			'tuna-steak-grilled' => [1.02, 8.0, 0.0],
+			'haddock-raw'        => [0.17, 11.0, 0.0],
+			'scallop-raw'        => [0.38, 6.0, 0.0],
+			'mussel-raw'         => [3.95, 26.0, 0.0],
+			'oyster-pacific-raw' => [5.11, 44.0, 3.0],
+
+			// ── EGGS & DAIRY ──
+			'egg-boiled'         => [1.19, 50.0, 0.0],
+			'whole-milk'         => [0.03, 113.0, 0.0],
+			'semi-skimmed-milk'  => [0.03, 120.0, 0.9],
+			'skimmed-milk'       => [0.03, 125.0, 0.0],
+			'cheddar-cheese'     => [0.68, 721.0, 0.0],
+			'mozzarella'         => [0.44, 505.0, 0.0],
+			'greek-yoghurt'      => [0.07, 100.0, 0.0],
+			'natural-yoghurt'    => [0.05, 110.0, 0.7],
+			'cream-cheese'       => [0.11, 98.0, 0.0],
+			'butter-salted'      => [0.02, 24.0, 0.0],
+			'double-cream'       => [0.07, 65.0, 0.6],
+			'parmesan'           => [0.82, 1184.0, 0.0],
+			'feta-cheese'        => [0.65, 493.0, 0.0],
+			'cottage-cheese'     => [0.07, 83.0, 0.0],
+			'skyr-traditional-icelandic'=> [0.10, 110.0, 0.0],
+			'paneer'             => [0.43, 480.0, 0.0],
+			'halloumi-grilled'   => [0.30, 700.0, 0.0],
+
+			// ── GRAINS & CEREALS ──
+			'cooked-white-rice'  => [0.20, 10.0, 0.0],
+			'cooked-brown-rice'  => [0.42, 10.0, 0.0],
+			'cooked-pasta-white' => [0.50, 7.0, 0.0],
+			'white-bread'        => [1.00, 31.0, 0.0],
+			'wholemeal-bread'    => [1.60, 25.0, 0.0],
+			'oats-rolled-dry'    => [4.72, 54.0, 0.0],
+			'cornflakes'         => [8.00, 3.0, 0.0],
+			'plain-flour-white'  => [1.17, 15.0, 0.0],
+			'wholemeal-flour'    => [3.60, 34.0, 0.0],
+			'cooked-quinoa'      => [1.49, 17.0, 0.0],
+			'cooked-couscous'    => [0.38, 8.0, 0.0],
+
+			// ── NUTS & SEEDS ──
+			'almonds'            => [3.71, 269.0, 0.0],
+			'walnuts'            => [2.91, 98.0, 1.3],
+			'cashew-nuts'        => [6.68, 37.0, 0.5],
+			'peanuts-roasted'    => [1.52, 54.0, 0.0],
+			'peanut-butter-smooth'=> [1.74, 43.0, 0.0],
+			'chia-seeds'         => [7.72, 631.0, 1.6],
+			'flaxseeds'          => [5.73, 255.0, 0.6],
+			'pumpkin-seeds'      => [8.82, 46.0, 1.9],
+			'sunflower-seeds'    => [5.25, 78.0, 1.4],
+			'pistachio'          => [3.92, 105.0, 5.6],
+
+			// ── LEGUMES ──
+			'baked-beans-canned' => [1.41, 53.0, 0.5],
+			'kidney-beans-canned'=> [1.64, 28.0, 0.8],
+			'chickpeas-canned'   => [1.11, 36.0, 0.7],
+			'cooked-lentils-green'=> [3.33, 19.0, 1.5],
+			'cooked-lentils-red' => [2.43, 12.0, 0.5],
+			'tofu-firm'          => [5.36, 350.0, 0.1],
+			'edamame-beans-frozen-cooked'=> [2.27, 63.0, 6.1],
+
+			// ── CONDIMENTS & OILS ──
+			'olive-oil'          => [0.56, 1.0, 0.0],
+			'honey'              => [0.42, 6.0, 0.5],
+			'tomato-ketchup'     => [0.37, 16.0, 4.0],
+			'soy-sauce-dark'     => [1.30, 14.0, 0.0],
+
+			// ── DRINKS ──
+			'orange-juice'       => [0.20, 11.0, 50.0],
+			'apple-juice'        => [0.12, 7.0, 0.9],
+			'coconut-water-raw'  => [0.29, 24.0, 2.4],
+			'tomato-juice'       => [0.43, 10.0, 18.3],
+		];
+
+		foreach ( $data as $slug => $vals ) {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f WHERE slug = %s AND iron_mg IS NULL", // phpcs:ignore
+				$vals[0], $vals[1], $vals[2], $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 89 );
+	}
 }
