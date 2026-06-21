@@ -330,47 +330,5 @@ class Shortcode {
 			wp_add_inline_style( 'fcc-public', $wl_active['custom_css'] );
 		}
 
-		// JSON-LD schema if enabled.
-		if ( ! empty( $features['json_ld_schema'] ) ) {
-			self::output_json_ld();
-		}
-	}
-
-	/**
-	 * Output NutritionInformation + FAQ JSON-LD schema.
-	 */
-	private static function output_json_ld(): void {
-		$schema = [
-			'@context' => 'https://schema.org',
-			'@type'    => 'FAQPage',
-			'mainEntity' => [
-				[
-					'@type' => 'Question',
-					'name'  => 'How do I use the food calorie calculator?',
-					'acceptedAnswer' => [
-						'@type' => 'Answer',
-						'text'  => 'Search for a food, enter your quantity in grams, ounces or a serving size, and instantly see calories, macros, Reference Intakes, and FSA traffic-light ratings.',
-					],
-				],
-				[
-					'@type' => 'Question',
-					'name'  => 'What are UK Reference Intakes?',
-					'acceptedAnswer' => [
-						'@type' => 'Answer',
-						'text'  => 'UK Reference Intakes (RI) are guideline daily amounts for an average adult: 2000 kcal energy, 70g fat, 20g saturates, 90g sugars, 6g salt, and 50g protein.',
-					],
-				],
-				[
-					'@type' => 'Question',
-					'name'  => 'What are FSA traffic-light labels?',
-					'acceptedAnswer' => [
-						'@type' => 'Answer',
-						'text'  => 'The UK Food Standards Agency traffic-light scheme colour-codes food for fat, saturated fat, sugars and salt as green (low), amber (medium) or red (high) per 100g, making it easy to compare healthiness at a glance.',
-					],
-				],
-			],
-		];
-
-		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 	}
 }
