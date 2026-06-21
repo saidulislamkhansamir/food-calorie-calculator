@@ -3978,7 +3978,7 @@ select.fcc-bmr-input {
 	box-shadow: 0 2px 6px rgba(7,91,94,.2);
 	transition: background .15s, box-shadow .15s, transform .15s;
 }
-.fcc-voice-icon { font-size: 20px; line-height: 1; }
+.fcc-voice-icon { font-size: 20px; line-height: 1; display: flex; align-items: center; justify-content: center; }
 .fcc-voice-btn:hover {
 	background: #044547;
 	box-shadow: 0 3px 10px rgba(7,91,94,.3);

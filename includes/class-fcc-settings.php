@@ -90,7 +90,7 @@ class Settings {
 				'primary_colour'    => '#075B5E',
 				'accent_colour'     => '#FF3F33',
 				'background_colour' => '#FFE6E1',
-				'voice_icon'        => 'emoji',
+				'voice_icon'        => 'svg',
 				'voice_colour'      => '#075B5E',
 				'voice_size'        => 'medium',
 				'dark_mode'         => false,
