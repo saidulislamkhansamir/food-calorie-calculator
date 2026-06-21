@@ -12261,4 +12261,83 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 75 );
 	}
+
+	/** Seed v76: Missing fish & seafood from dailycalorie.app/food/category/fish. */
+	public static function seed_v76(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 76 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fs = $cid['fish-seafood'] ?? 0;
+
+		$foods = [
+			// name, cat, kcal, kJ, prot, carbs, sugars, fat, sats, fibre, salt,
+			// fish,shell,dairy,eggs,nuts,gluten,soy,celery, keto,paleo,halal,kosher,vegan,veg, servings
+			['Abalone (raw)',$fs,105,439,17.1,6.0,0.0,0.8,0.2,0.0,0.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 abalone','grams'=>85]]],
+			['Clam (raw)',$fs,74,310,12.8,2.6,0.0,1.0,0.1,0.0,1.0, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'6 clams','grams'=>84],['label'=>'1 cup chopped','grams'=>150]]],
+			['Conch (raw)',$fs,130,544,26.3,1.7,0.0,1.4,0.3,0.0,0.8, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 cup','grams'=>127]]],
+			['Crawfish (raw)',$fs,82,343,16.0,0.0,0.0,1.2,0.2,0.0,0.2, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'8 crawfish','grams'=>85],['label'=>'1 cup tails','grams'=>135]]],
+			['King Crab (raw)',$fs,84,352,18.3,0.0,0.0,0.6,0.1,0.0,0.8, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 leg','grams'=>130]]],
+			['Blue Crab (raw)',$fs,87,364,18.1,0.0,0.0,1.1,0.2,0.0,0.6, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 crab','grams'=>100]]],
+			['Dungeness Crab (raw)',$fs,86,360,17.4,0.7,0.0,1.0,0.1,0.0,0.6, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 crab','grams'=>150]]],
+			['Lobster (Northern, raw)',$fs,77,322,16.5,0.5,0.0,0.9,0.2,0.0,0.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 tail','grams'=>120]]],
+			['Spiny Lobster (raw)',$fs,112,469,20.6,2.4,0.0,1.5,0.2,0.0,0.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 tail','grams'=>130]]],
+			['Eel (raw)',$fs,184,770,18.4,0.0,0.0,11.7,2.4,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,0,0,0,0, [['label'=>'1 fillet','grams'=>100]]],
+			['Striped Bass (raw)',$fs,97,406,17.7,0.0,0.0,2.3,0.5,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>160]]],
+			['Burbot (raw)',$fs,90,377,19.3,0.0,0.0,0.8,0.2,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>120]]],
+			['Butterfish (raw)',$fs,146,611,17.3,0.0,0.0,8.0,0.0,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>80]]],
+			['Croaker (Atlantic, raw)',$fs,104,435,17.8,0.0,0.0,3.2,1.1,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>115]]],
+			['Flounder (raw)',$fs,86,360,17.9,0.0,0.0,1.2,0.3,0.0,0.2, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>140]]],
+			['Ling (raw)',$fs,87,364,19.3,0.0,0.0,0.6,0.1,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Lingcod (raw)',$fs,85,356,17.7,0.0,0.0,1.1,0.2,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>170]]],
+			['Milkfish (raw)',$fs,148,619,20.5,0.0,0.0,6.7,0.0,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Ocean Perch (raw)',$fs,94,393,18.6,0.0,0.0,1.6,0.2,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>120]]],
+			['Pollock (raw)',$fs,92,385,19.4,0.0,0.0,1.0,0.1,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Rockfish (raw)',$fs,94,393,18.8,0.0,0.0,1.6,0.4,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Sablefish / Black Cod (raw)',$fs,195,816,13.4,0.0,0.0,15.3,3.2,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Salmon (Chinook / King, raw)',$fs,179,749,19.9,0.0,0.0,10.4,2.5,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Salmon (Sockeye / Red, raw)',$fs,131,548,21.3,0.0,0.0,4.7,0.8,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Salmon (Coho / Silver, raw)',$fs,139,582,21.6,0.0,0.0,5.3,1.3,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Salmon (Chum / Keta, raw)',$fs,120,502,20.1,0.0,0.0,3.8,0.8,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Salmon (Pink / Humpback, raw)',$fs,116,485,19.9,0.0,0.0,3.5,0.6,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Seatrout (raw)',$fs,104,435,16.7,0.0,0.0,3.6,1.0,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Shad (American, raw)',$fs,197,824,16.9,0.0,0.0,13.8,0.0,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Sheepshead (raw)',$fs,108,452,20.2,0.0,0.0,2.4,0.6,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Smelt (Rainbow, raw)',$fs,97,406,17.6,0.0,0.0,2.4,0.5,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'5 fish','grams'=>85]]],
+			['Sunfish (Pumpkinseed, raw)',$fs,89,372,20.0,0.0,0.0,0.7,0.1,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>100]]],
+			['Surimi (imitation crab)',$fs,99,414,15.2,6.9,0.0,0.9,0.2,0.0,0.8, 1,0,0,0,0,0,0,0, 0,0,1,1,0,0, [['label'=>'3 sticks','grams'=>85]]],
+			['Tilefish (raw)',$fs,96,402,17.5,0.0,0.0,2.3,0.4,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Turbot (raw)',$fs,95,397,16.0,0.0,0.0,3.2,0.0,0.0,0.2, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>200]]],
+			['Whitefish (Lake, raw)',$fs,134,561,19.1,0.0,0.0,5.9,0.9,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Whiting (raw)',$fs,90,377,18.3,0.0,0.0,1.3,0.2,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>120]]],
+			['Wolffish (Atlantic, raw)',$fs,96,402,17.5,0.0,0.0,2.4,0.4,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Frog Legs (raw)',$fs,73,305,16.4,0.0,0.0,0.3,0.1,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'4 legs','grams'=>125]]],
+			['Snail / Escargot (raw)',$fs,90,377,16.1,2.0,0.0,1.4,0.4,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'6 snails','grams'=>48]]],
+			['Jellyfish (dried, salted)',$fs,36,151,5.0,0.0,0.0,1.4,0.0,0.0,9.0, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 cup','grams'=>58]]],
+			['Scallop (raw)',$fs,69,289,12.1,3.2,0.0,0.5,0.1,0.0,0.4, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'3 large','grams'=>75],['label'=>'6 small','grams'=>84]]],
+			['Oyster (Pacific, raw)',$fs,81,339,9.5,4.9,0.0,2.3,0.5,0.0,0.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'6 medium','grams'=>85]]],
+			['Mussel (raw)',$fs,86,360,11.9,3.7,0.0,2.2,0.4,0.0,0.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 cup meat','grams'=>150]]],
+			['Fish Roe (generic, raw)',$fs,143,598,22.3,1.5,0.0,6.4,1.5,0.0,0.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 tablespoon','grams'=>16],['label'=>'1 oz','grams'=>28]]],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; }
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'serving_sizes'=> wp_json_encode( $f[25] ),
+				'source_notes'=>'USDA FDC. Seeded v76.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 76 );
+	}
 }
