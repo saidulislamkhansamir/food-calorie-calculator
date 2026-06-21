@@ -12024,4 +12024,69 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 72 );
 	}
+
+	/** Seed v73: Missing fruits from dailycalorie.app comparison. */
+	public static function seed_v73(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 73 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv = $cid['fruit-veg'] ?? 0;
+
+		$foods = [
+			// name, cat, kcal, kJ, protein, carbs, sugars, fat, saturates, fibre, salt,
+			// fish,shellfish,dairy,eggs,nuts,gluten,soy,celery, keto,paleo,halal,kosher,vegan,veg,
+			// serving_sizes (JSON array)
+			['Honeydew Melon',$fv,36,151,0.5,9.1,8.1,0.1,0.0,0.8,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup diced','grams'=>170],['label'=>'1 wedge','grams'=>125]]],
+			['Cantaloupe Melon',$fv,34,142,0.8,8.2,7.9,0.2,0.1,0.9,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup diced','grams'=>160],['label'=>'1 wedge','grams'=>125]]],
+			['Nectarine',$fv,44,184,1.1,10.6,7.9,0.3,0.0,1.7,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 medium','grams'=>142]]],
+			['Rhubarb (raw)',$fv,21,88,0.9,4.5,1.1,0.2,0.0,1.8,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1, [['label'=>'1 cup diced','grams'=>122],['label'=>'1 stalk','grams'=>50]]],
+			['Cranberry (fresh, raw)',$fv,46,192,0.5,12.2,4.0,0.1,0.0,4.6,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>100]]],
+			['Acerola (Barbados cherry)',$fv,32,134,0.4,7.7,0.0,0.3,0.1,1.1,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>98],['label'=>'10 cherries','grams'=>50]]],
+			['Cherimoya',$fv,75,314,1.6,17.7,12.9,0.7,0.0,3.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>235],['label'=>'1 cup','grams'=>160]]],
+			['Feijoa (pineapple guava)',$fv,55,230,1.0,12.9,8.2,0.6,0.2,6.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>42],['label'=>'1 cup','grams'=>243]]],
+			['Mangosteen',$fv,73,305,0.4,18.0,0.0,0.6,0.0,1.8,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>76],['label'=>'1 cup','grams'=>196]]],
+			['Jujube (Chinese date, fresh)',$fv,79,331,1.2,20.2,0.0,0.2,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'3 fruits','grams'=>30],['label'=>'1 oz','grams'=>28]]],
+			['Longan (fresh)',$fv,60,251,1.3,15.1,0.0,0.1,0.0,1.1,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'10 fruits','grams'=>32],['label'=>'1 cup','grams'=>150]]],
+			['Sapodilla',$fv,83,347,0.4,20.0,0.0,1.1,0.2,5.3,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>170]]],
+			['Quince',$fv,57,238,0.4,15.3,0.0,0.1,0.0,1.9,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>92]]],
+			['Nance',$fv,82,343,0.7,17.1,0.0,1.3,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>150]]],
+			['Pitanga (Surinam cherry)',$fv,33,138,0.8,7.5,0.0,0.4,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>173]]],
+			['Sapote (Mamey)',$fv,124,519,1.5,32.1,0.0,0.5,0.2,5.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>175]]],
+			['Carissa (Natal plum)',$fv,62,259,0.5,13.6,0.0,1.3,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>20]]],
+			['Golden Kiwi',$fv,63,264,1.0,15.8,12.3,0.3,0.0,1.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>75],['label'=>'2 fruits','grams'=>150]]],
+			['Abiyuch',$fv,69,289,1.7,17.6,0.0,0.2,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>150]]],
+			['Rose Apple',$fv,25,105,0.6,5.7,0.0,0.3,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>40]]],
+			['Yuzu (whole fruit)',$fv,21,88,0.5,7.0,1.0,0.1,0.0,1.8,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>60]]],
+			['Custard Apple (Bullock\'s heart)',$fv,101,423,1.7,25.2,0.0,0.6,0.0,2.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>150]]],
+			['Java Plum (Jambolan)',$fv,60,251,0.7,15.6,0.0,0.2,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>135]]],
+			['Sugar Apple (Sweetsop)',$fv,94,393,2.1,23.6,0.0,0.3,0.0,4.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>155]]],
+			['Crabapple',$fv,76,318,0.4,19.9,0.0,0.3,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup sliced','grams'=>110]]],
+			['Wild Blueberry',$fv,57,238,0.7,14.5,10.0,0.3,0.0,2.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>140]]],
+			['Yellow Watermelon',$fv,30,126,0.6,7.6,6.2,0.2,0.0,0.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup diced','grams'=>150],['label'=>'1 wedge','grams'=>280]]],
+			['Roselle (Hibiscus sabdariffa)',$fv,49,205,1.0,11.3,0.0,0.6,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>57]]],
+			['Miracle Berry',$fv,46,192,0.7,10.0,5.0,0.4,0.0,2.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'3 berries','grams'=>9]]],
+			['Horned Melon (Kiwano)',$fv,44,184,1.8,7.6,0.0,1.3,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 fruit','grams'=>209]]],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; }
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'serving_sizes'=> wp_json_encode( $f[25] ),
+				'source_notes'=>'USDA FDC. Seeded v73.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 73 );
+	}
 }
