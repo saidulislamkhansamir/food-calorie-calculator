@@ -33,7 +33,6 @@ class Settings {
 				'search_result_limit'  => 10,
 				'popular_foods_count'  => 8,
 				'search_debounce'      => 280,
-				'pinned_foods'         => [],
 				'show_nutrients'   => [
 					'energy_kcal', 'energy_kj', 'protein_g', 'carbohydrate_g',
 					'of_which_sugars_g', 'fat_g', 'of_which_saturates_g',
@@ -156,6 +155,9 @@ class Settings {
 				'meal_cat_snack_emoji'      => '🍎',
 				'meal_max_templates'        => 10,
 			],
+			'pinned' => [
+				'pinned_foods' => [],
+			],
 		];
 	}
 
@@ -240,6 +242,16 @@ class Settings {
 	public static function install_defaults(): void {
 		if ( false === get_option( self::OPTION_KEY ) ) {
 			add_option( self::OPTION_KEY, self::defaults() );
+		}
+	}
+
+	public static function migrate_pinned_to_section(): void {
+		$all = get_option( self::OPTION_KEY, [] );
+		if ( ! is_array( $all ) ) return;
+		if ( ! empty( $all['general']['pinned_foods'] ) && empty( $all['pinned']['pinned_foods'] ) ) {
+			$all['pinned'] = [ 'pinned_foods' => $all['general']['pinned_foods'] ];
+			unset( $all['general']['pinned_foods'] );
+			update_option( self::OPTION_KEY, $all );
 		}
 	}
 

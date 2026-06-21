@@ -205,7 +205,7 @@ class Rest_Api {
 		$limit       = min( (int) $request->get_param( 'limit' ), 50 );
 		$category_id = (int) $request->get_param( 'category' );
 
-		$pinned = Settings::get( 'general.pinned_foods', [] );
+		$pinned = Settings::get( 'pinned.pinned_foods', [] );
 		$foods  = Database::search_foods( $query, $category_id, $limit, $pinned );
 
 		// Log to search_log for analytics time-series (fire-and-forget).

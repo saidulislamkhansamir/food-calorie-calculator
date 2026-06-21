@@ -43,6 +43,9 @@ class Settings_Page {
 			case 'labels':
 				$all['labels'] = $this->sanitise_labels( $_POST );
 				break;
+			case 'pinned':
+				$all['pinned'] = $this->sanitise_pinned( $_POST );
+				break;
 			case 'advanced':
 				$all['advanced'] = $this->sanitise_advanced( $_POST );
 				break;
@@ -84,6 +87,9 @@ class Settings_Page {
 				break;
 			case 'labels':
 				$all['labels'] = $this->sanitise_labels( $_POST );
+				break;
+			case 'pinned':
+				$all['pinned'] = $this->sanitise_pinned( $_POST );
 				break;
 			case 'advanced':
 				$all['advanced'] = $this->sanitise_advanced( $_POST );
@@ -151,6 +157,10 @@ class Settings_Page {
 		$sanitised['popular_foods_count'] = max( 0, min( 12, absint( $post['popular_foods_count'] ?? 8 ) ) );
 		$sanitised['search_debounce']     = max( 100, min( 500, absint( $post['search_debounce'] ?? 280 ) ) );
 
+		return $sanitised;
+	}
+
+	private function sanitise_pinned( array $post ): array {
 		$pinned = [];
 		if ( ! empty( $post['pinned_foods'] ) && is_array( $post['pinned_foods'] ) ) {
 			foreach ( array_slice( $post['pinned_foods'], 0, 20 ) as $rule ) {
@@ -163,9 +173,7 @@ class Settings_Page {
 				}
 			}
 		}
-		$sanitised['pinned_foods'] = $pinned;
-
-		return $sanitised;
+		return [ 'pinned_foods' => $pinned ];
 	}
 
 	/** @param array<string,mixed> $post */

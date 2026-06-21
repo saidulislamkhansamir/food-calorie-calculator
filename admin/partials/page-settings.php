@@ -21,6 +21,7 @@ $tabs = [
 	'features'   => [ 'label' => __( 'Features',   'food-calorie-calculator' ), 'icon' => '⚡' ],
 	'appearance' => [ 'label' => __( 'Appearance', 'food-calorie-calculator' ), 'icon' => '🎨' ],
 	'labels'     => [ 'label' => __( 'Labels',     'food-calorie-calculator' ), 'icon' => '🏷️' ],
+	'pinned'     => [ 'label' => __( 'Pinned',     'food-calorie-calculator' ), 'icon' => '📌' ],
 	'advanced'   => [ 'label' => __( 'Advanced',   'food-calorie-calculator' ), 'icon' => '🔧' ],
 ];
 
@@ -219,67 +220,6 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						<div class="fcc-stg-row__control">
 							<input type="number" id="search_debounce" name="search_debounce" min="100" max="500" step="10"
 								value="<?php echo absint( $general['search_debounce'] ?? 280 ); ?>" class="fcc-stg-number">
-						</div>
-					</div>
-
-					<!-- Pinned Foods -->
-					<div class="fcc-stg-row fcc-stg-row--full">
-						<div class="fcc-stg-row__label">
-							<label><?php esc_html_e( 'Pinned Search Results', 'food-calorie-calculator' ); ?></label>
-							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Force specific foods to appear at positions 1st, 2nd, or 3rd when a search keyword matches. Great for promoting sponsored foods.', 'food-calorie-calculator' ); ?></p>
-						</div>
-						<div class="fcc-stg-row__control fcc-stg-row__control--wide">
-							<table class="fcc-pin-table" id="fcc-pin-table">
-								<thead>
-									<tr>
-										<th><?php esc_html_e( 'Keyword', 'food-calorie-calculator' ); ?></th>
-										<th><?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?></th>
-										<th><?php esc_html_e( 'Position', 'food-calorie-calculator' ); ?></th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody id="fcc-pin-tbody">
-									<?php
-									$pinned_foods = $general['pinned_foods'] ?? [];
-									foreach ( $pinned_foods as $idx => $rule ) : ?>
-										<tr class="fcc-pin-row">
-											<td>
-												<input type="text" name="pinned_foods[<?php echo $idx; ?>][keyword]"
-													value="<?php echo esc_attr( $rule['keyword'] ); ?>"
-													placeholder="e.g. caviar" class="fcc-pin-input">
-											</td>
-											<td style="position:relative">
-												<input type="text" class="fcc-pin-input fcc-pin-food-search"
-													value="<?php echo esc_attr( $rule['food_name'] ); ?>"
-													placeholder="<?php esc_attr_e( 'Search food…', 'food-calorie-calculator' ); ?>"
-													autocomplete="off">
-												<input type="hidden" name="pinned_foods[<?php echo $idx; ?>][food_id]"
-													value="<?php echo absint( $rule['food_id'] ); ?>" class="fcc-pin-food-id">
-												<input type="hidden" name="pinned_foods[<?php echo $idx; ?>][food_name]"
-													value="<?php echo esc_attr( $rule['food_name'] ); ?>" class="fcc-pin-food-name">
-												<ul class="fcc-pin-dropdown" hidden></ul>
-											</td>
-											<td>
-												<select name="pinned_foods[<?php echo $idx; ?>][position]" class="fcc-pin-select">
-													<option value="1"<?php selected( $rule['position'] ?? 1, 1 ); ?>>1st</option>
-													<option value="2"<?php selected( $rule['position'] ?? 1, 2 ); ?>>2nd</option>
-													<option value="3"<?php selected( $rule['position'] ?? 1, 3 ); ?>>3rd</option>
-												</select>
-											</td>
-											<td>
-												<button type="button" class="fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
-													<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-												</button>
-											</td>
-										</tr>
-									<?php endforeach; ?>
-								</tbody>
-							</table>
-							<button type="button" class="button fcc-pin-add" id="fcc-pin-add">
-								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-								<?php esc_html_e( 'Add Pin Rule', 'food-calorie-calculator' ); ?>
-							</button>
-							<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 20 rules. Pinned foods override sponsor and popularity ordering for matched keywords.', 'food-calorie-calculator' ); ?></p>
 						</div>
 					</div>
 
@@ -732,6 +672,81 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 								placeholder="<?php esc_attr_e( 'Plugin default', 'food-calorie-calculator' ); ?>">
 						</div>
 					<?php endforeach; ?>
+				</div>
+			</div>
+
+		<?php elseif ( 'pinned' === $active_tab ) : ?>
+		<!-- ============================================================
+		     PINNED TAB
+		     ============================================================ -->
+			<?php $pinned_settings = \FCC\Settings::get_section( 'pinned' ); ?>
+
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Pinned Search Results', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Force specific foods to appear at positions 1st, 2nd, or 3rd in the search dropdown when a keyword matches. Great for promoting sponsored or featured foods to boost revenue.', 'food-calorie-calculator' ); ?></p>
+				</div>
+
+				<table class="fcc-pin-table" id="fcc-pin-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Keyword', 'food-calorie-calculator' ); ?></th>
+							<th><?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?></th>
+							<th><?php esc_html_e( 'Position', 'food-calorie-calculator' ); ?></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="fcc-pin-tbody">
+						<?php
+						$pinned_foods = $pinned_settings['pinned_foods'] ?? [];
+						foreach ( $pinned_foods as $idx => $rule ) : ?>
+							<tr class="fcc-pin-row">
+								<td>
+									<input type="text" name="pinned_foods[<?php echo $idx; ?>][keyword]"
+										value="<?php echo esc_attr( $rule['keyword'] ); ?>"
+										placeholder="e.g. caviar" class="fcc-pin-input">
+								</td>
+								<td style="position:relative">
+									<input type="text" class="fcc-pin-input fcc-pin-food-search"
+										value="<?php echo esc_attr( $rule['food_name'] ); ?>"
+										placeholder="<?php esc_attr_e( 'Search food…', 'food-calorie-calculator' ); ?>"
+										autocomplete="off">
+									<input type="hidden" name="pinned_foods[<?php echo $idx; ?>][food_id]"
+										value="<?php echo absint( $rule['food_id'] ); ?>" class="fcc-pin-food-id">
+									<input type="hidden" name="pinned_foods[<?php echo $idx; ?>][food_name]"
+										value="<?php echo esc_attr( $rule['food_name'] ); ?>" class="fcc-pin-food-name">
+									<ul class="fcc-pin-dropdown" hidden></ul>
+								</td>
+								<td>
+									<select name="pinned_foods[<?php echo $idx; ?>][position]" class="fcc-pin-select">
+										<option value="1"<?php selected( $rule['position'] ?? 1, 1 ); ?>>1st</option>
+										<option value="2"<?php selected( $rule['position'] ?? 1, 2 ); ?>>2nd</option>
+										<option value="3"<?php selected( $rule['position'] ?? 1, 3 ); ?>>3rd</option>
+									</select>
+								</td>
+								<td>
+									<button type="button" class="fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+									</button>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<button type="button" class="button fcc-pin-add" id="fcc-pin-add">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+					<?php esc_html_e( 'Add Pin Rule', 'food-calorie-calculator' ); ?>
+				</button>
+				<p class="fcc-stg-row__hint" style="margin-top:.75rem"><?php esc_html_e( 'Max 20 rules. Pinned foods override sponsor and popularity ordering for matched keywords.', 'food-calorie-calculator' ); ?></p>
+
+				<div class="fcc-pin-help">
+					<h3><?php esc_html_e( 'How it works', 'food-calorie-calculator' ); ?></h3>
+					<ul>
+						<li><?php esc_html_e( 'When a visitor\'s search query contains the keyword, the pinned food is forced into the specified position.', 'food-calorie-calculator' ); ?></li>
+						<li><?php esc_html_e( 'Example: keyword "caviar" with food "Beluga Caviar" at 1st — searching "caviar" always shows Beluga Caviar first.', 'food-calorie-calculator' ); ?></li>
+						<li><?php esc_html_e( 'Multiple rules can target the same keyword with different positions (1st, 2nd, 3rd).', 'food-calorie-calculator' ); ?></li>
+						<li><?php esc_html_e( 'Pinned foods appear even if they wouldn\'t normally match the search — perfect for cross-promoting.', 'food-calorie-calculator' ); ?></li>
+					</ul>
 				</div>
 			</div>
 
