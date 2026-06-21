@@ -326,7 +326,7 @@ class Database {
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
-	public static function search_foods( string $query, int $category_id = 0, int $limit = 20 ): array {
+	public static function search_foods( string $query, int $category_id = 0, int $limit = 20, array $pinned_rules = [] ): array {
 		global $wpdb;
 		$table = self::foods_table();
 		$like  = '%' . $wpdb->esc_like( $query ) . '%';
@@ -357,7 +357,43 @@ class Database {
 			);
 		}
 
-		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
+		$foods = array_map( [ self::class, 'decode_food' ], $rows ?? [] );
+
+		if ( ! empty( $pinned_rules ) && $query !== '' ) {
+			$foods = self::apply_pinned_rules( $foods, $query, $pinned_rules, $limit );
+		}
+
+		return $foods;
+	}
+
+	private static function apply_pinned_rules( array $foods, string $query, array $rules, int $limit ): array {
+		$matched = [];
+		foreach ( $rules as $rule ) {
+			if ( empty( $rule['keyword'] ) || empty( $rule['food_id'] ) ) continue;
+			if ( mb_stripos( $query, $rule['keyword'] ) === false ) continue;
+			$matched[] = $rule;
+		}
+
+		if ( empty( $matched ) ) return $foods;
+
+		usort( $matched, fn( $a, $b ) => ( $a['position'] ?? 1 ) - ( $b['position'] ?? 1 ) );
+
+		$used_positions = [];
+		foreach ( $matched as $rule ) {
+			$food = self::get_food( (int) $rule['food_id'] );
+			if ( ! $food ) continue;
+
+			$foods = array_values( array_filter( $foods, fn( $f ) => (int) $f['id'] !== (int) $rule['food_id'] ) );
+
+			$pos = ( (int) ( $rule['position'] ?? 1 ) ) - 1;
+			while ( isset( $used_positions[ $pos ] ) ) { $pos++; }
+			$pos = min( $pos, count( $foods ) );
+
+			array_splice( $foods, $pos, 0, [ $food ] );
+			$used_positions[ $pos ] = true;
+		}
+
+		return array_slice( $foods, 0, $limit );
 	}
 
 	/**

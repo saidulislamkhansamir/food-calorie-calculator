@@ -2667,6 +2667,102 @@
 	border-color: #075B5E;
 }
 
+/* Pinned foods repeater */
+.fcc-stg-row--full { flex-direction: column; align-items: stretch; }
+.fcc-stg-row__control--wide { width: 100%; }
+
+.fcc-pin-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: .5rem;
+	font-size: .875rem;
+}
+.fcc-pin-table th {
+	text-align: left;
+	padding: .4rem .5rem;
+	font-size: .75rem;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	color: #777;
+	border-bottom: 2px solid #e5e7eb;
+}
+.fcc-pin-table td {
+	padding: .35rem .5rem;
+	border-bottom: 1px solid #f0f0f0;
+	vertical-align: middle;
+}
+.fcc-pin-input {
+	width: 100%;
+	padding: .4rem .6rem;
+	border: 1.5px solid #d1d5db;
+	border-radius: 6px;
+	font-size: .85rem;
+	background: #fff;
+}
+.fcc-pin-input:focus { outline: none; border-color: #075B5E; }
+
+.fcc-pin-select {
+	padding: .35rem .5rem;
+	border: 1.5px solid #d1d5db;
+	border-radius: 6px;
+	font-size: .85rem;
+	background: #fff;
+	min-width: 65px;
+}
+.fcc-pin-select:focus { outline: none; border-color: #075B5E; }
+
+.fcc-pin-remove {
+	background: none;
+	border: 1.5px solid #e5e7eb;
+	border-radius: 6px;
+	padding: .3rem .4rem;
+	cursor: pointer;
+	color: #999;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: border-color .15s, color .15s;
+}
+.fcc-pin-remove:hover { border-color: #e74c3c; color: #e74c3c; }
+
+.fcc-pin-add {
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+	font-size: .82rem;
+	color: #075B5E;
+}
+
+.fcc-pin-dropdown {
+	position: absolute;
+	top: calc(100% + 2px);
+	left: 0;
+	right: 0;
+	background: #fff;
+	border: 1.5px solid #d1d5db;
+	border-radius: 8px;
+	box-shadow: 0 6px 20px rgba(0,0,0,.12);
+	list-style: none;
+	margin: 0;
+	padding: .25rem;
+	z-index: 999;
+	max-height: 200px;
+	overflow-y: auto;
+}
+.fcc-pin-dropdown[hidden] { display: none; }
+
+.fcc-pin-dropdown__item {
+	padding: .45rem .65rem;
+	cursor: pointer;
+	font-size: .83rem;
+	border-radius: 5px;
+	transition: background .1s;
+}
+.fcc-pin-dropdown__item:hover {
+	background: #f0f7f7;
+	color: #075B5E;
+}
+
 /* --------------------------------------------------------------------------
    Nutrient checkboxes grid
    -------------------------------------------------------------------------- */

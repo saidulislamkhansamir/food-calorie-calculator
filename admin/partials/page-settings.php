@@ -221,6 +221,68 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 								value="<?php echo absint( $general['search_debounce'] ?? 280 ); ?>" class="fcc-stg-number">
 						</div>
 					</div>
+
+					<!-- Pinned Foods -->
+					<div class="fcc-stg-row fcc-stg-row--full">
+						<div class="fcc-stg-row__label">
+							<label><?php esc_html_e( 'Pinned Search Results', 'food-calorie-calculator' ); ?></label>
+							<p class="fcc-stg-row__hint"><?php esc_html_e( 'Force specific foods to appear at positions 1st, 2nd, or 3rd when a search keyword matches. Great for promoting sponsored foods.', 'food-calorie-calculator' ); ?></p>
+						</div>
+						<div class="fcc-stg-row__control fcc-stg-row__control--wide">
+							<table class="fcc-pin-table" id="fcc-pin-table">
+								<thead>
+									<tr>
+										<th><?php esc_html_e( 'Keyword', 'food-calorie-calculator' ); ?></th>
+										<th><?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?></th>
+										<th><?php esc_html_e( 'Position', 'food-calorie-calculator' ); ?></th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody id="fcc-pin-tbody">
+									<?php
+									$pinned_foods = $general['pinned_foods'] ?? [];
+									foreach ( $pinned_foods as $idx => $rule ) : ?>
+										<tr class="fcc-pin-row">
+											<td>
+												<input type="text" name="pinned_foods[<?php echo $idx; ?>][keyword]"
+													value="<?php echo esc_attr( $rule['keyword'] ); ?>"
+													placeholder="e.g. caviar" class="fcc-pin-input">
+											</td>
+											<td style="position:relative">
+												<input type="text" class="fcc-pin-input fcc-pin-food-search"
+													value="<?php echo esc_attr( $rule['food_name'] ); ?>"
+													placeholder="<?php esc_attr_e( 'Search food…', 'food-calorie-calculator' ); ?>"
+													autocomplete="off">
+												<input type="hidden" name="pinned_foods[<?php echo $idx; ?>][food_id]"
+													value="<?php echo absint( $rule['food_id'] ); ?>" class="fcc-pin-food-id">
+												<input type="hidden" name="pinned_foods[<?php echo $idx; ?>][food_name]"
+													value="<?php echo esc_attr( $rule['food_name'] ); ?>" class="fcc-pin-food-name">
+												<ul class="fcc-pin-dropdown" hidden></ul>
+											</td>
+											<td>
+												<select name="pinned_foods[<?php echo $idx; ?>][position]" class="fcc-pin-select">
+													<option value="1"<?php selected( $rule['position'] ?? 1, 1 ); ?>>1st</option>
+													<option value="2"<?php selected( $rule['position'] ?? 1, 2 ); ?>>2nd</option>
+													<option value="3"<?php selected( $rule['position'] ?? 1, 3 ); ?>>3rd</option>
+												</select>
+											</td>
+											<td>
+												<button type="button" class="fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
+													<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+												</button>
+											</td>
+										</tr>
+									<?php endforeach; ?>
+								</tbody>
+							</table>
+							<button type="button" class="button fcc-pin-add" id="fcc-pin-add">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+								<?php esc_html_e( 'Add Pin Rule', 'food-calorie-calculator' ); ?>
+							</button>
+							<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 20 rules. Pinned foods override sponsor and popularity ordering for matched keywords.', 'food-calorie-calculator' ); ?></p>
+						</div>
+					</div>
+
 				</div>
 			</div>
 
@@ -894,6 +956,91 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 		cb.addEventListener( 'change', function () {
 			cb.closest( '.fcc-stg-feature' ).classList.toggle( 'fcc-stg-feature--on', cb.checked );
 		} );
+	} );
+} )();
+
+// ── Pinned Foods repeater ───────────────────────────────────────────
+( function () {
+	var tbody   = document.getElementById( 'fcc-pin-tbody' );
+	var addBtn  = document.getElementById( 'fcc-pin-add' );
+	if ( ! tbody || ! addBtn ) return;
+
+	var counter = tbody.querySelectorAll( '.fcc-pin-row' ).length;
+	var restUrl = '<?php echo esc_url( rest_url( 'fcc/v1/foods/search' ) ); ?>';
+	var nonce   = '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>';
+
+	addBtn.addEventListener( 'click', function () {
+		if ( counter >= 20 ) { alert( 'Maximum 20 pin rules.' ); return; }
+		var tr = document.createElement( 'tr' );
+		tr.className = 'fcc-pin-row';
+		tr.innerHTML =
+			'<td><input type="text" name="pinned_foods[' + counter + '][keyword]" placeholder="e.g. caviar" class="fcc-pin-input"></td>' +
+			'<td style="position:relative">' +
+				'<input type="text" class="fcc-pin-input fcc-pin-food-search" placeholder="Search food…" autocomplete="off">' +
+				'<input type="hidden" name="pinned_foods[' + counter + '][food_id]" class="fcc-pin-food-id">' +
+				'<input type="hidden" name="pinned_foods[' + counter + '][food_name]" class="fcc-pin-food-name">' +
+				'<ul class="fcc-pin-dropdown" hidden></ul>' +
+			'</td>' +
+			'<td><select name="pinned_foods[' + counter + '][position]" class="fcc-pin-select">' +
+				'<option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option>' +
+			'</select></td>' +
+			'<td><button type="button" class="fcc-pin-remove" title="Remove">' +
+				'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+			'</button></td>';
+		tbody.appendChild( tr );
+		counter++;
+	} );
+
+	tbody.addEventListener( 'click', function ( e ) {
+		var rmBtn = e.target.closest( '.fcc-pin-remove' );
+		if ( rmBtn ) rmBtn.closest( '.fcc-pin-row' ).remove();
+	} );
+
+	var debounceTimer;
+	tbody.addEventListener( 'input', function ( e ) {
+		var inp = e.target;
+		if ( ! inp.classList.contains( 'fcc-pin-food-search' ) ) return;
+		var q = inp.value.trim();
+		var dd = inp.parentNode.querySelector( '.fcc-pin-dropdown' );
+		if ( q.length < 2 ) { dd.hidden = true; dd.innerHTML = ''; return; }
+
+		clearTimeout( debounceTimer );
+		debounceTimer = setTimeout( function () {
+			fetch( restUrl + '?q=' + encodeURIComponent( q ) + '&limit=6', {
+				headers: { 'X-WP-Nonce': nonce }
+			} )
+			.then( function ( r ) { return r.json(); } )
+			.then( function ( foods ) {
+				dd.innerHTML = '';
+				if ( ! foods.length ) { dd.hidden = true; return; }
+				foods.forEach( function ( f ) {
+					var li = document.createElement( 'li' );
+					li.className = 'fcc-pin-dropdown__item';
+					li.textContent = f.name + ' (' + f.energy_kcal + ' kcal)';
+					li.dataset.id   = f.id;
+					li.dataset.name = f.name;
+					dd.appendChild( li );
+				} );
+				dd.hidden = false;
+			} )
+			.catch( function () { dd.hidden = true; } );
+		}, 250 );
+	} );
+
+	tbody.addEventListener( 'click', function ( e ) {
+		var item = e.target.closest( '.fcc-pin-dropdown__item' );
+		if ( ! item ) return;
+		var td = item.closest( 'td' );
+		td.querySelector( '.fcc-pin-food-search' ).value = item.dataset.name;
+		td.querySelector( '.fcc-pin-food-id' ).value     = item.dataset.id;
+		td.querySelector( '.fcc-pin-food-name' ).value   = item.dataset.name;
+		item.closest( '.fcc-pin-dropdown' ).hidden = true;
+	} );
+
+	document.addEventListener( 'click', function ( e ) {
+		if ( ! e.target.closest( '.fcc-pin-row' ) ) {
+			tbody.querySelectorAll( '.fcc-pin-dropdown' ).forEach( function ( dd ) { dd.hidden = true; } );
+		}
 	} );
 } )();
 </script>

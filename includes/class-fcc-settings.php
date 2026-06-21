@@ -33,6 +33,7 @@ class Settings {
 				'search_result_limit'  => 10,
 				'popular_foods_count'  => 8,
 				'search_debounce'      => 280,
+				'pinned_foods'         => [],
 				'show_nutrients'   => [
 					'energy_kcal', 'energy_kj', 'protein_g', 'carbohydrate_g',
 					'of_which_sugars_g', 'fat_g', 'of_which_saturates_g',

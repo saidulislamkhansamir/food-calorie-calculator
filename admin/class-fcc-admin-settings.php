@@ -151,6 +151,20 @@ class Settings_Page {
 		$sanitised['popular_foods_count'] = max( 0, min( 12, absint( $post['popular_foods_count'] ?? 8 ) ) );
 		$sanitised['search_debounce']     = max( 100, min( 500, absint( $post['search_debounce'] ?? 280 ) ) );
 
+		$pinned = [];
+		if ( ! empty( $post['pinned_foods'] ) && is_array( $post['pinned_foods'] ) ) {
+			foreach ( array_slice( $post['pinned_foods'], 0, 20 ) as $rule ) {
+				$kw  = sanitize_text_field( $rule['keyword'] ?? '' );
+				$fid = absint( $rule['food_id'] ?? 0 );
+				$fn  = sanitize_text_field( $rule['food_name'] ?? '' );
+				$pos = max( 1, min( 3, absint( $rule['position'] ?? 1 ) ) );
+				if ( $kw !== '' && $fid > 0 ) {
+					$pinned[] = [ 'keyword' => $kw, 'food_id' => $fid, 'food_name' => $fn, 'position' => $pos ];
+				}
+			}
+		}
+		$sanitised['pinned_foods'] = $pinned;
+
 		return $sanitised;
 	}
 
