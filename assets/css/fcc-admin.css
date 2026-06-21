@@ -37,18 +37,26 @@
 .fcc-card {
 	background: #fff;
 	border: 1px solid #e5e7eb;
-	border-radius: 10px;
-	padding: 1.5rem;
-	box-shadow: 0 1px 3px rgba(0,0,0,.06);
+	border-radius: 12px;
+	padding: 1.75rem;
+	box-shadow: 0 2px 8px rgba(0,0,0,.05);
+	transition: box-shadow 0.2s;
+}
+.fcc-food-form .fcc-card:hover {
+	box-shadow: 0 4px 16px rgba(7,91,94,.08);
 }
 
 .fcc-card__title {
-	margin: 0 0 1rem;
-	font-size: 1rem;
-	font-weight: 600;
-	color: #1d2327;
-	border-bottom: 1px solid #f0f0f1;
+	margin: 0 0 1.25rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #075B5E;
+	border-bottom: 2px solid #e8f5f5;
 	padding-bottom: 0.75rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
 }
 
 .fcc-card--stat {
@@ -143,8 +151,8 @@
 .fcc-form-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 1.25rem;
-	margin-top: 1rem;
+	gap: 1.5rem;
+	margin-top: 1.25rem;
 	max-width: 1100px;
 }
 
@@ -153,41 +161,72 @@
 .fcc-form-col .fcc-card { overflow: hidden; }
 .fcc-form-col .fcc-card p,
 .fcc-form-col .fcc-card .description { word-wrap: break-word; overflow-wrap: break-word; }
-.fcc-form-col input.regular-text { width: 100%; max-width: 100%; box-sizing: border-box; }
+.fcc-form-col input.regular-text,
+.fcc-form-col select.regular-text { width: 100%; max-width: 100%; box-sizing: border-box; }
+
+/* Enhanced form inputs */
+.fcc-food-form input[type="text"],
+.fcc-food-form input[type="number"],
+.fcc-food-form input[type="url"],
+.fcc-food-form input[type="date"],
+.fcc-food-form select,
+.fcc-food-form textarea {
+	border: 1.5px solid #d1d5db;
+	border-radius: 8px;
+	padding: 8px 12px;
+	font-size: 13.5px;
+	transition: border-color 0.2s, box-shadow 0.2s;
+	background: #fafbfc;
+}
+.fcc-food-form input:focus,
+.fcc-food-form select:focus,
+.fcc-food-form textarea:focus {
+	border-color: #075B5E;
+	box-shadow: 0 0 0 3px rgba(7,91,94,.1);
+	outline: none;
+	background: #fff;
+}
 
 .fcc-field {
-	margin-bottom: 1rem;
+	margin-bottom: 1.15rem;
 }
 .fcc-field label {
 	display: block;
 	font-weight: 600;
-	margin-bottom: 0.25rem;
+	margin-bottom: 0.35rem;
+	font-size: 13px;
+	color: #374151;
 }
 .fcc-field .description {
-	color: #646970;
-	font-size: 0.8rem;
-	margin-top: 0.25rem;
+	color: #6b7280;
+	font-size: 0.78rem;
+	margin-top: 0.3rem;
+	line-height: 1.4;
 }
-.fcc-field--required label::after { content: ''; }
+.fcc-field--required label .required {
+	color: #ef4444;
+	font-weight: 700;
+}
 
 .fcc-nutrient-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 1rem;
+	gap: 1.1rem;
 }
 
 .fcc-card--optional {
-	border-left: 3px solid #dba617;
+	border-left: 4px solid #dba617;
+	background: linear-gradient(135deg, #fffdf5 0%, #fff 40%);
 }
 
 .fcc-badge--optional {
-	font-size: 0.7rem;
+	font-size: 0.68rem;
 	background: #fff3cd;
-	color: #856404;
-	padding: 2px 8px;
+	color: #92610e;
+	padding: 3px 10px;
 	border-radius: 20px;
-	font-weight: 400;
-	margin-left: 0.5rem;
+	font-weight: 500;
+	letter-spacing: 0.01em;
 }
 
 .fcc-badge--green  { background: #d1fae5; color: #065f46; border-radius: 20px; padding: 2px 8px; font-size: 0.75rem; }
@@ -223,10 +262,27 @@
 	gap: 0.5rem;
 	margin-bottom: 0.5rem;
 	align-items: center;
+	padding: 6px 8px;
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	transition: border-color 0.15s;
 }
+.fcc-serving-row:hover { border-color: #075B5E; }
 .fcc-serving-label  { flex: 2; }
 .fcc-serving-grams  { flex: 1; max-width: 100px; }
-.fcc-add-serving    { margin-top: 0.5rem; }
+.fcc-add-serving    { margin-top: 0.75rem; }
+.fcc-remove-serving {
+	color: #dc2626 !important;
+	border-color: #fca5a5 !important;
+	border-radius: 6px !important;
+	font-size: 16px !important;
+	line-height: 1 !important;
+	padding: 2px 8px !important;
+}
+.fcc-remove-serving:hover {
+	background: #fee2e2 !important;
+}
 
 /* --------------------------------------------------------------------------
    Settings
@@ -261,6 +317,104 @@
 .wp-picker-container .wp-color-result { vertical-align: middle; }
 
 /* --------------------------------------------------------------------------
+   Edit Food — page header
+   -------------------------------------------------------------------------- */
+.fcc-edit-header {
+	margin-bottom: 0.5rem;
+}
+.fcc-edit-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #075B5E;
+	margin: 0.5rem 0 0;
+}
+.fcc-edit-back-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 13px;
+	color: #075B5E;
+	text-decoration: none;
+	padding: 5px 12px;
+	border: 1.5px solid #d1e7e8;
+	border-radius: 8px;
+	background: #f0f9f9;
+	transition: all 0.15s;
+}
+.fcc-edit-back-btn:hover {
+	background: #e0f2f2;
+	border-color: #075B5E;
+	color: #043e40;
+}
+
+/* Submit card */
+.fcc-card--submit {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	background: linear-gradient(135deg, #f0f9f9 0%, #fff 100%);
+	border: 1.5px solid #d1e7e8;
+}
+.fcc-submit-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 10px 24px;
+	background: #075B5E;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s;
+	box-shadow: 0 2px 6px rgba(7,91,94,.2);
+}
+.fcc-submit-btn:hover {
+	background: #043e40;
+	box-shadow: 0 4px 12px rgba(7,91,94,.3);
+	transform: translateY(-1px);
+}
+.fcc-cancel-btn {
+	display: inline-flex;
+	align-items: center;
+	padding: 10px 20px;
+	background: #fff;
+	color: #6b7280;
+	border: 1.5px solid #d1d5db;
+	border-radius: 10px;
+	font-size: 14px;
+	font-weight: 500;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.15s;
+}
+.fcc-cancel-btn:hover {
+	background: #f3f4f6;
+	border-color: #9ca3af;
+	color: #374151;
+}
+
+/* Add serving button */
+.fcc-add-serving {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 14px !important;
+	border-radius: 8px !important;
+	border-color: #075B5E !important;
+	color: #075B5E !important;
+	font-weight: 500 !important;
+	transition: all 0.15s !important;
+}
+.fcc-add-serving:hover {
+	background: #e8f5f5 !important;
+}
+
+/* --------------------------------------------------------------------------
    Responsive
    -------------------------------------------------------------------------- */
 @media screen and (max-width: 900px) {
@@ -269,6 +423,7 @@
 	.fcc-card--info { grid-column: span 1; }
 	.fcc-quick-links { grid-template-columns: 1fr; }
 	.fcc-nutrient-grid { grid-template-columns: 1fr; }
+	.fcc-card--submit { flex-wrap: wrap; }
 }
 
 /* ==========================================================================
@@ -4483,7 +4638,10 @@ button.fcc-reqs-tab {
 .fcc-an-kpi-card--gold .fcc-an-kpi-card__icon svg { color: #b7950b; stroke: #b7950b; }
 
 /* Sponsorship card in food edit form */
-.fcc-card--sponsorship { border-left: 3px solid #d4ac0d; }
+.fcc-card--sponsorship {
+	border-left: 4px solid #d4ac0d;
+	background: linear-gradient(135deg, #fffef5 0%, #fff 40%);
+}
 
 /* Analytics KPI row — 6-card layout */
 .fcc-an-kpi-row { grid-template-columns: repeat(6, 1fr); }
@@ -7743,23 +7901,32 @@ button.fcc-reqs-tab {
 /* ── Food edit form: checkbox grid for allergens/diet ── */
 .fcc-checkbox-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
 	gap: 8px;
-	margin-top: 6px;
+	margin-top: 8px;
 }
 .fcc-checkbox-item {
 	display: flex;
 	align-items: center;
-	gap: 5px;
+	gap: 6px;
 	font-size: 13px;
-	padding: 5px 8px;
-	border: 1px solid #e2e8f0;
-	border-radius: 8px;
-	background: #fafafa;
+	padding: 8px 10px;
+	border: 1.5px solid #e2e8f0;
+	border-radius: 10px;
+	background: #f8fafc;
 	cursor: pointer;
-	transition: border-color .15s, background .15s;
+	transition: all .2s;
 }
-.fcc-checkbox-item:hover { border-color: #075B5E; background: #f0f7f7; }
-.fcc-checkbox-item input[type="checkbox"] { accent-color: #075B5E; }
-.fcc-checkbox-item input[type="checkbox"]:checked + * { font-weight: 600; }
+.fcc-checkbox-item:hover {
+	border-color: #075B5E;
+	background: #eef7f7;
+	transform: translateY(-1px);
+	box-shadow: 0 2px 6px rgba(7,91,94,.1);
+}
+.fcc-checkbox-item input[type="checkbox"] { accent-color: #075B5E; width: 16px; height: 16px; }
+.fcc-checkbox-item input[type="checkbox"]:checked ~ * { font-weight: 600; color: #075B5E; }
+.fcc-checkbox-item:has(input:checked) {
+	border-color: #075B5E;
+	background: #e8f5f5;
+}
 

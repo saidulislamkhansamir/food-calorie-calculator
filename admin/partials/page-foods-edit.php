@@ -37,10 +37,16 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 }
 ?>
 <div class="wrap fcc-admin-wrap">
-	<h1><?php echo esc_html( $page_title ); ?></h1>
-	<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods' ) ); ?>" class="page-title-action">
-		← <?php esc_html_e( 'Back to Foods', 'food-calorie-calculator' ); ?>
-	</a>
+	<div class="fcc-edit-header">
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods' ) ); ?>" class="fcc-edit-back-btn">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+			<?php esc_html_e( 'Back to Foods', 'food-calorie-calculator' ); ?>
+		</a>
+		<h1 class="fcc-edit-title">
+			<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#075B5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+			<?php echo esc_html( $page_title ); ?>
+		</h1>
+	</div>
 
 	<?php FCC\Admin\Foods::maybe_render_notice(); ?>
 
@@ -54,7 +60,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 			<!-- Left column: core fields -->
 			<div class="fcc-form-col">
 				<div class="fcc-card">
-					<h2 class="fcc-card__title"><?php esc_html_e( 'Basic Info', 'food-calorie-calculator' ); ?></h2>
+					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><?php esc_html_e( 'Basic Info', 'food-calorie-calculator' ); ?></h2>
 					<div class="fcc-field fcc-field--required">
 						<label for="food_name"><?php esc_html_e( 'Name', 'food-calorie-calculator' ); ?> <span class="required">*</span></label>
 						<input type="text" id="food_name" name="name" required
@@ -84,7 +90,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 
 				<!-- Core nutrients (per 100g) -->
 				<div class="fcc-card">
-					<h2 class="fcc-card__title"><?php esc_html_e( 'Nutrients per 100g', 'food-calorie-calculator' ); ?></h2>
+					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><?php esc_html_e( 'Nutrients per 100g', 'food-calorie-calculator' ); ?></h2>
 					<div class="fcc-nutrient-grid">
 						<?php
 						fcc_num_field( 'energy_kcal', 'energy_kcal', $is_edit ? $food['energy_kcal'] : null, __( 'Energy (kcal)', 'food-calorie-calculator' ), true, '0.01' );
@@ -102,7 +108,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 
 				<!-- Serving sizes -->
 				<div class="fcc-card">
-					<h2 class="fcc-card__title"><?php esc_html_e( 'Serving Sizes', 'food-calorie-calculator' ); ?></h2>
+					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><?php esc_html_e( 'Serving Sizes', 'food-calorie-calculator' ); ?></h2>
 					<p class="description"><?php esc_html_e( 'Add serving sizes so users can pick "1 slice", "1 cup" etc instead of entering grams manually.', 'food-calorie-calculator' ); ?></p>
 					<div id="fcc-serving-sizes">
 						<?php
@@ -167,7 +173,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 
 				<!-- Source notes -->
 				<div class="fcc-card">
-					<h2 class="fcc-card__title"><?php esc_html_e( 'Source / Notes', 'food-calorie-calculator' ); ?></h2>
+					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><?php esc_html_e( 'Source / Notes', 'food-calorie-calculator' ); ?></h2>
 					<div class="fcc-field">
 						<label for="source_notes"><?php esc_html_e( 'Data source & notes', 'food-calorie-calculator' ); ?></label>
 						<textarea id="source_notes" name="source_notes" rows="4" class="large-text"><?php
@@ -179,7 +185,7 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 
 				<!-- Allergens & Dietary Tags -->
 				<div class="fcc-card">
-					<h2 class="fcc-card__title"><?php esc_html_e( 'Allergens & Dietary Tags', 'food-calorie-calculator' ); ?></h2>
+					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><?php esc_html_e( 'Allergens & Dietary Tags', 'food-calorie-calculator' ); ?></h2>
 					<div class="fcc-field">
 						<label><?php esc_html_e( 'Contains Allergens', 'food-calorie-calculator' ); ?></label>
 						<div class="fcc-checkbox-grid">
@@ -304,9 +310,12 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 				</div>
 
 				<!-- Submit -->
-				<div class="fcc-card">
-					<?php submit_button( $is_edit ? __( 'Update Food', 'food-calorie-calculator' ) : __( 'Add Food', 'food-calorie-calculator' ), 'primary large', 'submit', false ); ?>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods' ) ); ?>" class="button button-large">
+				<div class="fcc-card fcc-card--submit">
+					<button type="submit" name="submit" class="fcc-submit-btn">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+						<?php echo $is_edit ? esc_html__( 'Update Food', 'food-calorie-calculator' ) : esc_html__( 'Add Food', 'food-calorie-calculator' ); ?>
+					</button>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods' ) ); ?>" class="fcc-cancel-btn">
 						<?php esc_html_e( 'Cancel', 'food-calorie-calculator' ); ?>
 					</a>
 				</div>
