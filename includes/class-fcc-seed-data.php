@@ -11717,4 +11717,122 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 68 );
 	}
+
+	/** Seed v69: Serving sizes batch 12 — final remaining dishes, noodles, curries, desserts, drinks. */
+	public static function seed_v69(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 69 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── REMAINING NOODLE DISHES ──
+			'zhajiangmian-bean-paste-noodles' => [['label'=>'1 bowl','grams'=>350]],
+			'biang-biang-noodles-hand-pulled' => [['label'=>'1 bowl','grams'=>350]],
+			'cold-sesame-noodles'     => [['label'=>'1 bowl','grams'=>250]],
+			'liangpi-cold-skin-noodles' => [['label'=>'1 bowl','grams'=>250]],
+			'hot-dry-noodles-wuhan-re-gan-mian' => [['label'=>'1 bowl','grams'=>300]],
+			'chow-fun-flat-rice-noodles-beef' => [['label'=>'1 plate','grams'=>300]],
+			'chanpon-nagasaki-noodles' => [['label'=>'1 bowl','grams'=>400]],
+			'nabeyaki-udon-hot-pot-noodles' => [['label'=>'1 bowl','grams'=>400]],
+			'hiyashi-chuka-cold-ramen-salad' => [['label'=>'1 plate','grams'=>300]],
+			'somen-cold-thin-noodles' => [['label'=>'1 portion','grams'=>200]],
+			'zaru-soba-cold-dipping'  => [['label'=>'1 portion','grams'=>200]],
+			'kitsune-udon-fried-tofu-noodles' => [['label'=>'1 bowl','grams'=>400]],
+			'tempura-udon-hot-soup'   => [['label'=>'1 bowl','grams'=>400]],
+			'tsukemen-dipping-noodles' => [['label'=>'1 set','grams'=>350]],
+			'ramen-shoyu-soy-sauce'   => [['label'=>'1 bowl','grams'=>500]],
+			'ramen-miso'              => [['label'=>'1 bowl','grams'=>500]],
+			'ramyeon-korean-instant-noodles' => [['label'=>'1 bowl','grams'=>400]],
+			'cao-lau-hoi-an-noodles'  => [['label'=>'1 bowl','grams'=>300]],
+			'mi-quang-turmeric-noodles-da-nang' => [['label'=>'1 bowl','grams'=>300]],
+			'nan-gyi-thoke-thick-noodle-salad' => [['label'=>'1 plate','grams'=>250]],
+			'meeshay-shan-rice-noodles-with-pork' => [['label'=>'1 plate','grams'=>250]],
+			'ashlyam-fu-cold-kyrgyz-noodle-dish' => [['label'=>'1 bowl','grams'=>250]],
+			'norin-cold-horsemeat-noodles' => [['label'=>'1 plate','grams'=>250]],
+			'naryn-hand-pulled-noodles-with-horse' => [['label'=>'1 plate','grams'=>250]],
+
+			// ── REMAINING CURRY & STEW DISHES ──
+			'dhal-lentil'             => [['label'=>'1 bowl','grams'=>200],['label'=>'1 portion','grams'=>150]],
+			'saag-aloo'               => [['label'=>'1 portion','grams'=>200]],
+			'mutter-paneer-peas-cheese' => [['label'=>'1 portion','grams'=>200]],
+			'cream-stew-white-stew'   => [['label'=>'1 bowl','grams'=>250]],
+			'curry-udon-noodles-in-curry' => [['label'=>'1 bowl','grams'=>400]],
+			'hayashi-rice-hashed-beef' => [['label'=>'1 plate','grams'=>350]],
+			'dimlama-uzbek-layered-vegetable-meat' => [['label'=>'1 portion','grams'=>250]],
+			'potjiekos-pot-stew'      => [['label'=>'1 bowl','grams'=>250]],
+			'zharkoye-russian-pot-roast' => [['label'=>'1 portion','grams'=>250]],
+			'ostri-georgian-spicy-beef-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'chakhokhbili-chicken-tomato-stew' => [['label'=>'1 portion','grams'=>250]],
+			'satsivi-walnut-chicken-sauce' => [['label'=>'1 portion','grams'=>200]],
+			'piti-azerbaijani-lamb-shank-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'abgoosht-lamb-chickpea-broth' => [['label'=>'1 bowl','grams'=>300]],
+			'qorma-e-sabzi-green-herb-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'or-lam-luang-prabang-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'kaeng-nor-mai-bamboo-shoot-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'moambe-chicken-palm-butter' => [['label'=>'1 portion','grams'=>200]],
+			'ndole-cameroonian-bitter-leaf-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'poulet-dg-chicken-cameroon' => [['label'=>'1 portion','grams'=>200]],
+			'efo-riro-vegetable-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'ogbono-soup-wild-mango-seed' => [['label'=>'1 bowl','grams'=>250]],
+			'palm-nut-soup-banga'     => [['label'=>'1 bowl','grams'=>250]],
+			'afang-soup-nigerian'     => [['label'=>'1 bowl','grams'=>250]],
+			'okra-soup-west-african'  => [['label'=>'1 bowl','grams'=>250]],
+			'light-soup-ghanaian-tomato' => [['label'=>'1 bowl','grams'=>250]],
+
+			// ── REMAINING DESSERTS & SWEETS ──
+			'warabi-mochi-bracken-starch' => [['label'=>'3 pieces','grams'=>60]],
+			'monaka-wafer-bean-paste' => [['label'=>'1 piece','grams'=>30]],
+			'dorayaki-pancake-red-bean' => [['label'=>'1 piece','grams'=>65]],
+			'daifuku-red-bean-mochi'  => [['label'=>'1 piece','grams'=>50]],
+			'taiyaki-red-bean-filling' => [['label'=>'1 piece','grams'=>80]],
+			'nian-gao-chinese-new-year-cake' => [['label'=>'1 slice','grams'=>50]],
+			'sesame-balls-jian-dui'   => [['label'=>'1 ball','grams'=>40],['label'=>'3 balls','grams'=>120]],
+			'mango-pudding-cantonese' => [['label'=>'1 cup','grams'=>120]],
+			'douhua-soft-tofu-pudding' => [['label'=>'1 bowl','grams'=>200]],
+			'red-bean-soup-sweet-tong-sui' => [['label'=>'1 bowl','grams'=>200]],
+			'fa-gao-prosperity-cake'  => [['label'=>'1 piece','grams'=>50]],
+			'wife-cake-lao-po-bing'   => [['label'=>'1 cake','grams'=>40]],
+			'dasik-pressed-tea-cookie' => [['label'=>'1 piece','grams'=>15],['label'=>'5 pieces','grams'=>75]],
+			'gaz-isfahan-nougat'      => [['label'=>'1 piece','grams'=>20],['label'=>'3 pieces','grams'=>60]],
+			'sohan-saffron-brittle'   => [['label'=>'1 piece','grams'=>25]],
+			'bastani-sonnati-saffron-ice-cream' => [['label'=>'1 scoop','grams'=>70],['label'=>'2 scoops','grams'=>140]],
+			'sheer-khurma-vermicelli-milk-dessert' => [['label'=>'1 bowl','grams'=>150]],
+			'firni-cornflour-milk-pudding' => [['label'=>'1 bowl','grams'=>150]],
+			'sheer-yakh-afghan-ice-cream' => [['label'=>'1 scoop','grams'=>80]],
+			'guava-duff-bahamian-steamed-pudding' => [['label'=>'1 portion','grams'=>120]],
+			'nutmeg-ice-cream-grenada' => [['label'=>'1 scoop','grams'=>66]],
+			'habichuelas-con-dulce-sweet-bean-cream' => [['label'=>'1 bowl','grams'=>200]],
+			'che-ba-mau-three-colour-dessert' => [['label'=>'1 glass','grams'=>200]],
+			'banh-flan-vietnamese-creme-caramel' => [['label'=>'1 flan','grams'=>100]],
+			'bua-loy-glutinous-rice-balls-in-coconut' => [['label'=>'1 bowl','grams'=>200]],
+			'kanom-krok-coconut-pancake-cups' => [['label'=>'4 cups','grams'=>60]],
+			'nom-krok-khmer-coconut-cake' => [['label'=>'4 pieces','grams'=>60]],
+			'num-ansorm-khmer-sticky-rice-cake' => [['label'=>'1 piece','grams'=>100]],
+			'fakkai-tuvalu-coconut-taro-dessert' => [['label'=>'1 portion','grams'=>120]],
+			'vakalolo-fijian-coconut-cassava-dessert' => [['label'=>'1 portion','grams'=>120]],
+			'cassava-cake-fijian-sweet' => [['label'=>'1 slice','grams'=>80]],
+			'suafai-samoan-banana-soup' => [['label'=>'1 bowl','grams'=>200]],
+			'faaliifu-fai-samoan-banana-in-coconut' => [['label'=>'1 portion','grams'=>150]],
+			'vai-siaine-banana-in-coconut-cream' => [['label'=>'1 portion','grams'=>150]],
+			'topai-tongan-dumplings-in-coconut' => [['label'=>'3 pieces','grams'=>100]],
+			'khao-lam-bamboo-sticky-rice' => [['label'=>'1 piece','grams'=>100]],
+			'koeksisters-braided-doughnut' => [['label'=>'1 piece','grams'=>50]],
+			'farturas-fried-dough-portuguese-churros' => [['label'=>'1 fartura','grams'=>60],['label'=>'3 farturas','grams'=>180]],
+			'rabanadas-portuguese-french-toast' => [['label'=>'2 slices','grams'=>100]],
+			'ovos-moles-de-aveiro-egg-yolk-sweet' => [['label'=>'1 piece','grams'=>15],['label'=>'5 pieces','grams'=>75]],
+			'serradura-macau-sawdust-pudding' => [['label'=>'1 cup','grams'=>120]],
+			'arroz-doce-portuguese-rice-pudding' => [['label'=>'1 bowl','grams'=>150]],
+			'aletria-vermicelli-pudding' => [['label'=>'1 bowl','grams'=>150]],
+			'pao-de-lo-portuguese-sponge-cake' => [['label'=>'1 slice','grams'=>60]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 69 );
+	}
 }
