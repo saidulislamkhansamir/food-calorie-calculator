@@ -15145,4 +15145,219 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 93 );
 	}
+
+	/** Seed v94: Micronutrient data Phase 6 — 200 more foods (deeper world cuisine coverage). */
+	public static function seed_v94(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 94 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$data = [
+			// ── BANGLADESHI ──
+			'ilish-bhapa-steamed-hilsa-in-mustard' => [1.20, 110.0, 0.0],
+			'ilish-machher-jhol-hilsa-curry'   => [1.10, 100.0, 2.0],
+			'chingri-malai-curry-prawn-coconut' => [0.65, 35.0, 1.0],
+			'kacchi-biryani-dhaka-style-mutton' => [1.50, 22.0, 2.0],
+			'masoor-dal-red-lentil-bangladeshi' => [2.00, 12.0, 1.0],
+			'roshogolla-spongy-cheese-ball'     => [0.10, 50.0, 0.0],
+			'mishti-doi-sweetened-yoghurt'      => [0.05, 85.0, 0.0],
+			'singara-bangladeshi-samosa'        => [0.70, 10.0, 2.0],
+			'luchi-bengali-fried-bread'         => [0.80, 8.0, 0.0],
+			'porota-layered-flatbread-dhaka'    => [0.90, 10.0, 0.0],
+
+			// ── PAKISTANI ──
+			'biryani-karachi-style-mutton'      => [1.60, 20.0, 2.0],
+			'karahi-gosht-wok-cooked-meat'      => [1.80, 15.0, 5.0],
+			'lahori-fish-fry'                   => [0.90, 15.0, 2.0],
+			'paye-trotters-soup'                => [1.00, 30.0, 0.0],
+			'kulfi-pakistani-pistachio'         => [0.20, 100.0, 0.5],
+			'naan-khatai-cardamom-shortbread'   => [0.60, 15.0, 0.0],
+			'doodh-patti-milk-tea'              => [0.02, 50.0, 0.0],
+			'rooh-afza-rose-syrup-drink'        => [0.0, 0.0, 0.0],
+
+			// ── PERSIAN / IRANIAN ──
+			'chelow-iranian-steamed-rice-plain' => [0.20, 10.0, 0.0],
+			'ghormeh-sabzi-herb-stew'           => [2.80, 35.0, 12.0],
+			'gheimeh-split-pea-meat-stew'       => [1.90, 20.0, 3.0],
+			'koobideh-minced-lamb-kebab'        => [1.60, 10.0, 1.0],
+			'joojeh-kebab-saffron-chicken'      => [0.55, 8.0, 2.0],
+			'tahdig-crispy-rice-crust'          => [0.25, 8.0, 0.0],
+			'ash-reshteh-noodle-herb-soup'      => [1.50, 20.0, 5.0],
+			'sholeh-zard-saffron-rice-pudding'  => [0.10, 15.0, 0.0],
+			'doogh-yoghurt-soda-drink'          => [0.02, 40.0, 0.0],
+
+			// ── NEPALI ──
+			'dal-bhat-nepali-lentil-soup-rice'  => [1.50, 15.0, 2.0],
+			'momo-steamed-buff-chicken-8-pcs'   => [0.80, 10.0, 1.0],
+			'sel-roti-nepali-rice-doughnut'     => [0.30, 5.0, 0.0],
+			'thukpa-tibetan-nepali-noodle-soup' => [0.60, 10.0, 2.0],
+
+			// ── BHUTANESE ──
+			'ema-datshi-chilli-cheese-stew'     => [0.30, 250.0, 30.0],
+			'kewa-datshi-potato-cheese'         => [0.25, 200.0, 8.0],
+			'red-rice-bhutanese-cooked'         => [0.50, 12.0, 0.0],
+
+			// ── JAPANESE (remaining) ──
+			'sashimi-tuna-5-slices'             => [1.02, 8.0, 0.0],
+			'sashimi-salmon-5-slices'           => [0.34, 9.0, 0.0],
+			'agedashi-tofu-fried-in-dashi'      => [1.80, 120.0, 0.0],
+			'miso-soup-fresh'                   => [0.60, 18.0, 0.0],
+			'onigiri-salmon'                    => [0.15, 5.0, 0.0],
+			'udon-noodles-cooked'               => [0.40, 8.0, 0.0],
+			'soba-noodles-cooked'               => [0.50, 10.0, 0.0],
+			'edamame-salted-in-pod'             => [2.27, 63.0, 6.1],
+			'mochi-anko-red-bean-filling'       => [0.80, 8.0, 0.0],
+			'matcha-whisked-no-sugar'           => [0.60, 30.0, 1.0],
+
+			// ── KOREAN (remaining) ──
+			'doenjang-jjigae-soybean-paste-stew'=> [1.50, 50.0, 5.0],
+			'samgyeopsal-grilled-pork-belly'    => [0.42, 4.0, 0.0],
+			'japchae-sweet-potato-glass-noodles' => [0.80, 15.0, 5.0],
+			'gimbap-korean-rice-roll-1-roll'    => [0.60, 12.0, 2.0],
+			'kimchi-napa-cabbage-tongbaechu'    => [0.46, 33.0, 18.0],
+			'gochujang-red-chilli-paste'        => [1.50, 12.0, 12.0],
+			'bingsu-patbingsu-red-bean-shaved-ice'=> [0.30, 35.0, 0.5],
+
+			// ── CHINESE (remaining) ──
+			'hot-and-sour-soup'                 => [0.50, 12.0, 1.0],
+			'egg-fried-rice-takeaway'           => [0.45, 12.0, 0.5],
+			'red-braised-pork-belly-hong-shao-rou'=> [0.90, 5.0, 0.0],
+			'cantonese-roast-duck'              => [1.50, 8.0, 0.0],
+			'char-siu-cantonese-bbq-pork'       => [0.80, 12.0, 0.0],
+			'xiaolongbao-soup-dumpling-1pc'     => [0.30, 5.0, 0.0],
+			'jiaozi-boiled-dumpling-1pc'        => [0.25, 4.0, 0.0],
+			'congee-century-egg-pork'           => [0.40, 10.0, 0.0],
+			'egg-tart-dan-tat-1pc'              => [0.50, 25.0, 0.0],
+
+			// ── THAI (remaining) ──
+			'khao-soi-chiang-mai-curry-noodle'  => [0.75, 20.0, 3.0],
+			'som-tam-thai-papaya-salad-peanut'  => [0.40, 25.0, 45.0],
+			'mango-sticky-rice-khao-niao-mamuang'=> [0.20, 8.0, 15.0],
+			'thai-iced-tea-cha-yen'             => [0.05, 35.0, 0.0],
+			'tod-mun-pla-thai-fish-cakes'       => [0.70, 15.0, 2.0],
+
+			// ── VIETNAMESE ──
+			'banh-mi-classic-pork'              => [1.20, 18.0, 8.0],
+			'bun-cha-grilled-pork-noodles-hanoi' => [0.80, 10.0, 5.0],
+			'goi-cuon-fresh-spring-rolls-2-pcs' => [0.30, 12.0, 3.0],
+			'ca-phe-sua-da-vietnamese-iced-coffee'=> [0.05, 30.0, 0.0],
+			'pho-bo-beef-pho'                   => [0.65, 10.0, 1.0],
+
+			// ── INDONESIAN / MALAYSIAN ──
+			'nasi-goreng-indonesian-fried-rice'  => [0.80, 18.0, 3.0],
+			'rendang-padang-west-sumatran-beef' => [2.20, 15.0, 2.0],
+			'satay-ayam-indonesian-chicken-peanut-sauce'=> [0.80, 15.0, 1.0],
+			'gado-gado-indonesian-peanut-salad' => [1.50, 40.0, 10.0],
+			'roti-canai-malaysian-flatbread'    => [1.40, 20.0, 0.0],
+			'char-kway-teow-penang-fried-noodles'=> [0.70, 15.0, 2.0],
+			'teh-tarik-pulled-milk-tea'         => [0.02, 40.0, 0.0],
+
+			// ── CARIBBEAN ──
+			'jerk-pork'                         => [1.20, 12.0, 8.0],
+			'curry-goat-jamaican'               => [2.50, 15.0, 3.0],
+			'oxtail-stew-jamaican'              => [2.80, 18.0, 2.0],
+			'jamaican-patty-beef'               => [1.40, 15.0, 1.0],
+			'ackee-and-saltfish'                => [0.80, 15.0, 5.0],
+			'rice-and-peas-caribbean'           => [1.00, 20.0, 0.0],
+
+			// ── RUSSIAN ──
+			'borscht-russian-with-smetana'      => [0.50, 20.0, 5.0],
+			'pelmeni-siberian-pork-beef'        => [0.90, 12.0, 0.0],
+			'blini-russian-buckwheat'           => [0.80, 25.0, 0.0],
+			'syrniki-curd-cheese-fritters'      => [0.40, 45.0, 0.0],
+			'medovik-honey-cake'                => [0.50, 20.0, 0.0],
+
+			// ── GEORGIAN ──
+			'khachapuri-adjaruli-cheese-boat-bread'=> [0.80, 200.0, 0.0],
+			'khinkali-georgian-soup-dumplings-1pc'=> [0.40, 5.0, 0.0],
+			'lobio-georgian-bean-stew'          => [2.50, 35.0, 5.0],
+
+			// ── CENTRAL ASIAN ──
+			'plov-uzbek-national-dish-lamb-rice' => [1.20, 15.0, 2.0],
+			'beshbarmak-national-dish-meat-noodles'=> [1.50, 12.0, 1.0],
+			'manti-uzbek-steamed-dumplings-1pc' => [0.35, 5.0, 0.0],
+			'samsa-uzbek-lamb-in-pastry-1pc'    => [0.80, 8.0, 0.0],
+
+			// ── MONGOLIAN ──
+			'buuz-mongolian-steamed-dumplings-1pc'=> [0.35, 5.0, 0.0],
+			'khuushuur-mongolian-fried-meat-pastry'=> [0.90, 8.0, 0.0],
+			'suutei-tsai-mongolian-salt-milk-tea'=> [0.02, 35.0, 0.0],
+
+			// ── ICELANDIC ──
+			'hakarl-fermented-shark'            => [0.50, 8.0, 0.0],
+			'hardfiskur-dried-fish-jerky'       => [2.80, 50.0, 0.0],
+			'pylsur-icelandic-hot-dog'          => [0.80, 15.0, 1.0],
+			'skyr-traditional-icelandic'        => [0.10, 110.0, 0.0],
+
+			// ── PACIFIC ISLANDS ──
+			'laplap-vanuatu-national-dish-taro-banana'=> [0.40, 15.0, 5.0],
+			'kokoda-fijian-raw-fish-in-coconut' => [0.50, 15.0, 5.0],
+			'palusami-samoan-corned-beef-coconut'=> [0.80, 20.0, 3.0],
+
+			// ── PORTUGUESE ──
+			'pasteis-de-nata-custard-tart-belem' => [0.50, 30.0, 0.0],
+			'bacalhau-a-bras-shredded-cod-egg'  => [0.80, 20.0, 5.0],
+			'caldo-verde-traditional-with-chourico'=> [0.60, 30.0, 20.0],
+			'sardinhas-assadas-grilled-sardines' => [2.90, 380.0, 0.0],
+
+			// ── SPANISH ──
+			'patatas-bravas'                    => [0.40, 8.0, 10.0],
+			'gambas-al-ajillo-garlic-prawns'    => [0.55, 55.0, 2.0],
+			'tortilla-espanola-potato-omelette' => [0.65, 25.0, 5.0],
+			'flan-spanish-egg-custard'          => [0.30, 65.0, 0.0],
+
+			// ── FRENCH ──
+			'steak-frites-with-fries'           => [2.00, 12.0, 5.0],
+			'mousse-au-chocolat'                => [1.50, 35.0, 0.0],
+			'souffle-au-chocolat'               => [1.20, 40.0, 0.0],
+			'creme-brulee'                      => [0.30, 55.0, 0.0],
+			'croissant'                         => [1.20, 22.0, 0.0],
+
+			// ── GREEK ──
+			'souvlaki-pork'                     => [0.90, 8.0, 2.0],
+			'spanakopita-spinach-pie'           => [1.50, 80.0, 5.0],
+			'tzatziki'                          => [0.15, 40.0, 2.0],
+
+			// ── ITALIAN (remaining) ──
+			'focaccia-rosemary'                 => [1.10, 15.0, 0.0],
+			'ciabatta'                          => [0.90, 12.0, 0.0],
+			'panna-cotta'                       => [0.05, 60.0, 0.5],
+			'cannoli-sicilian'                  => [0.60, 35.0, 0.0],
+			'ossobuco'                          => [2.40, 12.0, 0.0],
+
+			// ── SCOTTISH ──
+			'haggis'                            => [6.40, 15.0, 0.0],
+			'cranachan'                         => [0.30, 30.0, 3.0],
+			'tattie-scone'                      => [0.35, 10.0, 3.0],
+			'arbroath-smokie'                   => [0.80, 20.0, 0.0],
+
+			// ── WELSH ──
+			'welsh-cakes'                       => [0.60, 18.0, 0.0],
+			'laverbread-laver-seaweed'          => [6.20, 30.0, 0.0],
+
+			// ── IRISH ──
+			'colcannon'                         => [0.50, 35.0, 10.0],
+			'irish-stew-lamb'                   => [1.20, 12.0, 5.0],
+			'soda-bread-white'                  => [1.10, 40.0, 0.0],
+			'boxty-potato-pancake'              => [0.40, 10.0, 5.0],
+
+			// ── AUSTRALIAN ──
+			'kangaroo-steak-grilled'            => [3.20, 4.0, 0.0],
+			'barramundi-and-chips'              => [0.45, 25.0, 2.0],
+			'meat-pie-aussie-standard'          => [1.00, 15.0, 0.0],
+			'lamington-chocolate-coconut'       => [0.70, 20.0, 0.0],
+
+			// ── NEW ZEALAND ──
+			'hangi-earth-oven-mixed-per-100g'   => [0.80, 15.0, 8.0],
+			'kumara-nz-sweet-potato-roasted'    => [0.60, 30.0, 12.0],
+		];
+
+		foreach ( $data as $slug => $vals ) {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f WHERE slug = %s AND iron_mg IS NULL", // phpcs:ignore
+				$vals[0], $vals[1], $vals[2], $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 94 );
+	}
 }
