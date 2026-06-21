@@ -2903,31 +2903,38 @@
 	width: 30px;
 }
 
-.fcc-pin-input {
+.fcc-pin-input,
+.fcc-pin-select {
 	width: 100%;
-	padding: .45rem .7rem;
+	padding: .5rem .75rem;
 	border: 1.5px solid #d1d5db;
 	border-radius: 8px;
 	font-size: .85rem;
+	font-family: inherit;
 	background: #fff;
+	height: 40px;
+	box-sizing: border-box;
 	transition: border-color .15s, box-shadow .15s;
+	-webkit-appearance: none;
+	appearance: none;
 }
-.fcc-pin-input:focus {
+.fcc-pin-select {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right .6rem center;
+	padding-right: 2rem;
+	cursor: pointer;
+}
+.fcc-pin-input:focus,
+.fcc-pin-select:focus {
 	outline: none;
 	border-color: #075B5E;
-	box-shadow: 0 0 0 3px rgba(7,91,94,.08);
+	box-shadow: 0 0 0 3px rgba(7,91,94,.1);
 }
-
-.fcc-pin-select {
-	padding: .4rem .5rem;
-	border: 1.5px solid #d1d5db;
-	border-radius: 8px;
-	font-size: .85rem;
-	background: #fff;
-	min-width: 65px;
-	transition: border-color .15s;
+.fcc-pin-input:hover,
+.fcc-pin-select:hover {
+	border-color: #b0c4c5;
 }
-.fcc-pin-select:focus { outline: none; border-color: #075B5E; }
 
 .fcc-pin-remove {
 	background: none;
