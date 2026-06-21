@@ -4076,6 +4076,89 @@ select.fcc-bmr-input {
 	border-radius: 10px;
 }
 
+/* ── Daily Goal Progress Bar ── */
+.fcc-meal-daily-bar {
+	margin: 0.5rem 0 0.75rem;
+	padding: 0 0.25rem;
+}
+.fcc-meal-daily-track {
+	height: 10px;
+	background: #e5e7eb;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.fcc-meal-daily-fill {
+	height: 100%;
+	background: linear-gradient(90deg, #075B5E, #9FC87E);
+	border-radius: 5px;
+	transition: width 0.4s ease;
+	width: 0%;
+}
+.fcc-meal-daily-label {
+	display: block;
+	text-align: center;
+	font-size: 0.72rem;
+	color: #4a6365;
+	margin-top: 4px;
+	font-weight: 500;
+}
+
+/* ── Meal item inline quantity editor ── */
+.fcc-meal-item__qty {
+	width: 50px;
+	padding: 2px 4px;
+	border: 1.5px solid #d1d5db;
+	border-radius: 6px;
+	font-size: 12px;
+	text-align: center;
+	background: #f9fafb;
+	color: #374151;
+	flex-shrink: 0;
+	transition: border-color 0.15s;
+}
+.fcc-meal-item__qty:focus {
+	border-color: #075B5E;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(7,91,94,.15);
+}
+.fcc-meal-item__unit {
+	font-size: 11px;
+	color: #6b7280;
+	margin-right: 4px;
+}
+
+/* ── Meal Action Buttons ── */
+.fcc-meal-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: center;
+	padding: 10px 0 0;
+	border-top: 1px solid var(--fcc-border, #e6eded);
+	margin-top: 8px;
+}
+.fcc-meal-copy-btn,
+.fcc-meal-share-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 6px 14px;
+	border: 1.5px solid var(--fcc-border, #d4ddd8);
+	border-radius: 8px;
+	background: transparent;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--fcc-text-muted, #4a6365);
+	cursor: pointer;
+	transition: border-color .15s, color .15s, background .15s;
+}
+.fcc-meal-copy-btn:hover,
+.fcc-meal-share-btn:hover {
+	border-color: var(--fcc-primary, #075B5E);
+	color: var(--fcc-primary, #075B5E);
+	background: rgba(7,91,94,.05);
+}
+
 /* ── Save as Template button ── */
 .fcc-meal-save-tpl {
 	padding: 8px 0 0;

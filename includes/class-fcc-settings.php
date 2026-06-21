@@ -78,6 +78,12 @@ class Settings {
 				'powered_by_footer'      => true,
 				'voice_search'           => true,
 				'meal_categories'        => true,
+				'meal_daily_goal'        => true,
+				'meal_edit_quantity'      => true,
+				'meal_print'             => true,
+				'meal_share'             => true,
+				'meal_copy'              => true,
+				'meal_micronutrients'    => true,
 			],
 			'appearance' => [
 				'primary_colour'    => '#075B5E',

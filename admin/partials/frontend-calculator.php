@@ -567,6 +567,16 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 					</div>
 				</div>
 
+				<!-- Daily Goal Progress Bar -->
+				<?php if ( ! empty( $features['meal_daily_goal'] ) ) : ?>
+				<div class="fcc-meal-daily-bar" hidden>
+					<div class="fcc-meal-daily-track">
+						<div class="fcc-meal-daily-fill"></div>
+					</div>
+					<span class="fcc-meal-daily-label"></span>
+				</div>
+				<?php endif; ?>
+
 				<!-- Food items list -->
 				<div class="fcc-meal-items" role="list" aria-label="<?php esc_attr_e( 'Meal items', 'food-calorie-calculator' ); ?>">
 					<!-- Populated by JS -->
@@ -583,12 +593,24 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 					</table>
 				</div>
 
-				<!-- Save as Template -->
-				<div class="fcc-meal-save-tpl">
+				<!-- Meal Actions -->
+				<div class="fcc-meal-actions">
 					<button type="button" class="fcc-meal-save-tpl__btn" id="fcc-save-tpl-btn">
 						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
 						<?php esc_html_e( 'Save as Template', 'food-calorie-calculator' ); ?>
 					</button>
+					<?php if ( ! empty( $features['meal_copy'] ) ) : ?>
+					<button type="button" class="fcc-meal-copy-btn">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+						<span><?php esc_html_e( 'Copy Meal', 'food-calorie-calculator' ); ?></span>
+					</button>
+					<?php endif; ?>
+					<?php if ( ! empty( $features['meal_share'] ) ) : ?>
+					<button type="button" class="fcc-meal-share-btn">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+						<span><?php esc_html_e( 'Share Meal', 'food-calorie-calculator' ); ?></span>
+					</button>
+					<?php endif; ?>
 				</div>
 
 			</section>

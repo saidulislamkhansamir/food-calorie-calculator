@@ -344,6 +344,12 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						'powered_by_footer'      => [ 'label' => __( 'Powered-by Footer',               'food-calorie-calculator' ), 'hint' => __( 'Attribution footer link',   'food-calorie-calculator' ) ],
 					'voice_search'           => [ 'label' => __( 'Voice Search',                    'food-calorie-calculator' ), 'hint' => __( 'Microphone button for speech-to-search', 'food-calorie-calculator' ) ],
 					'meal_categories'        => [ 'label' => __( 'Meal Categories',                 'food-calorie-calculator' ), 'hint' => __( 'Breakfast/Lunch/Dinner/Snack grouping in Meal Builder', 'food-calorie-calculator' ) ],
+					'meal_daily_goal'        => [ 'label' => __( 'Meal Daily Goal Bar',             'food-calorie-calculator' ), 'hint' => __( 'Progress bar showing meal kcal vs daily TDEE goal', 'food-calorie-calculator' ) ],
+					'meal_edit_quantity'      => [ 'label' => __( 'Meal Edit Quantity',              'food-calorie-calculator' ), 'hint' => __( 'Inline quantity editing for meal items', 'food-calorie-calculator' ) ],
+					'meal_print'             => [ 'label' => __( 'Meal Print/PDF',                 'food-calorie-calculator' ), 'hint' => __( 'Print meal plan with all items and totals', 'food-calorie-calculator' ) ],
+					'meal_share'             => [ 'label' => __( 'Meal Share Link',                'food-calorie-calculator' ), 'hint' => __( 'Shareable URL that auto-loads a saved meal', 'food-calorie-calculator' ) ],
+					'meal_copy'              => [ 'label' => __( 'Meal Copy Totals',               'food-calorie-calculator' ), 'hint' => __( 'Copy meal nutrition summary to clipboard', 'food-calorie-calculator' ) ],
+					'meal_micronutrients'    => [ 'label' => __( 'Meal Micronutrients',             'food-calorie-calculator' ), 'hint' => __( 'Show Iron, Calcium, Vitamin C in meal totals', 'food-calorie-calculator' ) ],
 					];
 					foreach ( $feature_labels as $key => $data ) : ?>
 						<div class="fcc-stg-feature <?php echo ! empty( $features[ $key ] ) ? 'fcc-stg-feature--on' : ''; ?>">

@@ -1227,9 +1227,10 @@
 		// Totals accumulator.
 		const totals = { energy_kcal: 0, energy_kj: 0, protein_g: 0, carbohydrate_g: 0, fat_g: 0,
 			of_which_sugars_g: 0, of_which_saturates_g: 0, fibre_g: 0, salt_g: 0,
-			omega3_total_mg: 0, caffeine_mg: 0 };
+			omega3_total_mg: 0, caffeine_mg: 0, iron_mg: 0, calcium_mg: 0, vitamin_c_mg: 0 };
 		let omega3HasData = false;
 		let caffeineHasData = false;
+		let microHasData = false;
 
 		var catEmojis = {}, catLabels = {};
 		[ 'breakfast', 'lunch', 'dinner', 'snack' ].forEach( function ( c ) {
@@ -1256,6 +1257,7 @@
 					totals[ k ] += f[ k ] * factor;
 					if ( k === 'omega3_total_mg' ) omega3HasData = true;
 					if ( k === 'caffeine_mg'     ) caffeineHasData = true;
+					if ( k === 'iron_mg' || k === 'calcium_mg' || k === 'vitamin_c_mg' ) microHasData = true;
 				}
 			} );
 		} );
@@ -1279,9 +1281,13 @@
 				var div = document.createElement( 'div' );
 				div.className = 'fcc-meal-item';
 				div.setAttribute( 'role', 'listitem' );
+				var qtyHtml = features.meal_edit_quantity
+					? '<input type="number" class="fcc-meal-item__qty" data-idx="' + g.idx + '" value="' + Math.round( g.item.grams ) + '" min="1" max="9999" step="1"><span class="fcc-meal-item__unit">g</span>'
+					: '<span class="fcc-meal-item__grams">' + Math.round( g.item.grams ) + 'g</span>';
 				div.innerHTML =
 					'<span class="fcc-meal-item__num">' + ( g.idx + 1 ) + '</span>' +
-					'<span class="fcc-meal-item__name">' + escHtml( g.item.label ) + '</span>' +
+					'<span class="fcc-meal-item__name">' + escHtml( f.name ) + '</span>' +
+					qtyHtml +
 					'<span class="fcc-meal-item__kcal">' + fmt( f.energy_kcal * factor, 0 ) + ' kcal</span>' +
 					'<button type="button" class="fcc-meal-item__remove" data-idx="' + g.idx + '" aria-label="Remove ' + escHtml( f.name ) + '">' +
 					'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
@@ -1306,6 +1312,19 @@
 			macrosEl.hidden = false;
 		}
 
+		// Daily goal comparison bar.
+		var dailyBar = mealSection ? mealSection.querySelector( '.fcc-meal-daily-bar' ) : null;
+		if ( dailyBar && features.meal_daily_goal && state.bmrTdee ) {
+			var pct = Math.min( 100, Math.round( ( totals.energy_kcal / state.bmrTdee ) * 100 ) );
+			var fill = dailyBar.querySelector( '.fcc-meal-daily-fill' );
+			var lbl  = dailyBar.querySelector( '.fcc-meal-daily-label' );
+			if ( fill ) fill.style.width = pct + '%';
+			if ( lbl )  lbl.textContent  = pct + '% of daily goal (' + fmt( state.bmrTdee, 0 ) + ' kcal)';
+			dailyBar.hidden = false;
+		} else if ( dailyBar ) {
+			dailyBar.hidden = true;
+		}
+
 		// Render totals table.
 		if ( totBodyEl ) {
 			let html = totalRow( 'Energy',       totals.energy_kcal, 'kcal', 0 );
@@ -1319,6 +1338,11 @@
 			html    += totalRow( 'Salt',         totals.salt_g,      'g',    decimals );
 			if ( omega3HasData )   html += totalRow( 'Omega-3 Total', totals.omega3_total_mg, 'mg', decimals );
 			if ( caffeineHasData ) html += totalRow( 'Caffeine',      totals.caffeine_mg,     'mg', decimals );
+			if ( microHasData && features.meal_micronutrients ) {
+				if ( totals.iron_mg )      html += totalRow( '🩸 Iron',      totals.iron_mg,      'mg', decimals );
+				if ( totals.calcium_mg )   html += totalRow( '🦴 Calcium',   totals.calcium_mg,   'mg', decimals );
+				if ( totals.vitamin_c_mg ) html += totalRow( '🍊 Vitamin C', totals.vitamin_c_mg, 'mg', decimals );
+			}
 			totBodyEl.innerHTML = html;
 		}
 
@@ -1338,7 +1362,79 @@
 			state.meal.splice( idx, 1 );
 			renderMeal();
 		} );
+
+		// Edit quantity inline.
+		mealSection.addEventListener( 'change', function ( e ) {
+			var input = e.target.closest( '.fcc-meal-item__qty' );
+			if ( ! input ) return;
+			var idx = parseInt( input.dataset.idx, 10 );
+			var newGrams = Math.max( 1, parseFloat( input.value ) || 1 );
+			state.meal[ idx ].grams = newGrams;
+			state.meal[ idx ].label = state.meal[ idx ].food.name + ' (' + Math.round( newGrams ) + 'g)';
+			renderMeal();
+		} );
+
+		// Copy Meal Totals.
+		mealSection.addEventListener( 'click', function ( e ) {
+			var copyBtn = e.target.closest( '.fcc-meal-copy-btn' );
+			if ( ! copyBtn || ! state.meal.length ) return;
+			var lines = [ 'My Meal — ' + state.meal.length + ' items' ];
+			var totalKcal = 0;
+			var totalP = 0, totalC = 0, totalF = 0;
+			state.meal.forEach( function ( item ) {
+				var factor = item.grams / 100;
+				var kcal = Math.round( ( item.food.energy_kcal || 0 ) * factor );
+				totalKcal += kcal;
+				totalP += ( item.food.protein_g || 0 ) * factor;
+				totalC += ( item.food.carbohydrate_g || 0 ) * factor;
+				totalF += ( item.food.fat_g || 0 ) * factor;
+				lines.push( '• ' + item.food.name + ' (' + Math.round( item.grams ) + 'g) — ' + kcal + ' kcal' );
+			} );
+			lines.push( 'Total: ' + totalKcal + ' kcal | Protein ' + fmt( totalP, 1 ) + 'g | Carbs ' + fmt( totalC, 1 ) + 'g | Fat ' + fmt( totalF, 1 ) + 'g' );
+			lines.push( '📊 Build yours → foodcaloriecalculator.co.uk' );
+			var text = lines.join( '\n' );
+			if ( navigator.clipboard ) {
+				navigator.clipboard.writeText( text ).then( function () {
+					var lbl = copyBtn.querySelector( 'span' );
+					if ( lbl ) { lbl.textContent = 'Copied!'; setTimeout( function () { lbl.textContent = 'Copy Meal'; }, 2000 ); }
+				} );
+			}
+		} );
+
+		// Share Meal Link.
+		mealSection.addEventListener( 'click', function ( e ) {
+			var shareBtn = e.target.closest( '.fcc-meal-share-btn' );
+			if ( ! shareBtn || ! state.meal.length ) return;
+			var parts = state.meal.map( function ( item ) { return item.food.id + ':' + Math.round( item.grams ); } );
+			var url = window.location.origin + window.location.pathname + '?meal=' + parts.join( ',' );
+			if ( navigator.clipboard ) {
+				navigator.clipboard.writeText( url ).then( function () {
+					var lbl = shareBtn.querySelector( 'span' );
+					if ( lbl ) { lbl.textContent = 'Link Copied!'; setTimeout( function () { lbl.textContent = 'Share Meal'; }, 2000 ); }
+				} );
+			}
+		} );
 	}
+
+	// Load meal from URL on init.
+	( function () {
+		var params = new URLSearchParams( window.location.search );
+		var mealParam = params.get( 'meal' );
+		if ( ! mealParam ) return;
+		var items = mealParam.split( ',' );
+		var loaded = 0;
+		items.forEach( function ( part ) {
+			var bits = part.split( ':' );
+			var foodId = parseInt( bits[0], 10 );
+			var grams  = parseFloat( bits[1] ) || 100;
+			if ( ! foodId ) return;
+			apiFetch( '/foods/' + foodId, function ( food ) {
+				state.meal.push( { food: food, grams: grams, label: food.name + ' (' + Math.round( grams ) + 'g)', category: currentMealCat } );
+				loaded++;
+				if ( loaded === items.length ) renderMeal();
+			} );
+		} );
+	} )();
 
 	// -------------------------------------------------------------------------
 	// Meal Templates (localStorage)
@@ -1766,6 +1862,10 @@
 	const printBtn = root.querySelector( '.fcc-print-btn' );
 	if ( printBtn ) {
 		printBtn.addEventListener( 'click', function () {
+			// Detect if meal tab is active for meal printing.
+			var activeMealTab = root.querySelector( '.fcc-tab-panel[data-panel="meal"]:not([hidden])' );
+			var isMealPrint = activeMealTab && state.meal.length && features.meal_print;
+
 			const clone = root.cloneNode( true );
 			clone.classList.add( 'fcc-print-clone' );
 
@@ -1775,8 +1875,9 @@
 				var el = clone.querySelector( '.' + cls ) || clone.querySelector( '#' + cls );
 				if ( el ) el.remove();
 			} );
+			var keepPanel = isMealPrint ? 'meal' : 'calculator';
 			clone.querySelectorAll( '.fcc-tab-panel' ).forEach( function ( panel ) {
-				if ( panel.dataset.panel !== 'calculator' ) panel.remove();
+				if ( panel.dataset.panel !== keepPanel ) panel.remove();
 			} );
 			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
 
@@ -1822,11 +1923,18 @@
 			// Build data for header.
 			var food = state.food;
 			var qty  = state.quantity || 100;
-			var unit = state.unit === 'oz' ? 'oz' : 'g';
+			var unit = state.unit === 'kg' ? 'kg' : ( state.unit === 'oz' ? 'oz' : 'g' );
 			var now  = new Date().toLocaleDateString( 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' } );
 			var printGrams = quantityInGrams();
 			var kcal = food ? Math.round( ( food.energy_kcal || 0 ) * ( printGrams / 100 ) ) : 0;
 			var dailyPct = Math.round( kcal / 2000 * 100 );
+
+			if ( isMealPrint ) {
+				var mealKcal = 0;
+				state.meal.forEach( function ( item ) { mealKcal += ( item.food.energy_kcal || 0 ) * ( item.grams / 100 ); } );
+				kcal = Math.round( mealKcal );
+				dailyPct = Math.round( kcal / 2000 * 100 );
+			}
 
 			// Branded print header with kcal summary.
 			var printHeader = document.createElement( 'div' );
@@ -1837,8 +1945,8 @@
 				+ '<span>foodcaloriecalculator.co.uk</span>'
 				+ '</div>'
 				+ '<div class="fcc-print-header__info">'
-				+ '<span class="fcc-print-header__food">' + ( food ? food.name : '' ) + '</span>'
-				+ '<span class="fcc-print-header__kcal">' + kcal + ' kcal per ' + qty + unit + ' · ' + dailyPct + '% of daily 2000 kcal</span>'
+				+ '<span class="fcc-print-header__food">' + ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + '</span>'
+				+ '<span class="fcc-print-header__kcal">' + kcal + ' kcal' + ( isMealPrint ? ' total' : ' per ' + qty + unit ) + ' · ' + dailyPct + '% of daily 2000 kcal</span>'
 				+ '<span class="fcc-print-header__date">' + now + '</span>'
 				+ '</div>';
 			clone.insertBefore( printHeader, clone.firstChild );
