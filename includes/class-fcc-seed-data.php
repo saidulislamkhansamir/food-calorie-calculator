@@ -11963,4 +11963,47 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 70 );
 	}
+
+	/**
+	 * Seed v71: Auto-assign serving sizes to ALL remaining foods that still have none.
+	 * Uses category-based defaults so no food gets missed by slug mismatch.
+	 */
+	public static function seed_v71(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 71 ) { return; }
+		global $wpdb;
+		$ft = $wpdb->prefix . 'fcc_foods';
+		$ct = $wpdb->prefix . 'fcc_categories';
+
+		// Build category slug → id map.
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cat_ids = [];
+		foreach ( $cats as $c ) { $cat_ids[ $c['slug'] ] = (int) $c['id']; }
+
+		// Default serving sizes per category.
+		$defaults = [
+			'fruit-veg'           => [['label'=>'1 portion','grams'=>80],['label'=>'1 cup','grams'=>130]],
+			'meat-poultry'        => [['label'=>'1 portion','grams'=>120],['label'=>'1 serving','grams'=>150]],
+			'fish-seafood'        => [['label'=>'1 portion','grams'=>120],['label'=>'1 fillet','grams'=>140]],
+			'dairy-eggs'          => [['label'=>'1 portion','grams'=>30],['label'=>'1 serving','grams'=>50]],
+			'bread-cereals'       => [['label'=>'1 portion','grams'=>50],['label'=>'1 serving','grams'=>80]],
+			'nuts-seeds'          => [['label'=>'1 handful','grams'=>25],['label'=>'1 tablespoon','grams'=>10]],
+			'fats-oils'           => [['label'=>'1 tablespoon','grams'=>14],['label'=>'1 teaspoon','grams'=>5]],
+			'drinks'              => [['label'=>'1 glass','grams'=>250],['label'=>'1 cup','grams'=>200]],
+			'legumes-pulses'      => [['label'=>'1 cup','grams'=>170],['label'=>'1 portion','grams'=>150]],
+			'condiments'          => [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 teaspoon','grams'=>5]],
+			'snacks-confectionery' => [['label'=>'1 portion','grams'=>30],['label'=>'1 serving','grams'=>50]],
+			'takeaway'            => [['label'=>'1 portion','grams'=>250],['label'=>'1 plate','grams'=>350]],
+		];
+
+		foreach ( $defaults as $cat_slug => $sizes ) {
+			$cid = $cat_ids[ $cat_slug ] ?? 0;
+			if ( ! $cid ) { continue; }
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$ft} SET serving_sizes = %s WHERE category_id = %d AND (serving_sizes IS NULL OR serving_sizes = '' OR serving_sizes = '[]')", // phpcs:ignore
+				$json, $cid
+			) );
+		}
+		update_option( 'fcc_seed_version', 71 );
+	}
 }
