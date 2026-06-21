@@ -851,47 +851,76 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					$promo_banners = $pinned_settings['promo_banners'] ?? [];
 					foreach ( $promo_banners as $idx => $promo ) : ?>
 						<div class="fcc-promo-card">
-							<div class="fcc-promo-card__row">
-								<div class="fcc-promo-card__field">
-									<label><?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?></label>
-									<div style="position:relative">
-										<input type="text" class="fcc-pin-input fcc-pin-food-search"
-											value="<?php echo esc_attr( $promo['food_name'] ); ?>"
-											placeholder="<?php esc_attr_e( 'Search food…', 'food-calorie-calculator' ); ?>"
-											autocomplete="off">
-										<input type="hidden" name="promo_banners[<?php echo $idx; ?>][food_id]"
-											value="<?php echo absint( $promo['food_id'] ); ?>" class="fcc-pin-food-id">
-										<input type="hidden" name="promo_banners[<?php echo $idx; ?>][food_name]"
-											value="<?php echo esc_attr( $promo['food_name'] ); ?>" class="fcc-pin-food-name">
-										<ul class="fcc-pin-dropdown" hidden></ul>
+							<div class="fcc-promo-card__topbar">
+								<div class="fcc-promo-card__topbar-icon">
+									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z"/><path d="M12 8v4"/></svg>
+								</div>
+								<span class="fcc-promo-card__topbar-label"><?php echo esc_html( $promo['food_name'] ?: 'New Banner' ); ?></span>
+								<span class="fcc-promo-card__topbar-num">#<?php echo $idx + 1; ?></span>
+								<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
+									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+								</button>
+							</div>
+							<div class="fcc-promo-card__body">
+								<div class="fcc-promo-card__row">
+									<div class="fcc-promo-card__field">
+										<label>
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+											<?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?>
+										</label>
+										<div style="position:relative">
+											<input type="text" class="fcc-pin-input fcc-pin-food-search"
+												value="<?php echo esc_attr( $promo['food_name'] ); ?>"
+												placeholder="<?php esc_attr_e( 'Search food…', 'food-calorie-calculator' ); ?>"
+												autocomplete="off">
+											<input type="hidden" name="promo_banners[<?php echo $idx; ?>][food_id]"
+												value="<?php echo absint( $promo['food_id'] ); ?>" class="fcc-pin-food-id">
+											<input type="hidden" name="promo_banners[<?php echo $idx; ?>][food_name]"
+												value="<?php echo esc_attr( $promo['food_name'] ); ?>" class="fcc-pin-food-name">
+											<ul class="fcc-pin-dropdown" hidden></ul>
+										</div>
+									</div>
+									<div class="fcc-promo-card__field fcc-promo-card__field--wide">
+										<label>
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+											<?php esc_html_e( 'Promotional Message', 'food-calorie-calculator' ); ?>
+										</label>
+										<input type="text" name="promo_banners[<?php echo $idx; ?>][message]"
+											value="<?php echo esc_attr( $promo['message'] ?? '' ); ?>"
+											placeholder="e.g. Buy fresh Beluga Caviar at SalmonCaviar.co.uk!" class="fcc-pin-input">
 									</div>
 								</div>
-								<div class="fcc-promo-card__field fcc-promo-card__field--wide">
-									<label><?php esc_html_e( 'Message', 'food-calorie-calculator' ); ?></label>
-									<input type="text" name="promo_banners[<?php echo $idx; ?>][message]"
-										value="<?php echo esc_attr( $promo['message'] ?? '' ); ?>"
-										placeholder="e.g. Buy fresh Beluga Caviar at SalmonCaviar.co.uk!" class="fcc-pin-input">
+								<div class="fcc-promo-card__row">
+									<div class="fcc-promo-card__field">
+										<label>
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8"/></svg>
+											<?php esc_html_e( 'Button Text', 'food-calorie-calculator' ); ?>
+										</label>
+										<input type="text" name="promo_banners[<?php echo $idx; ?>][link_text]"
+											value="<?php echo esc_attr( $promo['link_text'] ?? '' ); ?>"
+											placeholder="e.g. Shop Now →" class="fcc-pin-input">
+									</div>
+									<div class="fcc-promo-card__field fcc-promo-card__field--wide">
+										<label>
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+											<?php esc_html_e( 'Button URL', 'food-calorie-calculator' ); ?>
+										</label>
+										<input type="url" name="promo_banners[<?php echo $idx; ?>][link_url]"
+											value="<?php echo esc_attr( $promo['link_url'] ?? '' ); ?>"
+											placeholder="https://salmoncaviar.co.uk/beluga-caviar" class="fcc-pin-input">
+									</div>
 								</div>
 							</div>
-							<div class="fcc-promo-card__row">
-								<div class="fcc-promo-card__field">
-									<label><?php esc_html_e( 'Button Text', 'food-calorie-calculator' ); ?></label>
-									<input type="text" name="promo_banners[<?php echo $idx; ?>][link_text]"
-										value="<?php echo esc_attr( $promo['link_text'] ?? '' ); ?>"
-										placeholder="e.g. Shop Now →" class="fcc-pin-input">
+							<?php if ( ! empty( $promo['message'] ) ) : ?>
+								<div class="fcc-promo-card__preview">
+									<div class="fcc-promo-card__preview-dot"></div>
+									<?php esc_html_e( 'Preview:', 'food-calorie-calculator' ); ?>
+									<span><?php echo esc_html( mb_strimwidth( $promo['message'], 0, 60, '…' ) ); ?></span>
+									<?php if ( ! empty( $promo['link_text'] ) ) : ?>
+										<span style="color:#9b59b6;font-weight:700">[<?php echo esc_html( $promo['link_text'] ); ?>]</span>
+									<?php endif; ?>
 								</div>
-								<div class="fcc-promo-card__field fcc-promo-card__field--wide">
-									<label><?php esc_html_e( 'Button URL', 'food-calorie-calculator' ); ?></label>
-									<input type="url" name="promo_banners[<?php echo $idx; ?>][link_url]"
-										value="<?php echo esc_attr( $promo['link_url'] ?? '' ); ?>"
-										placeholder="https://salmoncaviar.co.uk/beluga-caviar" class="fcc-pin-input">
-								</div>
-								<div class="fcc-promo-card__field" style="flex:0 0 auto;align-self:flex-end">
-									<button type="button" class="fcc-pin-remove fcc-promo-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
-										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-									</button>
-								</div>
-							</div>
+							<?php endif; ?>
 						</div>
 					<?php endforeach; ?>
 				</div>
@@ -1211,19 +1240,30 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 		if ( promoCount >= 10 ) { alert( 'Maximum 10 promo banners.' ); return; }
 		var card = document.createElement( 'div' );
 		card.className = 'fcc-promo-card';
+		var bannerIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z"/><path d="M12 8v4"/></svg>';
+		var searchIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+		var msgIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>';
+		var btnIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8"/></svg>';
+		var linkIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
 		card.innerHTML =
-			'<div class="fcc-promo-card__row">' +
-				'<div class="fcc-promo-card__field"><label>Food</label>' + foodCell( 'promo_banners', promoCount ) + '</div>' +
-				'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>Message</label>' +
-					'<input type="text" name="promo_banners[' + promoCount + '][message]" placeholder="e.g. Buy fresh Beluga Caviar!" class="fcc-pin-input"></div>' +
+			'<div class="fcc-promo-card__topbar">' +
+				'<div class="fcc-promo-card__topbar-icon">' + bannerIcon + '</div>' +
+				'<span class="fcc-promo-card__topbar-label">New Banner</span>' +
+				'<span class="fcc-promo-card__topbar-num">#' + ( promoCount + 1 ) + '</span>' +
+				'<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="Remove">' + rmSvg + '</button>' +
 			'</div>' +
-			'<div class="fcc-promo-card__row">' +
-				'<div class="fcc-promo-card__field"><label>Button Text</label>' +
-					'<input type="text" name="promo_banners[' + promoCount + '][link_text]" placeholder="e.g. Shop Now →" class="fcc-pin-input"></div>' +
-				'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>Button URL</label>' +
-					'<input type="url" name="promo_banners[' + promoCount + '][link_url]" placeholder="https://..." class="fcc-pin-input"></div>' +
-				'<div class="fcc-promo-card__field" style="flex:0 0 auto;align-self:flex-end">' +
-					'<button type="button" class="fcc-pin-remove fcc-promo-remove" title="Remove">' + rmSvg + '</button></div>' +
+			'<div class="fcc-promo-card__body">' +
+				'<div class="fcc-promo-card__row">' +
+					'<div class="fcc-promo-card__field"><label>' + searchIcon + ' Food</label>' + foodCell( 'promo_banners', promoCount ) + '</div>' +
+					'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>' + msgIcon + ' Promotional Message</label>' +
+						'<input type="text" name="promo_banners[' + promoCount + '][message]" placeholder="e.g. Buy fresh Beluga Caviar!" class="fcc-pin-input"></div>' +
+				'</div>' +
+				'<div class="fcc-promo-card__row">' +
+					'<div class="fcc-promo-card__field"><label>' + btnIcon + ' Button Text</label>' +
+						'<input type="text" name="promo_banners[' + promoCount + '][link_text]" placeholder="e.g. Shop Now →" class="fcc-pin-input"></div>' +
+					'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>' + linkIcon + ' Button URL</label>' +
+						'<input type="url" name="promo_banners[' + promoCount + '][link_url]" placeholder="https://..." class="fcc-pin-input"></div>' +
+				'</div>' +
 			'</div>';
 		promoList.appendChild( card );
 		promoCount++;

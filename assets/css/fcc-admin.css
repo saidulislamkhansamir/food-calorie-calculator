@@ -2891,40 +2891,72 @@
 
 /* Promo banner cards */
 .fcc-promo-card {
-	background: #fafbfc;
+	background: #fff;
 	border: 1.5px solid #e5e7eb;
-	border-radius: 12px;
-	padding: 1rem 1.15rem;
-	margin-bottom: .75rem;
+	border-radius: 14px;
+	padding: 0;
+	margin-bottom: 1rem;
 	position: relative;
-	transition: border-color .15s, box-shadow .15s;
+	overflow: hidden;
+	transition: border-color .2s, box-shadow .2s;
 }
 .fcc-promo-card:hover {
 	border-color: #c8b0e0;
-	box-shadow: 0 2px 8px rgba(155,89,182,.08);
+	box-shadow: 0 4px 16px rgba(155,89,182,.1);
 }
-.fcc-promo-card__badge {
-	position: absolute;
-	top: -.5rem;
-	right: 1rem;
+.fcc-promo-card__topbar {
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	padding: .6rem 1.15rem;
+	background: linear-gradient(135deg, #f3e8f9 0%, #ede4f7 100%);
+	border-bottom: 1px solid #e8d8f3;
+}
+.fcc-promo-card__topbar-icon {
+	width: 28px;
+	height: 28px;
+	border-radius: 7px;
 	background: #9b59b6;
 	color: #fff;
-	font-size: .65rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+.fcc-promo-card__topbar-label {
+	font-size: .78rem;
 	font-weight: 700;
-	padding: .15rem .6rem;
+	color: #7b3fa0;
+	flex: 1;
+}
+.fcc-promo-card__topbar-num {
+	font-size: .65rem;
+	font-weight: 600;
+	color: #9b59b6;
+	background: rgba(155,89,182,.12);
+	padding: .1rem .45rem;
 	border-radius: 8px;
-	text-transform: uppercase;
-	letter-spacing: .03em;
 }
 .fcc-promo-card__close {
-	position: absolute;
-	top: .6rem;
-	right: .6rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: #c0a3d4;
+	padding: .2rem;
+	border-radius: 6px;
+	transition: color .15s, background .15s;
+}
+.fcc-promo-card__close:hover {
+	color: #e74c3c;
+	background: rgba(231,76,60,.08);
+}
+.fcc-promo-card__body {
+	padding: 1rem 1.15rem 1.15rem;
 }
 .fcc-promo-card__row {
 	display: flex;
 	gap: .75rem;
-	margin-bottom: .6rem;
+	margin-bottom: .65rem;
 	flex-wrap: wrap;
 	align-items: flex-end;
 }
@@ -2935,14 +2967,35 @@
 }
 .fcc-promo-card__field--wide { flex: 2; }
 .fcc-promo-card__field label {
-	display: block;
+	display: flex;
+	align-items: center;
+	gap: .3rem;
 	font-size: .7rem;
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: .04em;
 	color: #888;
-	margin-bottom: .25rem;
+	margin-bottom: .3rem;
 }
+.fcc-promo-card__field label svg { flex-shrink: 0; opacity: .6; }
+.fcc-promo-card__preview {
+	border-top: 1px solid #f0f0f0;
+	padding: .6rem 1.15rem;
+	background: #fafbfc;
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	font-size: .78rem;
+	color: #999;
+}
+.fcc-promo-card__preview-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #2D7A4F;
+	flex-shrink: 0;
+}
+.fcc-promo-card__preview span { color: #555; font-weight: 500; }
 
 .fcc-pin-help {
 	margin-top: 1.5rem;
