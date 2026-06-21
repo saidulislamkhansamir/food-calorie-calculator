@@ -12180,4 +12180,85 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 74 );
 	}
+
+	/** Seed v75: Missing beef, poultry, dairy from dailycalorie.app. */
+	public static function seed_v75(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 75 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$mp=$cid['meat-poultry']??0; $de=$cid['dairy-eggs']??0; $fo=$cid['fats-oils']??0;
+
+		$foods = [
+			// ── BEEF CUTS (raw) ──
+			['Beef Flank Steak (raw)',$mp,155,649,21.2,0.0,0.0,7.3,3.0,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 steak','grams'=>200]]],
+			['Beef Brisket (raw)',$mp,213,891,17.4,0.0,0.0,15.5,6.2,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Beef Ribeye Steak (raw)',$mp,250,1046,17.4,0.0,0.0,19.8,8.5,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 steak','grams'=>250]]],
+			['Beef T-Bone Steak (raw)',$mp,182,762,19.7,0.0,0.0,11.0,4.3,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 steak','grams'=>300]]],
+			['Beef Porterhouse Steak (raw)',$mp,182,762,19.7,0.0,0.0,11.0,4.3,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 steak','grams'=>350]]],
+			['Beef Skirt Steak (raw)',$mp,182,762,20.3,0.0,0.0,10.6,4.4,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 steak','grams'=>200]]],
+			['Beef Chuck Roast (raw)',$mp,165,690,19.0,0.0,0.0,9.6,3.8,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Beef Short Ribs (raw)',$mp,295,1234,17.8,0.0,0.0,24.5,10.5,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'3 ribs','grams'=>200]]],
+			['Beef Tri-Tip (raw)',$mp,143,598,20.8,0.0,0.0,6.2,2.4,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Beef Tenderloin / Fillet (raw)',$mp,157,657,20.2,0.0,0.0,8.1,3.2,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet steak','grams'=>200]]],
+			['Beef Rump Steak (raw)',$mp,140,586,20.8,0.0,0.0,6.0,2.5,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 steak','grams'=>225]]],
+			['Beef Topside (raw)',$mp,130,544,21.5,0.0,0.0,4.8,2.0,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,0,0, [['label'=>'1 portion','grams'=>150]]],
+			['Beef Silverside (raw)',$mp,138,577,20.5,0.0,0.0,5.9,2.5,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,0,0, [['label'=>'1 portion','grams'=>150]]],
+			['Beef Shin (raw)',$mp,140,586,20.2,0.0,0.0,6.5,2.8,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Wagyu Beef (raw, A5)',$mp,335,1402,14.0,0.0,0.0,30.5,13.0,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 steak (100g)','grams'=>100]]],
+			['Veal Loin (raw)',$mp,110,460,20.0,0.0,0.0,3.0,1.0,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 cutlet','grams'=>150]]],
+			['Veal Escalope (raw)',$mp,105,439,21.0,0.0,0.0,2.0,0.7,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 escalope','grams'=>120]]],
+
+			// ── POULTRY & GAME ──
+			['Chicken Ground (raw)',$mp,143,598,17.4,0.0,0.0,8.1,2.2,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 portion','grams'=>125]]],
+			['Turkey Ground (raw)',$mp,150,628,17.5,0.0,0.0,8.3,2.3,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 portion','grams'=>125]]],
+			['Duck Breast (raw)',$mp,135,565,18.3,0.0,0.0,6.6,1.8,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 breast','grams'=>200]]],
+			['Duck Leg (raw)',$mp,195,816,16.0,0.0,0.0,14.5,4.5,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 leg','grams'=>200]]],
+			['Goose (roasted)',$mp,238,996,29.0,0.0,0.0,13.0,4.6,0.0,0.3, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 portion','grams'=>150]]],
+			['Guinea Fowl (raw)',$mp,110,460,20.6,0.0,0.0,2.5,0.6,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 portion','grams'=>150]]],
+			['Squab / Pigeon (raw)',$mp,142,594,17.5,0.0,0.0,7.5,2.0,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 squab','grams'=>180]]],
+			['Wild Duck (raw)',$mp,123,515,19.9,0.0,0.0,4.3,1.5,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'½ duck','grams'=>200]]],
+			['Elk (raw)',$mp,111,464,22.8,0.0,0.0,1.5,0.6,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 steak','grams'=>170]]],
+			['Dove Breast (raw)',$mp,130,544,22.0,0.0,0.0,4.5,1.3,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'2 breasts','grams'=>80]]],
+			['Salami (Genoa)',$mp,370,1548,22.0,1.0,0.5,30.5,11.5,0.0,4.0, 0,0,0,0,0,0,0,0, 1,0,0,0,0,0, [['label'=>'3 slices','grams'=>30],['label'=>'1 oz','grams'=>28]]],
+			['Pancetta',$mp,390,1632,14.0,0.0,0.0,37.0,13.5,0.0,3.5, 0,0,0,0,0,0,0,0, 1,0,0,0,0,0, [['label'=>'2 slices','grams'=>20],['label'=>'1 oz','grams'=>28]]],
+			['Pork Tenderloin (raw)',$mp,109,456,21.6,0.0,0.0,2.2,0.7,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0, [['label'=>'1 portion','grams'=>150]]],
+			['Pork Loin (raw)',$mp,143,598,20.7,0.0,0.0,6.3,2.2,0.0,0.1, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0, [['label'=>'1 chop','grams'=>150]]],
+			['Lamb Leg (raw)',$mp,175,732,19.0,0.0,0.0,10.8,4.8,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 portion','grams'=>150]]],
+			['Lamb Shoulder (raw)',$mp,205,858,17.5,0.0,0.0,14.8,6.8,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Lamb Shank (raw)',$mp,165,690,18.5,0.0,0.0,10.0,4.5,0.0,0.1, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 shank','grams'=>300]]],
+
+			// ── DAIRY (remaining) ──
+			['Eggnog',$de,88,368,3.7,8.4,8.4,4.2,2.6,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 cup','grams'=>250],['label'=>'1 glass','grams'=>200]]],
+			['Whipped Butter',$de,717,3000,0.9,0.1,0.1,81.1,51.4,0.0,0.7, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 tablespoon','grams'=>9],['label'=>'1 pat','grams'=>5]]],
+			['Half and Half',$de,130,544,3.0,4.3,4.3,11.5,7.2,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 cup','grams'=>242]]],
+			['Sour Cream (light)',$de,138,577,3.5,4.3,4.3,11.5,7.2,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 tablespoon','grams'=>12],['label'=>'¼ cup','grams'=>58]]],
+			['Whipped Cream (aerosol)',$de,257,1075,3.2,12.5,12.5,22.2,13.8,0.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'2 tablespoons','grams'=>8],['label'=>'¼ cup','grams'=>15]]],
+			['Clotted Cream (Cornish)',$de,586,2452,1.6,2.3,2.3,63.5,39.0,0.0,0.0, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 pot','grams'=>56]]],
+			['Crème Fraîche',$de,292,1222,2.3,2.8,2.8,30.0,20.0,0.0,0.0, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 pot','grams'=>200]]],
+			['Duck Egg (whole, raw)',$de,185,774,13.0,1.5,1.0,14.0,3.7,0.0,0.2, 0,0,0,1,0,0,0,0, 1,1,1,0,0,1, [['label'=>'1 egg','grams'=>70]]],
+			['Quail Egg (whole, raw)',$de,158,661,13.1,0.4,0.4,11.1,3.6,0.0,0.1, 0,0,0,1,0,0,0,0, 1,1,1,0,0,1, [['label'=>'1 egg','grams'=>9],['label'=>'5 eggs','grams'=>45]]],
+			['Goose Egg (whole, raw)',$de,185,774,13.9,1.4,0.0,13.3,3.6,0.0,0.2, 0,0,0,1,0,0,0,0, 1,1,1,0,0,1, [['label'=>'1 egg','grams'=>144]]],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; }
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'serving_sizes'=> wp_json_encode( $f[25] ),
+				'source_notes'=>'USDA FDC / M&W 8th ed. Seeded v75.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 75 );
+	}
 }
