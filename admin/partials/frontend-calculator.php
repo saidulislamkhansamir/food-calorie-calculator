@@ -231,6 +231,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 							<select id="fcc-unit" class="fcc-unit-select" aria-hidden="true" tabindex="-1"
 								style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;overflow:hidden;">
 								<option value="g"><?php esc_html_e( 'grams (g)', 'food-calorie-calculator' ); ?></option>
+								<option value="kg"><?php esc_html_e( 'kilograms (kg)', 'food-calorie-calculator' ); ?></option>
 								<?php if ( ! empty( $general['default_unit'] ) && 'imperial' === $general['default_unit'] ) : ?>
 								<option value="oz"><?php esc_html_e( 'ounces (oz)', 'food-calorie-calculator' ); ?></option>
 								<?php endif; ?>

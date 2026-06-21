@@ -467,8 +467,12 @@
 		unitSelect.innerHTML = '';
 
 		const gOpt = document.createElement( 'option' );
-		gOpt.value = 'g'; gOpt.textContent = i18n.grams ? 'grams (g)' : 'grams (g)';
+		gOpt.value = 'g'; gOpt.textContent = 'grams (g)';
 		unitSelect.appendChild( gOpt );
+
+		const kgOpt = document.createElement( 'option' );
+		kgOpt.value = 'kg'; kgOpt.textContent = 'kilograms (kg)';
+		unitSelect.appendChild( kgOpt );
 
 		if ( general.defaultUnit === 'imperial' ) {
 			const ozOpt = document.createElement( 'option' );
@@ -511,7 +515,7 @@
 				state.quantity = 1;
 				qtyInput.value = 1;
 				qtyInput.step  = '1';
-			} else if ( state.unit === 'oz' ) {
+			} else if ( state.unit === 'oz' || state.unit === 'kg' ) {
 				qtyInput.step = '0.1';
 			} else {
 				qtyInput.step = '1';
@@ -526,6 +530,7 @@
 	 */
 	function quantityInGrams() {
 		const q = state.quantity;
+		if ( state.unit === 'kg' ) return q * 1000;
 		if ( state.unit === 'oz' ) return q * OZ_TO_G;
 		if ( state.unit.startsWith( 'serving_' ) ) {
 			const idx = parseInt( state.unit.replace( 'serving_', '' ), 10 );
@@ -549,7 +554,8 @@
 		// Update serving description.
 		if ( servingDesc ) {
 			let desc = fmt( grams, 1 ) + 'g';
-			if ( state.unit === 'oz' ) desc = fmt( state.quantity, 1 ) + ' oz (' + fmt( grams, 1 ) + 'g)';
+			if ( state.unit === 'kg' ) desc = fmt( state.quantity, 2 ) + ' kg (' + fmt( grams, 0 ) + 'g)';
+			else if ( state.unit === 'oz' ) desc = fmt( state.quantity, 1 ) + ' oz (' + fmt( grams, 1 ) + 'g)';
 			servingDesc.textContent = desc;
 		}
 
@@ -1833,8 +1839,9 @@
 			if ( ! state.food ) return;
 			var f = state.food;
 			var q = state.quantity || 100;
-			var u = state.unit === 'oz' ? 'oz' : 'g';
-			var factor = state.unit === 'oz' ? ( q * OZ_TO_G ) / 100 : q / 100;
+			var u = state.unit === 'kg' ? 'kg' : ( state.unit === 'oz' ? 'oz' : 'g' );
+			var grams = state.unit === 'kg' ? q * 1000 : ( state.unit === 'oz' ? q * OZ_TO_G : q );
+			var factor = grams / 100;
 			var text = f.name + ' — per ' + q + u + '\n'
 				+ fmt( ( f.energy_kcal || 0 ) * factor, 0 ) + ' kcal'
 				+ ' | Protein ' + fmt( ( f.protein_g || 0 ) * factor, 1 ) + 'g'
@@ -2281,6 +2288,10 @@
 		gOpt.value = 'g'; gOpt.textContent = 'grams (g)';
 		sl.unitSelect.appendChild( gOpt );
 
+		const kgOpt2 = document.createElement( 'option' );
+		kgOpt2.value = 'kg'; kgOpt2.textContent = 'kilograms (kg)';
+		sl.unitSelect.appendChild( kgOpt2 );
+
 		if ( general.defaultUnit === 'imperial' ) {
 			const ozOpt = document.createElement( 'option' );
 			ozOpt.value = 'oz'; ozOpt.textContent = 'ounces (oz)';
@@ -2530,7 +2541,7 @@
 				if ( sl.selected ) sl.selected.hidden = true;
 				if ( sl.qty      ) sl.qty.value       = 100;
 				if ( sl.unitSelect ) {
-					sl.unitSelect.innerHTML = '<option value="g">grams (g)</option>';
+					sl.unitSelect.innerHTML = '<option value="g">grams (g)</option><option value="kg">kilograms (kg)</option>';
 				}
 				updateCompareUnitTriggerText( s );
 				hideCompareDropdown( s );
