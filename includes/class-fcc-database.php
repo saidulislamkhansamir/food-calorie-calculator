@@ -2434,4 +2434,95 @@ class Database {
 			];
 		}, $rows );
 	}
+
+	// ─── Analytics helper queries ────────────────────────────────────
+
+	public static function count_all_foods(): int {
+		global $wpdb;
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM " . self::foods_table() );
+	}
+
+	public static function count_all_categories(): int {
+		global $wpdb;
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM " . self::categories_table() );
+	}
+
+	public static function count_foods_with_serving_sizes(): int {
+		global $wpdb;
+		return (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM " . self::foods_table() . " WHERE serving_sizes IS NOT NULL AND serving_sizes != '' AND serving_sizes != '[]'"
+		);
+	}
+
+	public static function count_foods_with_micronutrients(): int {
+		global $wpdb;
+		return (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM " . self::foods_table() . " WHERE iron_mg IS NOT NULL OR calcium_mg IS NOT NULL OR vitamin_c_mg IS NOT NULL"
+		);
+	}
+
+	public static function count_foods_with_allergen_tags(): int {
+		global $wpdb;
+		return (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM " . self::foods_table() . " WHERE contains_gluten = 1 OR contains_dairy = 1 OR contains_nuts = 1 OR contains_eggs = 1 OR contains_soy = 1 OR contains_fish = 1 OR contains_shellfish = 1 OR contains_celery = 1 OR is_vegetarian = 1 OR is_vegan = 1 OR is_halal = 1 OR is_kosher = 1 OR is_keto_friendly = 1 OR is_gluten_free = 1"
+		);
+	}
+
+	public static function get_avg_daily_searches( int $days = 30 ): float {
+		global $wpdb;
+		$t = self::search_log_table();
+		if ( $days > 0 ) {
+			$val = $wpdb->get_var( $wpdb->prepare(
+				"SELECT COALESCE(COUNT(*) / NULLIF(DATEDIFF(NOW(), MIN(created_at)), 0), 0) FROM {$t} WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
+				$days
+			) );
+		} else {
+			$val = $wpdb->get_var( "SELECT COALESCE(COUNT(*) / NULLIF(DATEDIFF(NOW(), MIN(created_at)), 0), 0) FROM {$t}" );
+		}
+		return round( (float) $val, 1 );
+	}
+
+	public static function get_searches_by_hour( int $days = 30 ): array {
+		global $wpdb;
+		$t = self::search_log_table();
+		$where = $days > 0
+			? $wpdb->prepare( "WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)", $days )
+			: '';
+		return $wpdb->get_results(
+			"SELECT HOUR(created_at) AS hour, COUNT(*) AS total FROM {$t} {$where} GROUP BY hour ORDER BY hour ASC",
+			ARRAY_A
+		) ?: [];
+	}
+
+	public static function get_peak_search_hour( int $days = 30 ): ?array {
+		$by_hour = self::get_searches_by_hour( $days );
+		if ( empty( $by_hour ) ) return null;
+		usort( $by_hour, function ( $a, $b ) { return (int) $b['total'] - (int) $a['total']; } );
+		return $by_hour[0];
+	}
+
+	public static function get_zero_result_queries( int $limit = 10 ): array {
+		global $wpdb;
+		$t = self::search_log_table();
+		return $wpdb->get_results( $wpdb->prepare(
+			"SELECT query, COUNT(*) AS search_count, MAX(created_at) AS last_searched
+			 FROM {$t} WHERE food_id IS NULL AND query != ''
+			 GROUP BY query ORDER BY search_count DESC LIMIT %d",
+			$limit
+		), ARRAY_A ) ?: [];
+	}
+
+	public static function get_repeat_visitor_rate( int $days = 30 ): float {
+		global $wpdb;
+		$t = self::search_log_table();
+		$where = $days > 0
+			? $wpdb->prepare( "WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)", $days )
+			: '';
+		$total_sessions = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT session_id) FROM {$t} {$where}" );
+		if ( $total_sessions === 0 ) return 0;
+		$repeat = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM (SELECT session_id, COUNT(*) AS c FROM {$t} {$where} GROUP BY session_id HAVING c > 1) AS sub"
+		);
+		return round( $repeat / $total_sessions * 100, 1 );
+	}
 }

@@ -82,6 +82,7 @@
 				case 'overview':      loadOverview();      break;
 				case 'search':        loadSearch();        break;
 				case 'monetization':  loadMonetization();  break;
+				case 'content':       loadContent();       break;
 				case 'audience':      loadAudience();      break;
 			}
 		}
@@ -125,6 +126,7 @@
 				hideSpinner( 'fcc-an-success-spinner' );
 				hideSpinner( 'fcc-an-category-spinner' );
 				hideSpinner( 'fcc-an-peak-spinner' );
+				hideSpinner( 'fcc-an-hourly-spinner' );
 
 				// Success Rate Trend
 				var se = document.getElementById( 'fcc-an-success-chart' );
@@ -176,6 +178,22 @@
 					} );
 				}
 
+				// Hourly Distribution
+				var he = document.getElementById( 'fcc-an-hourly-chart' );
+				if ( he && d.hourly ) {
+					charts.hourly = new Chart( he, {
+						type: 'bar',
+						data: { labels: d.hourly.labels, datasets: [ {
+							label: 'Searches', data: d.hourly.data,
+							backgroundColor: d.hourly.data.map( function ( v, i ) {
+								return i === indexOfMax( d.hourly.data ) ? C.teal : 'rgba(22,160,133,.35)';
+							} ),
+							borderColor: C.teal, borderWidth: 1, borderRadius: 3,
+						} ] },
+						options: chartOpts( false, { x: { ticks: { maxTicksLimit: 12, font: { size: 10 } } } } ),
+					} );
+				}
+
 				// Trending Searches table
 				renderTrendingTable( d.trending || [] );
 			} );
@@ -224,6 +242,32 @@
 								y: { display: false, beginAtZero: true },
 							},
 						},
+					} );
+				}
+			} );
+		}
+
+		// ── Content ─────────────────────────────────────────────────────
+		function loadContent() {
+			ajaxPost( 'content', function ( d ) {
+				hideSpinner( 'fcc-an-coverage-spinner' );
+
+				var cce = document.getElementById( 'fcc-an-coverage-chart' );
+				if ( cce && d.category_coverage && d.category_coverage.labels.length ) {
+					charts.coverage = new Chart( cce, {
+						type: 'bar',
+						data: { labels: d.category_coverage.labels, datasets: [ {
+							label: 'Foods', data: d.category_coverage.data,
+							backgroundColor: catPalette.slice( 0, d.category_coverage.labels.length ),
+							borderWidth: 1, borderRadius: 4,
+						} ] },
+						options: Object.assign( {}, chartOpts( false ), {
+							indexAxis: 'y',
+							scales: {
+								x: { beginAtZero: true, ticks: { precision: 0 } },
+								y: { ticks: { font: { size: 10 } } },
+							},
+						} ),
 					} );
 				}
 			} );

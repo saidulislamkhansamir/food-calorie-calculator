@@ -4483,6 +4483,117 @@ button.fcc-reqs-tab {
 	font-style: italic;
 }
 
+/* Section labels */
+.fcc-an-section-label {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	margin: 1.75rem 0 .75rem;
+	font-size: .9rem;
+	color: #075B5E;
+}
+.fcc-an-section-label strong { font-weight: 700; }
+
+/* Database Health Row */
+.fcc-an-health-row {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 1rem;
+	margin-bottom: 1.75rem;
+}
+.fcc-an-health-card {
+	background: #fff;
+	border-radius: 12px;
+	padding: 1.25rem 1rem;
+	box-shadow: 0 2px 8px rgba(0,0,0,.07);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: .35rem;
+}
+.fcc-an-health-card__num {
+	font-size: 1.75rem;
+	font-weight: 700;
+	color: #075B5E;
+	line-height: 1.1;
+}
+.fcc-an-health-card__label {
+	font-size: .78rem;
+	color: #555;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+	font-weight: 600;
+}
+.fcc-an-health-card__detail {
+	font-size: .72rem;
+	color: #888;
+}
+
+/* Completeness ring SVG */
+.fcc-an-ring { display: block; }
+
+/* Completeness cards (Content tab) */
+.fcc-an-completeness-row {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1rem;
+	margin-bottom: 1.75rem;
+}
+.fcc-an-completeness-card {
+	background: #fff;
+	border-radius: 12px;
+	padding: 1.25rem;
+	box-shadow: 0 2px 8px rgba(0,0,0,.07);
+	text-align: center;
+}
+.fcc-an-completeness-card__top {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: .4rem;
+	margin-bottom: .6rem;
+}
+.fcc-an-completeness-card__num {
+	font-size: 1.75rem;
+	font-weight: 700;
+	color: #075B5E;
+}
+.fcc-an-completeness-card__label {
+	font-size: .8rem;
+	font-weight: 600;
+	color: #555;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+}
+.fcc-an-completeness-card__bar-wrap {
+	height: 6px;
+	background: #eee;
+	border-radius: 3px;
+	overflow: hidden;
+	margin-bottom: .4rem;
+}
+.fcc-an-completeness-card__bar {
+	height: 100%;
+	background: linear-gradient(90deg, #075B5E, #2D7A4F);
+	border-radius: 3px;
+	transition: width .5s ease;
+}
+.fcc-an-completeness-card__bar--full { width: 100%; }
+.fcc-an-completeness-card__detail {
+	font-size: .72rem;
+	color: #888;
+}
+
+/* Search charts 2x2 grid */
+.fcc-an-charts-row--search {
+	grid-template-columns: 1fr 1fr;
+}
+
+/* KPI row variants */
+.fcc-an-kpi-row--4 { grid-template-columns: repeat(4, 1fr); }
+.fcc-an-kpi-row--8 { grid-template-columns: repeat(4, 1fr); }
+
 /* =============================================================================
    Email Hub page (.fcc-eh-*)
    ============================================================================= */
@@ -4592,15 +4703,21 @@ button.fcc-reqs-tab {
 /* Responsive — analytics / hub / planner */
 @media screen and (max-width: 1200px) {
 	.fcc-an-kpi-row { grid-template-columns: repeat(3, 1fr); }
+	.fcc-an-health-row { grid-template-columns: repeat(3, 1fr); }
+	.fcc-an-completeness-row { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media screen and (max-width: 900px) {
 	.fcc-an-kpi-row    { grid-template-columns: repeat(2, 1fr); }
 	.fcc-an-charts-row { grid-template-columns: 1fr; }
+	.fcc-an-health-row { grid-template-columns: repeat(2, 1fr); }
+	.fcc-an-completeness-row { grid-template-columns: 1fr 1fr; }
 }
 
 @media screen and (max-width: 600px) {
 	.fcc-an-kpi-row { grid-template-columns: 1fr; }
+	.fcc-an-health-row { grid-template-columns: 1fr 1fr; }
+	.fcc-an-completeness-row { grid-template-columns: 1fr; }
 	.fcc-an-hero    { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
 	.fcc-eh-hero    { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
 	.fcc-cp-hero    { padding: 1.25rem; }

@@ -51,6 +51,9 @@ class Analytics {
 			case 'monetization':
 				$data = $this->get_monetization_tab_data( $range );
 				break;
+			case 'content':
+				$data = $this->get_content_tab_data();
+				break;
 			case 'audience':
 				$data = $this->get_audience_tab_data();
 				break;
@@ -90,6 +93,15 @@ class Analytics {
 		$cat_breakdown = \FCC\Database::get_searches_by_category();
 		$peak_days     = \FCC\Database::get_searches_by_day_of_week( $chart_days );
 		$trending      = \FCC\Database::get_trending_searches( $chart_days, 15 );
+		$by_hour       = \FCC\Database::get_searches_by_hour( $chart_days );
+
+		$hour_labels = [];
+		$hour_data   = [];
+		$hour_map    = array_column( $by_hour, 'total', 'hour' );
+		for ( $h = 0; $h < 24; $h++ ) {
+			$hour_labels[] = sprintf( '%02d:00', $h );
+			$hour_data[]   = (int) ( $hour_map[ $h ] ?? 0 );
+		}
 
 		return [
 			'success_trend' => [
@@ -104,6 +116,10 @@ class Analytics {
 				'labels' => array_column( $peak_days, 'day_name' ),
 				'data'   => array_map( 'intval', array_column( $peak_days, 'total' ) ),
 			],
+			'hourly' => [
+				'labels' => $hour_labels,
+				'data'   => $hour_data,
+			],
 			'trending' => $trending,
 		];
 	}
@@ -116,6 +132,16 @@ class Analytics {
 			'sponsor_trend' => [
 				'labels' => array_column( $sponsor_trend, 'click_date' ),
 				'data'   => array_map( 'intval', array_column( $sponsor_trend, 'clicks' ) ),
+			],
+		];
+	}
+
+	private function get_content_tab_data(): array {
+		$cat_coverage = \FCC\Database::get_category_coverage();
+		return [
+			'category_coverage' => [
+				'labels' => array_column( $cat_coverage, 'category_name' ),
+				'data'   => array_map( 'intval', array_column( $cat_coverage, 'food_count' ) ),
 			],
 		];
 	}

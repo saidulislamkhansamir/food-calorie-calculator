@@ -23,6 +23,17 @@ $kpi_gaps     = \FCC\Database::count_active_missed_searches();
 $kpi_requests = \FCC\Database::count_food_requests_grouped( [ 'status' => 'pending' ] );
 $kpi_subs     = \FCC\Database::count_opted_in_requests();
 $kpi_sponsors = \FCC\Database::count_active_sponsors();
+$avg_daily    = \FCC\Database::get_avg_daily_searches( $range > 0 ? $range : 0 );
+
+// Database health.
+$total_foods     = \FCC\Database::count_all_foods();
+$total_cats      = \FCC\Database::count_all_categories();
+$foods_servings  = \FCC\Database::count_foods_with_serving_sizes();
+$foods_micros    = \FCC\Database::count_foods_with_micronutrients();
+$foods_allergens = \FCC\Database::count_foods_with_allergen_tags();
+$pct_servings    = $total_foods > 0 ? round( $foods_servings / $total_foods * 100, 1 ) : 0;
+$pct_micros      = $total_foods > 0 ? round( $foods_micros / $total_foods * 100, 1 ) : 0;
+$pct_allergens   = $total_foods > 0 ? round( $foods_allergens / $total_foods * 100, 1 ) : 0;
 
 // Supplement aggregate stats.
 $supp_catalog = \FCC\Admin\Supplements::get_catalog_with_stats();
@@ -54,6 +65,10 @@ if ( ! empty( $aff_config['retailers'] ) ) {
 	}
 }
 
+// ── Search tab extras ──────────────────────────────────────────────────
+$peak_hour      = \FCC\Database::get_peak_search_hour( $range > 0 ? $range : 0 );
+$zero_results   = \FCC\Database::get_zero_result_queries( 10 );
+
 // ── Content tab data ────────────────────────────────────────────────────
 $scored_gaps   = \FCC\Database::get_scored_content_gaps( 20 );
 $pipeline      = \FCC\Database::get_request_pipeline_counts();
@@ -66,6 +81,9 @@ $sponsor_by_food = \FCC\Database::get_sponsor_clicks_by_food( $range > 0 ? $rang
 $supp_top5 = $supp_catalog;
 usort( $supp_top5, function ( $a, $b ) { return ( $b['clicks'] ?? 0 ) - ( $a['clicks'] ?? 0 ); } );
 $supp_top5 = array_slice( $supp_top5, 0, 5 );
+
+// Est. total revenue.
+$est_total_revenue = $supp_revenue + $wl_stats['mrr'];
 
 // ── Audience tab data ───────────────────────────────────────────────────
 $recent_optins = \FCC\Database::get_recent_optins( 10 );
@@ -90,6 +108,18 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 		$arrow = '↓';
 	}
 	return '<span class="fcc-an-delta ' . $cls . '">' . $arrow . ' ' . abs( $pct ) . '%' . esc_html( $suffix ) . '</span>';
+}
+
+function fcc_completeness_ring( float $pct ): string {
+	$r = 18; $c = 2 * M_PI * $r; $offset = $c - ( $pct / 100 ) * $c;
+	$color = $pct >= 80 ? '#2D7A4F' : ( $pct >= 50 ? '#e67e22' : '#e74c3c' );
+	return '<svg class="fcc-an-ring" width="48" height="48" viewBox="0 0 48 48">'
+		. '<circle cx="24" cy="24" r="' . $r . '" fill="none" stroke="#eee" stroke-width="4"/>'
+		. '<circle cx="24" cy="24" r="' . $r . '" fill="none" stroke="' . $color . '" stroke-width="4" '
+		. 'stroke-dasharray="' . round($c,2) . '" stroke-dashoffset="' . round($offset,2) . '" '
+		. 'stroke-linecap="round" transform="rotate(-90 24 24)"/>'
+		. '<text x="24" y="26" text-anchor="middle" font-size="10" font-weight="700" fill="' . $color . '">' . $pct . '%</text>'
+		. '</svg>';
 }
 ?>
 <div class="wrap fcc-admin-wrap fcc-an-page"
@@ -142,8 +172,8 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 	     ═══════════════════════════════════════════════════════════════════ -->
 	<div id="fcc-an-panel-overview" class="fcc-an-tab-panel<?php echo $active_tab === 'overview' ? ' fcc-an-tab-panel--active' : ''; ?>">
 
-		<!-- KPI Cards (8) -->
-		<div class="fcc-an-kpi-row fcc-an-kpi-row--8">
+		<!-- KPI Cards Row 1 — Search & Engagement -->
+		<div class="fcc-an-kpi-row fcc-an-kpi-row--4">
 
 			<div class="fcc-an-kpi-card fcc-an-kpi-card--green">
 				<div class="fcc-an-kpi-card__icon">
@@ -169,6 +199,17 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 				</div>
 			</div>
 
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--teal">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo esc_html( $avg_daily ); ?></span>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Avg Daily Searches', 'food-calorie-calculator' ); ?></span>
+					<span class="fcc-an-kpi-card__sub"><?php echo esc_html( $range_labels[ $range ] ); ?></span>
+				</div>
+			</div>
+
 			<div class="fcc-an-kpi-card fcc-an-kpi-card--amber">
 				<div class="fcc-an-kpi-card__icon">
 					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -179,6 +220,11 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 					<span class="fcc-an-kpi-card__sub"><?php esc_html_e( 'Active missed searches', 'food-calorie-calculator' ); ?></span>
 				</div>
 			</div>
+
+		</div>
+
+		<!-- KPI Cards Row 2 — Monetization & Community -->
+		<div class="fcc-an-kpi-row fcc-an-kpi-row--4">
 
 			<div class="fcc-an-kpi-card fcc-an-kpi-card--green">
 				<div class="fcc-an-kpi-card__icon">
@@ -210,17 +256,6 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 					<span class="fcc-an-kpi-card__value"><?php echo number_format( $kpi_sponsors ); ?></span>
 					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Active Sponsors', 'food-calorie-calculator' ); ?></span>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-sponsored' ) ); ?>" class="fcc-an-kpi-card__sub" style="color:inherit;text-decoration:underline"><?php esc_html_e( 'Manage →', 'food-calorie-calculator' ); ?></a>
-				</div>
-			</div>
-
-			<div class="fcc-an-kpi-card fcc-an-kpi-card--purple">
-				<div class="fcc-an-kpi-card__icon">
-					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
-				</div>
-				<div>
-					<span class="fcc-an-kpi-card__value"><?php echo esc_html( $supp_ctr ); ?>%</span>
-					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Supplement CTR', 'food-calorie-calculator' ); ?></span>
-					<span class="fcc-an-kpi-card__sub"><?php echo esc_html( number_format( $supp_totals['clicks'] ) . ' clicks' ); ?></span>
 				</div>
 			</div>
 
@@ -263,7 +298,42 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 			</div>
 		</div>
 
+		<!-- Database Health -->
+		<div class="fcc-an-section-label">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#075B5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+			<strong><?php esc_html_e( 'Database Health', 'food-calorie-calculator' ); ?></strong>
+		</div>
+		<div class="fcc-an-health-row">
+			<div class="fcc-an-health-card">
+				<div class="fcc-an-health-card__num"><?php echo number_format( $total_foods ); ?></div>
+				<div class="fcc-an-health-card__label"><?php esc_html_e( 'Total Foods', 'food-calorie-calculator' ); ?></div>
+			</div>
+			<div class="fcc-an-health-card">
+				<div class="fcc-an-health-card__num"><?php echo number_format( $total_cats ); ?></div>
+				<div class="fcc-an-health-card__label"><?php esc_html_e( 'Categories', 'food-calorie-calculator' ); ?></div>
+			</div>
+			<div class="fcc-an-health-card">
+				<?php echo fcc_completeness_ring( $pct_servings ); ?>
+				<div class="fcc-an-health-card__label"><?php esc_html_e( 'Serving Sizes', 'food-calorie-calculator' ); ?></div>
+				<div class="fcc-an-health-card__detail"><?php echo number_format( $foods_servings ); ?> / <?php echo number_format( $total_foods ); ?></div>
+			</div>
+			<div class="fcc-an-health-card">
+				<?php echo fcc_completeness_ring( $pct_micros ); ?>
+				<div class="fcc-an-health-card__label"><?php esc_html_e( 'Micronutrients', 'food-calorie-calculator' ); ?></div>
+				<div class="fcc-an-health-card__detail"><?php echo number_format( $foods_micros ); ?> / <?php echo number_format( $total_foods ); ?></div>
+			</div>
+			<div class="fcc-an-health-card">
+				<?php echo fcc_completeness_ring( $pct_allergens ); ?>
+				<div class="fcc-an-health-card__label"><?php esc_html_e( 'Allergen Tags', 'food-calorie-calculator' ); ?></div>
+				<div class="fcc-an-health-card__detail"><?php echo number_format( $foods_allergens ); ?> / <?php echo number_format( $total_foods ); ?></div>
+			</div>
+		</div>
+
 		<!-- Quick Revenue Summary -->
+		<div class="fcc-an-section-label">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#075B5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+			<strong><?php esc_html_e( 'Revenue Snapshot', 'food-calorie-calculator' ); ?></strong>
+		</div>
 		<div class="fcc-an-revenue-row">
 			<div class="fcc-an-rev-card fcc-an-rev-card--purple">
 				<span class="fcc-an-rev-card__icon">💊</span>
@@ -304,6 +374,48 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 	     ═══════════════════════════════════════════════════════════════════ -->
 	<div id="fcc-an-panel-search" class="fcc-an-tab-panel<?php echo $active_tab === 'search' ? ' fcc-an-tab-panel--active' : ''; ?>">
 
+		<!-- Search KPI Summary -->
+		<div class="fcc-an-kpi-row fcc-an-kpi-row--4">
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--green">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo number_format( $search_cmp['current'] ); ?></span>
+					<?php echo fcc_delta_badge( $search_cmp['current'], $search_cmp['previous'] ); ?>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Total Searches', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--blue">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo esc_html( $rate_cmp['current'] ); ?>%</span>
+					<?php echo fcc_delta_badge( $rate_cmp['current'], $rate_cmp['previous'] ); ?>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Success Rate', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--teal">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo $peak_hour ? sprintf( '%02d:00', $peak_hour['hour'] ) : '—'; ?></span>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Peak Hour', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--amber">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo number_format( $kpi_gaps ); ?></span>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Content Gaps', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
+		</div>
+
 		<!-- Trending Searches Table -->
 		<div class="fcc-card fcc-an-section">
 			<div class="fcc-an-section__header">
@@ -320,6 +432,33 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 				<p class="fcc-an-empty"><span class="spinner is-active" style="float:none"></span> <?php esc_html_e( 'Loading…', 'food-calorie-calculator' ); ?></p>
 			</div>
 		</div>
+
+		<!-- Zero Results Queries -->
+		<?php if ( ! empty( $zero_results ) ) : ?>
+		<div class="fcc-card fcc-an-section">
+			<div class="fcc-an-section__header">
+				<div class="fcc-an-section__title">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+					<strong><?php esc_html_e( 'Zero-Result Queries', 'food-calorie-calculator' ); ?></strong>
+				</div>
+				<span class="fcc-an-section__desc"><?php esc_html_e( 'Searches that returned no food match — potential additions.', 'food-calorie-calculator' ); ?></span>
+			</div>
+			<table class="fcc-an-table">
+				<thead><tr><th>#</th><th><?php esc_html_e( 'Query', 'food-calorie-calculator' ); ?></th><th><?php esc_html_e( 'Searches', 'food-calorie-calculator' ); ?></th><th><?php esc_html_e( 'Last Searched', 'food-calorie-calculator' ); ?></th><th></th></tr></thead>
+				<tbody>
+				<?php foreach ( $zero_results as $i => $zr ) : ?>
+					<tr>
+						<td class="fcc-an-td--num"><?php echo $i + 1; ?></td>
+						<td><?php echo esc_html( $zr['query'] ); ?></td>
+						<td class="fcc-an-td--center"><span class="fcc-reqs-count-badge"><?php echo (int) $zr['search_count']; ?>×</span></td>
+						<td class="fcc-an-td--date"><?php echo esc_html( date_i18n( 'Y-m-d', strtotime( $zr['last_searched'] ) ) ); ?></td>
+						<td><a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods&food_name=' . urlencode( $zr['query'] ) ) ); ?>" class="fcc-an-quick-action">+ Add</a></td>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+		<?php endif; ?>
 
 		<!-- Search Charts (2x2 grid) -->
 		<div class="fcc-an-charts-row fcc-an-charts-row--search">
@@ -354,6 +493,16 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 					<div class="fcc-an-spinner" id="fcc-an-peak-spinner"><span class="spinner is-active"></span></div>
 				</div>
 			</div>
+			<div class="fcc-card fcc-an-chart-card">
+				<div class="fcc-an-chart-card__header">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+					<strong><?php esc_html_e( 'Hourly Distribution', 'food-calorie-calculator' ); ?></strong>
+				</div>
+				<div class="fcc-an-chart-wrap">
+					<canvas id="fcc-an-hourly-chart"></canvas>
+					<div class="fcc-an-spinner" id="fcc-an-hourly-spinner"><span class="spinner is-active"></span></div>
+				</div>
+			</div>
 		</div>
 
 	</div><!-- #fcc-an-panel-search -->
@@ -362,6 +511,50 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 	     TAB 3 — MONETIZATION
 	     ═══════════════════════════════════════════════════════════════════ -->
 	<div id="fcc-an-panel-monetization" class="fcc-an-tab-panel<?php echo $active_tab === 'monetization' ? ' fcc-an-tab-panel--active' : ''; ?>">
+
+		<!-- Revenue KPI Summary -->
+		<div class="fcc-an-kpi-row fcc-an-kpi-row--4">
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--green">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value">£<?php echo number_format( $est_total_revenue, 2 ); ?></span>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Est. Monthly Revenue', 'food-calorie-calculator' ); ?></span>
+					<span class="fcc-an-kpi-card__sub"><?php esc_html_e( 'Supplements + White Label', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--purple">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo esc_html( $supp_ctr ); ?>%</span>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Supplement CTR', 'food-calorie-calculator' ); ?></span>
+					<span class="fcc-an-kpi-card__sub"><?php echo esc_html( number_format( $supp_totals['clicks'] ) . ' / ' . number_format( $supp_totals['impressions'] ) ); ?></span>
+				</div>
+			</div>
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--gold">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo number_format( $sponsor_cmp['current'] ); ?></span>
+					<?php echo fcc_delta_badge( $sponsor_cmp['current'], $sponsor_cmp['previous'] ); ?>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Sponsor Clicks', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--teal">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value">£<?php echo number_format( $wl_stats['arr'], 0 ); ?></span>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'White Label ARR', 'food-calorie-calculator' ); ?></span>
+					<span class="fcc-an-kpi-card__sub"><?php echo esc_html( $wl_stats['active'] . ' / ' . $wl_stats['total'] . ' licenses' ); ?></span>
+				</div>
+			</div>
+		</div>
 
 		<div class="fcc-an-monetization-grid">
 
@@ -475,7 +668,59 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 	     ═══════════════════════════════════════════════════════════════════ -->
 	<div id="fcc-an-panel-content" class="fcc-an-tab-panel<?php echo $active_tab === 'content' ? ' fcc-an-tab-panel--active' : ''; ?>">
 
+		<!-- Database Completeness -->
+		<div class="fcc-an-section-label">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#075B5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+			<strong><?php esc_html_e( 'Database Completeness', 'food-calorie-calculator' ); ?></strong>
+		</div>
+		<div class="fcc-an-completeness-row">
+			<div class="fcc-an-completeness-card">
+				<div class="fcc-an-completeness-card__top">
+					<span class="fcc-an-completeness-card__num"><?php echo number_format( $total_foods ); ?></span>
+					<span class="fcc-an-completeness-card__label"><?php esc_html_e( 'Total Foods', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-an-completeness-card__bar-wrap">
+					<div class="fcc-an-completeness-card__bar fcc-an-completeness-card__bar--full"></div>
+				</div>
+				<span class="fcc-an-completeness-card__detail"><?php echo number_format( $total_cats ); ?> <?php esc_html_e( 'categories', 'food-calorie-calculator' ); ?></span>
+			</div>
+			<div class="fcc-an-completeness-card">
+				<div class="fcc-an-completeness-card__top">
+					<?php echo fcc_completeness_ring( $pct_servings ); ?>
+					<span class="fcc-an-completeness-card__label"><?php esc_html_e( 'Serving Sizes', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-an-completeness-card__bar-wrap">
+					<div class="fcc-an-completeness-card__bar" style="width:<?php echo max( $pct_servings, 2 ); ?>%"></div>
+				</div>
+				<span class="fcc-an-completeness-card__detail"><?php echo number_format( $foods_servings ); ?> / <?php echo number_format( $total_foods ); ?></span>
+			</div>
+			<div class="fcc-an-completeness-card">
+				<div class="fcc-an-completeness-card__top">
+					<?php echo fcc_completeness_ring( $pct_micros ); ?>
+					<span class="fcc-an-completeness-card__label"><?php esc_html_e( 'Micronutrients', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-an-completeness-card__bar-wrap">
+					<div class="fcc-an-completeness-card__bar" style="width:<?php echo max( $pct_micros, 2 ); ?>%"></div>
+				</div>
+				<span class="fcc-an-completeness-card__detail"><?php echo number_format( $foods_micros ); ?> / <?php echo number_format( $total_foods ); ?></span>
+			</div>
+			<div class="fcc-an-completeness-card">
+				<div class="fcc-an-completeness-card__top">
+					<?php echo fcc_completeness_ring( $pct_allergens ); ?>
+					<span class="fcc-an-completeness-card__label"><?php esc_html_e( 'Allergen Tags', 'food-calorie-calculator' ); ?></span>
+				</div>
+				<div class="fcc-an-completeness-card__bar-wrap">
+					<div class="fcc-an-completeness-card__bar" style="width:<?php echo max( $pct_allergens, 2 ); ?>%"></div>
+				</div>
+				<span class="fcc-an-completeness-card__detail"><?php echo number_format( $foods_allergens ); ?> / <?php echo number_format( $total_foods ); ?></span>
+			</div>
+		</div>
+
 		<!-- Request Pipeline -->
+		<div class="fcc-an-section-label">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#075B5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+			<strong><?php esc_html_e( 'Request Pipeline', 'food-calorie-calculator' ); ?></strong>
+		</div>
 		<div class="fcc-an-pipeline-row">
 			<div class="fcc-an-pipeline-card fcc-an-pipeline-card--pending">
 				<span class="fcc-an-pipeline-card__num"><?php echo $pipeline['pending']; ?></span>
@@ -497,7 +742,56 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 			</div>
 		</div>
 
+		<!-- Category Coverage Chart + Content Gaps Table -->
 		<div class="fcc-an-tables-row">
+
+			<!-- Category Coverage -->
+			<div class="fcc-card fcc-an-section">
+				<div class="fcc-an-section__header">
+					<div class="fcc-an-section__title">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+						<strong><?php esc_html_e( 'Category Coverage', 'food-calorie-calculator' ); ?></strong>
+					</div>
+					<span class="fcc-an-section__desc"><?php esc_html_e( 'Foods per category — identify gaps in your database.', 'food-calorie-calculator' ); ?></span>
+					<button type="button" class="fcc-an-export-btn" data-section="category_coverage" title="<?php esc_attr_e( 'Export CSV', 'food-calorie-calculator' ); ?>">
+						<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					</button>
+				</div>
+				<!-- Chart + Table -->
+				<div class="fcc-an-chart-wrap" style="max-height:280px;margin-bottom:1rem">
+					<canvas id="fcc-an-coverage-chart"></canvas>
+					<div class="fcc-an-spinner" id="fcc-an-coverage-spinner"><span class="spinner is-active"></span></div>
+				</div>
+				<?php if ( ! empty( $cat_coverage ) ) : ?>
+					<?php $max_foods = max( array_column( $cat_coverage, 'food_count' ) ) ?: 1; ?>
+					<table class="fcc-an-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
+								<th><?php esc_html_e( 'Foods', 'food-calorie-calculator' ); ?></th>
+								<th><?php esc_html_e( 'Coverage', 'food-calorie-calculator' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php foreach ( $cat_coverage as $cc ) :
+							$cnt = (int) $cc['food_count'];
+							$pct = round( $cnt / $max_foods * 100 );
+							$bar_cls = $cnt === 0 ? 'fcc-an-bar--empty' : ( $pct < 25 ? 'fcc-an-bar--low' : '' );
+						?>
+							<tr>
+								<td><?php echo esc_html( $cc['category_name'] ); ?></td>
+								<td class="fcc-an-td--center"><?php echo $cnt; ?></td>
+								<td>
+									<div class="fcc-an-bar-wrap">
+										<div class="fcc-an-bar <?php echo esc_attr( $bar_cls ); ?>" style="width:<?php echo max( $pct, 2 ); ?>%"></div>
+									</div>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+						</tbody>
+					</table>
+				<?php endif; ?>
+			</div>
 
 			<!-- Scored Content Gaps -->
 			<div class="fcc-card fcc-an-section">
@@ -546,51 +840,6 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 				<?php endif; ?>
 			</div>
 
-			<!-- Category Coverage -->
-			<div class="fcc-card fcc-an-section">
-				<div class="fcc-an-section__header">
-					<div class="fcc-an-section__title">
-						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-						<strong><?php esc_html_e( 'Category Coverage', 'food-calorie-calculator' ); ?></strong>
-					</div>
-					<span class="fcc-an-section__desc"><?php esc_html_e( 'Foods per category — identify gaps in your database.', 'food-calorie-calculator' ); ?></span>
-					<button type="button" class="fcc-an-export-btn" data-section="category_coverage" title="<?php esc_attr_e( 'Export CSV', 'food-calorie-calculator' ); ?>">
-						<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-					</button>
-				</div>
-				<?php if ( empty( $cat_coverage ) ) : ?>
-					<p class="fcc-an-empty"><?php esc_html_e( 'No categories yet.', 'food-calorie-calculator' ); ?></p>
-				<?php else : ?>
-					<?php $max_foods = max( array_column( $cat_coverage, 'food_count' ) ) ?: 1; ?>
-					<table class="fcc-an-table">
-						<thead>
-							<tr>
-								<th><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
-								<th><?php esc_html_e( 'Foods', 'food-calorie-calculator' ); ?></th>
-								<th><?php esc_html_e( 'Coverage', 'food-calorie-calculator' ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-						<?php foreach ( $cat_coverage as $cc ) :
-							$cnt = (int) $cc['food_count'];
-							$pct = round( $cnt / $max_foods * 100 );
-							$bar_cls = $cnt === 0 ? 'fcc-an-bar--empty' : ( $pct < 25 ? 'fcc-an-bar--low' : '' );
-						?>
-							<tr>
-								<td><?php echo esc_html( $cc['category_name'] ); ?></td>
-								<td class="fcc-an-td--center"><?php echo $cnt; ?></td>
-								<td>
-									<div class="fcc-an-bar-wrap">
-										<div class="fcc-an-bar <?php echo esc_attr( $bar_cls ); ?>" style="width:<?php echo max( $pct, 2 ); ?>%"></div>
-									</div>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-						</tbody>
-					</table>
-				<?php endif; ?>
-			</div>
-
 		</div>
 
 	</div><!-- #fcc-an-panel-content -->
@@ -601,7 +850,7 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 	<div id="fcc-an-panel-audience" class="fcc-an-tab-panel<?php echo $active_tab === 'audience' ? ' fcc-an-tab-panel--active' : ''; ?>">
 
 		<!-- Audience KPIs -->
-		<div class="fcc-an-kpi-row" style="grid-template-columns:repeat(3,1fr);">
+		<div class="fcc-an-kpi-row fcc-an-kpi-row--4">
 			<div class="fcc-an-kpi-card fcc-an-kpi-card--blue">
 				<div class="fcc-an-kpi-card__icon">
 					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -629,10 +878,19 @@ function fcc_delta_badge( float $current, float $previous, string $suffix = '' )
 					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Pending Requests', 'food-calorie-calculator' ); ?></span>
 				</div>
 			</div>
+			<div class="fcc-an-kpi-card fcc-an-kpi-card--teal">
+				<div class="fcc-an-kpi-card__icon">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+				</div>
+				<div>
+					<span class="fcc-an-kpi-card__value"><?php echo esc_html( $avg_daily ); ?></span>
+					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Avg Daily Searches', 'food-calorie-calculator' ); ?></span>
+				</div>
+			</div>
 		</div>
 
 		<!-- Subscriber Growth Chart -->
-		<div class="fcc-card fcc-an-chart-card" style="max-width:800px">
+		<div class="fcc-card fcc-an-chart-card" style="max-width:900px">
 			<div class="fcc-an-chart-card__header">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
 				<strong><?php esc_html_e( 'Subscriber Growth', 'food-calorie-calculator' ); ?></strong>
