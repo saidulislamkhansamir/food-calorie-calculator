@@ -14572,4 +14572,201 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 90 );
 	}
+
+	/** Seed v91: Micronutrient data Phase 3 — 200 more foods (cooked dishes, international, drinks). */
+	public static function seed_v91(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 91 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$data = [
+			// ── COOKED CHICKEN DISHES ──
+			'grilled-chicken-breast'           => [0.40, 6.0, 0.0],
+			'roast-chicken'                    => [0.70, 10.0, 0.0],
+			'chicken-breast-pan-fried'         => [0.42, 7.0, 0.0],
+			'chicken-breast-poached'           => [0.38, 5.0, 0.0],
+			'fried-chicken-southern'           => [0.90, 15.0, 0.0],
+			'karaage-japanese-fried-chicken'   => [0.75, 10.0, 0.0],
+			'tandoori-chicken'                 => [1.20, 25.0, 2.0],
+			'chicken-tikka-pakistani-charcoal' => [1.10, 20.0, 1.5],
+			'jerk-chicken'                     => [0.95, 12.0, 5.0],
+			'peri-peri-chicken-quarter'         => [0.80, 10.0, 8.0],
+
+			// ── COOKED BEEF DISHES ──
+			'roast-beef'                       => [2.60, 10.0, 0.0],
+			'steak-sirloin-grilled-medium'     => [2.30, 8.0, 0.0],
+			'steak-ribeye-grilled'             => [1.95, 9.0, 0.0],
+			'beef-burger-homemade-no-bun'      => [2.10, 14.0, 0.0],
+			'beef-mince-cooked-drained'        => [2.50, 12.0, 0.0],
+			'slow-cooked-beef-brisket'         => [2.80, 10.0, 0.0],
+			'beef-stew'                        => [1.50, 12.0, 3.0],
+			'bolognese-sauce-beef'             => [1.20, 15.0, 5.0],
+			'chilli-con-carne'                 => [1.60, 20.0, 4.0],
+			'cottage-pie-homemade'             => [1.10, 15.0, 3.0],
+
+			// ── COOKED FISH DISHES ──
+			'grilled-salmon-fillet'            => [0.38, 12.0, 0.0],
+			'baked-cod-fillet'                 => [0.38, 16.0, 1.0],
+			'fish-and-chips'                   => [0.70, 20.0, 1.0],
+			'fish-fingers-frozen-cooked'       => [0.50, 15.0, 0.0],
+			'smoked-haddock-poached'           => [0.55, 18.0, 0.0],
+			'tuna-steak-seared'                => [1.10, 8.0, 0.0],
+			'sea-bass-fillet-pan-fried'        => [0.35, 12.0, 0.0],
+			'mackerel-fillet-grilled'          => [1.70, 14.0, 0.5],
+			'prawns-king-grilled'              => [0.55, 55.0, 0.0],
+			'calamari-fried'                   => [0.68, 32.0, 1.0],
+
+			// ── POPULAR CURRIES ──
+			'tikka-masala-chicken'             => [0.80, 40.0, 3.0],
+			'korma-chicken'                    => [0.60, 45.0, 1.5],
+			'madras-beef'                      => [1.20, 20.0, 4.0],
+			'vindaloo-pork-goan'               => [1.10, 18.0, 5.0],
+			'rogan-josh-kashmiri-lamb'         => [1.30, 22.0, 3.0],
+			'jalfrezi-chicken'                 => [0.80, 18.0, 12.0],
+			'chicken-balti'                    => [0.75, 20.0, 8.0],
+			'dhal-lentil'                      => [2.10, 18.0, 2.0],
+			'palak-paneer'                     => [2.50, 180.0, 15.0],
+			'aloo-gobi'                        => [0.60, 25.0, 18.0],
+
+			// ── POPULAR PASTA DISHES ──
+			'spaghetti-carbonara'              => [0.80, 85.0, 0.0],
+			'spaghetti-with-meatballs'         => [1.40, 30.0, 5.0],
+			'fettuccine-alfredo'               => [0.50, 120.0, 0.0],
+			'penne-arrabbiata'                 => [0.60, 12.0, 8.0],
+			'lasagne-homemade'                 => [0.90, 85.0, 2.0],
+			'macaroni-cheese-homemade-baked'   => [0.55, 145.0, 0.0],
+			'spaghetti-aglio-e-olio'           => [0.55, 8.0, 1.0],
+			'cacio-e-pepe'                     => [0.65, 250.0, 0.0],
+			'gnocchi-with-pesto'               => [0.60, 55.0, 1.0],
+			'ravioli-cheese-cooked'            => [0.80, 75.0, 0.0],
+
+			// ── POPULAR RICE DISHES ──
+			'egg-fried-rice-homemade'          => [0.50, 15.0, 0.5],
+			'chicken-fried-rice'               => [0.60, 15.0, 1.0],
+			'mushroom-risotto'                 => [0.45, 50.0, 0.5],
+			'pilau-rice-plain'                 => [0.35, 12.0, 0.0],
+			'biryani-chicken'                  => [0.90, 20.0, 2.0],
+			'nasi-goreng-indonesian-fried-rice' => [0.80, 18.0, 3.0],
+			'jollof-rice'                      => [0.65, 15.0, 5.0],
+			'coconut-rice'                     => [0.30, 8.0, 0.0],
+			'spanish-rice-tomato'              => [0.55, 12.0, 5.0],
+			'kabsa-saudi-rice-chicken'         => [0.80, 18.0, 3.0],
+
+			// ── POPULAR SOUPS ──
+			'chicken-noodle-soup'              => [0.25, 5.0, 0.5],
+			'cream-of-tomato-soup'             => [0.30, 15.0, 6.0],
+			'minestrone-soup'                  => [0.50, 15.0, 5.0],
+			'lentil-soup-canned'               => [1.10, 12.0, 1.0],
+			'pho-bo-beef-pho'                  => [0.65, 10.0, 1.0],
+			'tom-yum-goong-hot-sour-prawn-soup'=> [0.40, 25.0, 5.0],
+			'miso-soup-with-tofu'              => [0.65, 20.0, 0.0],
+			'french-onion-soup-with-cheese'    => [0.35, 50.0, 2.0],
+			'pumpkin-soup'                     => [0.30, 15.0, 4.0],
+			'carrot-and-coriander-soup'        => [0.25, 12.0, 3.0],
+
+			// ── POPULAR SALADS ──
+			'greek-salad'                      => [0.40, 85.0, 12.0],
+			'caesar-salad-with-chicken'        => [0.55, 55.0, 5.0],
+			'nicoise-salad'                    => [0.90, 20.0, 6.0],
+			'caprese-salad'                    => [0.35, 180.0, 10.0],
+			'tabbouleh-salad'                  => [0.80, 15.0, 10.0],
+			'quinoa-salad'                     => [1.20, 18.0, 5.0],
+			'couscous-salad'                   => [0.40, 10.0, 3.0],
+			'prawn-cocktail'                   => [0.50, 30.0, 3.0],
+			'coleslaw-shop-bought'             => [0.15, 18.0, 8.0],
+			'waldorf-salad'                    => [0.30, 20.0, 3.0],
+
+			// ── POPULAR SANDWICHES ──
+			'blt-classic'                      => [0.80, 25.0, 5.0],
+			'club-sandwich-triple-decker'      => [0.90, 30.0, 3.0],
+			'cheese-sandwich-plain'            => [0.55, 165.0, 0.0],
+			'ham-sandwich-plain'               => [0.60, 20.0, 0.0],
+			'tuna-mayo-sandwich'               => [0.70, 25.0, 0.0],
+			'egg-mayo-sandwich'                => [0.80, 30.0, 0.0],
+			'chicken-mayo-sandwich'            => [0.50, 20.0, 0.5],
+			'bacon-sandwich'                   => [0.55, 18.0, 0.0],
+			'sausage-sandwich'                 => [0.65, 20.0, 0.0],
+			'cheese-and-pickle-sandwich'       => [0.50, 130.0, 0.0],
+
+			// ── POPULAR BREAKFAST ──
+			'full-english-breakfast'           => [2.00, 40.0, 5.0],
+			'porridge-with-semi-skimmed-milk'  => [1.00, 60.0, 0.0],
+			'scrambled-eggs-with-butter'       => [1.00, 45.0, 0.0],
+			'toast-white-with-butter'          => [0.55, 20.0, 0.0],
+			'beans-on-toast'                   => [1.20, 40.0, 1.0],
+			'pancakes-american-with-syrup'     => [0.90, 40.0, 0.0],
+			'overnight-oats'                   => [1.50, 55.0, 1.0],
+			'avocado-toast'                    => [0.70, 15.0, 5.0],
+			'eggs-benedict'                    => [1.10, 50.0, 0.5],
+			'cereal-with-milk-generic'         => [3.00, 70.0, 0.0],
+
+			// ── POPULAR DESSERTS ──
+			'chocolate-brownie'                => [2.30, 35.0, 0.0],
+			'cheesecake-baked'                 => [0.50, 60.0, 1.0],
+			'apple-crumble-homemade'           => [0.40, 15.0, 2.0],
+			'tiramisu-homemade'                => [0.60, 40.0, 0.0],
+			'sticky-toffee-pudding'            => [0.80, 25.0, 0.0],
+			'rice-pudding'                     => [0.20, 85.0, 0.0],
+			'ice-cream-vanilla'                => [0.10, 128.0, 0.5],
+			'chocolate-cake-rich-homemade'     => [2.50, 40.0, 0.0],
+			'banana-bread-plain'               => [0.80, 15.0, 2.0],
+			'christmas-pudding'                => [1.50, 35.0, 1.0],
+
+			// ── POPULAR DRINKS ──
+			'hot-chocolate-with-semi-skimmed-milk' => [0.30, 90.0, 0.5],
+			'chai-latte'                       => [0.15, 55.0, 0.0],
+			'matcha-latte'                     => [0.35, 55.0, 1.0],
+			'smoothie-berry'                   => [0.30, 15.0, 25.0],
+			'smoothie-green-spinach'           => [0.50, 25.0, 15.0],
+			'lemonade-homemade'                => [0.02, 3.0, 15.0],
+			'ribena-original-diluted'          => [0.05, 3.0, 40.0],
+			'red-wine-per-glass-175ml'         => [0.46, 8.0, 0.0],
+			'lager-per-pint'                   => [0.02, 4.0, 0.0],
+			'stout-guinness-pint'              => [0.02, 5.0, 0.0],
+
+			// ── POPULAR TAKEAWAY ──
+			'chicken-chow-mein-takeaway'       => [0.55, 15.0, 2.0],
+			'sweet-and-sour-chicken-balls'     => [0.40, 10.0, 1.0],
+			'crispy-chilli-beef'               => [0.80, 12.0, 3.0],
+			'chicken-katsu-curry-takeaway'     => [0.55, 20.0, 1.0],
+			'pizza-margherita-takeaway'        => [0.65, 130.0, 2.0],
+			'pizza-meat-feast-takeaway'        => [0.90, 110.0, 1.0],
+			'doner-kebab-lamb-in-pitta'        => [1.40, 25.0, 3.0],
+			'cheeseburger-single-patty'        => [1.50, 85.0, 1.0],
+			'fish-supper-cod-and-chips'        => [0.60, 22.0, 2.0],
+			'chicken-nuggets-frozen-cooked'    => [0.55, 12.0, 0.0],
+
+			// ── POPULAR SNACKS ──
+			'milk-chocolate'                   => [2.35, 189.0, 0.0],
+			'dark-chocolate-70'                => [11.90, 73.0, 0.0],
+			'ready-salted-crisps'              => [0.60, 15.0, 12.0],
+			'digestive-biscuit-1-biscuit-15g'  => [1.10, 25.0, 0.0],
+			'flapjack-oat-golden-syrup'        => [1.50, 20.0, 0.0],
+			'granola-bar'                      => [1.80, 30.0, 0.0],
+			'trail-mix'                        => [2.50, 55.0, 0.5],
+			'popcorn-air-popped'               => [2.70, 7.0, 0.0],
+			'mixed-nuts-roasted-salted'        => [3.00, 80.0, 0.5],
+			'rice-cake-thin-plain'             => [0.30, 3.0, 0.0],
+
+			// ── POPULAR INTERNATIONAL ──
+			'falafel-fried'                    => [3.43, 54.0, 0.0],
+			'hummus'                           => [2.44, 38.0, 0.0],
+			'shawarma-chicken'                 => [0.85, 18.0, 2.0],
+			'pad-thai-chicken'                 => [0.75, 25.0, 3.0],
+			'sushi-salmon-nigiri-1pc'          => [0.15, 5.0, 0.5],
+			'ramen-tonkotsu'                   => [0.60, 15.0, 1.0],
+			'pho-ga-chicken-pho'               => [0.50, 8.0, 1.0],
+			'tacos-beef'                       => [1.20, 65.0, 2.0],
+			'burrito-chicken'                  => [0.90, 70.0, 3.0],
+			'gyoza-pan-fried-chicken-6'        => [0.60, 10.0, 0.5],
+		];
+
+		foreach ( $data as $slug => $vals ) {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f WHERE slug = %s AND iron_mg IS NULL", // phpcs:ignore
+				$vals[0], $vals[1], $vals[2], $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 91 );
+	}
 }
