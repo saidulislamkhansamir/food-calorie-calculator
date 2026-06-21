@@ -14959,4 +14959,190 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 92 );
 	}
+
+	/** Seed v93: Micronutrient data Phase 5 — 200 more foods (remaining popular items). */
+	public static function seed_v93(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 93 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$data = [
+			// ── MORE UK PUB/COMFORT FOOD ──
+			'shepherds-pie'                    => [1.20, 18.0, 3.0],
+			'bangers-and-mash'                 => [0.90, 20.0, 4.0],
+			'toad-in-the-hole'                 => [0.95, 25.0, 0.0],
+			'yorkshire-pudding-1-medium'       => [0.55, 15.0, 0.0],
+			'cornish-pasty'                    => [1.10, 18.0, 2.0],
+			'pork-pie'                         => [0.90, 15.0, 0.0],
+			'scotch-egg'                       => [1.20, 25.0, 0.0],
+			'sausage-roll'                     => [0.75, 12.0, 0.0],
+			'steak-and-kidney-pie'             => [1.80, 15.0, 1.0],
+			'chicken-and-mushroom-pie-homemade'=> [0.65, 20.0, 0.5],
+			'beef-wellington'                  => [1.60, 15.0, 0.0],
+			'sunday-roast-beef-pub-full'       => [1.80, 25.0, 5.0],
+			'sunday-roast-chicken-pub-full'    => [0.80, 22.0, 5.0],
+			'gammon-egg-and-chips'             => [0.70, 25.0, 5.0],
+			'hunters-chicken'                  => [0.65, 55.0, 3.0],
+			'fish-and-mushy-peas'              => [0.80, 25.0, 5.0],
+			'ploughmans-lunch-pub'             => [0.50, 150.0, 3.0],
+			'scampi-and-chips'                 => [0.40, 28.0, 2.0],
+			'cauliflower-cheese-homemade'      => [0.45, 150.0, 20.0],
+			'bubble-and-squeak-homemade'       => [0.60, 20.0, 15.0],
+
+			// ── MORE UK DESSERTS ──
+			'sticky-toffee-pudding-pub-with-cream' => [0.85, 30.0, 0.0],
+			'apple-pie-and-custard-pub'        => [0.40, 30.0, 3.0],
+			'treacle-tart'                     => [0.90, 18.0, 0.0],
+			'spotted-dick'                     => [0.70, 20.0, 0.5],
+			'bread-and-butter-pudding-pub'     => [0.55, 45.0, 0.0],
+			'eton-mess'                        => [0.15, 25.0, 10.0],
+			'bakewell-tart'                    => [0.60, 20.0, 0.0],
+			'battenberg-cake'                  => [0.50, 15.0, 0.0],
+			'eccles-cake'                      => [0.80, 15.0, 0.0],
+			'mince-pie'                        => [0.80, 20.0, 1.0],
+			'christmas-pudding'                => [1.50, 35.0, 1.0],
+			'trifle-sherry'                    => [0.25, 40.0, 3.0],
+			'custard-ready-made'               => [0.10, 85.0, 0.0],
+			'arctic-roll'                      => [0.15, 50.0, 0.0],
+			'jam-roly-poly'                    => [0.60, 15.0, 0.0],
+
+			// ── MORE POPULAR CONFECTIONERY ──
+			'cadbury-dairy-milk'               => [2.20, 200.0, 0.0],
+			'kit-kat-4-finger'                 => [1.50, 110.0, 0.0],
+			'snickers'                         => [1.10, 90.0, 0.0],
+			'mars-bar'                         => [0.60, 80.0, 0.0],
+			'twix'                             => [1.00, 85.0, 0.0],
+			'bounty'                           => [1.80, 45.0, 0.0],
+			'maltesers'                        => [2.00, 180.0, 0.0],
+			'fruit-pastilles'                  => [0.10, 5.0, 0.0],
+			'wine-gums'                        => [0.10, 5.0, 0.0],
+			'jelly-babies'                     => [0.05, 3.0, 0.0],
+			'white-chocolate'                  => [0.24, 199.0, 0.7],
+			'tunnocks-teacake'                 => [0.80, 35.0, 0.0],
+			'tunnocks-caramel-wafer'           => [0.70, 30.0, 0.0],
+
+			// ── MORE POPULAR CRISPS & SNACKS ──
+			'salt-and-vinegar-crisps'          => [0.50, 12.0, 10.0],
+			'cheese-and-onion-crisps'          => [0.55, 25.0, 8.0],
+			'prawn-cocktail-crisps'            => [0.45, 10.0, 5.0],
+			'monster-munch-pickled-onion'       => [0.40, 8.0, 3.0],
+			'quavers-cheese'                   => [0.30, 20.0, 0.0],
+			'hula-hoops-original'              => [0.50, 10.0, 5.0],
+			'skips-prawn-cocktail'             => [0.35, 8.0, 3.0],
+			'twiglets'                         => [2.50, 30.0, 0.0],
+			'mini-cheddars'                    => [0.70, 90.0, 0.0],
+			'pork-scratchings'                 => [0.80, 5.0, 0.0],
+			'bombay-mix'                       => [2.50, 50.0, 2.0],
+			'poppadoms-fried'                  => [3.50, 35.0, 0.0],
+			'prawn-crackers'                   => [0.30, 5.0, 0.0],
+
+			// ── MORE POPULAR BISCUITS ──
+			'rich-tea-biscuit'                 => [0.80, 20.0, 0.0],
+			'hobnob'                           => [1.20, 22.0, 0.0],
+			'custard-cream'                    => [0.90, 15.0, 0.0],
+			'bourbon-cream'                    => [1.50, 20.0, 0.0],
+			'shortbread-finger'                => [0.60, 15.0, 0.0],
+			'jaffa-cake-1-cake'                => [0.80, 12.0, 0.0],
+			'chocolate-chip-cookie'            => [1.50, 20.0, 0.0],
+			'ginger-nut-biscuit'               => [1.20, 15.0, 0.0],
+			'oatcake'                          => [2.30, 30.0, 0.0],
+
+			// ── MORE UK DRINKS ──
+			'irn-bru'                          => [0.0, 0.0, 0.0],
+			'lucozade-energy-original'         => [0.0, 0.0, 0.0],
+			'dandelion-and-burdock'            => [0.0, 0.0, 0.0],
+			'cream-soda'                       => [0.0, 0.0, 0.0],
+			'ginger-beer'                      => [0.02, 2.0, 0.0],
+			'tonic-water'                      => [0.0, 0.0, 0.0],
+			'diet-cola'                        => [0.0, 0.0, 0.0],
+			'energy-drink-red-bull-style'      => [0.0, 0.0, 0.0],
+			'sports-drink-lucozade-style'      => [0.0, 0.0, 0.0],
+			'sparkling-water'                  => [0.0, 5.0, 0.0],
+
+			// ── MORE COCKTAILS ──
+			'gin-and-tonic'                    => [0.01, 2.0, 2.0],
+			'vodka-and-coke'                   => [0.01, 1.0, 0.0],
+			'pina-colada-per-glass'            => [0.25, 8.0, 5.0],
+			'mojito-cocktail'                  => [0.20, 5.0, 5.0],
+			'espresso-martini'                 => [0.10, 3.0, 0.0],
+			'aperol-spritz'                    => [0.02, 2.0, 1.0],
+			'margarita'                        => [0.10, 5.0, 3.0],
+			'negroni'                          => [0.05, 2.0, 0.0],
+			'pimms-and-lemonade'               => [0.10, 5.0, 8.0],
+			'champagne-125ml'                  => [0.10, 5.0, 0.0],
+
+			// ── MORE COOKED VEG PREPARATIONS ──
+			'roasted-vegetables-mixed-oven'    => [0.50, 18.0, 10.0],
+			'steamed-carrots'                  => [0.25, 30.0, 3.0],
+			'boiled-peas'                      => [1.30, 22.0, 14.0],
+			'steamed-cauliflower'              => [0.35, 20.0, 28.0],
+			'sauteed-mushrooms'                => [0.45, 3.0, 1.0],
+			'creamed-spinach'                  => [2.00, 80.0, 10.0],
+			'honey-roasted-parsnips'           => [0.50, 30.0, 8.0],
+			'braised-red-cabbage'              => [0.35, 25.0, 15.0],
+			'roasted-butternut-squash'         => [0.55, 35.0, 12.0],
+			'grilled-peppers'                  => [0.40, 8.0, 80.0],
+			'mashed-potato-with-butter'        => [0.20, 12.0, 6.0],
+			'roast-potato'                     => [0.35, 8.0, 8.0],
+			'baked-potato-plain'               => [0.35, 10.0, 9.0],
+			'sweet-potato-fries-oven'          => [0.50, 20.0, 8.0],
+			'corn-on-the-cob-with-butter'      => [0.50, 3.0, 5.0],
+
+			// ── MORE WRAPS & SUBS ──
+			'chicken-tikka-wrap'               => [0.60, 20.0, 3.0],
+			'falafel-and-hummus-wrap'          => [1.80, 35.0, 3.0],
+			'halloumi-and-roasted-veg-wrap'    => [0.40, 140.0, 8.0],
+			'chicken-caesar-wrap'              => [0.55, 50.0, 5.0],
+			'chicken-and-bacon-sub'            => [0.65, 35.0, 3.0],
+			'meatball-sub-marinara'            => [1.20, 45.0, 5.0],
+			'steak-sub-6-inch'                 => [1.80, 30.0, 3.0],
+			'tuna-sub-6-inch'                  => [0.60, 20.0, 1.0],
+
+			// ── POPULAR HEALTHY BOWLS ──
+			'poke-bowl-hawaiian-tuna'          => [0.80, 15.0, 5.0],
+			'buddha-bowl-mixed'                => [1.20, 30.0, 12.0],
+			'burrito-bowl'                     => [1.00, 55.0, 5.0],
+			'grain-bowl-quinoa-and-chicken'    => [1.40, 20.0, 4.0],
+			'salmon-poke-bowl'                 => [0.50, 12.0, 3.0],
+			'acai-bowl-with-toppings'          => [0.60, 20.0, 8.0],
+
+			// ── FITNESS FOODS ──
+			'protein-shake-whey-made-with-milk' => [0.30, 150.0, 0.5],
+			'protein-bar-chocolate'            => [3.50, 180.0, 0.0],
+			'protein-oats-whey-oats-cooked'    => [1.80, 80.0, 0.0],
+			'protein-pancakes-per-serving'     => [1.50, 60.0, 0.0],
+			'protein-yoghurt-vanilla'          => [0.08, 100.0, 0.0],
+			'rice-cake-with-peanut-butter'     => [0.40, 5.0, 0.0],
+			'chicken-and-avocado-wrap-gym'      => [0.55, 12.0, 5.0],
+			'tuna-and-rice-gym-meal-prep'      => [0.65, 12.0, 0.0],
+
+			// ── MORE CAFE/COFFEE ──
+			'cappuccino-regular'               => [0.04, 70.0, 0.0],
+			'flat-white-regular'               => [0.05, 85.0, 0.0],
+			'latte-regular-semi-skimmed'       => [0.05, 90.0, 0.0],
+			'americano-regular'                => [0.02, 2.0, 0.0],
+			'caramel-macchiato'                => [0.04, 80.0, 0.0],
+			'pumpkin-spice-latte'              => [0.04, 75.0, 0.0],
+			'mocha-with-whipped-cream'         => [0.40, 85.0, 0.0],
+			'tea-with-milk-semi-skimmed'       => [0.02, 18.0, 0.0],
+			'coffee-with-milk'                 => [0.02, 15.0, 0.0],
+			'black-coffee-instant'             => [0.05, 2.0, 0.0],
+
+			// ── MORE POPULAR READY MEALS ──
+			'chicken-tikka-masala-supermarket'  => [0.65, 30.0, 2.0],
+			'spaghetti-bolognese-supermarket'   => [0.80, 15.0, 3.0],
+			'lasagne-supermarket'               => [0.60, 60.0, 1.0],
+			'cottage-pie-supermarket'           => [0.80, 12.0, 3.0],
+			'chicken-korma-supermarket'          => [0.50, 35.0, 1.0],
+			'macaroni-cheese-supermarket'        => [0.40, 100.0, 0.0],
+		];
+
+		foreach ( $data as $slug => $vals ) {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f WHERE slug = %s AND iron_mg IS NULL", // phpcs:ignore
+				$vals[0], $vals[1], $vals[2], $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 93 );
+	}
 }
