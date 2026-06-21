@@ -12477,4 +12477,88 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 77 );
 	}
+
+	/** Seed v78: Missing UK native foods from Wikipedia List of English Dishes. */
+	public static function seed_v78(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 78 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $co=$cid['condiments']??0;
+		$sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ── SAVOURY DISHES ──
+			['Faggots (pork, in gravy)',$mp,180,753,11.0,10.0,1.0,11.0,4.5,0.5,1.2, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'2 faggots','grams'=>180],['label'=>'1 faggot','grams'=>90]]],
+			['Kippers (smoked herring)',$fs,205,858,20.5,0.0,0.0,13.5,3.0,0.0,2.5, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 kipper','grams'=>130],['label'=>'1 pair','grams'=>200]]],
+			['Liver and Onion',$tk,145,607,18.0,5.0,2.0,5.5,2.0,0.5,0.5, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Liver and Bacon',$tk,185,774,18.5,2.0,0.5,11.5,4.0,0.0,1.0, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Pease Pudding',$fv,100,418,6.5,15.0,1.0,1.5,0.2,3.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1, [['label'=>'1 portion','grams'=>100]]],
+			['Pie and Mash (with liquor)',$tk,195,816,7.5,20.0,1.5,10.0,4.0,1.0,0.8, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 plate','grams'=>400]]],
+			['Scouse (Liverpool stew)',$tk,85,356,6.0,8.0,1.0,3.5,1.5,1.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 bowl','grams'=>300]]],
+			['Steak and Kidney Pudding',$tk,210,879,10.0,18.0,1.0,11.5,5.0,0.5,0.8, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 pudding','grams'=>250]]],
+			['Steak and Oyster Pie',$tk,235,983,11.0,18.0,0.5,13.5,5.5,0.5,0.8, 1,1,0,1,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 pie','grams'=>250]]],
+			['Sunday Roast (beef, avg plate)',$tk,175,732,14.0,12.0,1.5,8.5,3.5,2.0,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>400]]],
+			['Rag Pudding (suet, Bury)',$tk,225,941,8.0,22.0,1.0,12.5,5.5,0.5,0.7, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 pudding','grams'=>200]]],
+			['Lincolnshire Sausage (grilled)',$mp,280,1172,14.0,6.5,1.0,22.5,8.5,0.5,1.5, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 sausage','grams'=>65],['label'=>'2 sausages','grams'=>130]]],
+			['Panackelty (NE England potato bake)',$tk,105,439,5.0,10.5,1.0,5.0,2.0,1.0,0.5, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0, [['label'=>'1 portion','grams'=>250]]],
+			['Parmo (Teesside, breaded & cheese)',$tk,290,1213,16.0,14.0,1.0,19.5,8.0,0.5,1.0, 0,0,1,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 parmo','grams'=>350]]],
+			['Hog\'s Pudding (Devon/Cornwall)',$mp,310,1297,11.0,15.0,1.0,23.0,8.5,0.5,1.5, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 slice','grams'=>50],['label'=>'2 slices','grams'=>100]]],
+			['Stottie Cake (NE flatbread)',$bc,250,1046,8.0,48.0,2.0,2.5,0.5,2.0,0.8, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1, [['label'=>'½ stottie','grams'=>100]]],
+			['Devilled Kidneys',$mp,165,690,16.0,3.0,1.0,10.0,3.5,0.0,0.8, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 portion','grams'=>120]]],
+
+			// ── SWEET DISHES & DESSERTS ──
+			['Apple Pie (British)',$sc,255,1067,2.5,35.0,15.0,12.0,5.5,1.5,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>125]]],
+			['Banoffee Pie',$sc,330,1381,3.5,40.0,30.0,18.0,11.0,0.5,0.3, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>120]]],
+			['Christmas Pudding',$sc,310,1297,3.5,50.0,32.0,11.0,5.0,2.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>100]]],
+			['Gypsy Tart',$sc,380,1590,5.0,55.0,45.0,16.0,8.0,0.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>80]]],
+			['Eve\'s Pudding (apple & sponge)',$sc,230,962,3.0,35.0,20.0,9.0,4.0,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>120]]],
+			['Queen of Puddings',$sc,250,1046,5.0,35.0,25.0,10.0,4.5,0.5,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>120]]],
+			['Summer Pudding',$sc,155,649,2.0,32.0,18.0,2.0,0.5,3.0,0.2, 0,0,0,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>150]]],
+			['Sussex Pond Pudding',$sc,350,1464,3.5,42.0,25.0,19.0,11.5,0.5,0.3, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>120]]],
+			['Syllabub',$sc,265,1109,2.0,15.0,14.0,22.0,13.5,0.0,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 glass','grams'=>100]]],
+			['Trifle (sherry)',$sc,165,690,2.5,20.0,15.0,8.5,5.0,0.5,0.1, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>150]]],
+			['Madeira Cake',$sc,380,1590,5.0,52.0,28.0,17.0,5.5,0.5,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>60]]],
+			['Saffron Cake (Cornish)',$sc,345,1443,5.5,52.0,20.0,13.0,5.0,2.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>60]]],
+			['Pound Cake',$sc,370,1548,5.0,50.0,28.0,17.0,8.5,0.3,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>75]]],
+			['Scone (plain, with cream & jam)',$sc,330,1381,5.5,40.0,12.0,16.5,9.5,1.0,0.6, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 scone','grams'=>60]]],
+			['Arctic Roll',$sc,195,816,3.0,28.0,18.0,8.0,5.0,0.3,0.1, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>65]]],
+			['Knickerbocker Glory',$sc,220,920,3.5,32.0,28.0,9.0,5.5,0.5,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 glass','grams'=>250]]],
+			['Gooseberry Fool',$sc,165,690,1.5,18.0,14.0,10.0,6.0,1.5,0.0, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>120]]],
+			['Cornish Hevva Cake',$sc,355,1485,4.5,52.0,18.0,15.0,6.0,2.0,0.4, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>70]]],
+
+			// ── BREADS & BAKED GOODS ──
+			['Hot Cross Bun',$bc,290,1213,7.0,50.0,18.0,6.5,2.0,2.0,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 bun','grams'=>70]]],
+			['Currant Bun',$bc,285,1193,6.5,48.0,15.0,7.0,2.5,1.5,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 bun','grams'=>65]]],
+			['Banbury Cake',$sc,370,1548,3.5,52.0,28.0,17.0,7.0,2.0,0.3, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 cake','grams'=>60]]],
+			['Malt Loaf',$bc,295,1234,7.5,58.0,25.0,3.0,0.5,2.5,0.6, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>35]]],
+			['Teacake (toasted with butter)',$bc,305,1276,7.0,48.0,12.0,10.0,5.5,1.5,0.5, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 teacake','grams'=>65]]],
+
+			// ── CONDIMENTS ──
+			['Apple Sauce',$co,68,285,0.2,17.0,14.0,0.1,0.0,1.0,0.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1, [['label'=>'1 tablespoon','grams'=>20],['label'=>'2 tablespoons','grams'=>40]]],
+			['Bread Sauce',$co,97,406,3.0,13.5,2.5,3.5,2.0,0.3,0.6, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'2 tablespoons','grams'=>40]]],
+			['Mushy Peas (chippy style)',$fv,85,356,5.5,14.0,2.0,0.8,0.1,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1, [['label'=>'1 portion','grams'=>100]]],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; }
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'serving_sizes'=> wp_json_encode( $f[25] ),
+				'source_notes'=>'M&W 8th ed. / McCance & Widdowson. Seeded v78.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 78 );
+	}
 }
