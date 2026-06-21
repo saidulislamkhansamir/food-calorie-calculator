@@ -590,7 +590,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						</div>
 						<div class="fcc-stg-row__control">
 							<select id="voice_icon" name="voice_icon" class="fcc-stg-select">
-								<option value="svg"   <?php selected( $appearance['voice_icon'] ?? '', 'svg' ); ?>>SVG (🎤)</option>
+								<option value="svg"   <?php selected( $appearance['voice_icon'] ?? '', 'svg' ); ?>>SVG (🎙️)</option>
 								<option value="text"  <?php selected( $appearance['voice_icon'] ?? '', 'text' ); ?>><?php esc_html_e( 'Text (Mic)', 'food-calorie-calculator' ); ?></option>
 							</select>
 						</div>
