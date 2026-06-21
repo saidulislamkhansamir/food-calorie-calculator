@@ -3059,6 +3059,8 @@
 .fcc-promo-card__row--wide { grid-template-columns: 1fr 2fr; }
 .fcc-promo-card__row--3col { grid-template-columns: 1fr 2fr auto; }
 .fcc-promo-card__field { min-width: 0; }
+.fcc-promo-card__field .fcc-pin-input,
+.fcc-promo-card__field .fcc-pin-select { width: 100%; display: block; }
 @media screen and (max-width: 600px) {
 	.fcc-promo-card__row { grid-template-columns: 1fr; }
 }
