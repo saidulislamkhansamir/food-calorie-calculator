@@ -11122,4 +11122,165 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 64 );
 	}
+
+	/** Seed v65: Serving sizes batch 8 — absolute final coverage. */
+	public static function seed_v65(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 65 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── REMAINING COOKED DISHES ──
+			'moussaka'                => [['label'=>'1 portion','grams'=>250]],
+			'moussaka-vegetarian'     => [['label'=>'1 portion','grams'=>250]],
+			'beef-stroganoff-classic' => [['label'=>'1 portion','grams'=>250]],
+			'chicken-fried-steak'     => [['label'=>'1 steak','grams'=>200]],
+			'meatloaf-american'       => [['label'=>'1 slice','grams'=>150]],
+			'goulash-beef'            => [['label'=>'1 bowl','grams'=>300]],
+			'chop-lamb-loin-bbq'      => [['label'=>'1 chop','grams'=>100]],
+			'toad-in-the-hole'        => [['label'=>'1 portion','grams'=>200]],
+			'beef-bourguignon'        => [['label'=>'1 bowl','grams'=>300]],
+			'coq-au-vin'              => [['label'=>'1 portion','grams'=>300]],
+			'cassoulet'               => [['label'=>'1 bowl','grams'=>300]],
+			'choucroute-garnie-sauerkraut-meats' => [['label'=>'1 plate','grams'=>350]],
+			'poulet-roti-french-roast-chicken' => [['label'=>'1 portion','grams'=>150]],
+			'wiener-schnitzel'        => [['label'=>'1 schnitzel','grams'=>170]],
+			'chicken-schnitzel-australian' => [['label'=>'1 schnitzel','grams'=>170]],
+
+			// ── REMAINING SANDWICHES ──
+			'pulled-pork-sandwich'    => [['label'=>'1 sandwich','grams'=>250]],
+			'philly-cheesesteak'      => [['label'=>'1 sandwich','grams'=>280]],
+			'reuben-sandwich'         => [['label'=>'1 sandwich','grams'=>280]],
+			'sloppy-joe'              => [['label'=>'1 sandwich','grams'=>200]],
+			'montreal-smoked-meat-sandwich' => [['label'=>'1 sandwich','grams'=>280]],
+			'peameal-bacon-sandwich-toronto' => [['label'=>'1 sandwich','grams'=>200]],
+			'chivito-uruguayan-steak-sandwich' => [['label'=>'1 sandwich','grams'=>300]],
+			'croque-monsieur'         => [['label'=>'1 sandwich','grams'=>180]],
+			'croque-madame'           => [['label'=>'1 sandwich','grams'=>200]],
+
+			// ── REMAINING BBQ & AMERICAN ──
+			'buffalo-wings-10-pcs'    => [['label'=>'5 wings','grams'=>150],['label'=>'10 wings','grams'=>300]],
+			'brisket-texas-bbq'       => [['label'=>'1 portion','grams'=>150]],
+			'baby-back-ribs-bbq'      => [['label'=>'½ rack','grams'=>250],['label'=>'full rack','grams'=>500]],
+			'fried-chicken-southern'  => [['label'=>'1 piece','grams'=>120],['label'=>'2 pieces','grams'=>240]],
+			'mac-and-cheese-american' => [['label'=>'1 bowl','grams'=>250]],
+			'biscuits-and-gravy'      => [['label'=>'1 portion','grams'=>250]],
+			'cornbread'               => [['label'=>'1 piece','grams'=>65]],
+			'hush-puppies-6-pcs'      => [['label'=>'6 pieces','grams'=>90]],
+			'grits-cheese-cooked'     => [['label'=>'1 bowl','grams'=>200]],
+			'cobb-salad'              => [['label'=>'1 plate','grams'=>300]],
+			'caesar-salad-with-croutons' => [['label'=>'1 plate','grams'=>250]],
+
+			// ── REMAINING TEX-MEX & MEXICAN ──
+			'chimichanga-beef'        => [['label'=>'1 chimichanga','grams'=>200]],
+			'huevos-rancheros'        => [['label'=>'1 plate','grams'=>250]],
+			'breakfast-burrito'       => [['label'=>'1 burrito','grams'=>250]],
+			'fajitas-chicken'         => [['label'=>'1 portion','grams'=>200]],
+			'chile-relleno-stuffed-pepper' => [['label'=>'1 pepper','grams'=>120]],
+			'guacamole'               => [['label'=>'1 tablespoon','grams'=>15],['label'=>'¼ cup','grams'=>60]],
+			'pico-de-gallo'           => [['label'=>'2 tablespoons','grams'=>30]],
+			'chili-con-queso-dip'     => [['label'=>'2 tablespoons','grams'=>30],['label'=>'¼ cup','grams'=>60]],
+			'nachos-with-cheese'      => [['label'=>'1 portion','grams'=>150]],
+			'mole-poblano-chicken'    => [['label'=>'1 portion','grams'=>250]],
+			'sopes-bean-cheese'       => [['label'=>'1 sope','grams'=>80],['label'=>'3 sopes','grams'=>240]],
+			'gorditas-stuffed'        => [['label'=>'1 gordita','grams'=>100]],
+			'enchilada-cheese'        => [['label'=>'1 enchilada','grams'=>120],['label'=>'2 enchiladas','grams'=>240]],
+			'elote-mexican-street-corn' => [['label'=>'1 cob','grams'=>150]],
+
+			// ── REMAINING CANADIAN ──
+			'tourtiere-meat-pie'      => [['label'=>'1 slice','grams'=>200]],
+			'butter-tart'             => [['label'=>'1 tart','grams'=>45]],
+			'nanaimo-bar'             => [['label'=>'1 bar','grams'=>50]],
+			'beavertails-fried-dough-pastry' => [['label'=>'1 BeaverTail','grams'=>150]],
+			'bannock-indigenous-bread' => [['label'=>'1 piece','grams'=>80]],
+			'ketchup-chips-per-100g'  => [['label'=>'1 bag (25g)','grams'=>25],['label'=>'1 sharing bag','grams'=>150]],
+			'all-dressed-chips-per-100g' => [['label'=>'1 bag (25g)','grams'=>25]],
+			'jos-louis-snack-cake'    => [['label'=>'1 cake','grams'=>40]],
+			'may-west-snack-cake'     => [['label'=>'1 cake','grams'=>40]],
+			'calgary-ginger-beef'     => [['label'=>'1 portion','grams'=>200]],
+			'saskatoon-berry-pie'     => [['label'=>'1 slice','grams'=>125]],
+			'maple-baked-beans'       => [['label'=>'1 portion','grams'=>200]],
+
+			// ── REMAINING SOUTH AMERICAN ──
+			'acaraje-bahian-bean-fritter' => [['label'=>'1 piece','grams'=>100]],
+			'moqueca-bahian-fish-stew' => [['label'=>'1 bowl','grams'=>300]],
+			'pastel-fried-pastry-meat' => [['label'=>'1 pastel','grams'=>80]],
+			'acai-na-tigela-acai-bowl' => [['label'=>'1 bowl','grams'=>250]],
+			'tapioca-crepe-brazilian'  => [['label'=>'1 crepe','grams'=>100]],
+			'choripan-chorizo-in-bread' => [['label'=>'1 choripán','grams'=>200]],
+			'provoleta-grilled-provolone' => [['label'=>'1 portion','grams'=>100]],
+			'medialunas-argentine-croissant' => [['label'=>'1 medialuna','grams'=>50],['label'=>'3 medialunas','grams'=>150]],
+			'hallaca-venezuelan-tamale' => [['label'=>'1 hallaca','grams'=>200]],
+			'tequenos-cheese-sticks'  => [['label'=>'3 pieces','grams'=>60],['label'=>'6 pieces','grams'=>120]],
+			'cazuela-chilean-stew'    => [['label'=>'1 bowl','grams'=>350]],
+			'completo-chilean-hot-dog' => [['label'=>'1 completo','grams'=>200]],
+			'sopaipilla-chilean-fried-bread' => [['label'=>'2 pieces','grams'=>80],['label'=>'4 pieces','grams'=>160]],
+			'saltena-bolivian-empanada' => [['label'=>'1 salteña','grams'=>150]],
+
+			// ── REMAINING CARIBBEAN ──
+			'griot-haitian-fried-pork' => [['label'=>'1 portion','grams'=>150]],
+			'soup-joumou-haitian-pumpkin-soup-jan-1st' => [['label'=>'1 bowl','grams'=>350]],
+			'mofongo-puerto-rican-with-shrimp' => [['label'=>'1 portion','grams'=>200]],
+			'alcapurrias-fried-plantain-meat-fritter' => [['label'=>'1 piece','grams'=>100],['label'=>'2 pieces','grams'=>200]],
+			'pastelon-pr-plantain-lasagne' => [['label'=>'1 portion','grams'=>200]],
+			'tembleque-coconut-pudding' => [['label'=>'1 portion','grams'=>120]],
+			'keshi-yena-aruban-stuffed-cheese' => [['label'=>'1 portion','grams'=>200]],
+			'green-fig-and-saltfish-st-lucian-national' => [['label'=>'1 plate','grams'=>250]],
+			'cou-cou-and-flying-fish-bajan-national' => [['label'=>'1 plate','grams'=>300]],
+			'oil-down-grenadian-national-dish' => [['label'=>'1 bowl','grams'=>300]],
+			'goat-water-montserrat-national-dish' => [['label'=>'1 bowl','grams'=>250]],
+
+			// ── REMAINING PACIFIC ISLANDS ──
+			'mumu-png-earth-oven-mixed-per-100g' => [['label'=>'1 plate','grams'=>350]],
+			'kaukau-png-sweet-potato-roasted' => [['label'=>'1 medium','grams'=>200]],
+			'kokoda-png-raw-fish-in-coconut' => [['label'=>'1 bowl','grams'=>150]],
+			'ota-ika-tongan-raw-fish-salad' => [['label'=>'1 bowl','grams'=>150]],
+			'otai-tongan-fruit-coconut-drink' => [['label'=>'1 glass','grams'=>250]],
+			'cassava-pudding-solomon-islands' => [['label'=>'1 portion','grams'=>150]],
+			'panipopo-samoan-coconut-bun' => [['label'=>'1 bun','grams'=>80]],
+
+			// ── REMAINING CENTRAL ASIAN ──
+			'samsa-uzbek-lamb-in-pastry-1pc' => [['label'=>'1 samsa','grams'=>100],['label'=>'2 samsas','grams'=>200]],
+			'lagman-uzbek-pulled-noodle-stew' => [['label'=>'1 bowl','grams'=>350]],
+			'obi-non-uzbek-round-bread' => [['label'=>'¼ bread','grams'=>70],['label'=>'½ bread','grams'=>140]],
+			'kazy-horse-meat-sausage' => [['label'=>'3 slices','grams'=>50],['label'=>'1 portion','grams'=>80]],
+			'kurt-dried-fermented-cheese-balls' => [['label'=>'1 ball','grams'=>10],['label'=>'5 balls','grams'=>50]],
+			'shubat-fermented-camel-milk' => [['label'=>'1 bowl','grams'=>200]],
+			'gutap-turkmen-stuffed-flatbread-herb' => [['label'=>'1 gutap','grams'=>100]],
+			'ishlekli-turkmen-meat-pie' => [['label'=>'1 slice','grams'=>150]],
+
+			// ── REMAINING EGG DISHES ──
+			'eggs-royale'             => [['label'=>'1 serving','grams'=>200]],
+			'egg-fried-rice'          => [['label'=>'1 plate','grams'=>300]],
+			'frittata-vegetable'      => [['label'=>'1 slice','grams'=>120]],
+			'devilled-eggs-2-halves'  => [['label'=>'2 halves','grams'=>60],['label'=>'4 halves','grams'=>120]],
+			'tamagoyaki-rolled-omelette' => [['label'=>'1 portion','grams'=>80]],
+			'chawanmushi-savoury-egg-custard' => [['label'=>'1 cup','grams'=>150]],
+			'shakshuka-australian-brunch' => [['label'=>'1 portion','grams'=>250]],
+
+			// ── REMAINING MISC FOODS ──
+			'coleslaw-american-creamy' => [['label'=>'1 portion','grams'=>100]],
+			'coleslaw-deli-style'     => [['label'=>'1 portion','grams'=>100]],
+			'potato-salad'            => [['label'=>'1 portion','grams'=>150]],
+			'sun-dried-tomatoes-in-oil' => [['label'=>'3 pieces','grams'=>15],['label'=>'5 pieces','grams'=>25]],
+			'artichoke-hearts-in-brine' => [['label'=>'2 hearts','grams'=>40],['label'=>'4 hearts','grams'=>80]],
+			'capers-in-brine'         => [['label'=>'1 teaspoon','grams'=>5],['label'=>'1 tablespoon','grams'=>9]],
+			'gelatine-sheets-per-100g' => [['label'=>'1 sheet','grams'=>2]],
+			'baobab-powder'           => [['label'=>'1 tablespoon','grams'=>10]],
+			'moringa-leaf-powder'     => [['label'=>'1 teaspoon','grams'=>3],['label'=>'1 tablespoon','grams'=>7]],
+			'wattleseed-ground'       => [['label'=>'1 teaspoon','grams'=>3]],
+			'finger-lime-raw'         => [['label'=>'1 lime','grams'=>10],['label'=>'5 limes','grams'=>50]],
+			'quandong-raw'            => [['label'=>'3 fruits','grams'=>30]],
+			'crowberry-paarnaqat-raw' => [['label'=>'1 handful','grams'=>30]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 65 );
+	}
 }
