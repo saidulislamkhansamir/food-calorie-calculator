@@ -10950,4 +10950,176 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 63 );
 	}
+
+	/** Seed v64: Serving sizes batch 7 — remaining raw ingredients, confectionery, ready meals, baby foods, misc. */
+	public static function seed_v64(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 64 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── RAW MEAT CUTS ──
+			'chicken-thigh-raw'       => [['label'=>'1 thigh','grams'=>110]],
+			'chicken-drumstick-raw'   => [['label'=>'1 drumstick','grams'=>75]],
+			'chicken-wing-raw'        => [['label'=>'1 wing','grams'=>45],['label'=>'6 wings','grams'=>270]],
+			'minced-beef-raw'         => [['label'=>'1 portion','grams'=>125],['label'=>'¼ lb patty','grams'=>113]],
+			'lamb-chop-raw'           => [['label'=>'1 chop','grams'=>100]],
+			'pork-chop-raw'           => [['label'=>'1 chop','grams'=>150]],
+			'lamb-mince-raw'          => [['label'=>'1 portion','grams'=>125]],
+			'turkey-mince-raw'        => [['label'=>'1 portion','grams'=>125]],
+			'duck-breast-raw'         => [['label'=>'1 breast','grams'=>200]],
+			'pork-belly-raw'          => [['label'=>'1 portion','grams'=>200]],
+
+			// ── PROCESSED / CURED MEATS ──
+			'mortadella'              => [['label'=>'2 slices','grams'=>40]],
+			'pastrami'                => [['label'=>'3 slices','grams'=>56]],
+			'coppa'                   => [['label'=>'3 slices','grams'=>30]],
+			'nduja'                   => [['label'=>'1 tablespoon','grams'=>15]],
+			'duck-pate'               => [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 portion','grams'=>40]],
+			'chicken-liver-pate'      => [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 portion','grams'=>40]],
+			'serrano-ham'             => [['label'=>'2 slices','grams'=>20]],
+			'jamon-iberico-acorn-fed' => [['label'=>'3 slices','grams'=>30]],
+			'turkey-bacon'            => [['label'=>'2 rashers','grams'=>30]],
+			'chipolata-sausage-cooked' => [['label'=>'1 sausage','grams'=>25],['label'=>'3 sausages','grams'=>75]],
+			'cumberland-sausage-cooked' => [['label'=>'1 sausage','grams'=>65]],
+			'pigs-in-blankets-cooked' => [['label'=>'3 pieces','grams'=>60],['label'=>'6 pieces','grams'=>120]],
+			'kangaroo-mince'          => [['label'=>'1 portion','grams'=>125]],
+			'kangaroo-sausage'        => [['label'=>'1 sausage','grams'=>70]],
+
+			// ── CONFECTIONERY ──
+			'toffee'                  => [['label'=>'1 piece','grams'=>8],['label'=>'3 pieces','grams'=>24]],
+			'fudge'                   => [['label'=>'1 piece','grams'=>15],['label'=>'3 pieces','grams'=>45]],
+			'marshmallow'             => [['label'=>'1 marshmallow','grams'=>7],['label'=>'5 marshmallows','grams'=>35]],
+			'turkish-delight'         => [['label'=>'1 piece','grams'=>20],['label'=>'3 pieces','grams'=>60]],
+			'nougat'                  => [['label'=>'1 piece','grams'=>25]],
+			'liquorice'               => [['label'=>'1 piece','grams'=>10],['label'=>'1 bag','grams'=>50]],
+			'halva-sunflower-seed-russian' => [['label'=>'1 slice','grams'=>30]],
+			'gulab-jamun-pakistani-style' => [['label'=>'1 piece','grams'=>30],['label'=>'3 pieces','grams'=>90]],
+			'jalebi-afghan-style-fried' => [['label'=>'1 piece','grams'=>25],['label'=>'3 pieces','grams'=>75]],
+			'lokum-rose-flavour'      => [['label'=>'1 piece','grams'=>10],['label'=>'5 pieces','grams'=>50]],
+			'tim-tam-slam-2-biscuits' => [['label'=>'2 biscuits','grams'=>36]],
+			'freddo-frog-chocolate-12g' => [['label'=>'1 frog','grams'=>12]],
+			'caramello-koala-chocolate-15g' => [['label'=>'1 koala','grams'=>15]],
+			'violet-crumble-honeycomb-bar' => [['label'=>'1 bar','grams'=>50]],
+			'cherry-ripe-chocolate-bar' => [['label'=>'1 bar','grams'=>52]],
+			'coffee-crisp-chocolate-bar' => [['label'=>'1 bar','grams'=>50]],
+			'caramilk-chocolate-bar'  => [['label'=>'1 bar','grams'=>50]],
+			'eat-more-chocolate-bar'  => [['label'=>'1 bar','grams'=>52]],
+			'golden-gaytime-ice-cream-bar' => [['label'=>'1 bar','grams'=>105]],
+
+			// ── BREAKFAST CEREALS ──
+			'bran-flakes'             => [['label'=>'1 bowl (30g)','grams'=>30],['label'=>'1 bowl with milk','grams'=>155]],
+			'rice-krispies'           => [['label'=>'1 bowl (30g)','grams'=>30]],
+			'shreddies'               => [['label'=>'1 bowl (40g)','grams'=>40]],
+			'crunchy-nut-cornflakes'  => [['label'=>'1 bowl (30g)','grams'=>30]],
+			'coco-pops'               => [['label'=>'1 bowl (30g)','grams'=>30]],
+			'frosties'                => [['label'=>'1 bowl (30g)','grams'=>30]],
+			'special-k-original'      => [['label'=>'1 bowl (30g)','grams'=>30]],
+			'cheerios-wholegrain'     => [['label'=>'1 bowl (30g)','grams'=>30]],
+
+			// ── READY MEALS ──
+			'macaroni-cheese-ready-meal' => [['label'=>'1 meal','grams'=>350]],
+			'chicken-tikka-masala-ready-meal' => [['label'=>'1 meal','grams'=>400]],
+			'spaghetti-bolognese-ready-meal' => [['label'=>'1 meal','grams'=>400]],
+			'cottage-pie-ready-meal'  => [['label'=>'1 meal','grams'=>400]],
+			'fish-pie-ready-meal'     => [['label'=>'1 meal','grams'=>400]],
+			'vegetable-curry-ready-meal' => [['label'=>'1 meal','grams'=>400]],
+			'beef-lasagne-ready-meal' => [['label'=>'1 meal','grams'=>400]],
+			'shepherds-pie-ready-meal' => [['label'=>'1 meal','grams'=>400]],
+			'chilli-con-carne-ready-meal' => [['label'=>'1 meal','grams'=>400]],
+
+			// ── BABY FOODS ──
+			'baby-rice-cereal-dry'    => [['label'=>'1 tablespoon','grams'=>5],['label'=>'1 serving','grams'=>15]],
+			'baby-fruit-puree-apple'  => [['label'=>'1 pouch','grams'=>100],['label'=>'1 jar','grams'=>125]],
+			'baby-vegetable-puree-carrot' => [['label'=>'1 pouch','grams'=>100]],
+			'baby-yoghurt-fromage-frais' => [['label'=>'1 pot','grams'=>60]],
+			'follow-on-milk-powder'   => [['label'=>'1 scoop','grams'=>5],['label'=>'1 feed (3 scoops)','grams'=>15]],
+			'baby-rusks'              => [['label'=>'1 rusk','grams'=>14]],
+
+			// ── UK CONDIMENTS & SAUCES (remaining) ──
+			'brown-sauce-hp'          => [['label'=>'1 tablespoon','grams'=>17],['label'=>'1 teaspoon','grams'=>6]],
+			'salad-cream'             => [['label'=>'1 tablespoon','grams'=>15]],
+			'tartare-sauce'           => [['label'=>'1 tablespoon','grams'=>15]],
+			'mint-sauce'              => [['label'=>'1 tablespoon','grams'=>15]],
+			'horseradish-sauce'       => [['label'=>'1 tablespoon','grams'=>15],['label'=>'1 teaspoon','grams'=>5]],
+			'cranberry-sauce'         => [['label'=>'1 tablespoon','grams'=>15]],
+			'piccalilli'              => [['label'=>'1 tablespoon','grams'=>20]],
+			'branston-pickle'         => [['label'=>'1 tablespoon','grams'=>20]],
+			'gravy-instant-made-up'   => [['label'=>'1 ladle','grams'=>75],['label'=>'2 ladles','grams'=>150]],
+			'redcurrant-jelly'        => [['label'=>'1 tablespoon','grams'=>15]],
+			'bread-sauce'             => [['label'=>'2 tablespoons','grams'=>40]],
+			'stuffing-sage-onion-cooked' => [['label'=>'1 ball','grams'=>30],['label'=>'2 balls','grams'=>60]],
+			'hoisin-sauce'            => [['label'=>'1 tablespoon','grams'=>16]],
+			'oyster-sauce'            => [['label'=>'1 tablespoon','grams'=>18]],
+			'tonkatsu-sauce'          => [['label'=>'1 tablespoon','grams'=>17]],
+			'kewpie-mayo-japanese-mayonnaise' => [['label'=>'1 tablespoon','grams'=>15]],
+			'sambal-terasi-shrimp-paste-chilli' => [['label'=>'1 teaspoon','grams'=>5]],
+			'chilli-oil-la-you'       => [['label'=>'1 teaspoon','grams'=>5],['label'=>'1 tablespoon','grams'=>14]],
+
+			// ── VINEGARS & COOKING LIQUIDS ──
+			'rice-vinegar'            => [['label'=>'1 tablespoon','grams'=>15]],
+			'red-wine-vinegar'        => [['label'=>'1 tablespoon','grams'=>15]],
+			'chinkiang-vinegar-black-vinegar' => [['label'=>'1 tablespoon','grams'=>15]],
+			'mirin-sweet-rice-wine'   => [['label'=>'1 tablespoon','grams'=>15]],
+			'fish-sauce'              => [['label'=>'1 tablespoon','grams'=>18],['label'=>'1 teaspoon','grams'=>6]],
+			'nuoc-cham-fish-dipping-sauce' => [['label'=>'1 tablespoon','grams'=>15]],
+			'ponzu-sauce'             => [['label'=>'1 tablespoon','grams'=>15]],
+
+			// ── MORE NUTS ──
+			'pistachio'               => [['label'=>'1 handful (shelled)','grams'=>25],['label'=>'1 oz','grams'=>28]],
+			'brazil-nuts'             => [['label'=>'3 nuts','grams'=>15],['label'=>'6 nuts','grams'=>30]],
+			'pecan-nuts'              => [['label'=>'10 halves','grams'=>14],['label'=>'1 handful','grams'=>25]],
+			'hazelnuts'               => [['label'=>'10 nuts','grams'=>13],['label'=>'1 handful','grams'=>25]],
+			'pine-nuts'               => [['label'=>'1 tablespoon','grams'=>10]],
+			'coconut-cream-fresh-png' => [['label'=>'¼ cup','grams'=>60],['label'=>'½ cup','grams'=>120]],
+
+			// ── MISC UK & INTERNATIONAL ──
+			'scotch-pancake-drop-scone' => [['label'=>'1 pancake','grams'=>25],['label'=>'3 pancakes','grams'=>75]],
+			'zucchini-slice-aussie-classic' => [['label'=>'1 slice','grams'=>80]],
+			'ricotta-hotcakes-with-berries' => [['label'=>'2 hotcakes','grams'=>150]],
+			'corn-fritters-with-smoked-salmon' => [['label'=>'2 fritters','grams'=>120]],
+			'banana-bread-toasted-with-butter' => [['label'=>'1 slice','grams'=>80]],
+			'damper-bush-bread'       => [['label'=>'1 slice','grams'=>60]],
+			'vegemite-on-toast'       => [['label'=>'1 slice','grams'=>35]],
+			'cheese-and-bacon-roll'   => [['label'=>'1 roll','grams'=>110]],
+			'arnotts-shapes-bbq-per-100g' => [['label'=>'1 handful','grams'=>25],['label'=>'1 box','grams'=>175]],
+			'neenish-tart'            => [['label'=>'1 tart','grams'=>60]],
+			'vanilla-slice-australian' => [['label'=>'1 slice','grams'=>90]],
+			'hedgehog-slice'          => [['label'=>'1 slice','grams'=>50]],
+			'iced-vovo-biscuit'       => [['label'=>'1 biscuit','grams'=>15],['label'=>'3 biscuits','grams'=>45]],
+			'afghan-biscuit-nz-chocolate' => [['label'=>'1 biscuit','grams'=>50]],
+			'hokey-pokey-ice-cream'   => [['label'=>'1 scoop','grams'=>66],['label'=>'2 scoops','grams'=>132]],
+			'lolly-cake-nz-classic'   => [['label'=>'1 slice','grams'=>40]],
+			'whitebait-fritter-nz'    => [['label'=>'1 fritter','grams'=>80]],
+			'rewena-bread-maori-potato-bread' => [['label'=>'1 slice','grams'=>50]],
+
+			// ── TEA, COFFEE & DRINKS (final) ──
+			'matcha-whisked-no-sugar'  => [['label'=>'1 bowl','grams'=>60]],
+			'genmaicha-brown-rice-tea' => [['label'=>'1 cup','grams'=>240]],
+			'chrysanthemum-tea'       => [['label'=>'1 cup','grams'=>240]],
+			'pu-erh-tea-brewed'       => [['label'=>'1 cup','grams'=>240]],
+			'oolong-tea-brewed'       => [['label'=>'1 cup','grams'=>240]],
+			'rooibos-tea-unsweetened' => [['label'=>'1 cup','grams'=>240]],
+			'yerba-mate-hot-unsweetened' => [['label'=>'1 gourd','grams'=>200]],
+			'samovar-tea-russian-black-tea' => [['label'=>'1 cup','grams'=>200]],
+			'persian-tea-chai-with-nabat-sugar' => [['label'=>'1 glass','grams'=>150]],
+			'turkish-coffee-sade'     => [['label'=>'1 cup','grams'=>60]],
+			'bica-portuguese-espresso' => [['label'=>'1 shot','grams'=>30]],
+			'galao-milky-coffee-tall-glass' => [['label'=>'1 glass','grams'=>200]],
+			'cafecito-cuban-espresso-sweetened' => [['label'=>'1 shot','grams'=>40]],
+			'tim-hortons-double-double-coffee' => [['label'=>'1 cup','grams'=>300]],
+			'iced-capp-tim-hortons-medium' => [['label'=>'1 medium','grams'=>400]],
+			'long-black-coffee'       => [['label'=>'1 cup','grams'=>200]],
+			'farmers-union-iced-coffee-sa' => [['label'=>'1 carton','grams'=>600],['label'=>'1 glass','grams'=>250]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 64 );
+	}
 }
