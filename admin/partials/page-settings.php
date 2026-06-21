@@ -322,50 +322,96 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Plugin Features', 'food-calorie-calculator' ); ?></h2>
 					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Enable or disable individual features. Disabled features are hidden from visitors entirely.', 'food-calorie-calculator' ); ?></p>
 				</div>
-				<div class="fcc-stg-features-grid">
-					<?php
-					$feature_labels = [
-						'bmr_tdee'               => [ 'label' => __( 'BMR / TDEE Calculator',            'food-calorie-calculator' ), 'hint' => __( 'Mifflin-St Jeor formula', 'food-calorie-calculator' ) ],
-						'daily_needs_comparison' => [ 'label' => __( 'Daily Needs Comparison',           'food-calorie-calculator' ), 'hint' => __( 'Meal % of TDEE',          'food-calorie-calculator' ) ],
-						'fsa_traffic_lights'     => [ 'label' => __( 'FSA Traffic-Light Labels',         'food-calorie-calculator' ), 'hint' => __( 'Green / Amber / Red',      'food-calorie-calculator' ) ],
-						'ri_display'             => [ 'label' => __( '% Reference Intake Column',        'food-calorie-calculator' ), 'hint' => __( '%RI per serving',          'food-calorie-calculator' ) ],
-						'macro_chart'            => [ 'label' => __( 'Macro Breakdown Chart',            'food-calorie-calculator' ), 'hint' => __( 'Donut chart',              'food-calorie-calculator' ) ],
-						'omega3_display'         => [ 'label' => __( 'Omega-3 Display',                  'food-calorie-calculator' ), 'hint' => __( 'ALA / EPA / DHA',          'food-calorie-calculator' ) ],
-						'caffeine_display'       => [ 'label' => __( 'Caffeine Display',                 'food-calorie-calculator' ), 'hint' => __( 'mg per serving',           'food-calorie-calculator' ) ],
-						'meal_builder'           => [ 'label' => __( 'Meal Builder',                     'food-calorie-calculator' ), 'hint' => __( 'Add multiple foods',       'food-calorie-calculator' ) ],
-						'print_pdf'              => [ 'label' => __( 'Print / PDF Download',             'food-calorie-calculator' ), 'hint' => __( 'Browser print',            'food-calorie-calculator' ) ],
-						'share_link'             => [ 'label' => __( 'Shareable Link',                   'food-calorie-calculator' ), 'hint' => __( 'URL with food + qty',      'food-calorie-calculator' ) ],
-						'add_custom_food'        => [ 'label' => __( 'Add Custom Food (Frontend)',       'food-calorie-calculator' ), 'hint' => __( 'Visitor-submitted foods',  'food-calorie-calculator' ) ],
-						'json_ld_schema'         => [ 'label' => __( 'JSON-LD Schema (SEO)',             'food-calorie-calculator' ), 'hint' => __( 'Structured data output',   'food-calorie-calculator' ) ],
-						'compare_foods'          => [ 'label' => __( 'Compare Foods',                    'food-calorie-calculator' ), 'hint' => __( 'Side-by-side comparison tab', 'food-calorie-calculator' ) ],
-						'health_highlights'      => [ 'label' => __( 'Health Highlights',                'food-calorie-calculator' ), 'hint' => __( 'Green/amber nutrient chips', 'food-calorie-calculator' ) ],
-						'popular_foods'          => [ 'label' => __( 'Popular Foods',                    'food-calorie-calculator' ), 'hint' => __( 'Popular searches below input', 'food-calorie-calculator' ) ],
-						'food_request_form'      => [ 'label' => __( 'Food Request Form',               'food-calorie-calculator' ), 'hint' => __('"Can\'t find your food?" form', 'food-calorie-calculator' ) ],
-						'powered_by_footer'      => [ 'label' => __( 'Powered-by Footer',               'food-calorie-calculator' ), 'hint' => __( 'Attribution footer link',   'food-calorie-calculator' ) ],
-					'voice_search'           => [ 'label' => __( 'Voice Search',                    'food-calorie-calculator' ), 'hint' => __( 'Microphone button for speech-to-search', 'food-calorie-calculator' ) ],
-					'meal_categories'        => [ 'label' => __( 'Meal Categories',                 'food-calorie-calculator' ), 'hint' => __( 'Breakfast/Lunch/Dinner/Snack grouping in Meal Builder', 'food-calorie-calculator' ) ],
-					'meal_daily_goal'        => [ 'label' => __( 'Meal Daily Goal Bar',             'food-calorie-calculator' ), 'hint' => __( 'Progress bar showing meal kcal vs daily TDEE goal', 'food-calorie-calculator' ) ],
-					'meal_edit_quantity'      => [ 'label' => __( 'Meal Edit Quantity',              'food-calorie-calculator' ), 'hint' => __( 'Inline quantity editing for meal items', 'food-calorie-calculator' ) ],
-					'meal_print'             => [ 'label' => __( 'Meal Print/PDF',                 'food-calorie-calculator' ), 'hint' => __( 'Print meal plan with all items and totals', 'food-calorie-calculator' ) ],
-					'meal_share'             => [ 'label' => __( 'Meal Share Link',                'food-calorie-calculator' ), 'hint' => __( 'Shareable URL that auto-loads a saved meal', 'food-calorie-calculator' ) ],
-					'meal_copy'              => [ 'label' => __( 'Meal Copy Totals',               'food-calorie-calculator' ), 'hint' => __( 'Copy meal nutrition summary to clipboard', 'food-calorie-calculator' ) ],
-					'meal_micronutrients'    => [ 'label' => __( 'Meal Micronutrients',             'food-calorie-calculator' ), 'hint' => __( 'Show Iron, Calcium, Vitamin C in meal totals', 'food-calorie-calculator' ) ],
-					'meal_servings'          => [ 'label' => __( 'Meal Servings Divider',           'food-calorie-calculator' ), 'hint' => __( 'Divide meal totals by number of servings (recipe mode)', 'food-calorie-calculator' ) ],
-					];
-					foreach ( $feature_labels as $key => $data ) : ?>
-						<div class="fcc-stg-feature <?php echo ! empty( $features[ $key ] ) ? 'fcc-stg-feature--on' : ''; ?>">
-							<div class="fcc-stg-feature__info">
-								<strong class="fcc-stg-feature__name"><?php echo esc_html( $data['label'] ); ?></strong>
-								<span class="fcc-stg-feature__hint"><?php echo esc_html( $data['hint'] ); ?></span>
-							</div>
-							<label class="fcc-stg-toggle" aria-label="<?php echo esc_attr( $data['label'] ); ?>">
-								<input type="checkbox" name="<?php echo esc_attr( $key ); ?>" value="1"
-									<?php checked( ! empty( $features[ $key ] ) ); ?>>
-								<span class="fcc-stg-toggle__track"></span>
-							</label>
+
+				<?php
+				$feature_groups = [
+					[
+						'title' => __( 'Food Lookup', 'food-calorie-calculator' ),
+						'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+						'color' => '#075B5E',
+						'items' => [
+							'fsa_traffic_lights' => [ __( 'FSA Traffic-Light Labels', 'food-calorie-calculator' ), __( 'Green / Amber / Red per 100g', 'food-calorie-calculator' ) ],
+							'ri_display'         => [ __( '% Reference Intake Column', 'food-calorie-calculator' ), __( '%RI per serving', 'food-calorie-calculator' ) ],
+							'macro_chart'        => [ __( 'Macro Breakdown Chart', 'food-calorie-calculator' ), __( 'Donut chart visualization', 'food-calorie-calculator' ) ],
+							'health_highlights'  => [ __( 'Health Highlights', 'food-calorie-calculator' ), __( 'Green/amber nutrient chips', 'food-calorie-calculator' ) ],
+							'omega3_display'     => [ __( 'Omega-3 Display', 'food-calorie-calculator' ), __( 'ALA / EPA / DHA breakdown', 'food-calorie-calculator' ) ],
+							'caffeine_display'   => [ __( 'Caffeine Display', 'food-calorie-calculator' ), __( 'mg per serving', 'food-calorie-calculator' ) ],
+							'popular_foods'      => [ __( 'Popular Foods', 'food-calorie-calculator' ), __( 'Trending searches below input', 'food-calorie-calculator' ) ],
+							'voice_search'       => [ __( 'Voice Search', 'food-calorie-calculator' ), __( 'Microphone button for speech-to-search', 'food-calorie-calculator' ) ],
+							'food_request_form'  => [ __( 'Food Request Form', 'food-calorie-calculator' ), __( '"Can\'t find your food?" form', 'food-calorie-calculator' ) ],
+						],
+					],
+					[
+						'title' => __( 'Your Meal', 'food-calorie-calculator' ),
+						'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+						'color' => '#16a34a',
+						'items' => [
+							'meal_builder'       => [ __( 'Meal Builder', 'food-calorie-calculator' ), __( 'Add multiple foods, see combined totals', 'food-calorie-calculator' ) ],
+							'meal_categories'    => [ __( 'Meal Categories', 'food-calorie-calculator' ), __( 'Breakfast / Lunch / Dinner / Snack grouping', 'food-calorie-calculator' ) ],
+							'meal_servings'      => [ __( 'Servings Divider', 'food-calorie-calculator' ), __( 'Divide totals by servings (recipe mode)', 'food-calorie-calculator' ) ],
+							'meal_daily_goal'    => [ __( 'Daily Goal Bar', 'food-calorie-calculator' ), __( 'Progress bar showing meal kcal vs TDEE', 'food-calorie-calculator' ) ],
+							'meal_edit_quantity' => [ __( 'Edit Quantity', 'food-calorie-calculator' ), __( 'Inline quantity editing for meal items', 'food-calorie-calculator' ) ],
+							'meal_print'         => [ __( 'Print Meal', 'food-calorie-calculator' ), __( 'Print meal plan with items and totals', 'food-calorie-calculator' ) ],
+							'meal_share'         => [ __( 'Share Meal Link', 'food-calorie-calculator' ), __( 'Shareable URL that auto-loads a meal', 'food-calorie-calculator' ) ],
+							'meal_copy'          => [ __( 'Copy Meal Totals', 'food-calorie-calculator' ), __( 'Copy meal nutrition to clipboard', 'food-calorie-calculator' ) ],
+							'meal_micronutrients' => [ __( 'Meal Micronutrients', 'food-calorie-calculator' ), __( 'Iron, Calcium, Vitamin C in totals', 'food-calorie-calculator' ) ],
+						],
+					],
+					[
+						'title' => __( 'Compare', 'food-calorie-calculator' ),
+						'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+						'color' => '#7c3aed',
+						'items' => [
+							'compare_foods' => [ __( 'Compare Foods', 'food-calorie-calculator' ), __( 'Side-by-side food comparison tab', 'food-calorie-calculator' ) ],
+						],
+					],
+					[
+						'title' => __( 'Daily Calorie Need', 'food-calorie-calculator' ),
+						'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+						'color' => '#d97706',
+						'items' => [
+							'bmr_tdee'               => [ __( 'BMR / TDEE Calculator', 'food-calorie-calculator' ), __( 'Mifflin-St Jeor formula', 'food-calorie-calculator' ) ],
+							'daily_needs_comparison' => [ __( 'Daily Needs Comparison', 'food-calorie-calculator' ), __( 'Portion % of daily TDEE target', 'food-calorie-calculator' ) ],
+						],
+					],
+					[
+						'title' => __( 'General', 'food-calorie-calculator' ),
+						'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
+						'color' => '#64748b',
+						'items' => [
+							'print_pdf'          => [ __( 'Print / PDF Download', 'food-calorie-calculator' ), __( 'Browser print for food results', 'food-calorie-calculator' ) ],
+							'share_link'         => [ __( 'Shareable Link', 'food-calorie-calculator' ), __( 'URL with food + quantity', 'food-calorie-calculator' ) ],
+							'json_ld_schema'     => [ __( 'JSON-LD Schema (SEO)', 'food-calorie-calculator' ), __( 'Structured data output', 'food-calorie-calculator' ) ],
+							'powered_by_footer'  => [ __( 'Powered-by Footer', 'food-calorie-calculator' ), __( 'Attribution footer link', 'food-calorie-calculator' ) ],
+							'add_custom_food'    => [ __( 'Add Custom Food (Frontend)', 'food-calorie-calculator' ), __( 'Visitor-submitted foods', 'food-calorie-calculator' ) ],
+						],
+					],
+				];
+
+				foreach ( $feature_groups as $group ) : ?>
+					<div class="fcc-card fcc-stg-feature-group" style="border-left: 4px solid <?php echo esc_attr( $group['color'] ); ?>">
+						<h3 class="fcc-stg-feature-group__title" style="color: <?php echo esc_attr( $group['color'] ); ?>">
+							<?php echo $group['icon']; // phpcs:ignore ?>
+							<?php echo esc_html( $group['title'] ); ?>
+							<span class="fcc-stg-feature-group__count"><?php echo count( $group['items'] ); ?></span>
+						</h3>
+						<div class="fcc-stg-features-grid">
+							<?php foreach ( $group['items'] as $key => $data ) : ?>
+								<div class="fcc-stg-feature <?php echo ! empty( $features[ $key ] ) ? 'fcc-stg-feature--on' : ''; ?>">
+									<div class="fcc-stg-feature__info">
+										<strong class="fcc-stg-feature__name"><?php echo esc_html( $data[0] ); ?></strong>
+										<span class="fcc-stg-feature__hint"><?php echo esc_html( $data[1] ); ?></span>
+									</div>
+									<label class="fcc-stg-toggle" aria-label="<?php echo esc_attr( $data[0] ); ?>">
+										<input type="checkbox" name="<?php echo esc_attr( $key ); ?>" value="1"
+											<?php checked( ! empty( $features[ $key ] ) ); ?>>
+										<span class="fcc-stg-toggle__track"></span>
+									</label>
+								</div>
+							<?php endforeach; ?>
 						</div>
-					<?php endforeach; ?>
-				</div>
+					</div>
+				<?php endforeach; ?>
 			</div>
 
 		<?php elseif ( 'appearance' === $active_tab ) : ?>
