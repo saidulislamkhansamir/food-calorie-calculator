@@ -12089,4 +12089,95 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 73 );
 	}
+
+	/** Seed v74: Missing vegetables, fish, dairy from dailycalorie.app. */
+	public static function seed_v74(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 74 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $fs=$cid['fish-seafood']??0; $de=$cid['dairy-eggs']??0;
+		$mp=$cid['meat-poultry']??0; $ns=$cid['nuts-seeds']??0;
+
+		$foods = [
+			// ── MISSING VEGETABLES ──
+			['Chayote (raw)',$fv,19,79,0.8,4.5,1.7,0.1,0.0,1.7,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1, [['label'=>'1 chayote','grams'=>200],['label'=>'1 cup chopped','grams'=>130]]],
+			['Jicama (raw)',$fv,38,159,0.7,8.8,1.8,0.1,0.0,4.9,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup sliced','grams'=>120],['label'=>'1 medium','grams'=>450]]],
+			['Tomatillo (raw)',$fv,32,134,1.0,5.8,3.9,1.0,0.1,1.9,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 medium','grams'=>34],['label'=>'1 cup chopped','grams'=>130]]],
+			['Dandelion Greens (raw)',$fv,45,188,2.7,9.2,0.7,0.7,0.2,3.5,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup chopped','grams'=>55]]],
+			['Hearts of Palm (canned)',$fv,28,117,2.5,4.6,0.0,0.6,0.1,2.4,0.4, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1, [['label'=>'1 piece','grams'=>33],['label'=>'1 cup','grams'=>146]]],
+			['Nopales (cactus paddle, raw)',$fv,16,67,1.3,3.3,1.1,0.1,0.0,2.2,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1, [['label'=>'1 cup sliced','grams'=>86],['label'=>'1 pad','grams'=>100]]],
+			['Turnip (raw)',$fv,28,117,0.9,6.4,3.8,0.1,0.0,1.8,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 medium','grams'=>122],['label'=>'1 cup cubed','grams'=>130]]],
+			['Beet Greens (raw)',$fv,22,92,2.2,4.3,0.5,0.1,0.0,3.7,0.2, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>38]]],
+			['Mustard Greens (raw)',$fv,27,113,2.9,4.7,1.3,0.4,0.0,3.2,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup chopped','grams'=>56]]],
+			['Snow Peas (raw)',$fv,42,176,2.8,7.6,4.0,0.2,0.0,2.6,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>63],['label'=>'10 pods','grams'=>34]]],
+			['Sugar Snap Peas (raw)',$fv,42,176,2.8,7.6,4.0,0.2,0.0,2.6,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>63],['label'=>'10 pods','grams'=>30]]],
+			['Baby Carrots',$fv,35,146,0.6,8.2,4.8,0.1,0.0,2.9,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'8 carrots','grams'=>80],['label'=>'1 cup','grams'=>128]]],
+			['Daikon Radish (raw)',$fv,18,75,0.6,4.1,2.5,0.1,0.0,1.6,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1, [['label'=>'1 cup sliced','grams'=>116],['label'=>'1 daikon (7")','grams'=>340]]],
+			['Okra (raw)',$fv,33,138,1.9,7.5,1.5,0.2,0.1,3.2,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup sliced','grams'=>100],['label'=>'8 pods','grams'=>85]]],
+			['Parsley (fresh)',$fv,36,151,3.0,6.3,0.9,0.8,0.1,3.3,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup chopped','grams'=>60],['label'=>'1 tablespoon','grams'=>4]]],
+			['Lemongrass (raw)',$fv,99,414,1.8,25.3,0.0,0.5,0.1,0.0,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 tablespoon chopped','grams'=>5],['label'=>'1 stalk','grams'=>20]]],
+			['Pumpkin (raw)',$fv,26,109,1.0,6.5,2.8,0.1,0.1,0.5,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup cubed','grams'=>116]]],
+			['Brussels Sprouts (raw)',$fv,43,180,3.4,9.0,2.2,0.3,0.1,3.8,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>88],['label'=>'5 sprouts','grams'=>95]]],
+			['Artichoke (globe, raw)',$fv,47,197,3.3,10.5,1.0,0.2,0.0,5.4,0.1, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 medium','grams'=>128]]],
+			['Purslane (raw)',$fv,20,84,2.0,3.4,0.0,0.4,0.0,0.0,0.0, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1, [['label'=>'1 cup','grams'=>43]]],
+
+			// ── MISSING FISH & SEAFOOD ──
+			['Mahi-Mahi (raw)',$fs,85,356,18.5,0.0,0.0,0.7,0.2,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>170]]],
+			['Swordfish (raw)',$fs,121,506,19.8,0.0,0.0,4.0,1.1,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 steak','grams'=>170]]],
+			['Grouper (raw)',$fs,92,385,19.4,0.0,0.0,1.0,0.2,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>170]]],
+			['Red Snapper (raw)',$fs,100,418,20.5,0.0,0.0,1.3,0.3,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>170]]],
+			['Halibut (raw)',$fs,110,460,20.8,0.0,0.0,2.3,0.3,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>200]]],
+			['Yellowtail (raw)',$fs,146,611,23.1,0.0,0.0,5.2,1.3,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Wahoo (raw)',$fs,108,452,19.3,0.0,0.0,3.1,0.8,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>170]]],
+			['Orange Roughy (raw)',$fs,69,289,14.7,0.0,0.0,0.7,0.0,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>140]]],
+			['Shark (raw)',$fs,130,544,20.9,0.0,0.0,4.5,0.9,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,0,0,0,0, [['label'=>'1 steak','grams'=>150]]],
+			['Sturgeon (raw)',$fs,105,439,16.1,0.0,0.0,4.0,0.9,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Sea Urchin (uni, raw)',$fs,120,502,13.0,3.3,0.0,4.3,0.0,0.0,0.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'5 pieces','grams'=>25],['label'=>'1 tray','grams'=>60]]],
+			['Langoustine (raw)',$fs,77,322,16.5,0.0,0.0,0.9,0.1,0.0,0.5, 1,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'6 tails','grams'=>120]]],
+			['Bluefish (raw)',$fs,124,519,20.0,0.0,0.0,4.2,0.9,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Mullet (raw)',$fs,117,489,19.4,0.0,0.0,3.8,1.1,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>120]]],
+			['Pompano (raw)',$fs,164,686,18.5,0.0,0.0,9.5,3.5,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>115]]],
+
+			// ── MISSING DAIRY & CHEESE ──
+			['Ricotta Cheese (whole milk)',$de,174,728,11.3,3.0,0.3,13.0,8.3,0.0,0.1, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'½ cup','grams'=>124],['label'=>'¼ cup','grams'=>62]]],
+			['Colby Jack Cheese',$de,393,1644,24.0,1.5,0.5,32.0,20.0,0.0,1.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 slice','grams'=>21],['label'=>'1 oz','grams'=>28]]],
+			['Roquefort Cheese',$de,369,1544,21.5,2.0,0.0,30.6,19.3,0.0,3.5, 0,0,1,0,0,0,0,0, 1,0,1,0,0,1, [['label'=>'1 oz','grams'=>28],['label'=>'1 crumble','grams'=>5]]],
+			['String Cheese (mozzarella)',$de,280,1172,28.0,1.0,0.5,17.0,10.0,0.0,2.0, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 stick','grams'=>28]]],
+			['Edam Cheese',$de,357,1494,25.0,1.4,1.4,27.8,17.6,0.0,1.8, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 slice','grams'=>25],['label'=>'1 oz','grams'=>28]]],
+			['Fontina Cheese',$de,389,1628,25.6,1.6,1.6,31.1,19.2,0.0,1.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 oz','grams'=>28],['label'=>'1 slice','grams'=>25]]],
+			['Monterey Jack Cheese',$de,373,1561,24.5,0.7,0.5,30.3,19.1,0.0,1.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 slice','grams'=>21],['label'=>'1 oz','grams'=>28]]],
+			['Gouda Cheese',$de,356,1490,25.0,2.2,2.2,27.4,17.6,0.0,2.0, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 slice','grams'=>22],['label'=>'1 oz','grams'=>28]]],
+			['Neufchatel Cheese',$de,253,1059,9.2,2.9,2.9,22.8,14.4,0.0,0.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 oz','grams'=>28],['label'=>'1 tablespoon','grams'=>15]]],
+			['Provolone Cheese',$de,351,1469,25.6,2.1,0.6,26.6,17.1,0.0,2.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 slice','grams'=>21],['label'=>'1 oz','grams'=>28]]],
+			['Swiss Cheese',$de,380,1590,27.0,5.4,1.5,28.0,18.0,0.0,0.5, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 slice','grams'=>22],['label'=>'1 oz','grams'=>28]]],
+			['Goat Cheese (hard)',$de,452,1891,31.0,2.2,2.2,36.0,25.0,0.0,1.5, 0,0,1,0,0,0,0,0, 1,0,1,0,0,1, [['label'=>'1 oz','grams'=>28]]],
+
+			// ── MISSING NUTS & SEEDS ──
+			['Almond (whole, raw)',$ns,579,2423,21.2,21.7,4.4,49.9,3.7,12.5,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1, [['label'=>'1 oz (23 almonds)','grams'=>28],['label'=>'1 handful','grams'=>20]]],
+			['Cashew (raw)',$ns,553,2314,18.2,30.2,5.9,43.9,7.8,3.3,0.0, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1, [['label'=>'1 oz','grams'=>28],['label'=>'1 handful','grams'=>25]]],
+			['Pecan (raw)',$ns,691,2891,9.2,13.9,4.0,72.0,6.2,9.6,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1, [['label'=>'1 oz (19 halves)','grams'=>28]]],
+			['Hazelnut / Filbert (raw)',$ns,628,2628,15.0,16.7,4.3,60.8,4.5,9.7,0.0, 0,0,0,0,1,0,0,0, 1,1,1,1,1,1, [['label'=>'1 oz','grams'=>28],['label'=>'10 nuts','grams'=>14]]],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; }
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'serving_sizes'=> wp_json_encode( $f[25] ),
+				'source_notes'=>'USDA FDC. Seeded v74.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 74 );
+	}
 }
