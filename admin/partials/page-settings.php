@@ -1228,6 +1228,8 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 
 	if ( pinAdd ) pinAdd.addEventListener( 'click', function () {
 		if ( pinCount >= 20 ) { alert( 'Maximum 20 pin rules.' ); return; }
+		var empty = pinAdd.closest( '.fcc-promo-section' ).querySelector( '.fcc-promo-empty' );
+		if ( empty ) empty.style.display = 'none';
 		var card = document.createElement( 'div' );
 		card.className = 'fcc-pincard';
 		card.innerHTML =
@@ -1263,10 +1265,14 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 
 	if ( trendAdd ) trendAdd.addEventListener( 'click', function () {
 		if ( trendCount >= 10 ) { alert( 'Maximum 10 trending foods.' ); return; }
+		var table = document.getElementById( 'fcc-trending-table' );
+		if ( table ) table.style.display = '';
+		var empty = trendAdd.closest( '.fcc-promo-section' ).querySelector( '.fcc-promo-empty' );
+		if ( empty ) empty.style.display = 'none';
 		var tr = document.createElement( 'tr' );
 		tr.className = 'fcc-pin-row';
 		tr.innerHTML =
-			'<td class="fcc-an-td--num">' + ( trendCount + 1 ) + '</td>' +
+			'<td class="fcc-pin-num">' + ( trendCount + 1 ) + '</td>' +
 			'<td style="position:relative">' +
 				'<input type="text" class="fcc-pin-input fcc-pin-food-search" placeholder="Search food…" autocomplete="off">' +
 				'<input type="hidden" name="trending_foods[' + trendCount + '][food_id]" class="fcc-pin-food-id">' +
@@ -1285,6 +1291,8 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 
 	if ( promoAdd ) promoAdd.addEventListener( 'click', function () {
 		if ( promoCount >= 10 ) { alert( 'Maximum 10 promo banners.' ); return; }
+		var empty = promoAdd.closest( '.fcc-promo-section' ).querySelector( '.fcc-promo-empty' );
+		if ( empty ) empty.style.display = 'none';
 		var card = document.createElement( 'div' );
 		card.className = 'fcc-promo-card';
 		var bannerIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z"/><path d="M12 8v4"/></svg>';
