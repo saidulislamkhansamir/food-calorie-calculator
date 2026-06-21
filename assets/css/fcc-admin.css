@@ -2781,7 +2781,95 @@
 	line-height: 1.5;
 }
 
-/* Pin table */
+/* Pin rule cards */
+.fcc-pincard {
+	background: #fff;
+	border: 1.5px solid #e5e7eb;
+	border-radius: 14px;
+	margin-bottom: 1rem;
+	overflow: hidden;
+	transition: border-color .2s, box-shadow .2s;
+}
+.fcc-pincard:hover {
+	border-color: #a3d4d6;
+	box-shadow: 0 4px 16px rgba(7,91,94,.08);
+}
+.fcc-pincard__topbar {
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	padding: .6rem 1.15rem;
+	background: linear-gradient(135deg, #e8f5f5 0%, #dff0f0 100%);
+	border-bottom: 1px solid #c8e4e5;
+}
+.fcc-pincard__topbar-icon {
+	width: 28px;
+	height: 28px;
+	border-radius: 7px;
+	background: #075B5E;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+.fcc-pincard__topbar-label {
+	font-size: .78rem;
+	font-weight: 700;
+	color: #075B5E;
+	flex: 1;
+}
+.fcc-pincard__topbar-pos {
+	font-size: .65rem;
+	font-weight: 700;
+	color: #fff;
+	background: #075B5E;
+	padding: .15rem .5rem;
+	border-radius: 8px;
+}
+.fcc-pincard__topbar-badge {
+	font-size: .6rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+	color: #fff;
+	background: linear-gradient(135deg, #FF3F33, #ff6b5e);
+	padding: .15rem .5rem;
+	border-radius: 8px;
+}
+.fcc-pincard__body {
+	padding: 1rem 1.15rem 1.15rem;
+}
+.fcc-pincard__preview {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .55rem 1.15rem;
+	border-top: 1px solid #f0f0f0;
+	background: #fafcfc;
+	font-size: .75rem;
+	color: #888;
+	flex-wrap: wrap;
+}
+.fcc-pincard__preview-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #075B5E;
+	flex-shrink: 0;
+}
+.fcc-pincard__preview strong { color: #333; }
+.fcc-pincard__preview-badge {
+	font-size: .6rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: #fff;
+	background: linear-gradient(135deg, #FF3F33, #ff6b5e);
+	padding: .1rem .4rem;
+	border-radius: 6px;
+}
+
+/* Pin table (used by trending) */
 .fcc-pin-table {
 	width: 100%;
 	border-collapse: separate;
