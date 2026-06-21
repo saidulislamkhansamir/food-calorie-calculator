@@ -12561,4 +12561,55 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 78 );
 	}
+
+	/** Seed v79: Remaining Icelandic & Greenlandic foods. */
+	public static function seed_v79(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 79 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $sc=$cid['snacks-confectionery']??0;
+		$fo=$cid['fats-oils']??0;
+
+		$foods = [
+			// ── ICELANDIC ──
+			['Laufabrauð (Icelandic leaf bread)',$bc,420,1757,6.0,52.0,3.0,21.0,4.5,1.5,0.4, 0,0,0,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 piece','grams'=>25],['label'=>'3 pieces','grams'=>75]]],
+			['Snúður (Icelandic cinnamon roll)',$sc,355,1485,5.5,48.0,20.0,16.0,8.0,1.0,0.4, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 roll','grams'=>85]]],
+			['Vínarterta (Icelandic Christmas cake)',$sc,360,1506,4.0,55.0,30.0,14.5,6.5,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>60]]],
+			['Rjómabollur (Icelandic cream puffs)',$sc,310,1297,4.5,30.0,15.0,19.5,11.0,0.5,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 puff','grams'=>80]]],
+			['Hjónabandssæla (Icelandic rhubarb crumble)',$sc,275,1151,3.0,40.0,18.0,12.0,6.5,2.5,0.2, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>120]]],
+			['Mysingur (Icelandic whey cheese)',$de,280,1172,10.0,42.0,38.0,8.0,5.0,0.0,0.3, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>20],['label'=>'1 tablespoon','grams'=>15]]],
+			['Icelandic Butter (smjör)',$fo,735,3075,0.6,0.1,0.1,81.0,51.5,0.0,0.0, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 tablespoon','grams'=>14],['label'=>'1 pat','grams'=>5]]],
+			['Þorramatur Platter (avg per 100g)',$mp,210,879,18.0,2.0,0.5,15.0,5.5,0.0,2.0, 1,0,1,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 plate (mixed)','grams'=>200]]],
+			['Hákarl Bites (fermented shark cubes)',$fs,118,494,22.0,0.0,0.0,3.0,0.5,0.0,3.5, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'3 cubes','grams'=>30],['label'=>'6 cubes','grams'=>60]]],
+
+			// ── GREENLANDIC ──
+			['Greenlandic Lamb (roasted)',$mp,215,900,24.0,0.0,0.0,13.0,5.5,0.0,0.2, 0,0,0,0,0,0,0,0, 0,1,1,0,0,0, [['label'=>'1 portion','grams'=>150]]],
+			['Musk Ox Burger',$mp,165,690,20.0,5.0,0.5,7.0,2.5,0.5,0.5, 0,0,0,0,0,1,0,0, 0,1,1,0,0,0, [['label'=>'1 burger','grams'=>150]]],
+			['Dried Seal Meat (Greenlandic)',$mp,250,1046,48.0,0.0,0.0,6.0,1.5,0.0,4.0, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0, [['label'=>'1 portion','grams'=>30],['label'=>'1 handful','grams'=>50]]],
+			['Fermented Walrus (igunaq, traditional)',$mp,195,816,22.0,0.0,0.0,12.0,3.0,0.0,3.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0, [['label'=>'1 portion','grams'=>50]]],
+			['Greenlandic Blueberry (wild, raw)',$fv,57,238,0.7,14.5,10.0,0.3,0.0,2.4,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 cup','grams'=>148],['label'=>'1 handful','grams'=>40]]],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; }
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'serving_sizes'=> wp_json_encode( $f[25] ),
+				'source_notes'=>'Matís Iceland / Greenlandic nutrition data. Seeded v79.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 79 );
+	}
 }
