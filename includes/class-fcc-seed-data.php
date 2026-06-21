@@ -11435,4 +11435,148 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 66 );
 	}
+
+	/** Seed v67: Serving sizes batch 10 — absolute final remaining foods. */
+	public static function seed_v67(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 67 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── REMAINING STIR-FRIES & WOK ──
+			'twice-cooked-pork-hui-guo-rou' => [['label'=>'1 portion','grams'=>200]],
+			'yu-xiang-rou-si-fish-fragrant-pork' => [['label'=>'1 portion','grams'=>200]],
+			'dry-fried-green-beans-sichuan' => [['label'=>'1 portion','grams'=>150]],
+			'stir-fried-pak-choi-with-garlic' => [['label'=>'1 portion','grams'=>120]],
+			'chinese-broccoli-kai-lan-oyster-sauce' => [['label'=>'1 portion','grams'=>120]],
+			'tomato-egg-stir-fry-xi-hong-shi-chao-dan' => [['label'=>'1 portion','grams'=>200]],
+			'black-bean-beef-dou-chi-niu-rou' => [['label'=>'1 portion','grams'=>200]],
+			'cashew-chicken-yao-guo-ji-ding' => [['label'=>'1 portion','grams'=>200]],
+			'mongolian-beef'          => [['label'=>'1 portion','grams'=>200]],
+			'orange-chicken'          => [['label'=>'1 portion','grams'=>200]],
+			'chilli-beef-hunan-style' => [['label'=>'1 portion','grams'=>200]],
+			'stir-fried-morning-glory-water-spinach' => [['label'=>'1 portion','grams'=>120]],
+
+			// ── REMAINING ROASTS & BRAISED ──
+			'siu-yuk-crispy-roast-pork-belly' => [['label'=>'1 portion','grams'=>100]],
+			'white-cut-chicken-bai-qie-ji' => [['label'=>'1 portion','grams'=>150]],
+			'drunken-chicken-zui-ji'  => [['label'=>'1 portion','grams'=>150]],
+			'dongpo-pork-dong-po-rou' => [['label'=>'1 portion','grams'=>120]],
+			'soy-sauce-chicken-see-yau-gai' => [['label'=>'1 portion','grams'=>150]],
+			'tea-egg-cha-ye-dan-1-egg' => [['label'=>'1 egg','grams'=>50]],
+			'braised-beef-shank-lu-niu-rou' => [['label'=>'3 slices','grams'=>60],['label'=>'1 portion','grams'=>100]],
+			'century-egg-pi-dan-1-egg' => [['label'=>'1 egg','grams'=>50]],
+			'lechon-asado-cuban-roast-pork' => [['label'=>'1 portion','grams'=>150]],
+			'leitao-da-bairrada-roast-suckling-pig' => [['label'=>'1 portion','grams'=>150]],
+			'mechoui-slow-roasted-lamb' => [['label'=>'1 portion','grams'=>150]],
+			'shisa-nyama-braai-meat'  => [['label'=>'1 portion','grams'=>200]],
+
+			// ── REMAINING STREET FOOD ──
+			'dan-bing-egg-crepe-taiwanese' => [['label'=>'1 crepe','grams'=>120]],
+			'mantou-steamed-bun-plain' => [['label'=>'1 bun','grams'=>50],['label'=>'2 buns','grams'=>100]],
+			'tanghulu-candied-fruit-skewer' => [['label'=>'1 skewer','grams'=>60]],
+			'egg-waffle-gai-dan-jai-hong-kong' => [['label'=>'1 waffle','grams'=>120]],
+			'turnip-cake-steamed-cantonese' => [['label'=>'1 slice','grams'=>50],['label'=>'3 slices','grams'=>150]],
+			'takoyaki-octopus-ball-1pc' => [['label'=>'1 ball','grams'=>30],['label'=>'6 balls','grams'=>180]],
+			'okonomiyaki-japanese-pancake' => [['label'=>'1 pancake','grams'=>250]],
+			'yakitori-negima-chicken-leek' => [['label'=>'2 sticks','grams'=>60],['label'=>'4 sticks','grams'=>120]],
+			'yakitori-tebasaki-chicken-wing' => [['label'=>'2 wings','grams'=>80]],
+			'yakitori-tsukune-chicken-meatball' => [['label'=>'2 sticks','grams'=>60]],
+			'kushikatsu-deep-fried-skewers' => [['label'=>'3 sticks','grams'=>90]],
+			'tatsuta-age-soy-marinated-chicken' => [['label'=>'5 pieces','grams'=>100]],
+			'ebi-fry-breaded-fried-prawns' => [['label'=>'3 prawns','grams'=>75],['label'=>'5 prawns','grams'=>125]],
+			'unagi-kabayaki-grilled-eel' => [['label'=>'1 fillet','grams'=>100]],
+			'kelaguen-guam-citrus-cooked-chicken' => [['label'=>'1 portion','grams'=>120]],
+			'conch-chowder-turks-caicos' => [['label'=>'1 bowl','grams'=>250]],
+			'fish-and-fungi-bvi-cornmeal-okra' => [['label'=>'1 plate','grams'=>300]],
+
+			// ── REMAINING JAPANESE ──
+			'sushi-tamago-egg-nigiri-1pc' => [['label'=>'1 piece','grams'=>35],['label'=>'2 pieces','grams'=>70]],
+			'sushi-unagi-eel-nigiri-1pc' => [['label'=>'1 piece','grams'=>35]],
+			'sushi-ikura-salmon-roe-gunkan' => [['label'=>'1 piece','grams'=>30]],
+			'california-roll-6-pcs'   => [['label'=>'6 pieces','grams'=>180]],
+			'dragon-roll-6-pcs'       => [['label'=>'6 pieces','grams'=>200]],
+			'temaki-hand-roll-salmon' => [['label'=>'1 roll','grams'=>100]],
+			'inari-sushi-tofu-pouch-2-pcs' => [['label'=>'2 pieces','grams'=>80]],
+			'chirashi-don-deluxe-sashimi-bowl' => [['label'=>'1 bowl','grams'=>350]],
+			'nikujaga-meat-potato-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'oden-fishcake-hotpot-mixed' => [['label'=>'1 bowl','grams'=>300]],
+			'agedashi-tofu-fried-in-dashi' => [['label'=>'1 portion','grams'=>120]],
+			'kinpira-gobo-braised-burdock' => [['label'=>'1 portion','grams'=>60]],
+			'nasu-dengaku-miso-glazed-aubergine' => [['label'=>'2 halves','grams'=>120]],
+			'anpan-red-bean-bun'      => [['label'=>'1 bun','grams'=>80]],
+			'dango-mitarashi-3-balls' => [['label'=>'1 skewer (3 balls)','grams'=>75]],
+			'yokan-red-bean-jelly'    => [['label'=>'1 slice','grams'=>50]],
+			'kakigori-shaved-ice-strawberry' => [['label'=>'1 bowl','grams'=>200]],
+			'matcha-parfait'          => [['label'=>'1 parfait','grams'=>200]],
+			'castella-sponge-cake'    => [['label'=>'1 slice','grams'=>50]],
+
+			// ── REMAINING KOREAN ──
+			'dakgangjeong-crispy-sweet-chicken' => [['label'=>'1 portion','grams'=>150]],
+			'jeyuk-bokkeum-spicy-pork-stir-fry' => [['label'=>'1 portion','grams'=>150]],
+			'galbi-jjim-braised-short-ribs' => [['label'=>'1 portion','grams'=>200]],
+			'bossam-boiled-pork-belly-wraps' => [['label'=>'1 portion','grams'=>150]],
+			'dak-galbi-spicy-chicken-stir-fry' => [['label'=>'1 portion','grams'=>200]],
+			'naengmyeon-cold-buckwheat-noodles' => [['label'=>'1 bowl','grams'=>400]],
+			'kalguksu-knife-cut-noodle-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'jjamppong-spicy-seafood-noodle-soup' => [['label'=>'1 bowl','grams'=>400]],
+			'sujebi-hand-torn-noodle-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'haemul-pajeon-seafood-pancake' => [['label'=>'1 pancake','grams'=>250]],
+			'kimchi-jeon-kimchi-pancake' => [['label'=>'1 pancake','grams'=>200]],
+			'bindaetteok-mung-bean-pancake' => [['label'=>'1 pancake','grams'=>150]],
+			'hotteok-sweet-filled-pancake' => [['label'=>'1 hotteok','grams'=>80]],
+			'sundae-korean-blood-sausage' => [['label'=>'1 portion','grams'=>150]],
+			'bungeoppang-fish-shaped-pastry' => [['label'=>'1 piece','grams'=>80]],
+			'gyeranppang-egg-bread'   => [['label'=>'1 piece','grams'=>100]],
+			'korean-corn-dog-mozzarella' => [['label'=>'1 corn dog','grams'=>120]],
+			'songpyeon-rice-cake-chuseok' => [['label'=>'3 pieces','grams'=>60],['label'=>'6 pieces','grams'=>120]],
+			'yakgwa-honey-cookie'     => [['label'=>'1 piece','grams'=>20],['label'=>'3 pieces','grams'=>60]],
+			'yuja-cha-citron-tea'     => [['label'=>'1 cup','grams'=>200]],
+			'sikhye-sweet-rice-drink' => [['label'=>'1 glass','grams'=>250]],
+			'sujeonggwa-cinnamon-persimmon-punch' => [['label'=>'1 glass','grams'=>200]],
+			'banana-milk-korean-binggrae' => [['label'=>'1 bottle','grams'=>240]],
+			'makgeolli-rice-wine'     => [['label'=>'1 bowl','grams'=>300],['label'=>'1 glass','grams'=>200]],
+
+			// ── REMAINING RUSSIAN ──
+			'solyanka-meat-pickle-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'ukha-fish-soup'          => [['label'=>'1 bowl','grams'=>250]],
+			'okroshka-cold-kvas-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'chebureki-deep-fried-meat-turnover' => [['label'=>'1 piece','grams'=>120]],
+			'kulebyaka-salmon-pie'    => [['label'=>'1 slice','grams'=>150]],
+			'golubtsy-stuffed-cabbage-rolls' => [['label'=>'2 rolls','grams'=>200]],
+			'holodets-meat-jelly-aspic' => [['label'=>'1 portion','grams'=>100]],
+			'vatrushka-curd-pastry'   => [['label'=>'1 piece','grams'=>80]],
+			'kartoshka-chocolate-potato-cake' => [['label'=>'1 piece','grams'=>60]],
+			'pastila-fruit-marshmallow' => [['label'=>'2 pieces','grams'=>30]],
+			'zefir-russian-marshmallow' => [['label'=>'1 piece','grams'=>30],['label'=>'2 pieces','grams'=>60]],
+			'kompot-stewed-fruit-drink' => [['label'=>'1 glass','grams'=>250]],
+			'mors-berry-drink-cranberry' => [['label'=>'1 glass','grams'=>250]],
+			'kissel-berry-thick'      => [['label'=>'1 bowl','grams'=>200]],
+
+			// ── REMAINING TURKISH ──
+			'kofte-turkish-meatballs' => [['label'=>'3 köfte','grams'=>100],['label'=>'5 köfte','grams'=>170]],
+			'imam-bayildi-stuffed-aubergine' => [['label'=>'1 aubergine','grams'=>200]],
+			'karniyarik-meat-stuffed-aubergine' => [['label'=>'1 aubergine','grams'=>200]],
+			'hunkar-begendi-sultans-delight' => [['label'=>'1 portion','grams'=>250]],
+			'menemen-turkish-scrambled-eggs' => [['label'=>'1 portion','grams'=>200]],
+			'cilbir-turkish-poached-eggs' => [['label'=>'1 portion','grams'=>200]],
+			'sucuk-spiced-sausage-fried' => [['label'=>'4 slices','grams'=>50],['label'=>'8 slices','grams'=>100]],
+			'pastirma-cured-beef'     => [['label'=>'3 slices','grams'=>20]],
+			'sigara-boregi-cigar-pastry' => [['label'=>'3 pieces','grams'=>60],['label'=>'5 pieces','grams'=>100]],
+			'tulumba-syrupy-dough'    => [['label'=>'3 pieces','grams'=>45],['label'=>'6 pieces','grams'=>90]],
+			'lokma-fried-dough-balls' => [['label'=>'5 pieces','grams'=>50],['label'=>'10 pieces','grams'=>100]],
+			'revani-semolina-cake'    => [['label'=>'1 piece','grams'=>60]],
+			'sekerpare-syrupy-cookie' => [['label'=>'1 piece','grams'=>30],['label'=>'3 pieces','grams'=>90]],
+			'boza-fermented-millet-drink' => [['label'=>'1 glass','grams'=>200]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 67 );
+	}
 }
