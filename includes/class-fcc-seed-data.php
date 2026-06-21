@@ -11579,4 +11579,142 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 67 );
 	}
+
+	/** Seed v68: Serving sizes batch 11 — remaining stews, soups, sides, grains, hot pots. */
+	public static function seed_v68(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 68 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── HOT POTS & STEWS (JAPANESE/KOREAN/CHINESE) ──
+			'shabu-shabu-sliced-beef' => [['label'=>'1 bowl','grams'=>300]],
+			'chanko-nabe-sumo-stew'   => [['label'=>'1 bowl','grams'=>350]],
+			'motsu-nabe-offal-hot-pot' => [['label'=>'1 bowl','grams'=>300]],
+			'yudofu-simmered-tofu'    => [['label'=>'1 bowl','grams'=>250]],
+			'nabe-vegetable-hot-pot'  => [['label'=>'1 bowl','grams'=>350]],
+			'sichuan-hot-pot-broth-per-100ml' => [['label'=>'1 bowl broth','grams'=>300]],
+			'ma-la-xiang-guo-spicy-stir-fry-pot' => [['label'=>'1 portion','grams'=>250]],
+			'doenjang-jjigae-soybean-paste-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'budae-jjigae-army-stew'  => [['label'=>'1 bowl','grams'=>350]],
+			'gamjatang-pork-bone-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'samgyetang-ginseng-chicken-soup' => [['label'=>'1 bowl','grams'=>400]],
+			'seolleongtang-ox-bone-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'galbitang-short-rib-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'yukgaejang-spicy-beef-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'miyeok-guk-seaweed-birthday-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'tteokguk-rice-cake-soup-new-year' => [['label'=>'1 bowl','grams'=>300]],
+			'kimchi-jjigae-stew'      => [['label'=>'1 bowl','grams'=>250]],
+			'gopchang-jeongol-tripe-hot-pot' => [['label'=>'1 bowl','grams'=>300]],
+			'cheonggukjang-jjigae-fast-fermented-bean-stew' => [['label'=>'1 bowl','grams'=>200]],
+
+			// ── REMAINING SOUPS WORLDWIDE ──
+			'sopa-de-peixe-portuguese-fish-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'creme-de-marisco-shellfish-bisque' => [['label'=>'1 bowl','grams'=>200]],
+			'soupe-a-loignon-gratinee' => [['label'=>'1 bowl','grams'=>250]],
+			'wonton-soup-cantonese-clear' => [['label'=>'1 bowl','grams'=>300]],
+			'lotus-root-and-pork-rib-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'herbal-chicken-soup-yao-shan' => [['label'=>'1 bowl','grams'=>300]],
+			'seaweed-and-egg-soup'    => [['label'=>'1 bowl','grams'=>250]],
+			'lanzhou-beef-noodle-soup' => [['label'=>'1 bowl','grams'=>500]],
+			'crossing-the-bridge-noodles-yunnan' => [['label'=>'1 bowl','grams'=>400]],
+			'wonton-noodle-soup-cantonese' => [['label'=>'1 bowl','grams'=>400]],
+			'khao-piak-sen-lao-noodle-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'khao-poon-lao-rice-vermicelli-soup' => [['label'=>'1 bowl','grams'=>350]],
+			'kuy-teav-khmer-noodle-soup' => [['label'=>'1 bowl','grams'=>400]],
+			'hu-tieu-southern-pork-noodle-soup' => [['label'=>'1 bowl','grams'=>400]],
+			'shorba-afghan-lamb-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'shurbo-tajik-mutton-veg-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'shorpo-kyrgyz-lamb-broth' => [['label'=>'1 bowl','grams'=>250]],
+			'shurpa-turkmen-lamb-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'begova-corba-beys-soup-chicken-cream' => [['label'=>'1 bowl','grams'=>250]],
+			'kapustnica-slovak-sauerkraut-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'ciorba-de-burta-romanian-tripe-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'tarator-bulgarian-cold-yoghurt-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'dovga-yoghurt-herb-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'lablabi-tunisian-chickpea-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'samlor-korko-khmer-stirring-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'samlor-machu-sour-soup'  => [['label'=>'1 bowl','grams'=>250]],
+			'canh-chua-sour-fish-soup-southern' => [['label'=>'1 bowl','grams'=>300]],
+			'kaeng-jued-thai-clear-soup' => [['label'=>'1 bowl','grams'=>250]],
+			'sopa-da-pedra-stone-soup-ribatejo' => [['label'=>'1 bowl','grams'=>300]],
+
+			// ── REMAINING BANCHAN & SIDES ──
+			'kongnamul-muchim-seasoned-bean-sprouts' => [['label'=>'1 portion','grams'=>50]],
+			'sigeumchi-namul-spinach-side' => [['label'=>'1 portion','grams'=>50]],
+			'musaengchae-spicy-radish-salad' => [['label'=>'1 portion','grams'=>50]],
+			'gyeran-mari-rolled-egg-omelette' => [['label'=>'3 slices','grams'=>60]],
+			'eomuk-bokkeum-stir-fried-fish-cake' => [['label'=>'1 portion','grams'=>60]],
+			'gamja-jorim-braised-potatoes' => [['label'=>'1 portion','grams'=>80]],
+			'myeolchi-bokkeum-stir-fried-anchovies' => [['label'=>'1 portion','grams'=>30]],
+			'pickled-radish-danmuji'  => [['label'=>'5 slices','grams'=>25]],
+			'perilla-leaves-pickled-kkaennip' => [['label'=>'3 leaves','grams'=>15]],
+			'kkakdugi-cubed-radish-kimchi' => [['label'=>'2 tablespoons','grams'=>30],['label'=>'¼ cup','grams'=>50]],
+			'tsukemono-japanese-pickles-mixed' => [['label'=>'1 portion','grams'=>30]],
+			'sunomono-vinegar-cucumber' => [['label'=>'1 portion','grams'=>50]],
+			'ohitashi-blanched-spinach' => [['label'=>'1 portion','grams'=>60]],
+			'umeboshi-pickled-plum-1-pc' => [['label'=>'1 plum','grams'=>8]],
+			'salad-shirazi-cucumber-tomato-onion' => [['label'=>'1 portion','grams'=>100]],
+			'kachumbari-tomato-onion-salad' => [['label'=>'1 portion','grams'=>80]],
+			'chakalaka-spiced-relish' => [['label'=>'1 portion','grams'=>80]],
+			'curtido-salvadoran-pickled-cabbage' => [['label'=>'2 tablespoons','grams'=>30]],
+			'ensaladilla-rusa-spanish-potato-salad' => [['label'=>'1 portion','grams'=>100]],
+
+			// ── REMAINING GRAINS & STAPLES ──
+			'cooked-pearl-barley'     => [['label'=>'1 cup','grams'=>160],['label'=>'½ cup','grams'=>80]],
+			'cooked-bulgur-wheat'     => [['label'=>'1 cup','grams'=>180],['label'=>'½ cup','grams'=>90]],
+			'cooked-polenta'          => [['label'=>'1 portion','grams'=>150]],
+			'wild-rice-cooked'        => [['label'=>'1 cup','grams'=>165],['label'=>'½ cup','grams'=>82]],
+			'amaranth-raw'            => [['label'=>'¼ cup','grams'=>50]],
+			'teff-raw'                => [['label'=>'¼ cup','grams'=>50]],
+			'fonio-grain-raw'         => [['label'=>'¼ cup','grams'=>45]],
+			'buckwheat-groats-raw'    => [['label'=>'¼ cup','grams'=>45]],
+			'sago-png-processed-starch' => [['label'=>'¼ cup','grams'=>50]],
+			'mamaliaga-romanian-polenta' => [['label'=>'1 portion','grams'=>200]],
+			'pap-maize-porridge-stiff' => [['label'=>'1 portion','grams'=>200]],
+			'ugali-maize-porridge'    => [['label'=>'1 portion','grams'=>200]],
+			'nshima-zambian-maize-porridge' => [['label'=>'1 portion','grams'=>200]],
+			'sadza-zimbabwean-maize-porridge' => [['label'=>'1 portion','grams'=>200]],
+			'banku-ghanaian-corn-dough' => [['label'=>'1 portion','grams'=>200]],
+			'kenkey-fermented-corn'   => [['label'=>'1 portion','grams'=>200]],
+			'amala-yam-flour-swallow' => [['label'=>'1 portion','grams'=>200]],
+			'garri-dry-soaked'        => [['label'=>'1 portion','grams'=>150]],
+			'tuwo-shinkafa-rice-swallow' => [['label'=>'1 portion','grams'=>200]],
+			'ambuyat-sago-starch-staple' => [['label'=>'1 portion','grams'=>200]],
+			'chikwangue-cassava-bread' => [['label'=>'1 portion','grams'=>150]],
+			'pulaka-swamp-taro-tuvalu-boiled' => [['label'=>'1 portion','grams'=>200]],
+
+			// ── REMAINING BREADS ──
+			'borodinsky-bread-rye-dark' => [['label'=>'1 slice','grams'=>40]],
+			'pumpernickel'            => [['label'=>'1 slice','grams'=>30]],
+			'sourdough'               => [['label'=>'1 slice','grams'=>50],['label'=>'2 slices','grams'=>100]],
+			'cornbread'               => [['label'=>'1 piece','grams'=>65]],
+			'broa-de-milho-corn-bread' => [['label'=>'1 slice','grams'=>60]],
+			'pao-alentejano-alentejo-wheat-bread' => [['label'=>'1 slice','grams'=>60]],
+			'bolo-do-caco-madeira-garlic-bread' => [['label'=>'1 piece','grams'=>80]],
+			'chorek-turkmen-flatbread' => [['label'=>'¼ bread','grams'=>70]],
+			'non-tajik-round-flatbread' => [['label'=>'¼ bread','grams'=>70]],
+			'tandyr-nan-kazakh-clay-oven-bread' => [['label'=>'¼ bread','grams'=>70]],
+			'lepyoshka-kyrgyz-round-bread' => [['label'=>'¼ bread','grams'=>70]],
+			'khubz-arabic-flatbread'  => [['label'=>'1 bread','grams'=>80]],
+			'markook-paper-thin-bread' => [['label'=>'1 sheet','grams'=>60]],
+			'kaak-sesame-bread-ring'  => [['label'=>'1 ring','grams'=>100]],
+			'afghan-naan-tandoor-bread' => [['label'=>'1 naan','grams'=>100]],
+			'barbari-bread-sesame-flatbread' => [['label'=>'¼ bread','grams'=>80]],
+			'shotis-puri-georgian-clay-oven-bread' => [['label'=>'1 piece','grams'=>60]],
+			'flatkokur-icelandic-flatbread' => [['label'=>'1 piece','grams'=>40]],
+			'rugbraud-icelandic-rye-bread-hot-spring' => [['label'=>'1 slice','grams'=>40]],
+			'vetkoek-fried-bread'     => [['label'=>'1 vetkoek','grams'=>80]],
+			'toutons-fried-dough-newfoundland' => [['label'=>'1 touton','grams'=>60],['label'=>'3 toutons','grams'=>180]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 68 );
+	}
 }
