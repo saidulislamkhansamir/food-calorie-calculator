@@ -14014,4 +14014,184 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 87 );
 	}
+
+	/** Seed v88: 200 more foods — fitness, kids meals, more international, more UK. */
+	public static function seed_v88(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 88 ) { return; }
+		global $wpdb;
+		$ct = $wpdb->prefix . 'fcc_categories';
+		$cats = $wpdb->get_results( "SELECT id, slug FROM {$ct}", ARRAY_A ); // phpcs:ignore
+		$cid = [];
+		foreach ( $cats as $c ) { $cid[ $c['slug'] ] = (int) $c['id']; }
+		$fv=$cid['fruit-veg']??0; $mp=$cid['meat-poultry']??0; $fs=$cid['fish-seafood']??0;
+		$de=$cid['dairy-eggs']??0; $bc=$cid['bread-cereals']??0; $ns=$cid['nuts-seeds']??0;
+		$fo=$cid['fats-oils']??0; $dr=$cid['drinks']??0; $lp=$cid['legumes-pulses']??0;
+		$co=$cid['condiments']??0; $sc=$cid['snacks-confectionery']??0; $tk=$cid['takeaway']??0;
+
+		$foods = [
+			// ── FITNESS & GYM FOODS ──
+			['Protein Oats (whey + oats, cooked)',$bc,135,565,12.0,16.0,2.0,3.0,0.5,2.0,0.1, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 bowl','grams'=>300]]],
+			['Protein Porridge (ready-made)',$bc,95,397,9.5,10.0,2.5,2.0,0.5,1.5,0.1, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 pot','grams'=>250]]],
+			['Protein Flapjack',$sc,365,1527,20.0,35.0,12.0,15.0,5.0,4.0,0.3, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 bar','grams'=>65]]],
+			['Protein Ice Cream',$sc,95,397,8.0,12.0,5.0,2.0,1.0,2.0,0.1, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 tub','grams'=>350]]],
+			['Protein Cookie',$sc,350,1464,25.0,30.0,8.0,14.0,5.5,4.0,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 cookie','grams'=>75]]],
+			['Protein Brownie',$sc,340,1423,20.0,32.0,10.0,14.0,5.0,5.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 brownie','grams'=>60]]],
+			['Protein Muffin',$sc,310,1297,22.0,28.0,8.0,12.0,3.0,3.5,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 muffin','grams'=>80]]],
+			['Rice Cake with Peanut Butter',$sc,145,607,4.5,12.0,1.5,9.5,1.5,1.5,0.1, 0,0,0,0,1,0,0,0, 0,0,1,1,1,1, [['label'=>'1 rice cake + 1 tbsp PB','grams'=>25]]],
+			['Chicken & Avocado Wrap (gym)',$tk,195,816,14.0,16.0,1.0,9.5,1.5,3.0,0.5, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 wrap','grams'=>200]]],
+			['Tuna & Rice (gym meal prep)',$tk,140,586,10.0,18.0,0.5,3.5,0.5,0.5,0.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 container','grams'=>300]]],
+			['Pre-workout Banana',$fv,89,372,1.1,22.8,12.2,0.3,0.1,2.6,0.0, 0,0,0,0,0,0,0,0, 0,1,1,1,1,1, [['label'=>'1 medium','grams'=>120]]],
+			['Post-workout Shake (whey + banana)',$dr,145,607,22.0,18.0,10.0,1.5,0.5,1.5,0.2, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 shake','grams'=>400]]],
+
+			// ── CHILDREN'S MEALS ──
+			['Fish Fingers & Chips (kids)',$tk,215,900,8.0,24.0,0.5,10.0,1.5,1.5,0.6, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 kids meal','grams'=>200]]],
+			['Chicken Nuggets & Chips (kids)',$tk,235,983,10.0,22.0,0.5,12.5,2.5,1.5,0.8, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 kids meal','grams'=>200]]],
+			['Spaghetti Bolognese (kids)',$tk,115,481,6.0,13.0,2.0,4.0,1.5,0.8,0.4, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 kids portion','grams'=>200]]],
+			['Macaroni Cheese (kids)',$tk,155,649,6.0,17.0,2.0,7.0,4.0,0.5,0.5, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1, [['label'=>'1 kids portion','grams'=>180]]],
+			['Sausage & Mash (kids)',$tk,145,607,6.0,14.0,1.0,7.5,2.5,1.0,0.8, 0,0,1,0,0,0,0,0, 0,0,0,0,0,0, [['label'=>'1 kids portion','grams'=>200]]],
+			['Pizza (kids, margherita)',$tk,230,962,10.0,28.0,3.5,8.5,3.5,1.5,1.2, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1, [['label'=>'1 kids pizza','grams'=>150]]],
+			['Beans on Toast (kids)',$tk,130,544,5.5,20.0,4.0,2.5,0.4,3.0,0.6, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1, [['label'=>'1 kids portion','grams'=>150]]],
+			['Scrambled Egg on Toast (kids)',$tk,185,774,9.5,16.0,1.5,9.5,3.5,0.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 kids portion','grams'=>120]]],
+			['Cheese Sandwich (kids)',$tk,265,1109,10.0,22.0,2.0,15.0,7.5,1.0,1.0, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1, [['label'=>'1 small sandwich','grams'=>100]]],
+			['Ham Sandwich (kids)',$tk,200,837,10.0,22.0,2.0,7.5,2.0,1.0,1.0, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 small sandwich','grams'=>100]]],
+
+			// ── MORE INTERNATIONAL STREET FOOD ──
+			['Bánh Mì (Vietnamese, pork)',$tk,240,1004,12.0,28.0,5.0,9.0,2.0,1.5,1.2, 0,0,0,0,0,1,1,0, 0,0,0,0,0,0, [['label'=>'1 sandwich','grams'=>250]]],
+			['Jerk Chicken Wings (6)',$mp,240,1004,20.0,5.0,3.0,15.5,4.5,0.0,1.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'6 wings','grams'=>200]]],
+			['Korean Fried Chicken (boneless)',$mp,255,1067,15.0,18.0,8.0,13.5,3.0,0.5,1.2, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0, [['label'=>'1 portion','grams'=>180]]],
+			['Elotes (Mexican street corn, 1 cob)',$fv,165,690,4.5,20.0,5.0,8.0,3.5,2.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 cob','grams'=>200]]],
+			['Poutine (Canadian)',$tk,275,1130,8.5,30.0,2.0,13.5,6.0,2.0,1.2, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1, [['label'=>'1 portion','grams'=>300]]],
+			['Takoyaki (6 balls)',$tk,195,816,6.5,22.0,1.5,9.0,1.5,0.5,1.5, 1,1,0,1,0,1,1,0, 0,0,1,0,0,0, [['label'=>'6 balls','grams'=>150]]],
+			['Tteokbokki (Korean rice cakes)',$tk,195,816,4.0,40.0,8.0,2.0,0.3,1.0,1.5, 1,0,0,0,0,1,1,0, 0,0,1,0,0,0, [['label'=>'1 bowl','grams'=>200]]],
+			['Currywurst (German street food)',$tk,250,1046,11.5,15.0,10.0,15.5,5.5,0.5,2.0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Empanada (beef, baked)',$tk,270,1130,9.0,26.0,2.0,14.5,4.5,1.0,0.7, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 empanada','grams'=>120]]],
+			['Arepa (cheese-filled)',$bc,250,1046,8.0,28.0,1.5,12.0,5.0,2.0,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 arepa','grams'=>120]]],
+
+			// ── MORE COOKED FISH PREPARATIONS ──
+			['Salmon (poached in wine)',$fs,195,816,21.0,0.5,0.0,12.0,2.0,0.0,0.3, 1,0,0,0,0,0,0,0, 1,1,0,1,0,0, [['label'=>'1 fillet','grams'=>140]]],
+			['Cod (pan-fried in butter)',$fs,120,502,20.0,0.0,0.0,4.5,2.5,0.0,0.3, 1,0,1,0,0,0,0,0, 1,0,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Haddock (battered & fried)',$fs,205,858,13.0,12.0,0.5,12.0,2.0,0.5,0.6, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 fillet','grams'=>180]]],
+			['Plaice (grilled)',$fs,85,356,18.0,0.0,0.0,1.0,0.2,0.0,0.2, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 fillet','grams'=>140]]],
+			['Lemon Sole (pan-fried)',$fs,110,460,19.0,0.0,0.0,3.5,1.5,0.0,0.3, 1,0,1,0,0,0,0,0, 1,0,1,1,0,0, [['label'=>'1 fillet','grams'=>150]]],
+			['Sardines (grilled fresh)',$fs,195,816,18.5,0.0,0.0,13.0,3.5,0.0,0.5, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'3 sardines','grams'=>75]]],
+			['Tuna (tinned, drained, in spring water)',$fs,99,414,23.5,0.0,0.0,0.6,0.2,0.0,0.8, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'1 small can','grams'=>80],['label'=>'1 can','grams'=>120]]],
+			['Tuna (tinned, drained, in oil)',$fs,189,791,25.0,0.0,0.0,9.5,1.5,0.0,0.6, 1,0,0,0,0,0,0,0, 0,1,1,1,0,0, [['label'=>'1 can','grams'=>120]]],
+			['Smoked Salmon (thick cut)',$fs,145,607,25.0,0.0,0.0,4.5,0.8,0.0,3.0, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'2 slices','grams'=>56]]],
+			['Crab Cakes (homemade)',$fs,185,774,10.0,12.0,0.5,11.0,2.0,0.5,0.8, 1,1,0,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'2 cakes','grams'=>100]]],
+
+			// ── MORE SALADS ──
+			['Chicken & Bacon Salad',$tk,140,586,14.0,3.0,2.0,8.0,2.5,1.5,0.8, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0, [['label'=>'1 plate','grams'=>250]]],
+			['Salmon & Avocado Salad',$tk,155,649,11.0,3.0,1.0,11.5,2.0,2.5,0.4, 1,0,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 plate','grams'=>250]]],
+			['Goat\'s Cheese & Beetroot Salad',$fv,110,460,5.5,7.0,5.0,7.0,3.5,1.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 plate','grams'=>200]]],
+			['Feta & Watermelon Salad',$fv,75,314,3.0,8.0,7.0,3.5,2.0,0.5,0.5, 0,0,1,0,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 plate','grams'=>200]]],
+			['Tuna & Sweetcorn Salad',$tk,110,460,8.5,5.0,2.5,6.5,1.0,1.0,0.5, 1,0,0,1,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 bowl','grams'=>200]]],
+			['Prawn & Avocado Salad',$fs,115,481,8.5,3.0,1.0,8.0,1.5,2.5,0.5, 0,1,0,0,0,0,0,0, 1,1,1,0,0,0, [['label'=>'1 plate','grams'=>200]]],
+			['Crispy Chicken Salad',$tk,145,607,10.0,8.0,2.0,8.5,1.5,2.0,0.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>250]]],
+			['Mixed Leaf Salad (with dressing)',$fv,40,167,1.0,3.0,2.0,2.5,0.4,1.0,0.3, 0,0,0,0,0,0,0,0, 1,1,1,1,1,1, [['label'=>'1 side salad','grams'=>80]]],
+			['Tomato & Mozzarella Salad',$fv,145,607,7.5,3.0,2.5,11.5,5.0,0.5,0.4, 0,0,1,0,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 plate','grams'=>200]]],
+			['Egg & Cress Salad',$de,165,690,8.0,2.0,0.5,14.0,3.0,0.5,0.5, 0,0,0,1,0,0,0,0, 1,0,1,1,0,1, [['label'=>'1 portion','grams'=>100]]],
+
+			// ── MORE POPULAR INDIAN TAKEAWAY ──
+			['Lamb Biryani (takeaway)',$tk,190,795,9.5,22.0,1.5,7.5,3.0,0.5,0.7, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>350]]],
+			['Chicken Biryani (takeaway)',$tk,175,732,10.0,22.0,1.5,5.5,1.5,0.5,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>350]]],
+			['Vegetable Biryani (takeaway)',$tk,155,649,4.0,24.0,2.0,5.0,1.0,2.0,0.4, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1, [['label'=>'1 plate','grams'=>350]]],
+			['Prawn Biryani (takeaway)',$tk,165,690,8.5,22.0,1.5,5.0,1.0,0.5,0.7, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>350]]],
+			['Chicken Passanda',$tk,155,649,10.5,6.0,3.0,10.0,5.0,0.5,0.5, 0,0,1,0,1,0,0,0, 0,0,1,0,0,0, [['label'=>'1 portion','grams'=>250]]],
+			['Lamb Passanda',$tk,170,711,10.0,6.0,3.0,12.0,5.5,0.5,0.5, 0,0,1,0,1,0,0,0, 0,0,1,0,0,0, [['label'=>'1 portion','grams'=>250]]],
+			['Chicken Dhansak',$tk,115,481,10.0,8.0,2.0,5.5,1.0,2.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 portion','grams'=>250]]],
+			['Tandoori Chicken (half, takeaway)',$mp,175,732,24.0,3.0,1.5,7.5,2.0,0.0,1.0, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'½ chicken','grams'=>200]]],
+			['Tandoori King Prawns (takeaway)',$fs,120,502,18.0,3.0,1.5,4.0,0.5,0.0,1.0, 0,1,1,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'6 prawns','grams'=>120]]],
+			['Chicken Tikka Starter (takeaway)',$mp,155,649,22.0,3.0,1.5,6.0,1.5,0.0,0.8, 0,0,1,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 portion','grams'=>120]]],
+			['Aloo Tikki (takeaway)',$fv,200,837,3.5,22.0,1.5,11.0,1.5,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1, [['label'=>'2 tikki','grams'=>100]]],
+			['Mixed Pickle (Indian, small pot)',$co,140,586,1.5,12.0,5.0,9.5,1.0,1.5,5.0, 0,0,0,0,0,0,0,0, 0,0,1,1,1,1, [['label'=>'1 tablespoon','grams'=>15]]],
+
+			// ── MORE POPULAR THAI/VIETNAMESE ──
+			['Pad Thai (tofu, vegetarian)',$tk,155,649,6.5,22.0,5.0,4.5,0.5,1.5,1.5, 1,0,0,0,1,0,1,0, 0,0,1,1,1,1, [['label'=>'1 plate','grams'=>300]]],
+			['Pad See Ew (chicken)',$tk,165,690,8.5,22.0,3.0,5.5,1.0,0.5,2.0, 0,0,0,1,0,0,1,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>300]]],
+			['Pho (chicken)',$tk,50,209,4.0,6.0,0.5,1.0,0.3,0.3,0.8, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 bowl','grams'=>500]]],
+			['Vietnamese Spring Roll (fresh, 2)',$tk,85,356,3.5,15.0,1.0,1.0,0.2,1.0,0.8, 0,1,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'2 rolls','grams'=>100]]],
+			['Thai Fishcakes (homemade, 3)',$fs,180,753,12.0,10.0,2.0,10.5,2.0,1.0,1.0, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'3 fishcakes','grams'=>100]]],
+			['Larb Gai (Thai chicken salad)',$mp,125,523,14.0,4.0,1.5,6.0,1.5,0.5,1.5, 1,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>150]]],
+
+			// ── MORE POPULAR JAPANESE ──
+			['Chicken Katsu (with rice)',$tk,195,816,11.0,22.0,3.5,7.5,1.5,1.0,1.0, 0,0,0,1,0,1,1,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>350]]],
+			['Salmon Sashimi (5 slices)',$fs,125,523,20.0,0.0,0.0,5.0,1.0,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'5 slices','grams'=>80]]],
+			['Tuna Sashimi (5 slices)',$fs,110,460,25.0,0.0,0.0,0.5,0.1,0.0,0.1, 1,0,0,0,0,0,0,0, 1,1,1,1,0,0, [['label'=>'5 slices','grams'=>80]]],
+			['Edamame (starter)',$lp,122,510,11.0,8.9,2.2,5.2,0.6,5.2,0.5, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1, [['label'=>'1 bowl','grams'=>100]]],
+			['Gyoza (pan-fried, chicken, 6)',$tk,190,795,7.5,18.0,1.0,9.5,2.5,0.5,1.0, 0,0,0,0,0,1,1,0, 0,0,1,0,0,0, [['label'=>'6 gyoza','grams'=>120]]],
+			['Yakitori (chicken, 3 sticks)',$mp,160,669,18.0,5.0,4.0,7.0,1.5,0.0,1.5, 0,0,0,0,0,0,1,0, 0,0,1,0,0,0, [['label'=>'3 sticks','grams'=>90]]],
+
+			// ── MORE POPULAR KOREAN ──
+			['Korean BBQ Pork Belly',$mp,330,1381,15.0,5.0,3.5,28.5,10.5,0.0,1.0, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0, [['label'=>'1 portion','grams'=>120]]],
+			['Japchae (glass noodles, takeaway)',$tk,140,586,3.5,22.0,6.0,4.5,0.8,1.5,1.0, 0,0,0,0,0,0,1,0, 0,0,1,1,1,1, [['label'=>'1 plate','grams'=>200]]],
+			['Korean Corn Dog (mozzarella)',$sc,310,1297,9.0,32.0,5.0,16.0,6.0,1.0,1.0, 0,0,1,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 corn dog','grams'=>120]]],
+			['Tteokbokki (spicy, takeaway)',$tk,200,837,4.0,42.0,10.0,2.0,0.3,1.0,1.5, 1,0,0,0,0,1,1,0, 0,0,1,0,0,0, [['label'=>'1 portion','grams'=>250]]],
+
+			// ── MORE UK PUB CLASSICS ──
+			['Chicken & Leek Pie (pub)',$tk,225,941,9.0,18.0,1.0,13.5,6.0,0.5,0.7, 0,0,1,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 pie','grams'=>250]]],
+			['Steak & Stilton Pie (pub)',$tk,255,1067,10.0,16.0,1.0,17.0,8.0,0.5,0.8, 0,0,1,1,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 pie','grams'=>250]]],
+			['Lamb Shank (pub, braised)',$mp,175,732,18.0,3.0,1.0,10.0,4.5,0.5,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 shank','grams'=>350]]],
+			['Slow-cooked Belly Pork (pub)',$mp,295,1234,17.0,5.0,3.0,23.5,9.0,0.0,0.8, 0,0,0,0,0,0,0,0, 0,1,0,0,0,0, [['label'=>'1 portion','grams'=>200]]],
+			['Beer Battered Fish (pub)',$fs,210,879,12.0,14.0,0.5,11.5,2.0,0.5,0.6, 1,0,0,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 fillet','grams'=>250]]],
+			['Sticky Toffee Pudding (pub, with cream)',$sc,340,1423,3.0,50.0,35.0,15.0,9.0,0.5,0.4, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion with cream','grams'=>180]]],
+			['Chocolate Fudge Cake (pub)',$sc,375,1569,4.5,50.0,38.0,18.5,11.0,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice with cream','grams'=>150]]],
+			['Apple Pie & Custard (pub)',$sc,230,962,2.5,32.0,16.0,10.5,5.5,1.5,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>200]]],
+			['Cheesecake & Berry Compote (pub)',$sc,310,1297,4.5,28.0,20.0,20.5,12.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>130]]],
+			['Bread & Butter Pudding (pub)',$sc,210,879,5.5,28.0,16.0,9.0,4.5,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 portion','grams'=>150]]],
+
+			// ── MORE SANDWICHES & FILLINGS ──
+			['Chicken & Stuffing Sandwich',$tk,245,1025,11.0,24.0,2.5,11.5,2.5,1.5,0.8, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 sandwich','grams'=>200]]],
+			['Turkey & Cranberry Sandwich',$tk,225,941,11.0,26.0,6.0,8.5,2.0,1.5,0.7, 0,0,0,0,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 sandwich','grams'=>200]]],
+			['Brie & Cranberry Sandwich',$tk,265,1109,9.0,26.0,6.0,14.0,7.0,1.0,0.7, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1, [['label'=>'1 sandwich','grams'=>180]]],
+			['Roast Beef & Horseradish Sandwich',$tk,240,1004,12.5,22.0,2.5,11.0,3.5,1.0,1.0, 0,0,1,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 sandwich','grams'=>200]]],
+			['Smoked Salmon & Cream Cheese Bagel',$bc,310,1297,14.0,38.0,3.0,11.0,4.5,1.0,2.0, 1,0,1,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 bagel','grams'=>170]]],
+			['Avocado & Bacon Sandwich',$tk,285,1193,9.0,22.0,1.5,18.0,4.5,3.5,1.0, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 sandwich','grams'=>200]]],
+			['Falafel & Hummus Wrap',$tk,225,941,7.0,28.0,2.0,10.0,1.0,4.0,0.6, 0,0,0,0,0,1,0,0, 0,0,1,1,1,1, [['label'=>'1 wrap','grams'=>220]]],
+			['Halloumi & Roasted Veg Wrap',$tk,235,983,9.5,22.0,3.0,12.5,5.5,2.0,1.0, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 wrap','grams'=>220]]],
+			['Coronation Chicken Wrap',$tk,225,941,10.0,22.0,4.0,10.5,2.0,1.0,0.5, 0,0,0,1,0,1,0,0, 0,0,1,0,0,0, [['label'=>'1 wrap','grams'=>220]]],
+			['Egg & Bacon Baguette',$bc,310,1297,14.0,30.0,2.0,15.0,5.0,1.5,1.5, 0,0,0,1,0,1,0,0, 0,0,0,0,0,0, [['label'=>'1 baguette','grams'=>200]]],
+
+			// ── MORE CAKES & DESSERTS ──
+			['Red Velvet Cupcake',$sc,370,1548,4.0,48.0,32.0,18.5,6.5,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 cupcake','grams'=>65]]],
+			['Chocolate Cupcake',$sc,365,1527,4.0,48.0,32.0,18.0,7.0,1.0,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 cupcake','grams'=>65]]],
+			['Vanilla Cupcake',$sc,355,1485,3.5,50.0,34.0,16.5,6.0,0.3,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 cupcake','grams'=>60]]],
+			['Lemon Cupcake',$sc,350,1464,3.5,48.0,32.0,17.0,6.5,0.3,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 cupcake','grams'=>60]]],
+			['Chocolate Éclair',$sc,295,1234,5.5,28.0,18.0,18.0,10.0,0.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 éclair','grams'=>80]]],
+			['Profiteroles (3 with sauce)',$sc,310,1297,5.5,26.0,16.0,20.0,12.0,0.5,0.2, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'3 profiteroles','grams'=>90]]],
+			['Millionaire\'s Shortbread',$sc,485,2029,4.0,55.0,35.0,28.0,17.0,1.5,0.4, 0,0,1,0,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 piece','grams'=>50]]],
+			['Rocky Road',$sc,445,1862,5.0,52.0,35.0,24.5,14.0,1.5,0.3, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 piece','grams'=>50]]],
+			['Crème Caramel (shop-bought)',$sc,115,481,2.5,18.0,16.5,3.5,1.5,0.0,0.1, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 pot','grams'=>100]]],
+			['Chocolate Torte',$sc,380,1590,5.0,38.0,30.0,24.0,14.5,2.0,0.2, 0,0,1,1,0,0,0,0, 0,0,1,1,0,1, [['label'=>'1 slice','grams'=>80]]],
+
+			// ── MORE MISCELLANEOUS ──
+			['Cheese & Chutney Ploughman\'s',$tk,250,1046,9.0,18.0,6.0,16.0,8.0,2.0,1.5, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1, [['label'=>'1 plate','grams'=>250]]],
+			['Cheese Board (restaurant, per 100g)',$de,355,1485,22.0,4.0,2.0,28.5,17.5,0.0,2.0, 0,0,1,0,0,0,0,0, 1,0,1,0,0,1, [['label'=>'1 portion','grams'=>80]]],
+			['Cheese & Biscuits (with Stilton)',$sc,415,1736,14.0,30.0,3.0,27.0,15.0,2.0,1.5, 0,0,1,0,0,1,0,0, 1,0,1,0,0,1, [['label'=>'1 portion','grams'=>80]]],
+			['Afternoon Tea (scone, sandwich, cake avg)',$sc,285,1193,6.0,35.0,14.0,13.5,6.5,1.5,0.6, 0,0,1,1,0,1,0,0, 0,0,1,0,0,1, [['label'=>'per person avg','grams'=>200]]],
+			['Cream Tea (scone, jam, clotted cream)',$sc,380,1590,4.5,42.0,18.0,22.0,14.0,1.5,0.5, 0,0,1,1,0,1,0,0, 0,0,1,1,0,1, [['label'=>'1 serving','grams'=>120]]],
+			['Ploughman\'s Lunch (pub)',$tk,280,1172,10.0,22.0,5.0,17.0,8.5,2.0,1.5, 0,0,1,0,0,1,0,0, 0,0,1,0,0,1, [['label'=>'1 plate','grams'=>300]]],
+			['Sunday Roast Beef (pub, full)',$tk,190,795,14.0,14.0,2.0,9.0,3.5,2.0,0.6, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>450]]],
+			['Sunday Roast Chicken (pub, full)',$tk,175,732,15.0,14.0,1.5,7.0,2.0,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>450]]],
+			['Sunday Roast Lamb (pub, full)',$tk,200,837,13.0,14.0,2.0,10.5,5.0,2.0,0.5, 0,0,0,0,0,0,0,0, 0,0,1,0,0,0, [['label'=>'1 plate','grams'=>450]]],
+			['Sunday Roast Pork (pub, full)',$tk,195,816,13.5,14.0,2.0,9.5,3.5,2.0,0.6, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0, [['label'=>'1 plate','grams'=>450]]],
+		];
+
+		foreach ( $foods as $f ) {
+			$slug = sanitize_title( $f[0] );
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}fcc_foods WHERE slug=%s", $slug ) ) ) { continue; }
+			$wpdb->insert( $wpdb->prefix . 'fcc_foods', [
+				'name'=>$f[0],'slug'=>$slug,'category_id'=>$f[1],'energy_kcal'=>$f[2],'energy_kj'=>$f[3],
+				'protein_g'=>$f[4],'carbohydrate_g'=>$f[5],'of_which_sugars_g'=>$f[6],'fat_g'=>$f[7],
+				'of_which_saturates_g'=>$f[8],'fibre_g'=>$f[9],'salt_g'=>$f[10],
+				'allergen_fish'=>$f[11],'allergen_shellfish'=>$f[12],'allergen_dairy'=>$f[13],
+				'allergen_eggs'=>$f[14],'allergen_nuts'=>$f[15],'allergen_gluten'=>$f[16],
+				'allergen_soy'=>$f[17],'allergen_celery'=>$f[18],
+				'diet_keto'=>$f[19],'diet_paleo'=>$f[20],'diet_halal'=>$f[21],
+				'diet_kosher'=>$f[22],'diet_vegan'=>$f[23],'diet_vegetarian'=>$f[24],
+				'serving_sizes'=> wp_json_encode( $f[25] ),
+				'source_notes'=>'M&W 8th ed. / USDA FDC. Seeded v88.',
+			] ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 88 );
+	}
 }
