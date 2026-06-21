@@ -1296,30 +1296,58 @@
 			} );
 		} );
 
-		// Update header total kcal.
-		if ( totalKcalEl ) totalKcalEl.textContent = fmt( totals.energy_kcal, 0 );
+		// Servings divider.
+		var servesInput = mealSection ? mealSection.querySelector( '.fcc-meal-serves__input' ) : null;
+		var servesWrap  = mealSection ? mealSection.querySelector( '.fcc-meal-serves' ) : null;
+		var servesLabel = mealSection ? mealSection.querySelector( '.fcc-meal-serves__per-serving' ) : null;
+		var serves = servesInput ? Math.max( 1, parseInt( servesInput.value, 10 ) || 1 ) : 1;
+		if ( servesWrap && features.meal_servings ) servesWrap.hidden = false;
 
-		// Update macro pills.
+		// Per-serving values.
+		var ps = {};
+		Object.keys( totals ).forEach( function ( k ) { ps[ k ] = totals[ k ] / serves; } );
+
+		// Update header total kcal.
+		if ( totalKcalEl ) {
+			if ( serves > 1 ) {
+				totalKcalEl.textContent = fmt( ps.energy_kcal, 0 ) + ' / ' + fmt( totals.energy_kcal, 0 );
+			} else {
+				totalKcalEl.textContent = fmt( totals.energy_kcal, 0 );
+			}
+		}
+
+		// Per-serving label.
+		if ( servesLabel ) {
+			if ( serves > 1 ) {
+				servesLabel.textContent = fmt( ps.energy_kcal, 0 ) + ' kcal per serving';
+				servesLabel.hidden = false;
+			} else {
+				servesLabel.hidden = true;
+			}
+		}
+
+		// Update macro pills (show per-serving when serves > 1).
+		var displayTotals = serves > 1 ? ps : totals;
 		if ( macrosEl ) {
 			const pEl = macrosEl.querySelector( '.fcc-meal-macro__val--protein' );
 			const cEl = macrosEl.querySelector( '.fcc-meal-macro__val--carbs' );
 			const fEl = macrosEl.querySelector( '.fcc-meal-macro__val--fat' );
 			const fiEl = macrosEl.querySelector( '.fcc-meal-macro__val--fibre' );
-			if ( pEl  ) pEl.textContent  = fmt( totals.protein_g, 1 ) + 'g';
-			if ( cEl  ) cEl.textContent  = fmt( totals.carbohydrate_g, 1 ) + 'g';
-			if ( fEl  ) fEl.textContent  = fmt( totals.fat_g, 1 ) + 'g';
-			if ( fiEl ) fiEl.textContent = fmt( totals.fibre_g, 1 ) + 'g';
+			if ( pEl  ) pEl.textContent  = fmt( displayTotals.protein_g, 1 ) + 'g';
+			if ( cEl  ) cEl.textContent  = fmt( displayTotals.carbohydrate_g, 1 ) + 'g';
+			if ( fEl  ) fEl.textContent  = fmt( displayTotals.fat_g, 1 ) + 'g';
+			if ( fiEl ) fiEl.textContent = fmt( displayTotals.fibre_g, 1 ) + 'g';
 			macrosEl.hidden = false;
 		}
 
-		// Daily goal comparison bar.
+		// Daily goal comparison bar (uses per-serving kcal).
 		var dailyBar = mealSection ? mealSection.querySelector( '.fcc-meal-daily-bar' ) : null;
 		if ( dailyBar && features.meal_daily_goal && state.bmrTdee ) {
-			var pct = Math.min( 100, Math.round( ( totals.energy_kcal / state.bmrTdee ) * 100 ) );
+			var pct = Math.min( 100, Math.round( ( ps.energy_kcal / state.bmrTdee ) * 100 ) );
 			var fill = dailyBar.querySelector( '.fcc-meal-daily-fill' );
 			var lbl  = dailyBar.querySelector( '.fcc-meal-daily-label' );
 			if ( fill ) fill.style.width = pct + '%';
-			if ( lbl )  lbl.textContent  = pct + '% of daily goal (' + fmt( state.bmrTdee, 0 ) + ' kcal)';
+			if ( lbl )  lbl.textContent  = pct + '% of daily goal (' + fmt( state.bmrTdee, 0 ) + ' kcal)' + ( serves > 1 ? ' per serving' : '' );
 			dailyBar.hidden = false;
 		} else if ( dailyBar ) {
 			dailyBar.hidden = true;
@@ -1327,21 +1355,30 @@
 
 		// Render totals table.
 		if ( totBodyEl ) {
-			let html = totalRow( 'Energy',       totals.energy_kcal, 'kcal', 0 );
-			html    += totalRow( 'Energy',       totals.energy_kj,   'kJ',   0 );
-			html    += totalRow( 'Fat',          totals.fat_g,       'g',    decimals );
-			html    += totalRow( '– Saturates',  totals.of_which_saturates_g, 'g', decimals );
-			html    += totalRow( 'Carbohydrate', totals.carbohydrate_g, 'g', decimals );
-			html    += totalRow( '– Sugars',     totals.of_which_sugars_g, 'g', decimals );
-			html    += totalRow( 'Fibre',        totals.fibre_g,     'g',    decimals );
-			html    += totalRow( 'Protein',      totals.protein_g,   'g',    decimals );
-			html    += totalRow( 'Salt',         totals.salt_g,      'g',    decimals );
-			if ( omega3HasData )   html += totalRow( 'Omega-3 Total', totals.omega3_total_mg, 'mg', decimals );
-			if ( caffeineHasData ) html += totalRow( 'Caffeine',      totals.caffeine_mg,     'mg', decimals );
+			var showTot = serves > 1;
+			var hdr = showTot ? '<tr class="fcc-meal-totals-hdr"><th></th><th>Per Serving</th><th>Total</th></tr>' : '';
+			function tRow( label, perVal, totVal, unit, d ) {
+				if ( showTot ) {
+					return '<tr><th scope="row">' + escHtml( label ) + '</th><td>' + fmt( perVal, d ) + ' ' + unit + '</td><td class="fcc-meal-total-col">' + fmt( totVal, d ) + ' ' + unit + '</td></tr>';
+				}
+				return '<tr><th scope="row">' + escHtml( label ) + '</th><td>' + fmt( totVal, d ) + ' ' + unit + '</td></tr>';
+			}
+			let html = hdr;
+			html += tRow( 'Energy',       ps.energy_kcal,            totals.energy_kcal, 'kcal', 0 );
+			html += tRow( 'Energy',       ps.energy_kj,              totals.energy_kj,   'kJ',   0 );
+			html += tRow( 'Fat',          ps.fat_g,                  totals.fat_g,       'g',    decimals );
+			html += tRow( '– Saturates',  ps.of_which_saturates_g,   totals.of_which_saturates_g, 'g', decimals );
+			html += tRow( 'Carbohydrate', ps.carbohydrate_g,         totals.carbohydrate_g, 'g', decimals );
+			html += tRow( '– Sugars',     ps.of_which_sugars_g,      totals.of_which_sugars_g, 'g', decimals );
+			html += tRow( 'Fibre',        ps.fibre_g,                totals.fibre_g,     'g',    decimals );
+			html += tRow( 'Protein',      ps.protein_g,              totals.protein_g,   'g',    decimals );
+			html += tRow( 'Salt',         ps.salt_g,                 totals.salt_g,      'g',    decimals );
+			if ( omega3HasData )   html += tRow( 'Omega-3 Total', ps.omega3_total_mg, totals.omega3_total_mg, 'mg', decimals );
+			if ( caffeineHasData ) html += tRow( 'Caffeine',      ps.caffeine_mg,     totals.caffeine_mg,     'mg', decimals );
 			if ( microHasData && features.meal_micronutrients ) {
-				if ( totals.iron_mg )      html += totalRow( '🩸 Iron',      totals.iron_mg,      'mg', decimals );
-				if ( totals.calcium_mg )   html += totalRow( '🦴 Calcium',   totals.calcium_mg,   'mg', decimals );
-				if ( totals.vitamin_c_mg ) html += totalRow( '🍊 Vitamin C', totals.vitamin_c_mg, 'mg', decimals );
+				if ( totals.iron_mg )      html += tRow( '🩸 Iron',      ps.iron_mg,      totals.iron_mg,      'mg', decimals );
+				if ( totals.calcium_mg )   html += tRow( '🦴 Calcium',   ps.calcium_mg,   totals.calcium_mg,   'mg', decimals );
+				if ( totals.vitamin_c_mg ) html += tRow( '🍊 Vitamin C', ps.vitamin_c_mg, totals.vitamin_c_mg, 'mg', decimals );
 			}
 			totBodyEl.innerHTML = html;
 		}
@@ -1361,6 +1398,11 @@
 			const idx = parseInt( btn.dataset.idx, 10 );
 			state.meal.splice( idx, 1 );
 			renderMeal();
+		} );
+
+		// Serves input change.
+		mealSection.addEventListener( 'input', function ( e ) {
+			if ( e.target.closest( '.fcc-meal-serves__input' ) ) renderMeal();
 		} );
 
 		// Edit quantity inline.

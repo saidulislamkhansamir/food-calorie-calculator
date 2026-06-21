@@ -350,6 +350,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					'meal_share'             => [ 'label' => __( 'Meal Share Link',                'food-calorie-calculator' ), 'hint' => __( 'Shareable URL that auto-loads a saved meal', 'food-calorie-calculator' ) ],
 					'meal_copy'              => [ 'label' => __( 'Meal Copy Totals',               'food-calorie-calculator' ), 'hint' => __( 'Copy meal nutrition summary to clipboard', 'food-calorie-calculator' ) ],
 					'meal_micronutrients'    => [ 'label' => __( 'Meal Micronutrients',             'food-calorie-calculator' ), 'hint' => __( 'Show Iron, Calcium, Vitamin C in meal totals', 'food-calorie-calculator' ) ],
+					'meal_servings'          => [ 'label' => __( 'Meal Servings Divider',           'food-calorie-calculator' ), 'hint' => __( 'Divide meal totals by number of servings (recipe mode)', 'food-calorie-calculator' ) ],
 					];
 					foreach ( $feature_labels as $key => $data ) : ?>
 						<div class="fcc-stg-feature <?php echo ! empty( $features[ $key ] ) ? 'fcc-stg-feature--on' : ''; ?>">

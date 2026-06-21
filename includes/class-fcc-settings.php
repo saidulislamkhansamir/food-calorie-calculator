@@ -84,6 +84,7 @@ class Settings {
 				'meal_share'             => true,
 				'meal_copy'              => true,
 				'meal_micronutrients'    => true,
+				'meal_servings'          => true,
 			],
 			'appearance' => [
 				'primary_colour'    => '#075B5E',

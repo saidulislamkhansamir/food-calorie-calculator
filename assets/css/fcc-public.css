@@ -4076,6 +4076,63 @@ select.fcc-bmr-input {
 	border-radius: 10px;
 }
 
+/* ── Servings Divider ── */
+.fcc-meal-serves {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 8px 12px;
+	margin: 0.5rem 0;
+	background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+	border: 1px solid #bbf7d0;
+	border-radius: 10px;
+	font-size: 13px;
+	color: #374151;
+}
+.fcc-meal-serves svg { stroke: #075B5E; flex-shrink: 0; }
+.fcc-meal-serves label { font-weight: 600; color: #075B5E; }
+.fcc-meal-serves__input {
+	width: 48px;
+	padding: 4px 6px;
+	border: 1.5px solid #a7f3d0;
+	border-radius: 6px;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 700;
+	color: #075B5E;
+	background: #fff;
+}
+.fcc-meal-serves__input:focus {
+	border-color: #075B5E;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(7,91,94,.15);
+}
+.fcc-meal-serves__suffix { color: #6b7280; font-size: 12px; }
+.fcc-meal-serves__per-serving {
+	font-weight: 700;
+	color: #075B5E;
+	margin-left: 4px;
+	font-size: 12px;
+	background: #d1fae5;
+	padding: 2px 8px;
+	border-radius: 10px;
+}
+
+/* ── Meal totals per-serving header ── */
+.fcc-meal-totals-hdr th {
+	font-size: 11px;
+	text-transform: uppercase;
+	color: #6b7280;
+	font-weight: 600;
+	padding: 4px 8px;
+	border-bottom: 2px solid #e5e7eb;
+}
+.fcc-meal-total-col {
+	color: #9ca3af;
+	font-size: 0.85em;
+}
+
 /* ── Daily Goal Progress Bar ── */
 .fcc-meal-daily-bar {
 	margin: 0.5rem 0 0.75rem;

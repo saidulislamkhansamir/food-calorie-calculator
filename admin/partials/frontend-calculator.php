@@ -567,6 +567,17 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 					</div>
 				</div>
 
+				<!-- Servings Divider -->
+				<?php if ( ! empty( $features['meal_servings'] ) ) : ?>
+				<div class="fcc-meal-serves" hidden>
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+					<label for="fcc-meal-serves-input"><?php esc_html_e( 'Serves', 'food-calorie-calculator' ); ?></label>
+					<input type="number" id="fcc-meal-serves-input" class="fcc-meal-serves__input" value="1" min="1" max="50" step="1">
+					<span class="fcc-meal-serves__suffix"><?php esc_html_e( 'person(s)', 'food-calorie-calculator' ); ?></span>
+					<span class="fcc-meal-serves__per-serving" hidden></span>
+				</div>
+				<?php endif; ?>
+
 				<!-- Daily Goal Progress Bar -->
 				<?php if ( ! empty( $features['meal_daily_goal'] ) ) : ?>
 				<div class="fcc-meal-daily-bar" hidden>
