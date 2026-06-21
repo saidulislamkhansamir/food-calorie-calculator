@@ -10589,4 +10589,169 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 61 );
 	}
+
+	/** Seed v62: Serving sizes batch 5 — deep coverage remaining foods. */
+	public static function seed_v62(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 62 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$servings = [
+			// ── FRENCH DISHES ──
+			'blanquette-de-veau-veal-stew' => [['label'=>'1 portion','grams'=>250]],
+			'pot-au-feu-french-boiled-dinner' => [['label'=>'1 bowl','grams'=>350]],
+			'steak-frites-with-fries' => [['label'=>'1 plate','grams'=>350]],
+			'steak-tartare-raw-beef' => [['label'=>'1 portion','grams'=>150]],
+			'moules-marinieres-french-style' => [['label'=>'1 bowl','grams'=>300]],
+			'galette-bretonne-buckwheat-ham-cheese' => [['label'=>'1 galette','grams'=>200]],
+			'tartiflette-savoyard-potato-bake' => [['label'=>'1 portion','grams'=>250]],
+			'souffle-au-chocolat' => [['label'=>'1 ramekin','grams'=>120]],
+			'mousse-au-chocolat' => [['label'=>'1 pot','grams'=>100]],
+			'clafoutis-cherry' => [['label'=>'1 slice','grams'=>120]],
+			'canele-bordeaux-custard-cake' => [['label'=>'1 canelé','grams'=>55]],
+			'financier-almond-cake' => [['label'=>'1 piece','grams'=>30]],
+			'tarte-au-citron-lemon-tart' => [['label'=>'1 slice','grams'=>100]],
+			'creme-caramel' => [['label'=>'1 ramekin','grams'=>120]],
+			'kouign-amann-breton-butter-cake' => [['label'=>'1 piece','grams'=>80]],
+
+			// ── SPANISH DISHES ──
+			'tortilla-espanola-potato-omelette' => [['label'=>'1 slice','grams'=>100],['label'=>'1 wedge','grams'=>150]],
+			'gambas-al-ajillo-garlic-prawns' => [['label'=>'1 portion','grams'=>120]],
+			'paella-valenciana-rabbit-chicken-snails' => [['label'=>'1 plate','grams'=>350]],
+			'fideua-catalan-noodle-paella' => [['label'=>'1 plate','grams'=>300]],
+			'cochinillo-asado-roast-suckling-pig' => [['label'=>'1 portion','grams'=>150]],
+			'flan-spanish-egg-custard' => [['label'=>'1 flan','grams'=>120]],
+			'turron-de-jijona-soft-nougat' => [['label'=>'1 slice','grams'=>30]],
+			'ensaimada-mallorcan-pastry' => [['label'=>'1 pastry','grams'=>100]],
+			'crema-catalana' => [['label'=>'1 ramekin','grams'=>120]],
+
+			// ── PORTUGUESE DISHES ──
+			'pasteis-de-nata-custard-tart-belem' => [['label'=>'1 tart','grams'=>65],['label'=>'2 tarts','grams'=>130]],
+			'bacalhau-a-bras-shredded-cod-egg' => [['label'=>'1 plate','grams'=>250]],
+			'caldo-verde-traditional-with-chourico' => [['label'=>'1 bowl','grams'=>250]],
+			'francesinha-porto-sandwich' => [['label'=>'1 francesinha','grams'=>400]],
+			'sardinhas-assadas-grilled-sardines' => [['label'=>'3 sardines','grams'=>120],['label'=>'5 sardines','grams'=>200]],
+			'cozido-a-portuguesa-mixed-boil-up' => [['label'=>'1 plate','grams'=>350]],
+			'pasteis-de-bacalhau-cod-fritters' => [['label'=>'2 fritters','grams'=>60],['label'=>'4 fritters','grams'=>120]],
+			'bola-de-berlim-portuguese-doughnut' => [['label'=>'1 doughnut','grams'=>80]],
+
+			// ── ITALIAN (remaining) ──
+			'focaccia-rosemary' => [['label'=>'1 slice','grams'=>70],['label'=>'1 piece','grams'=>100]],
+			'ciabatta' => [['label'=>'1 roll','grams'=>90],['label'=>'½ loaf','grams'=>150]],
+			'panna-cotta' => [['label'=>'1 pot','grams'=>130]],
+			'cannoli-sicilian' => [['label'=>'1 cannoli','grams'=>60]],
+			'panettone' => [['label'=>'1 slice','grams'=>80]],
+			'ossobuco' => [['label'=>'1 shank','grams'=>250]],
+			'bruschetta-tomato' => [['label'=>'1 piece','grams'=>60],['label'=>'3 pieces','grams'=>180]],
+
+			// ── GERMAN/AUSTRIAN ──
+			'bratwurst-grilled' => [['label'=>'1 sausage','grams'=>85],['label'=>'2 sausages','grams'=>170]],
+			'currywurst' => [['label'=>'1 portion','grams'=>200]],
+			'lebkuchen-gingerbread' => [['label'=>'1 piece','grams'=>40]],
+			'apfelstrudel-apple-strudel' => [['label'=>'1 slice','grams'=>120]],
+			'kaiserschmarrn-torn-pancake' => [['label'=>'1 portion','grams'=>200]],
+
+			// ── SCANDINAVIAN ──
+			'kanelbulle-swedish-cinnamon-bun' => [['label'=>'1 bun','grams'=>80]],
+			'kladdkaka-swedish-chocolate-cake' => [['label'=>'1 slice','grams'=>80]],
+			'semla-swedish-cream-bun' => [['label'=>'1 bun','grams'=>100]],
+			'karjalanpiirakka-karelian-pie-1pc' => [['label'=>'1 pie','grams'=>50],['label'=>'3 pies','grams'=>150]],
+			'gravlax-cured-salmon' => [['label'=>'3 slices','grams'=>50],['label'=>'1 portion','grams'=>80]],
+
+			// ── IRISH ──
+			'irish-stew-lamb' => [['label'=>'1 bowl','grams'=>300]],
+			'soda-bread-white' => [['label'=>'1 slice','grams'=>60]],
+			'boxty-potato-pancake' => [['label'=>'1 boxty','grams'=>100]],
+			'guinness-stew-beef' => [['label'=>'1 bowl','grams'=>300]],
+
+			// ── SCOTTISH/WELSH ──
+			'cranachan' => [['label'=>'1 glass','grams'=>150]],
+			'tattie-scone' => [['label'=>'1 scone','grams'=>65]],
+			'welsh-cakes' => [['label'=>'1 cake','grams'=>25],['label'=>'3 cakes','grams'=>75]],
+			'bara-brith-fruit-loaf' => [['label'=>'1 slice','grams'=>50]],
+
+			// ── BRITISH REGIONAL ──
+			'eccles-cake' => [['label'=>'1 cake','grams'=>60]],
+			'bakewell-tart' => [['label'=>'1 slice','grams'=>85]],
+			'battenberg-cake' => [['label'=>'1 slice','grams'=>50]],
+			'kendal-mint-cake' => [['label'=>'1 bar','grams'=>85],['label'=>'½ bar','grams'=>42]],
+			'parkin-yorkshire-oatcake' => [['label'=>'1 slice','grams'=>60]],
+			'cornish-pasty' => [['label'=>'1 pasty','grams'=>250]],
+			'scotch-egg' => [['label'=>'1 scotch egg','grams'=>113]],
+
+			// ── DUTCH/BELGIAN ──
+			'bitterballen-3-pcs' => [['label'=>'3 pieces','grams'=>60],['label'=>'6 pieces','grams'=>120]],
+			'belgian-waffle-liege' => [['label'=>'1 waffle','grams'=>90]],
+			'stroopwafel' => [['label'=>'1 waffle','grams'=>30]],
+			'speculaas-biscuit' => [['label'=>'1 biscuit','grams'=>10],['label'=>'3 biscuits','grams'=>30]],
+
+			// ── GEORGIAN ──
+			'khachapuri-adjaruli-cheese-boat-bread' => [['label'=>'1 boat','grams'=>350]],
+			'khinkali-georgian-soup-dumplings-1pc' => [['label'=>'1 piece','grams'=>60],['label'=>'5 pieces','grams'=>300]],
+			'churchkhela-walnut-grape-candy' => [['label'=>'1 piece','grams'=>65]],
+
+			// ── AFGHAN ──
+			'kabuli-pulao-afghan-national-dish' => [['label'=>'1 plate','grams'=>350]],
+			'mantu-afghan-dumplings-with-yoghurt' => [['label'=>'1 portion','grams'=>200]],
+			'bolani-stuffed-flatbread' => [['label'=>'1 bolani','grams'=>120]],
+			'chapli-kebab-spiced-meat-patty' => [['label'=>'1 kebab','grams'=>100]],
+
+			// ── SRI LANKAN ──
+			'rice-and-curry-sri-lankan-full-plate-avg' => [['label'=>'1 plate','grams'=>350]],
+			'kottu-roti-sri-lankan-chopped-roti' => [['label'=>'1 plate','grams'=>300]],
+			'hoppers-sri-lankan-rice-bowl-pancake' => [['label'=>'1 hopper','grams'=>60],['label'=>'2 hoppers','grams'=>120]],
+			'string-hoppers-idiyappam-sri-lankan' => [['label'=>'5 pieces','grams'=>100],['label'=>'10 pieces','grams'=>200]],
+
+			// ── TAIWANESE ──
+			'beef-noodle-soup-taiwanese' => [['label'=>'1 bowl','grams'=>500]],
+			'gua-bao-taiwanese-pork-belly-bun' => [['label'=>'1 bun','grams'=>120]],
+			'pineapple-cake-taiwanese-1pc' => [['label'=>'1 cake','grams'=>40],['label'=>'3 cakes','grams'=>120]],
+
+			// ── LEBANESE/ISRAELI ──
+			'tabbouleh-lebanese-traditional' => [['label'=>'1 portion','grams'=>130]],
+			'manakish-zaatar-lebanese' => [['label'=>'1 manakish','grams'=>150]],
+			'sabich-iraqi-israeli-aubergine-pitta' => [['label'=>'1 sabich','grams'=>250]],
+			'shakshuka-israeli-classic' => [['label'=>'1 portion','grams'=>200]],
+			'rugelach-israeli-crescent-pastry' => [['label'=>'1 piece','grams'=>30],['label'=>'4 pieces','grams'=>120]],
+
+			// ── CENTRAL AMERICAN ──
+			'pupusa-salvadoran-cheese-bean' => [['label'=>'1 pupusa','grams'=>120],['label'=>'2 pupusas','grams'=>240]],
+			'baleada-honduran-bean-cheese-tortilla' => [['label'=>'1 baleada','grams'=>180]],
+			'gallo-pinto-costa-rican-rice-beans' => [['label'=>'1 plate','grams'=>250]],
+
+			// ── HAWAIIAN ──
+			'poke-bowl-hawaiian-tuna' => [['label'=>'1 bowl','grams'=>350]],
+			'loco-moco-hawaiian-rice-burger-egg-gravy' => [['label'=>'1 plate','grams'=>400]],
+			'spam-musubi-hawaiian-1pc' => [['label'=>'1 piece','grams'=>100],['label'=>'2 pieces','grams'=>200]],
+
+			// ── REMAINING MISC ──
+			'baursak-fried-dough-kazakh' => [['label'=>'3 pieces','grams'=>60],['label'=>'6 pieces','grams'=>120]],
+			'boorsok-kyrgyz-fried-dough' => [['label'=>'3 pieces','grams'=>60],['label'=>'6 pieces','grams'=>120]],
+			'qurutob-tajik-national-dish-bread-yoghurt' => [['label'=>'1 plate','grams'=>300]],
+			'dograma-turkmen-bread-meat-soup' => [['label'=>'1 bowl','grams'=>300]],
+			'tavce-gravce-macedonian-baked-beans' => [['label'=>'1 bowl','grams'=>200]],
+			'byrek-albanian-phyllo-pie-cheese' => [['label'=>'1 slice','grams'=>120]],
+			'burek-bosnian-meat-spiral-pie' => [['label'=>'1 slice','grams'=>150]],
+			'pastrmajlija-macedonian-meat-pizza' => [['label'=>'1 portion','grams'=>200]],
+			'conch-salad-bahamian-raw' => [['label'=>'1 bowl','grams'=>150]],
+			'conch-fritters-bahamian' => [['label'=>'5 fritters','grams'=>100]],
+			'oil-down-grenadian-national-dish' => [['label'=>'1 bowl','grams'=>300]],
+			'griot-haitian-fried-pork' => [['label'=>'1 portion','grams'=>150]],
+			'la-bandera-rice-beans-meat-national' => [['label'=>'1 plate','grams'=>350]],
+			'doubles-trini-curried-chickpea-in-bara' => [['label'=>'1 doubles','grams'=>150]],
+			'cachupa-cape-verdean-corn-bean-stew' => [['label'=>'1 bowl','grams'=>300]],
+			'romazava-malagasy-beef-greens-stew' => [['label'=>'1 bowl','grams'=>250]],
+			'bougna-kanak-earth-oven-stew' => [['label'=>'1 portion','grams'=>250]],
+			'encebollado-ecuadorian-tuna-soup' => [['label'=>'1 bowl','grams'=>300]],
+		];
+
+		foreach ( $servings as $slug => $sizes ) {
+			$json = wp_json_encode( $sizes );
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET serving_sizes = %s WHERE slug = %s AND (serving_sizes IS NULL OR serving_sizes = '')", // phpcs:ignore
+				$json, $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 62 );
+	}
 }
