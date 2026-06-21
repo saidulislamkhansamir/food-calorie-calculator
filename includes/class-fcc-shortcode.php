@@ -321,6 +321,7 @@ class Shortcode {
 				'wl'          => $wl_active ? $wl_active['wl_data'] : null,
 				'affiliates'  => \FCC\Admin\Affiliates::get_enabled_for_frontend(),
 				'supplements' => \FCC\Admin\Supplements::get_frontend_data(),
+				'promotions'  => self::get_promotions_for_frontend(),
 			]
 		);
 
@@ -330,5 +331,45 @@ class Shortcode {
 			wp_add_inline_style( 'fcc-public', $wl_active['custom_css'] );
 		}
 
+	}
+
+	private static function get_promotions_for_frontend(): array {
+		$pinned = Settings::get_section( 'pinned' );
+
+		$trending = [];
+		foreach ( ( $pinned['trending_foods'] ?? [] ) as $item ) {
+			$food = Database::get_food( (int) ( $item['food_id'] ?? 0 ) );
+			if ( $food ) {
+				$trending[] = [
+					'id'          => (int) $food['id'],
+					'name'        => $food['name'],
+					'energy_kcal' => (float) $food['energy_kcal'],
+				];
+			}
+		}
+
+		$badges = [];
+		foreach ( ( $pinned['pinned_foods'] ?? [] ) as $rule ) {
+			if ( ! empty( $rule['badge'] ) && ! empty( $rule['food_id'] ) ) {
+				$badges[ (int) $rule['food_id'] ] = $rule['badge'];
+			}
+		}
+
+		$banners = [];
+		foreach ( ( $pinned['promo_banners'] ?? [] ) as $p ) {
+			if ( ! empty( $p['food_id'] ) && ! empty( $p['message'] ) ) {
+				$banners[ (int) $p['food_id'] ] = [
+					'message'   => $p['message'],
+					'link_text' => $p['link_text'] ?? '',
+					'link_url'  => $p['link_url'] ?? '',
+				];
+			}
+		}
+
+		return [
+			'trendingFoods' => $trending,
+			'badges'        => (object) $badges,
+			'banners'       => (object) $banners,
+		];
 	}
 }

@@ -156,7 +156,9 @@ class Settings {
 				'meal_max_templates'        => 10,
 			],
 			'pinned' => [
-				'pinned_foods' => [],
+				'pinned_foods'   => [],
+				'trending_foods' => [],
+				'promo_banners'  => [],
 			],
 		];
 	}

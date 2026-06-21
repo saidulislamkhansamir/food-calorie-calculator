@@ -257,6 +257,35 @@
 			debounceTimer = setTimeout( function () { doSearch( q ); }, general.searchDebounce || 280 );
 		} );
 
+		searchInput.addEventListener( 'focus', function () {
+			if ( this.value.trim().length > 0 ) return;
+			var curatedTrending = ( ( fccData.promotions || {} ).trendingFoods || [] );
+			if ( ! curatedTrending.length ) return;
+			dropdown.innerHTML = '';
+			var hdr = document.createElement( 'li' );
+			hdr.className = 'fcc-trending-header';
+			hdr.textContent = 'Trending Now 🔥';
+			dropdown.appendChild( hdr );
+			curatedTrending.forEach( function ( f ) {
+				var li = document.createElement( 'li' );
+				li.setAttribute( 'role', 'option' );
+				li.setAttribute( 'aria-selected', 'false' );
+				li.dataset.id = f.id;
+				li.innerHTML =
+					'<span class="fcc-result-name">' + escHtml( f.name ) + '</span>' +
+					'<span class="fcc-result-kcal">' + fmt( f.energy_kcal ) + ' kcal</span>';
+				li.addEventListener( 'click', function () {
+					hideDropdown();
+					searchInput.value = f.name;
+					updateClearBtn();
+					hidePopular();
+					doSearch( f.name );
+				} );
+				dropdown.appendChild( li );
+			} );
+			showDropdown();
+		} );
+
 		searchInput.addEventListener( 'keydown', handleDropdownKeys );
 		document.addEventListener( 'click', function ( e ) {
 			if ( ! root.contains( e.target ) ) hideDropdown();
@@ -354,6 +383,8 @@
 			if ( q.length >= 2 ) logMissedSearch( q );
 			return;
 		}
+		var promos = ( fccData.promotions || {} );
+		var badges = promos.badges || {};
 		foods.forEach( function ( food ) {
 			const li = document.createElement( 'li' );
 			li.setAttribute( 'role', 'option' );
@@ -361,10 +392,13 @@
 			li.dataset.id = food.id;
 			const isActive = food.is_sponsored && food.sponsor_active;
 			if ( isActive ) li.classList.add( 'fcc-result--sponsored' );
+			var badgeText = badges[ food.id ] || '';
 			li.innerHTML =
-				'<span class="fcc-result-name">' + escHtml( food.name ) + '</span>' +
+				'<span class="fcc-result-name">' + escHtml( food.name ) +
+				( badgeText ? '<span class="fcc-promo-badge">' + escHtml( badgeText ) + '</span>' : '' ) +
+				'</span>' +
 				'<span class="fcc-result-kcal">' + fmt( food.energy_kcal ) + ' kcal</span>' +
-				( isActive ? '<span class="fcc-sponsored-pill">Sponsored</span>' : '' );
+				( isActive && ! badgeText ? '<span class="fcc-sponsored-pill">Sponsored</span>' : '' );
 			li.addEventListener( 'click', function () { selectFood( food ); } );
 			dropdown.appendChild( li );
 		} );
@@ -463,6 +497,24 @@
 
 		renderResults();
 		updateShareUrl();
+		renderPromoBanner( food );
+	}
+
+	function renderPromoBanner( food ) {
+		var existing = root.querySelector( '.fcc-promo-banner' );
+		if ( existing ) existing.remove();
+		var banners = ( ( fccData.promotions || {} ).banners || {} );
+		var b = banners[ food.id ];
+		if ( ! b || ! b.message ) return;
+		var banner = document.createElement( 'div' );
+		banner.className = 'fcc-promo-banner';
+		var html = '<span class="fcc-promo-banner__msg">' + escHtml( b.message ) + '</span>';
+		if ( b.link_url && b.link_text ) {
+			html += '<a class="fcc-promo-banner__cta" href="' + escHtml( b.link_url ) + '" target="_blank" rel="noopener">' + escHtml( b.link_text ) + '</a>';
+		}
+		banner.innerHTML = html;
+		var resultsSection = root.querySelector( '.fcc-results-section' );
+		if ( resultsSection ) resultsSection.parentNode.insertBefore( banner, resultsSection.nextSibling );
 	}
 
 	function rebuildUnitSelect( food ) {

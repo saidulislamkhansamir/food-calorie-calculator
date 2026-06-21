@@ -677,14 +677,17 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 
 		<?php elseif ( 'pinned' === $active_tab ) : ?>
 		<!-- ============================================================
-		     PINNED TAB
+		     PINNED TAB — Promotion Control Center
 		     ============================================================ -->
-			<?php $pinned_settings = \FCC\Settings::get_section( 'pinned' ); ?>
+			<?php $pinned_settings = \FCC\Settings::get_section( 'pinned' );
+			$badge_options = [ '' => '— None —', 'Best Seller' => 'Best Seller', 'Sponsored' => 'Sponsored', 'New' => 'New', 'Editor Pick' => 'Editor Pick', 'Popular' => 'Popular', 'Featured' => 'Featured', 'Premium' => 'Premium', 'Sale' => 'Sale' ];
+			?>
 
+			<!-- ── Section 1: Pinned Search Results ── -->
 			<div class="fcc-stg-section">
 				<div class="fcc-stg-section__hd">
-					<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Pinned Search Results', 'food-calorie-calculator' ); ?></h2>
-					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Force specific foods to appear at positions 1st, 2nd, or 3rd in the search dropdown when a keyword matches. Great for promoting sponsored or featured foods to boost revenue.', 'food-calorie-calculator' ); ?></p>
+					<h2 class="fcc-stg-section__title">📌 <?php esc_html_e( 'Pinned Search Results', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Force specific foods to appear at positions 1st, 2nd, or 3rd in the search dropdown when a keyword matches. Optionally add a promotional badge.', 'food-calorie-calculator' ); ?></p>
 				</div>
 
 				<table class="fcc-pin-table" id="fcc-pin-table">
@@ -692,7 +695,8 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						<tr>
 							<th><?php esc_html_e( 'Keyword', 'food-calorie-calculator' ); ?></th>
 							<th><?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?></th>
-							<th><?php esc_html_e( 'Position', 'food-calorie-calculator' ); ?></th>
+							<th><?php esc_html_e( 'Pos', 'food-calorie-calculator' ); ?></th>
+							<th><?php esc_html_e( 'Badge', 'food-calorie-calculator' ); ?></th>
 							<th></th>
 						</tr>
 					</thead>
@@ -725,6 +729,13 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 									</select>
 								</td>
 								<td>
+									<select name="pinned_foods[<?php echo $idx; ?>][badge]" class="fcc-pin-select">
+										<?php foreach ( $badge_options as $val => $lbl ) : ?>
+											<option value="<?php echo esc_attr( $val ); ?>"<?php selected( $rule['badge'] ?? '', $val ); ?>><?php echo esc_html( $lbl ); ?></option>
+										<?php endforeach; ?>
+									</select>
+								</td>
+								<td>
 									<button type="button" class="fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
 										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 									</button>
@@ -737,17 +748,128 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 					<?php esc_html_e( 'Add Pin Rule', 'food-calorie-calculator' ); ?>
 				</button>
-				<p class="fcc-stg-row__hint" style="margin-top:.75rem"><?php esc_html_e( 'Max 20 rules. Pinned foods override sponsor and popularity ordering for matched keywords.', 'food-calorie-calculator' ); ?></p>
+				<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 20 rules. Badge shows as a coloured pill next to the food name in dropdown.', 'food-calorie-calculator' ); ?></p>
+			</div>
 
-				<div class="fcc-pin-help">
-					<h3><?php esc_html_e( 'How it works', 'food-calorie-calculator' ); ?></h3>
-					<ul>
-						<li><?php esc_html_e( 'When a visitor\'s search query contains the keyword, the pinned food is forced into the specified position.', 'food-calorie-calculator' ); ?></li>
-						<li><?php esc_html_e( 'Example: keyword "caviar" with food "Beluga Caviar" at 1st — searching "caviar" always shows Beluga Caviar first.', 'food-calorie-calculator' ); ?></li>
-						<li><?php esc_html_e( 'Multiple rules can target the same keyword with different positions (1st, 2nd, 3rd).', 'food-calorie-calculator' ); ?></li>
-						<li><?php esc_html_e( 'Pinned foods appear even if they wouldn\'t normally match the search — perfect for cross-promoting.', 'food-calorie-calculator' ); ?></li>
-					</ul>
+			<!-- ── Section 2: Curated Trending (Dropdown) ── -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title">🔥 <?php esc_html_e( 'Curated Trending (Dropdown)', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'When a visitor focuses the search box (before typing), these foods appear as "Trending Now 🔥" inside the dropdown. The auto-generated trending chips below the search bar remain unchanged.', 'food-calorie-calculator' ); ?></p>
 				</div>
+
+				<table class="fcc-pin-table" id="fcc-trending-table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th><?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="fcc-trending-tbody">
+						<?php
+						$trending_foods = $pinned_settings['trending_foods'] ?? [];
+						foreach ( $trending_foods as $idx => $item ) : ?>
+							<tr class="fcc-pin-row">
+								<td class="fcc-an-td--num"><?php echo $idx + 1; ?></td>
+								<td style="position:relative">
+									<input type="text" class="fcc-pin-input fcc-pin-food-search"
+										value="<?php echo esc_attr( $item['food_name'] ); ?>"
+										placeholder="<?php esc_attr_e( 'Search food…', 'food-calorie-calculator' ); ?>"
+										autocomplete="off">
+									<input type="hidden" name="trending_foods[<?php echo $idx; ?>][food_id]"
+										value="<?php echo absint( $item['food_id'] ); ?>" class="fcc-pin-food-id">
+									<input type="hidden" name="trending_foods[<?php echo $idx; ?>][food_name]"
+										value="<?php echo esc_attr( $item['food_name'] ); ?>" class="fcc-pin-food-name">
+									<ul class="fcc-pin-dropdown" hidden></ul>
+								</td>
+								<td>
+									<button type="button" class="fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+									</button>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<button type="button" class="button fcc-pin-add" id="fcc-trending-add">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+					<?php esc_html_e( 'Add Trending Food', 'food-calorie-calculator' ); ?>
+				</button>
+				<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 10 foods. Shows inside dropdown on search focus — great for promoting featured products.', 'food-calorie-calculator' ); ?></p>
+			</div>
+
+			<!-- ── Section 3: Promotional Banners ── -->
+			<div class="fcc-stg-section">
+				<div class="fcc-stg-section__hd">
+					<h2 class="fcc-stg-section__title">📢 <?php esc_html_e( 'Promotional Banners', 'food-calorie-calculator' ); ?></h2>
+					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Show a custom promotional message with an optional CTA button when a specific food is selected. Perfect for affiliate offers and sponsor callouts.', 'food-calorie-calculator' ); ?></p>
+				</div>
+
+				<div id="fcc-promo-list">
+					<?php
+					$promo_banners = $pinned_settings['promo_banners'] ?? [];
+					foreach ( $promo_banners as $idx => $promo ) : ?>
+						<div class="fcc-promo-card">
+							<div class="fcc-promo-card__row">
+								<div class="fcc-promo-card__field">
+									<label><?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?></label>
+									<div style="position:relative">
+										<input type="text" class="fcc-pin-input fcc-pin-food-search"
+											value="<?php echo esc_attr( $promo['food_name'] ); ?>"
+											placeholder="<?php esc_attr_e( 'Search food…', 'food-calorie-calculator' ); ?>"
+											autocomplete="off">
+										<input type="hidden" name="promo_banners[<?php echo $idx; ?>][food_id]"
+											value="<?php echo absint( $promo['food_id'] ); ?>" class="fcc-pin-food-id">
+										<input type="hidden" name="promo_banners[<?php echo $idx; ?>][food_name]"
+											value="<?php echo esc_attr( $promo['food_name'] ); ?>" class="fcc-pin-food-name">
+										<ul class="fcc-pin-dropdown" hidden></ul>
+									</div>
+								</div>
+								<div class="fcc-promo-card__field fcc-promo-card__field--wide">
+									<label><?php esc_html_e( 'Message', 'food-calorie-calculator' ); ?></label>
+									<input type="text" name="promo_banners[<?php echo $idx; ?>][message]"
+										value="<?php echo esc_attr( $promo['message'] ?? '' ); ?>"
+										placeholder="e.g. Buy fresh Beluga Caviar at SalmonCaviar.co.uk!" class="fcc-pin-input">
+								</div>
+							</div>
+							<div class="fcc-promo-card__row">
+								<div class="fcc-promo-card__field">
+									<label><?php esc_html_e( 'Button Text', 'food-calorie-calculator' ); ?></label>
+									<input type="text" name="promo_banners[<?php echo $idx; ?>][link_text]"
+										value="<?php echo esc_attr( $promo['link_text'] ?? '' ); ?>"
+										placeholder="e.g. Shop Now →" class="fcc-pin-input">
+								</div>
+								<div class="fcc-promo-card__field fcc-promo-card__field--wide">
+									<label><?php esc_html_e( 'Button URL', 'food-calorie-calculator' ); ?></label>
+									<input type="url" name="promo_banners[<?php echo $idx; ?>][link_url]"
+										value="<?php echo esc_attr( $promo['link_url'] ?? '' ); ?>"
+										placeholder="https://salmoncaviar.co.uk/beluga-caviar" class="fcc-pin-input">
+								</div>
+								<div class="fcc-promo-card__field" style="flex:0 0 auto;align-self:flex-end">
+									<button type="button" class="fcc-pin-remove fcc-promo-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+									</button>
+								</div>
+							</div>
+						</div>
+					<?php endforeach; ?>
+				</div>
+				<button type="button" class="button fcc-pin-add" id="fcc-promo-add">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+					<?php esc_html_e( 'Add Promo Banner', 'food-calorie-calculator' ); ?>
+				</button>
+				<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 10 banners. When a visitor selects a food with a promo banner, the message + CTA button appears below the nutrition results.', 'food-calorie-calculator' ); ?></p>
+			</div>
+
+			<!-- How it works -->
+			<div class="fcc-pin-help">
+				<h3><?php esc_html_e( 'How the Promotion Suite works', 'food-calorie-calculator' ); ?></h3>
+				<ul>
+					<li><strong><?php esc_html_e( 'Pinned Results:', 'food-calorie-calculator' ); ?></strong> <?php esc_html_e( 'Force foods into position 1st/2nd/3rd for specific keywords. Badges like "Best Seller" show as coloured pills.', 'food-calorie-calculator' ); ?></li>
+					<li><strong><?php esc_html_e( 'Curated Trending:', 'food-calorie-calculator' ); ?></strong> <?php esc_html_e( 'Your hand-picked foods appear in the dropdown when a visitor focuses the search box (before typing). Auto-generated trending chips below the search bar stay as-is.', 'food-calorie-calculator' ); ?></li>
+					<li><strong><?php esc_html_e( 'Promo Banners:', 'food-calorie-calculator' ); ?></strong> <?php esc_html_e( 'Custom message + CTA button shown when a specific food is selected. Use for affiliate links, sponsor callouts, or cross-selling.', 'food-calorie-calculator' ); ?></li>
+				</ul>
 			</div>
 
 		<?php elseif ( 'advanced' === $active_tab ) : ?>
@@ -974,49 +1096,114 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 	} );
 } )();
 
-// ── Pinned Foods repeater ───────────────────────────────────────────
+// ── Promotion suite JS (Pinned, Trending, Promo Banners) ────────────
 ( function () {
-	var tbody   = document.getElementById( 'fcc-pin-tbody' );
-	var addBtn  = document.getElementById( 'fcc-pin-add' );
-	if ( ! tbody || ! addBtn ) return;
-
-	var counter = tbody.querySelectorAll( '.fcc-pin-row' ).length;
 	var restUrl = '<?php echo esc_url( rest_url( 'fcc/v1/foods/search' ) ); ?>';
 	var nonce   = '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>';
+	var badgeOpts = '<?php
+		$opts = '';
+		foreach ( $badge_options as $v => $l ) {
+			$sel = '';
+			$opts .= '<option value="' . esc_attr( $v ) . '">' . esc_html( $l ) . '</option>';
+		}
+		echo $opts;
+	?>';
+	var rmSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
 
-	addBtn.addEventListener( 'click', function () {
-		if ( counter >= 20 ) { alert( 'Maximum 20 pin rules.' ); return; }
+	function foodCell( prefix, idx ) {
+		return '<div style="position:relative">' +
+			'<input type="text" class="fcc-pin-input fcc-pin-food-search" placeholder="Search food…" autocomplete="off">' +
+			'<input type="hidden" name="' + prefix + '[' + idx + '][food_id]" class="fcc-pin-food-id">' +
+			'<input type="hidden" name="' + prefix + '[' + idx + '][food_name]" class="fcc-pin-food-name">' +
+			'<ul class="fcc-pin-dropdown" hidden></ul></div>';
+	}
+
+	// ── 1. Pinned Search Results ──
+	var pinBody  = document.getElementById( 'fcc-pin-tbody' );
+	var pinAdd   = document.getElementById( 'fcc-pin-add' );
+	var pinCount = pinBody ? pinBody.querySelectorAll( '.fcc-pin-row' ).length : 0;
+
+	if ( pinAdd ) pinAdd.addEventListener( 'click', function () {
+		if ( pinCount >= 20 ) { alert( 'Maximum 20 pin rules.' ); return; }
 		var tr = document.createElement( 'tr' );
 		tr.className = 'fcc-pin-row';
 		tr.innerHTML =
-			'<td><input type="text" name="pinned_foods[' + counter + '][keyword]" placeholder="e.g. caviar" class="fcc-pin-input"></td>' +
+			'<td><input type="text" name="pinned_foods[' + pinCount + '][keyword]" placeholder="e.g. caviar" class="fcc-pin-input"></td>' +
+			'<td style="position:relative">' + foodCell( 'pinned_foods', pinCount ).replace( '<div style="position:relative">', '' ).replace( '</div>', '' ) + '</td>' +
+			'<td><select name="pinned_foods[' + pinCount + '][position]" class="fcc-pin-select">' +
+				'<option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select></td>' +
+			'<td><select name="pinned_foods[' + pinCount + '][badge]" class="fcc-pin-select">' + badgeOpts + '</select></td>' +
+			'<td><button type="button" class="fcc-pin-remove" title="Remove">' + rmSvg + '</button></td>';
+		pinBody.appendChild( tr );
+		pinCount++;
+	} );
+
+	// ── 2. Curated Trending ──
+	var trendBody  = document.getElementById( 'fcc-trending-tbody' );
+	var trendAdd   = document.getElementById( 'fcc-trending-add' );
+	var trendCount = trendBody ? trendBody.querySelectorAll( '.fcc-pin-row' ).length : 0;
+
+	if ( trendAdd ) trendAdd.addEventListener( 'click', function () {
+		if ( trendCount >= 10 ) { alert( 'Maximum 10 trending foods.' ); return; }
+		var tr = document.createElement( 'tr' );
+		tr.className = 'fcc-pin-row';
+		tr.innerHTML =
+			'<td class="fcc-an-td--num">' + ( trendCount + 1 ) + '</td>' +
 			'<td style="position:relative">' +
 				'<input type="text" class="fcc-pin-input fcc-pin-food-search" placeholder="Search food…" autocomplete="off">' +
-				'<input type="hidden" name="pinned_foods[' + counter + '][food_id]" class="fcc-pin-food-id">' +
-				'<input type="hidden" name="pinned_foods[' + counter + '][food_name]" class="fcc-pin-food-name">' +
+				'<input type="hidden" name="trending_foods[' + trendCount + '][food_id]" class="fcc-pin-food-id">' +
+				'<input type="hidden" name="trending_foods[' + trendCount + '][food_name]" class="fcc-pin-food-name">' +
 				'<ul class="fcc-pin-dropdown" hidden></ul>' +
 			'</td>' +
-			'<td><select name="pinned_foods[' + counter + '][position]" class="fcc-pin-select">' +
-				'<option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option>' +
-			'</select></td>' +
-			'<td><button type="button" class="fcc-pin-remove" title="Remove">' +
-				'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-			'</button></td>';
-		tbody.appendChild( tr );
-		counter++;
+			'<td><button type="button" class="fcc-pin-remove" title="Remove">' + rmSvg + '</button></td>';
+		trendBody.appendChild( tr );
+		trendCount++;
 	} );
 
-	tbody.addEventListener( 'click', function ( e ) {
-		var rmBtn = e.target.closest( '.fcc-pin-remove' );
-		if ( rmBtn ) rmBtn.closest( '.fcc-pin-row' ).remove();
+	// ── 3. Promotional Banners ──
+	var promoList = document.getElementById( 'fcc-promo-list' );
+	var promoAdd  = document.getElementById( 'fcc-promo-add' );
+	var promoCount = promoList ? promoList.querySelectorAll( '.fcc-promo-card' ).length : 0;
+
+	if ( promoAdd ) promoAdd.addEventListener( 'click', function () {
+		if ( promoCount >= 10 ) { alert( 'Maximum 10 promo banners.' ); return; }
+		var card = document.createElement( 'div' );
+		card.className = 'fcc-promo-card';
+		card.innerHTML =
+			'<div class="fcc-promo-card__row">' +
+				'<div class="fcc-promo-card__field"><label>Food</label>' + foodCell( 'promo_banners', promoCount ) + '</div>' +
+				'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>Message</label>' +
+					'<input type="text" name="promo_banners[' + promoCount + '][message]" placeholder="e.g. Buy fresh Beluga Caviar!" class="fcc-pin-input"></div>' +
+			'</div>' +
+			'<div class="fcc-promo-card__row">' +
+				'<div class="fcc-promo-card__field"><label>Button Text</label>' +
+					'<input type="text" name="promo_banners[' + promoCount + '][link_text]" placeholder="e.g. Shop Now →" class="fcc-pin-input"></div>' +
+				'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>Button URL</label>' +
+					'<input type="url" name="promo_banners[' + promoCount + '][link_url]" placeholder="https://..." class="fcc-pin-input"></div>' +
+				'<div class="fcc-promo-card__field" style="flex:0 0 auto;align-self:flex-end">' +
+					'<button type="button" class="fcc-pin-remove fcc-promo-remove" title="Remove">' + rmSvg + '</button></div>' +
+			'</div>';
+		promoList.appendChild( card );
+		promoCount++;
 	} );
 
+	// ── Global: remove buttons ──
+	document.addEventListener( 'click', function ( e ) {
+		var rm = e.target.closest( '.fcc-pin-remove' );
+		if ( ! rm ) return;
+		var row = rm.closest( '.fcc-pin-row' ) || rm.closest( '.fcc-promo-card' );
+		if ( row ) row.remove();
+	} );
+
+	// ── Global: food autocomplete ──
 	var debounceTimer;
-	tbody.addEventListener( 'input', function ( e ) {
+	document.addEventListener( 'input', function ( e ) {
 		var inp = e.target;
 		if ( ! inp.classList.contains( 'fcc-pin-food-search' ) ) return;
 		var q = inp.value.trim();
-		var dd = inp.parentNode.querySelector( '.fcc-pin-dropdown' );
+		var parent = inp.closest( 'td' ) || inp.closest( 'div' );
+		var dd = parent.querySelector( '.fcc-pin-dropdown' );
+		if ( ! dd ) return;
 		if ( q.length < 2 ) { dd.hidden = true; dd.innerHTML = ''; return; }
 
 		clearTimeout( debounceTimer );
@@ -1042,19 +1229,18 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 		}, 250 );
 	} );
 
-	tbody.addEventListener( 'click', function ( e ) {
-		var item = e.target.closest( '.fcc-pin-dropdown__item' );
-		if ( ! item ) return;
-		var td = item.closest( 'td' );
-		td.querySelector( '.fcc-pin-food-search' ).value = item.dataset.name;
-		td.querySelector( '.fcc-pin-food-id' ).value     = item.dataset.id;
-		td.querySelector( '.fcc-pin-food-name' ).value   = item.dataset.name;
-		item.closest( '.fcc-pin-dropdown' ).hidden = true;
-	} );
-
 	document.addEventListener( 'click', function ( e ) {
-		if ( ! e.target.closest( '.fcc-pin-row' ) ) {
-			tbody.querySelectorAll( '.fcc-pin-dropdown' ).forEach( function ( dd ) { dd.hidden = true; } );
+		var item = e.target.closest( '.fcc-pin-dropdown__item' );
+		if ( item ) {
+			var parent = item.closest( 'td' ) || item.closest( 'div' );
+			parent.querySelector( '.fcc-pin-food-search' ).value = item.dataset.name;
+			parent.querySelector( '.fcc-pin-food-id' ).value     = item.dataset.id;
+			parent.querySelector( '.fcc-pin-food-name' ).value   = item.dataset.name;
+			item.closest( '.fcc-pin-dropdown' ).hidden = true;
+			return;
+		}
+		if ( ! e.target.closest( '.fcc-pin-food-search' ) ) {
+			document.querySelectorAll( '.fcc-pin-dropdown' ).forEach( function ( dd ) { dd.hidden = true; } );
 		}
 	} );
 } )();

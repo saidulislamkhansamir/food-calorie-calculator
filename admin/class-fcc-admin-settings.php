@@ -164,16 +164,47 @@ class Settings_Page {
 		$pinned = [];
 		if ( ! empty( $post['pinned_foods'] ) && is_array( $post['pinned_foods'] ) ) {
 			foreach ( array_slice( $post['pinned_foods'], 0, 20 ) as $rule ) {
-				$kw  = sanitize_text_field( $rule['keyword'] ?? '' );
-				$fid = absint( $rule['food_id'] ?? 0 );
-				$fn  = sanitize_text_field( $rule['food_name'] ?? '' );
-				$pos = max( 1, min( 3, absint( $rule['position'] ?? 1 ) ) );
+				$kw    = sanitize_text_field( $rule['keyword'] ?? '' );
+				$fid   = absint( $rule['food_id'] ?? 0 );
+				$fn    = sanitize_text_field( $rule['food_name'] ?? '' );
+				$pos   = max( 1, min( 3, absint( $rule['position'] ?? 1 ) ) );
+				$badge = sanitize_text_field( $rule['badge'] ?? '' );
 				if ( $kw !== '' && $fid > 0 ) {
-					$pinned[] = [ 'keyword' => $kw, 'food_id' => $fid, 'food_name' => $fn, 'position' => $pos ];
+					$pinned[] = [ 'keyword' => $kw, 'food_id' => $fid, 'food_name' => $fn, 'position' => $pos, 'badge' => $badge ];
 				}
 			}
 		}
-		return [ 'pinned_foods' => $pinned ];
+
+		$trending = [];
+		if ( ! empty( $post['trending_foods'] ) && is_array( $post['trending_foods'] ) ) {
+			foreach ( array_slice( $post['trending_foods'], 0, 10 ) as $item ) {
+				$fid = absint( $item['food_id'] ?? 0 );
+				$fn  = sanitize_text_field( $item['food_name'] ?? '' );
+				if ( $fid > 0 ) {
+					$trending[] = [ 'food_id' => $fid, 'food_name' => $fn ];
+				}
+			}
+		}
+
+		$promos = [];
+		if ( ! empty( $post['promo_banners'] ) && is_array( $post['promo_banners'] ) ) {
+			foreach ( array_slice( $post['promo_banners'], 0, 10 ) as $p ) {
+				$fid  = absint( $p['food_id'] ?? 0 );
+				$fn   = sanitize_text_field( $p['food_name'] ?? '' );
+				$msg  = sanitize_text_field( $p['message'] ?? '' );
+				$ltxt = sanitize_text_field( $p['link_text'] ?? '' );
+				$lurl = esc_url_raw( $p['link_url'] ?? '' );
+				if ( $fid > 0 && $msg !== '' ) {
+					$promos[] = [ 'food_id' => $fid, 'food_name' => $fn, 'message' => $msg, 'link_text' => $ltxt, 'link_url' => $lurl ];
+				}
+			}
+		}
+
+		return [
+			'pinned_foods'   => $pinned,
+			'trending_foods' => $trending,
+			'promo_banners'  => $promos,
+		];
 	}
 
 	/** @param array<string,mixed> $post */
