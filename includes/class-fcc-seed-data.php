@@ -14769,4 +14769,194 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 91 );
 	}
+
+	/** Seed v92: Micronutrient data Phase 4 — 200 more foods (world cuisine, baking, canned, frozen). */
+	public static function seed_v92(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 92 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+
+		$data = [
+			// ── SOUTH ASIAN DISHES ──
+			'dal-makhani-black-lentil-curry'   => [2.50, 30.0, 1.0],
+			'rajma-kidney-bean-curry'          => [1.80, 25.0, 2.0],
+			'chole-bhature-chickpea-fried-bread'=> [2.10, 35.0, 3.0],
+			'paneer-tikka-grilled-cheese'      => [0.50, 350.0, 1.0],
+			'bhindi-masala-okra-curry'          => [0.65, 60.0, 12.0],
+			'baingan-bharta-smoky-aubergine'   => [0.40, 15.0, 5.0],
+			'samosa-vegetable-indian'          => [0.80, 15.0, 3.0],
+			'naan-bread-plain'                 => [2.23, 48.0, 0.0],
+			'chapati-wholemeal'                => [1.80, 20.0, 0.0],
+			'roti-wholemeal-tawa'              => [1.70, 18.0, 0.0],
+			'garlic-naan'                      => [2.30, 50.0, 0.0],
+			'nihari-slow-cooked-beef-stew'     => [2.80, 20.0, 1.0],
+			'haleem-slow-cooked-wheat-meat'    => [2.00, 25.0, 1.0],
+			'seekh-kebab-pakistani-spiced'     => [1.80, 12.0, 1.0],
+			'chicken-tikka-masala-homemade'    => [0.85, 42.0, 3.5],
+
+			// ── EAST ASIAN DISHES ──
+			'kung-pao-chicken-sichuan'         => [0.80, 15.0, 8.0],
+			'mapo-tofu-sichuan'                => [1.80, 120.0, 2.0],
+			'sweet-and-sour-pork-guobaorou'    => [0.60, 10.0, 5.0],
+			'chow-mein-chicken'                => [0.55, 12.0, 2.0],
+			'lo-mein-pork'                     => [0.60, 10.0, 1.5],
+			'dan-dan-noodles-sichuan'          => [0.75, 20.0, 2.0],
+			'oyakodon-chicken-egg-rice-bowl'   => [0.80, 20.0, 1.0],
+			'gyudon-beef-rice-bowl'            => [1.20, 12.0, 1.0],
+			'katsudon-pork-cutlet-rice-bowl'   => [0.70, 18.0, 1.0],
+			'tonkatsu-deep-fried-pork-cutlet'  => [0.65, 12.0, 0.0],
+			'salmon-teriyaki'                  => [0.40, 10.0, 0.0],
+			'chicken-teriyaki'                 => [0.45, 8.0, 0.5],
+			'bibimbap-dolsot-stone-pot'        => [1.20, 30.0, 8.0],
+			'bulgogi-marinated-beef-bbq'       => [1.50, 10.0, 2.0],
+			'tteokbokki-spicy-rice-cakes'      => [0.40, 8.0, 1.0],
+
+			// ── MIDDLE EASTERN ──
+			'shawarma-lamb'                    => [1.50, 20.0, 3.0],
+			'falafel-in-pitta'                 => [2.50, 45.0, 5.0],
+			'baba-ganoush'                     => [0.60, 15.0, 2.0],
+			'tabbouleh-lebanese-traditional'   => [0.80, 15.0, 10.0],
+			'shakshuka-israeli-classic'        => [1.30, 30.0, 15.0],
+			'kibbeh-fried-stuffed'             => [1.50, 18.0, 1.0],
+			'mansaf-jordanian-lamb-yoghurt-rice'=> [1.40, 55.0, 2.0],
+			'kushari-egyptian-rice-lentils'    => [1.50, 15.0, 3.0],
+			'ful-medames-egyptian-fava-beans'  => [2.50, 30.0, 1.5],
+			'koobideh-minced-lamb-kebab'       => [1.60, 10.0, 1.0],
+
+			// ── AFRICAN DISHES ──
+			'jollof-rice-ghanaian'             => [0.65, 15.0, 5.0],
+			'egusi-soup-melon-seed'            => [1.50, 40.0, 8.0],
+			'suya-beef-skewers'                => [2.00, 15.0, 0.0],
+			'injera-ethiopian-flatbread'       => [2.50, 50.0, 0.0],
+			'doro-wat-chicken-stew'            => [1.20, 20.0, 3.0],
+			'bobotie-cape-malay-mince'         => [1.40, 30.0, 2.0],
+			'tagine-chicken-preserved-lemon'   => [0.90, 18.0, 5.0],
+			'couscous-moroccan-with-veg'       => [0.60, 15.0, 5.0],
+			'pounded-yam'                      => [0.25, 5.0, 0.0],
+			'fufu-cassava'                     => [0.20, 10.0, 5.0],
+
+			// ── LATIN AMERICAN ──
+			'feijoada-black-bean-stew'         => [2.20, 25.0, 5.0],
+			'picanha-grilled-rump-cap'         => [1.80, 5.0, 0.0],
+			'empanada-argentina-beef'          => [1.20, 15.0, 0.5],
+			'ceviche-peruvian-mixed-fish'      => [0.50, 15.0, 8.0],
+			'arepa-corn-plain'                 => [0.60, 5.0, 0.0],
+			'gallo-pinto-costa-rican-rice-beans'=> [1.40, 20.0, 2.0],
+			'pupusa-salvadoran-cheese-bean'    => [1.00, 65.0, 1.0],
+			'ropa-vieja-cuban-shredded-beef'   => [2.10, 12.0, 8.0],
+			'mofongo-dominican-mashed-fried-plantain'=> [0.50, 8.0, 6.0],
+			'asado-grilled-beef'               => [2.20, 6.0, 0.0],
+
+			// ── SOUTHEAST ASIAN ──
+			'pad-thai-prawn'                   => [0.80, 30.0, 4.0],
+			'green-curry-thai-chicken'         => [0.70, 20.0, 3.0],
+			'nasi-lemak-coconut-rice-full-set' => [0.90, 25.0, 4.0],
+			'rendang-daging-malaysian-dry-beef-curry'=> [2.20, 15.0, 2.0],
+			'satay-malaysian-chicken-10-sticks' => [0.80, 15.0, 1.0],
+			'laksa-lemak-nyonya-curry-laksa'   => [0.60, 20.0, 2.0],
+			'mohinga-fish-noodle-soup-national-dish'=> [0.70, 15.0, 2.0],
+			'adobo-chicken-filipino-national-dish'=> [0.90, 10.0, 1.0],
+			'sinigang-na-baboy-sour-pork-soup' => [0.50, 12.0, 15.0],
+			'fish-amok-khmer-steamed-curry'    => [0.60, 18.0, 2.0],
+
+			// ── EUROPEAN DISHES ──
+			'blanquette-de-veau-veal-stew'     => [1.20, 30.0, 1.0],
+			'coq-au-vin'                       => [0.90, 12.0, 2.0],
+			'cassoulet'                        => [1.80, 25.0, 3.0],
+			'moules-marinieres-french-style'   => [3.50, 28.0, 0.0],
+			'wiener-schnitzel'                 => [1.00, 12.0, 0.0],
+			'goulash-beef'                     => [1.80, 15.0, 10.0],
+			'pierogi-potato-cheese'            => [0.60, 35.0, 2.0],
+			'borscht-russian-with-smetana'     => [0.50, 20.0, 5.0],
+			'khachapuri-adjaruli-cheese-boat-bread'=> [0.80, 200.0, 0.0],
+			'cepelinai-potato-dumplings-national'=> [0.50, 10.0, 3.0],
+
+			// ── TURKISH ──
+			'doner-kebab-meat-only'            => [1.60, 12.0, 1.0],
+			'lahmacun-turkish-pizza'           => [1.20, 18.0, 5.0],
+			'manti-turkish-dumplings'          => [0.90, 25.0, 1.0],
+			'imam-bayildi-stuffed-aubergine'   => [0.50, 12.0, 5.0],
+			'pide-turkish-flatbread-pizza'     => [1.00, 45.0, 2.0],
+			'kofte-turkish-meatballs'          => [1.50, 10.0, 1.0],
+			'menemen-turkish-scrambled-eggs'    => [1.00, 25.0, 10.0],
+			'sutlac-turkish-rice-pudding'      => [0.15, 65.0, 0.0],
+			'baklava'                          => [1.50, 25.0, 0.5],
+			'simit-turkish-sesame-ring'        => [2.50, 70.0, 0.0],
+
+			// ── CANNED & TINNED FOODS ──
+			'baked-beans-canned'               => [1.41, 53.0, 0.5],
+			'chopped-tomatoes-canned'          => [0.50, 11.0, 9.0],
+			'sardines-in-olive-oil'            => [2.92, 382.0, 0.0],
+			'tuna-in-brine-canned'             => [0.97, 11.0, 0.0],
+			'tuna-in-sunflower-oil'            => [1.30, 12.0, 0.0],
+			'salmon-canned-pink'               => [0.80, 213.0, 0.0],
+			'corned-beef-canned'               => [2.50, 10.0, 0.0],
+			'spam-canned-pork'                 => [0.90, 8.0, 0.0],
+			'coconut-milk-canned'              => [1.64, 16.0, 2.8],
+			'garden-peas-canned'               => [1.10, 20.0, 8.0],
+
+			// ── FROZEN FOODS ──
+			'chips-french-fries-oven'          => [0.40, 5.0, 5.0],
+			'potato-waffles-frozen-cooked'     => [0.35, 5.0, 3.0],
+			'hash-browns-frozen-cooked'        => [0.30, 4.0, 3.0],
+			'pizza-frozen-margherita-cooked'   => [0.65, 120.0, 2.0],
+			'garlic-bread-frozen-cooked'       => [0.70, 35.0, 0.0],
+			'spring-rolls-frozen-cooked'       => [0.50, 10.0, 2.0],
+			'samosa-vegetable-frozen-cooked'   => [0.70, 12.0, 3.0],
+			'chicken-kiev-frozen-cooked'       => [0.55, 20.0, 0.0],
+			'breaded-scampi-frozen-cooked'     => [0.40, 30.0, 0.0],
+			'edamame-beans-frozen-cooked'      => [2.27, 63.0, 6.1],
+
+			// ── BAKING RESULTS ──
+			'victoria-sponge-homemade'         => [0.70, 25.0, 0.0],
+			'lemon-drizzle-cake-homemade'      => [0.50, 18.0, 5.0],
+			'carrot-cake-with-cream-cheese-icing'=> [0.80, 22.0, 1.0],
+			'scone-plain-with-cream-and-jam'   => [0.70, 40.0, 1.0],
+			'hot-cross-bun'                    => [1.40, 35.0, 0.0],
+			'mince-pie-individual'             => [0.80, 20.0, 1.0],
+			'doughnut-glazed'                  => [0.90, 18.0, 0.0],
+			'chocolate-chip-cookie'            => [1.50, 20.0, 0.0],
+			'millionaires-shortbread'          => [0.80, 30.0, 0.0],
+			'profiteroles-3-with-sauce'        => [0.50, 35.0, 0.0],
+
+			// ── MILK ALTERNATIVES ──
+			'oat-milk-unsweetened'             => [0.30, 120.0, 0.0],
+			'soya-milk-unsweetened'            => [0.44, 120.0, 0.0],
+			'almond-milk-unsweetened'          => [0.30, 120.0, 0.0],
+			'coconut-milk-carton'              => [0.10, 120.0, 0.0],
+			'rice-milk-unsweetened'            => [0.02, 118.0, 0.0],
+
+			// ── PROTEIN SUPPLEMENTS ──
+			'whey-protein-powder-unflavoured'  => [0.80, 500.0, 0.0],
+			'pea-protein-powder'               => [5.00, 60.0, 0.0],
+			'casein-protein-powder'            => [0.30, 600.0, 0.0],
+
+			// ── BABY FOODS ──
+			'baby-fruit-puree-apple'           => [0.12, 5.0, 20.0],
+			'baby-vegetable-puree-carrot'      => [0.25, 25.0, 3.0],
+			'baby-rice-cereal-dry'             => [6.00, 200.0, 0.0],
+
+			// ── SEAWEED ──
+			'nori-dried-sheet-per-100g'        => [1.80, 70.0, 0.0],
+			'spirulina-dried-powder'           => [28.50, 120.0, 10.1],
+			'wakame-rehydrated'                => [2.18, 150.0, 3.0],
+
+			// ── DRIED FRUIT ──
+			'dried-apricots'                   => [2.66, 55.0, 1.0],
+			'prunes-dried-plums'               => [0.93, 43.0, 0.6],
+			'raisins'                          => [1.88, 50.0, 2.3],
+			'dried-figs'                       => [2.03, 162.0, 1.2],
+			'medjool-dates-dried'              => [0.90, 64.0, 0.0],
+			'dried-cranberries-sweetened'       => [0.39, 9.0, 0.2],
+			'goji-berries-dried'               => [6.80, 190.0, 48.4],
+		];
+
+		foreach ( $data as $slug => $vals ) {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f WHERE slug = %s AND iron_mg IS NULL", // phpcs:ignore
+				$vals[0], $vals[1], $vals[2], $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 92 );
+	}
 }
