@@ -3049,20 +3049,18 @@
 	padding: 1rem 1.15rem 1.15rem;
 }
 .fcc-promo-card__row {
-	display: flex;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 	gap: .75rem;
 	margin-bottom: .65rem;
-	align-items: flex-end;
+	align-items: end;
 }
 .fcc-promo-card__row:last-child { margin-bottom: 0; }
-.fcc-promo-card__field {
-	flex: 1 1 0%;
-	min-width: 0;
-}
-.fcc-promo-card__field--wide { flex: 2 1 0%; }
+.fcc-promo-card__row--wide { grid-template-columns: 1fr 2fr; }
+.fcc-promo-card__row--3col { grid-template-columns: 1fr 2fr auto; }
+.fcc-promo-card__field { min-width: 0; }
 @media screen and (max-width: 600px) {
-	.fcc-promo-card__row { flex-wrap: wrap; }
-	.fcc-promo-card__field { min-width: 100%; }
+	.fcc-promo-card__row { grid-template-columns: 1fr; }
 }
 .fcc-promo-card__field label {
 	display: flex;

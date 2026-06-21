@@ -722,7 +722,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 								</button>
 							</div>
 							<div class="fcc-pincard__body">
-								<div class="fcc-promo-card__row">
+								<div class="fcc-promo-card__row fcc-promo-card__row--wide">
 									<div class="fcc-promo-card__field">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -732,7 +732,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 											value="<?php echo esc_attr( $rule['keyword'] ); ?>"
 											placeholder="e.g. caviar" class="fcc-pin-input">
 									</div>
-									<div class="fcc-promo-card__field fcc-promo-card__field--wide" style="position:relative">
+									<div class="fcc-promo-card__field" style="position:relative">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>
 											<?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?>
@@ -889,7 +889,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 								</button>
 							</div>
 							<div class="fcc-promo-card__body">
-								<div class="fcc-promo-card__row">
+								<div class="fcc-promo-card__row fcc-promo-card__row--wide">
 									<div class="fcc-promo-card__field">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -907,7 +907,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 											<ul class="fcc-pin-dropdown" hidden></ul>
 										</div>
 									</div>
-									<div class="fcc-promo-card__field fcc-promo-card__field--wide">
+									<div class="fcc-promo-card__field">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
 											<?php esc_html_e( 'Promotional Message', 'food-calorie-calculator' ); ?>
@@ -917,7 +917,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 											placeholder="e.g. Buy fresh Beluga Caviar at SalmonCaviar.co.uk!" class="fcc-pin-input">
 									</div>
 								</div>
-								<div class="fcc-promo-card__row">
+								<div class="fcc-promo-card__row fcc-promo-card__row--wide">
 									<div class="fcc-promo-card__field">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8"/></svg>
@@ -927,7 +927,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 											value="<?php echo esc_attr( $promo['link_text'] ?? '' ); ?>"
 											placeholder="e.g. Shop Now →" class="fcc-pin-input">
 									</div>
-									<div class="fcc-promo-card__field fcc-promo-card__field--wide">
+									<div class="fcc-promo-card__field">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 											<?php esc_html_e( 'Button URL', 'food-calorie-calculator' ); ?>
@@ -1240,10 +1240,10 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 				'<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="Remove">' + rmSvg + '</button>' +
 			'</div>' +
 			'<div class="fcc-pincard__body">' +
-				'<div class="fcc-promo-card__row">' +
+				'<div class="fcc-promo-card__row fcc-promo-card__row--wide">' +
 					'<div class="fcc-promo-card__field"><label>' + kwIcon + ' Keyword</label>' +
 						'<input type="text" name="pinned_foods[' + pinCount + '][keyword]" placeholder="e.g. caviar" class="fcc-pin-input"></div>' +
-					'<div class="fcc-promo-card__field fcc-promo-card__field--wide" style="position:relative"><label>' + fdIcon + ' Food</label>' +
+					'<div class="fcc-promo-card__field" style="position:relative"><label>' + fdIcon + ' Food</label>' +
 						foodCell( 'pinned_foods', pinCount ) + '</div>' +
 				'</div>' +
 				'<div class="fcc-promo-card__row">' +
@@ -1308,15 +1308,15 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 				'<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="Remove">' + rmSvg + '</button>' +
 			'</div>' +
 			'<div class="fcc-promo-card__body">' +
-				'<div class="fcc-promo-card__row">' +
+				'<div class="fcc-promo-card__row fcc-promo-card__row--wide">' +
 					'<div class="fcc-promo-card__field"><label>' + searchIcon + ' Food</label>' + foodCell( 'promo_banners', promoCount ) + '</div>' +
-					'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>' + msgIcon + ' Promotional Message</label>' +
+					'<div class="fcc-promo-card__field"><label>' + msgIcon + ' Promotional Message</label>' +
 						'<input type="text" name="promo_banners[' + promoCount + '][message]" placeholder="e.g. Buy fresh Beluga Caviar!" class="fcc-pin-input"></div>' +
 				'</div>' +
-				'<div class="fcc-promo-card__row">' +
+				'<div class="fcc-promo-card__row fcc-promo-card__row--wide">' +
 					'<div class="fcc-promo-card__field"><label>' + btnIcon + ' Button Text</label>' +
 						'<input type="text" name="promo_banners[' + promoCount + '][link_text]" placeholder="e.g. Shop Now →" class="fcc-pin-input"></div>' +
-					'<div class="fcc-promo-card__field fcc-promo-card__field--wide"><label>' + linkIcon + ' Button URL</label>' +
+					'<div class="fcc-promo-card__field"><label>' + linkIcon + ' Button URL</label>' +
 						'<input type="url" name="promo_banners[' + promoCount + '][link_url]" placeholder="https://..." class="fcc-pin-input"></div>' +
 				'</div>' +
 			'</div>';
