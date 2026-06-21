@@ -2671,80 +2671,206 @@
 .fcc-stg-row--full { flex-direction: column; align-items: stretch; }
 .fcc-stg-row__control--wide { width: 100%; }
 
+/* Promotion section cards */
+.fcc-promo-section {
+	background: #fff;
+	border-radius: 14px;
+	box-shadow: 0 2px 10px rgba(0,0,0,.06);
+	padding: 1.5rem;
+	margin-bottom: 1.25rem;
+	border-left: 4px solid #075B5E;
+	transition: box-shadow .2s;
+}
+.fcc-promo-section:hover { box-shadow: 0 4px 20px rgba(0,0,0,.09); }
+.fcc-promo-section--pin   { border-left-color: #075B5E; }
+.fcc-promo-section--trend { border-left-color: #e67e22; }
+.fcc-promo-section--banner { border-left-color: #9b59b6; }
+
+.fcc-promo-section__header {
+	display: flex;
+	align-items: flex-start;
+	gap: .85rem;
+	margin-bottom: 1.25rem;
+}
+.fcc-promo-section__icon {
+	width: 42px;
+	height: 42px;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+.fcc-promo-section__icon--pin    { background: #e8f5f5; color: #075B5E; }
+.fcc-promo-section__icon--trend  { background: #fef3e2; color: #e67e22; }
+.fcc-promo-section__icon--banner { background: #f3e8f9; color: #9b59b6; }
+
+.fcc-promo-section__title {
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #1E2A1E;
+	margin: 0 0 .25rem;
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+}
+.fcc-promo-section__count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 22px;
+	height: 22px;
+	padding: 0 6px;
+	border-radius: 12px;
+	background: #075B5E;
+	color: #fff;
+	font-size: .68rem;
+	font-weight: 700;
+}
+.fcc-promo-section--trend .fcc-promo-section__count { background: #e67e22; }
+.fcc-promo-section--banner .fcc-promo-section__count { background: #9b59b6; }
+
+.fcc-promo-section__desc {
+	font-size: .82rem;
+	color: #666;
+	margin: 0;
+	line-height: 1.5;
+}
+.fcc-promo-section__footer {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-top: .75rem;
+}
+.fcc-promo-section__limit {
+	font-size: .72rem;
+	color: #999;
+	font-style: italic;
+}
+
+/* Add buttons */
+.fcc-promo-add-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: .4rem;
+	padding: .45rem 1rem;
+	border: 2px dashed #c8d6d6;
+	border-radius: 8px;
+	background: #f8fafa;
+	color: #075B5E;
+	font-size: .82rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: border-color .15s, background .15s;
+}
+.fcc-promo-add-btn:hover {
+	border-color: #075B5E;
+	background: #e8f5f5;
+}
+
+/* Empty state */
+.fcc-promo-empty {
+	text-align: center;
+	padding: 1.5rem 1rem;
+	color: #aaa;
+	margin-bottom: .75rem;
+}
+.fcc-promo-empty p {
+	margin: .5rem 0 0;
+	font-size: .82rem;
+	line-height: 1.5;
+}
+
+/* Pin table */
 .fcc-pin-table {
 	width: 100%;
-	border-collapse: collapse;
+	border-collapse: separate;
+	border-spacing: 0;
 	margin-bottom: .5rem;
 	font-size: .875rem;
 }
 .fcc-pin-table th {
 	text-align: left;
-	padding: .4rem .5rem;
-	font-size: .75rem;
+	padding: .5rem .6rem;
+	font-size: .7rem;
 	text-transform: uppercase;
-	letter-spacing: .04em;
-	color: #777;
-	border-bottom: 2px solid #e5e7eb;
+	letter-spacing: .05em;
+	color: #888;
+	border-bottom: 2px solid #e8ecec;
+	font-weight: 600;
 }
 .fcc-pin-table td {
-	padding: .35rem .5rem;
-	border-bottom: 1px solid #f0f0f0;
+	padding: .45rem .6rem;
+	border-bottom: 1px solid #f3f4f6;
 	vertical-align: middle;
 }
+.fcc-pin-table tr:last-child td { border-bottom: none; }
+.fcc-pin-table tr:hover td { background: #fafcfc; }
+
+.fcc-pin-num {
+	font-size: .78rem;
+	font-weight: 700;
+	color: #999;
+	text-align: center;
+	width: 30px;
+}
+
 .fcc-pin-input {
 	width: 100%;
-	padding: .4rem .6rem;
+	padding: .45rem .7rem;
 	border: 1.5px solid #d1d5db;
-	border-radius: 6px;
+	border-radius: 8px;
 	font-size: .85rem;
 	background: #fff;
+	transition: border-color .15s, box-shadow .15s;
 }
-.fcc-pin-input:focus { outline: none; border-color: #075B5E; }
+.fcc-pin-input:focus {
+	outline: none;
+	border-color: #075B5E;
+	box-shadow: 0 0 0 3px rgba(7,91,94,.08);
+}
 
 .fcc-pin-select {
-	padding: .35rem .5rem;
+	padding: .4rem .5rem;
 	border: 1.5px solid #d1d5db;
-	border-radius: 6px;
+	border-radius: 8px;
 	font-size: .85rem;
 	background: #fff;
 	min-width: 65px;
+	transition: border-color .15s;
 }
 .fcc-pin-select:focus { outline: none; border-color: #075B5E; }
 
 .fcc-pin-remove {
 	background: none;
 	border: 1.5px solid #e5e7eb;
-	border-radius: 6px;
-	padding: .3rem .4rem;
+	border-radius: 8px;
+	padding: .35rem .45rem;
 	cursor: pointer;
-	color: #999;
+	color: #bbb;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	transition: border-color .15s, color .15s;
+	transition: all .15s;
 }
-.fcc-pin-remove:hover { border-color: #e74c3c; color: #e74c3c; }
-
-.fcc-pin-add {
-	display: inline-flex;
-	align-items: center;
-	gap: .35rem;
-	font-size: .82rem;
-	color: #075B5E;
+.fcc-pin-remove:hover {
+	border-color: #e74c3c;
+	color: #e74c3c;
+	background: #fef2f2;
 }
 
 .fcc-pin-dropdown {
 	position: absolute;
-	top: calc(100% + 2px);
+	top: calc(100% + 4px);
 	left: 0;
 	right: 0;
 	background: #fff;
 	border: 1.5px solid #d1d5db;
-	border-radius: 8px;
-	box-shadow: 0 6px 20px rgba(0,0,0,.12);
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0,0,0,.12);
 	list-style: none;
 	margin: 0;
-	padding: .25rem;
+	padding: .3rem;
 	z-index: 999;
 	max-height: 200px;
 	overflow-y: auto;
@@ -2752,14 +2878,14 @@
 .fcc-pin-dropdown[hidden] { display: none; }
 
 .fcc-pin-dropdown__item {
-	padding: .45rem .65rem;
+	padding: .5rem .7rem;
 	cursor: pointer;
 	font-size: .83rem;
-	border-radius: 5px;
+	border-radius: 6px;
 	transition: background .1s;
 }
 .fcc-pin-dropdown__item:hover {
-	background: #f0f7f7;
+	background: #e8f5f5;
 	color: #075B5E;
 }
 
@@ -2767,14 +2893,38 @@
 .fcc-promo-card {
 	background: #fafbfc;
 	border: 1.5px solid #e5e7eb;
-	border-radius: 10px;
-	padding: .75rem 1rem;
+	border-radius: 12px;
+	padding: 1rem 1.15rem;
 	margin-bottom: .75rem;
+	position: relative;
+	transition: border-color .15s, box-shadow .15s;
+}
+.fcc-promo-card:hover {
+	border-color: #c8b0e0;
+	box-shadow: 0 2px 8px rgba(155,89,182,.08);
+}
+.fcc-promo-card__badge {
+	position: absolute;
+	top: -.5rem;
+	right: 1rem;
+	background: #9b59b6;
+	color: #fff;
+	font-size: .65rem;
+	font-weight: 700;
+	padding: .15rem .6rem;
+	border-radius: 8px;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+}
+.fcc-promo-card__close {
+	position: absolute;
+	top: .6rem;
+	right: .6rem;
 }
 .fcc-promo-card__row {
 	display: flex;
 	gap: .75rem;
-	margin-bottom: .5rem;
+	margin-bottom: .6rem;
 	flex-wrap: wrap;
 	align-items: flex-end;
 }
@@ -2786,12 +2936,12 @@
 .fcc-promo-card__field--wide { flex: 2; }
 .fcc-promo-card__field label {
 	display: block;
-	font-size: .72rem;
+	font-size: .7rem;
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: .04em;
-	color: #777;
-	margin-bottom: .2rem;
+	color: #888;
+	margin-bottom: .25rem;
 }
 
 .fcc-pin-help {

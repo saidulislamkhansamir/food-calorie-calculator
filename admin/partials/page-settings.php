@@ -684,13 +684,25 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 			?>
 
 			<!-- ── Section 1: Pinned Search Results ── -->
-			<div class="fcc-stg-section">
-				<div class="fcc-stg-section__hd">
-					<h2 class="fcc-stg-section__title">📌 <?php esc_html_e( 'Pinned Search Results', 'food-calorie-calculator' ); ?></h2>
-					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Force specific foods to appear at positions 1st, 2nd, or 3rd in the search dropdown when a keyword matches. Optionally add a promotional badge.', 'food-calorie-calculator' ); ?></p>
+			<?php $pin_count = count( $pinned_settings['pinned_foods'] ?? [] ); ?>
+			<div class="fcc-promo-section fcc-promo-section--pin">
+				<div class="fcc-promo-section__header">
+					<div class="fcc-promo-section__icon fcc-promo-section__icon--pin">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 11V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v7"/><path d="M5 11h14l-1.5 6H6.5z"/></svg>
+					</div>
+					<div>
+						<h2 class="fcc-promo-section__title"><?php esc_html_e( 'Pinned Search Results', 'food-calorie-calculator' ); ?> <span class="fcc-promo-section__count"><?php echo $pin_count; ?></span></h2>
+						<p class="fcc-promo-section__desc"><?php esc_html_e( 'Force specific foods to appear at positions 1st, 2nd, or 3rd in the search dropdown when a keyword matches. Optionally add a promotional badge.', 'food-calorie-calculator' ); ?></p>
+					</div>
 				</div>
+				<?php if ( ! $pin_count ) : ?>
+					<div class="fcc-promo-empty">
+						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><path d="M12 17v5"/><path d="M9 11V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v7"/><path d="M5 11h14l-1.5 6H6.5z"/></svg>
+						<p><?php esc_html_e( 'No pin rules yet. Click "Add Pin Rule" to promote foods for specific search keywords.', 'food-calorie-calculator' ); ?></p>
+					</div>
+				<?php endif; ?>
 
-				<table class="fcc-pin-table" id="fcc-pin-table">
+				<table class="fcc-pin-table" id="fcc-pin-table"<?php echo ! $pin_count ? ' style="display:none"' : ''; ?>>
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Keyword', 'food-calorie-calculator' ); ?></th>
@@ -744,21 +756,35 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-				<button type="button" class="button fcc-pin-add" id="fcc-pin-add">
-					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-					<?php esc_html_e( 'Add Pin Rule', 'food-calorie-calculator' ); ?>
-				</button>
-				<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 20 rules. Badge shows as a coloured pill next to the food name in dropdown.', 'food-calorie-calculator' ); ?></p>
+				<div class="fcc-promo-section__footer">
+					<button type="button" class="fcc-promo-add-btn" id="fcc-pin-add">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+						<?php esc_html_e( 'Add Pin Rule', 'food-calorie-calculator' ); ?>
+					</button>
+					<span class="fcc-promo-section__limit"><?php esc_html_e( 'Max 20 rules', 'food-calorie-calculator' ); ?></span>
+				</div>
 			</div>
 
 			<!-- ── Section 2: Curated Trending (Dropdown) ── -->
-			<div class="fcc-stg-section">
-				<div class="fcc-stg-section__hd">
-					<h2 class="fcc-stg-section__title">🔥 <?php esc_html_e( 'Curated Trending (Dropdown)', 'food-calorie-calculator' ); ?></h2>
-					<p class="fcc-stg-section__sub"><?php esc_html_e( 'When a visitor focuses the search box (before typing), these foods appear as "Trending Now 🔥" inside the dropdown. The auto-generated trending chips below the search bar remain unchanged.', 'food-calorie-calculator' ); ?></p>
+			<?php $trend_count = count( $pinned_settings['trending_foods'] ?? [] ); ?>
+			<div class="fcc-promo-section fcc-promo-section--trend">
+				<div class="fcc-promo-section__header">
+					<div class="fcc-promo-section__icon fcc-promo-section__icon--trend">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+					</div>
+					<div>
+						<h2 class="fcc-promo-section__title"><?php esc_html_e( 'Curated Trending (Dropdown)', 'food-calorie-calculator' ); ?> <span class="fcc-promo-section__count"><?php echo $trend_count; ?></span></h2>
+						<p class="fcc-promo-section__desc"><?php esc_html_e( 'When a visitor focuses the search box (before typing), these foods appear as "Trending Now" inside the dropdown. The auto-generated trending chips below the search bar remain unchanged.', 'food-calorie-calculator' ); ?></p>
+					</div>
 				</div>
+				<?php if ( ! $trend_count ) : ?>
+					<div class="fcc-promo-empty">
+						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+						<p><?php esc_html_e( 'No curated trending foods yet. Add foods to promote them when visitors first click the search box.', 'food-calorie-calculator' ); ?></p>
+					</div>
+				<?php endif; ?>
 
-				<table class="fcc-pin-table" id="fcc-trending-table">
+				<table class="fcc-pin-table" id="fcc-trending-table"<?php echo ! $trend_count ? ' style="display:none"' : ''; ?>>
 					<thead>
 						<tr>
 							<th>#</th>
@@ -792,19 +818,33 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-				<button type="button" class="button fcc-pin-add" id="fcc-trending-add">
-					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-					<?php esc_html_e( 'Add Trending Food', 'food-calorie-calculator' ); ?>
-				</button>
-				<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 10 foods. Shows inside dropdown on search focus — great for promoting featured products.', 'food-calorie-calculator' ); ?></p>
+				<div class="fcc-promo-section__footer">
+					<button type="button" class="fcc-promo-add-btn" id="fcc-trending-add">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+						<?php esc_html_e( 'Add Trending Food', 'food-calorie-calculator' ); ?>
+					</button>
+					<span class="fcc-promo-section__limit"><?php esc_html_e( 'Max 10 foods', 'food-calorie-calculator' ); ?></span>
+				</div>
 			</div>
 
 			<!-- ── Section 3: Promotional Banners ── -->
-			<div class="fcc-stg-section">
-				<div class="fcc-stg-section__hd">
-					<h2 class="fcc-stg-section__title">📢 <?php esc_html_e( 'Promotional Banners', 'food-calorie-calculator' ); ?></h2>
-					<p class="fcc-stg-section__sub"><?php esc_html_e( 'Show a custom promotional message with an optional CTA button when a specific food is selected. Perfect for affiliate offers and sponsor callouts.', 'food-calorie-calculator' ); ?></p>
+			<?php $banner_count = count( $pinned_settings['promo_banners'] ?? [] ); ?>
+			<div class="fcc-promo-section fcc-promo-section--banner">
+				<div class="fcc-promo-section__header">
+					<div class="fcc-promo-section__icon fcc-promo-section__icon--banner">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+					</div>
+					<div>
+						<h2 class="fcc-promo-section__title"><?php esc_html_e( 'Promotional Banners', 'food-calorie-calculator' ); ?> <span class="fcc-promo-section__count"><?php echo $banner_count; ?></span></h2>
+						<p class="fcc-promo-section__desc"><?php esc_html_e( 'Show a custom promotional message with an optional CTA button when a specific food is selected. Perfect for affiliate offers and sponsor callouts.', 'food-calorie-calculator' ); ?></p>
+					</div>
 				</div>
+				<?php if ( ! $banner_count ) : ?>
+					<div class="fcc-promo-empty">
+						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+						<p><?php esc_html_e( 'No promo banners yet. Add a banner to show a promotional message when visitors select a specific food.', 'food-calorie-calculator' ); ?></p>
+					</div>
+				<?php endif; ?>
 
 				<div id="fcc-promo-list">
 					<?php
@@ -855,11 +895,13 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						</div>
 					<?php endforeach; ?>
 				</div>
-				<button type="button" class="button fcc-pin-add" id="fcc-promo-add">
-					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-					<?php esc_html_e( 'Add Promo Banner', 'food-calorie-calculator' ); ?>
-				</button>
-				<p class="fcc-stg-row__hint" style="margin-top:.5rem"><?php esc_html_e( 'Max 10 banners. When a visitor selects a food with a promo banner, the message + CTA button appears below the nutrition results.', 'food-calorie-calculator' ); ?></p>
+				<div class="fcc-promo-section__footer">
+					<button type="button" class="fcc-promo-add-btn" id="fcc-promo-add">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+						<?php esc_html_e( 'Add Promo Banner', 'food-calorie-calculator' ); ?>
+					</button>
+					<span class="fcc-promo-section__limit"><?php esc_html_e( 'Max 10 banners', 'food-calorie-calculator' ); ?></span>
+				</div>
 			</div>
 
 			<!-- How it works -->
