@@ -236,17 +236,9 @@ class Shortcode {
 		}
 
 		wp_enqueue_script(
-			'fcc-chart',
-			FCC_PLUGIN_URL . 'assets/js/fcc-chart.js',
-			[],
-			$ver,
-			true
-		);
-
-		wp_enqueue_script(
 			'fcc-calculator',
 			FCC_PLUGIN_URL . 'assets/js/fcc-calculator.js',
-			[ 'fcc-chart' ],
+			[],
 			$ver,
 			true
 		);

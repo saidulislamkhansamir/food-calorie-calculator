@@ -1425,8 +1425,8 @@
    -------------------------------------------------------------------------- */
 .fcc-macro-chart-wrapper {
 	display: flex;
-	align-items: stretch;
-	gap: 1.5rem;
+	flex-direction: column;
+	gap: 1rem;
 	margin: 1.25rem 0 0;
 	padding: 1.5rem;
 	background: linear-gradient(135deg, #f7fafa 0%, var(--fcc-bg, #FFE6E1) 50%, #f7fafa 100%);
@@ -1444,51 +1444,27 @@
 	z-index: -1;
 }
 
-.fcc-macro-left {
+/* SVG Macro Rings */
+.fcc-macro-rings {
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.75rem;
-	flex-shrink: 0;
-}
-.fcc-macro-chart { flex-shrink: 0; width: 160px !important; height: 160px !important; }
-
-.fcc-macro-legend {
-	display: flex;
-	gap: 0.4rem;
+	justify-content: center;
+	gap: 1.25rem;
 	flex-wrap: wrap;
-	justify-content: center;
 }
-
-.fcc-macro-legend-item {
-	display: flex;
-	align-items: center;
-	gap: 0.4rem;
-	font-size: 0.78rem;
-	font-weight: 600;
-	color: var(--fcc-text);
-	background: rgba(255,255,255,.85);
-	border: 1px solid rgba(0,0,0,.06);
-	padding: 0.2rem 0.6rem 0.2rem 0.4rem;
-	border-radius: 20px;
-}
-
-.fcc-macro-legend-dot {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	flex-shrink: 0;
-}
-
-/* Right panel — bars + stats */
-.fcc-macro-right {
-	flex: 1;
+.fcc-macro-ring-wrap {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	gap: 0.75rem;
-	min-width: 0;
-	overflow: hidden;
+	align-items: center;
+	gap: 0.25rem;
+}
+.fcc-macro-ring { display: block; }
+.fcc-macro-ring circle:first-child { opacity: 0.3; }
+.fcc-macro-ring-label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--fcc-text-muted, #4a6365);
 }
 
 /* Macro progress bars */
@@ -1574,7 +1550,7 @@
 }
 
 @media (max-width: 600px) {
-	.fcc-macro-chart-wrapper { flex-direction: column; align-items: center; }
+	/* macro wrapper is already column layout */
 	.fcc-macro-right { width: 100%; }
 	.fcc-macro-detail__grid { grid-template-columns: 1fr 1fr; }
 }
@@ -2357,8 +2333,8 @@ select.fcc-bmr-input {
 	.fcc-bmr-tdee-display { font-size: 1.8rem; }
 	.fcc-bmr-header { border-radius: 10px 10px 0 0; }
 
-	.fcc-macro-chart-wrapper { flex-direction: column; align-items: center; }
-	.fcc-macro-detail { margin-left: 0; width: 100%; }
+	/* macro wrapper is already column layout */
+	/* macro rings stack on mobile via flex-wrap */
 
 	.fcc-tab-btn { padding: 0.75rem 0.875rem; font-size: 0.8rem; }
 	.fcc-tab-btn svg { display: none; }
@@ -2398,7 +2374,7 @@ select.fcc-bmr-input {
 	.fcc-nutrition-table th,
 	.fcc-nutrition-table td { padding: 0.4rem 0.375rem; font-size: 0.75rem; }
 
-	.fcc-macro-chart { width: 160px !important; height: 160px !important; }
+	.fcc-macro-ring { width: 80px !important; height: 80px !important; }
 
 	.fcc-bmr-act-card { min-width: 52px; font-size: 0.7rem; }
 	.fcc-bmr-goal-pill { font-size: 0.8rem; }
@@ -2445,8 +2421,8 @@ select.fcc-bmr-input {
 	.fcc-nutrition-table td { padding: 0.35rem 0.25rem; font-size: 0.7rem; }
 	.fcc-nutrition-table thead th { font-size: 0.6rem; letter-spacing: 0.03em; }
 
-	.fcc-macro-chart { width: 140px !important; height: 140px !important; }
-	.fcc-macro-legend-item { padding: 0.3rem 0.5rem; font-size: 0.75rem; }
+	.fcc-macro-ring { width: 70px !important; height: 70px !important; }
+	.fcc-macro-ring-label { font-size: 0.65rem; }
 	.fcc-macro-detail__row { padding: 0.25rem 0.4rem; font-size: 0.75rem; }
 	.fcc-macro-detail { min-width: unset; }
 
@@ -2479,7 +2455,7 @@ select.fcc-bmr-input {
 	.fcc-nutrition-table th,
 	.fcc-nutrition-table td { padding: 0.3rem 0.2rem; font-size: 0.65rem; }
 
-	.fcc-macro-chart { width: 120px !important; height: 120px !important; }
+	.fcc-macro-ring { width: 60px !important; height: 60px !important; }
 
 	.fcc-bmr-act-card { min-width: 40px; }
 	.fcc-bmr-tdee-display { font-size: 1.1rem; }
@@ -2599,16 +2575,7 @@ select.fcc-bmr-input {
 	}
 	.fcc-print-clone .fcc-nutrition-table tbody tr:nth-child(even) { background: #f0f7f7 !important; }
 
-	/* Chart — canvas-to-image for print */
-	.fcc-print-clone .fcc-print-chart-img {
-		display: block !important;
-		visibility: visible !important;
-		width: 140px !important;
-		height: 140px !important;
-		margin: 0 auto !important;
-		-webkit-print-color-adjust: exact;
-		print-color-adjust: exact;
-	}
+	/* SVG rings print natively — no special handling needed */
 	.fcc-print-clone .fcc-macro-chart-wrapper {
 		break-inside: avoid;
 		padding: 0.5rem !important;
@@ -2616,14 +2583,8 @@ select.fcc-bmr-input {
 		border-radius: 8px !important;
 		margin-bottom: 8px !important;
 	}
-	.fcc-print-clone .fcc-macro-chart-wrapper canvas { display: none !important; }
-	.fcc-print-clone .fcc-macro-left .fcc-print-chart-img {
-		display: block !important;
-		visibility: visible !important;
-		width: 140px !important;
-		height: 140px !important;
-		margin: 0 auto !important;
-	}
+	.fcc-print-clone .fcc-macro-rings { gap: 0.5rem !important; }
+	.fcc-print-clone .fcc-macro-ring { width: 70px !important; height: 70px !important; }
 
 	/* Omega-3 cards */
 	.fcc-print-clone .fcc-omega3-section { break-inside: avoid; }
@@ -2665,7 +2626,7 @@ select.fcc-bmr-input {
 	}
 	.fcc-print-header__date { font-size: 7pt; opacity: 0.6; }
 
-	/* (chart img rule consolidated above) */
+	/* (SVG rings — no print overrides needed) */
 	.fcc-print-clone .fcc-macro-chart-wrapper {
 		padding: 8px !important;
 		margin-bottom: 6px !important;
@@ -2675,8 +2636,6 @@ select.fcc-bmr-input {
 		border-radius: 8px !important;
 	}
 	.fcc-print-clone .fcc-macro-chart-wrapper::before { display: none !important; }
-	.fcc-print-clone .fcc-macro-legend-item { padding: 2px 6px !important; font-size: 8pt !important; }
-	.fcc-print-clone .fcc-macro-detail__row { padding: 3px 6px !important; font-size: 8pt !important; }
 
 	/* ── Branded print footer with CTA ── */
 	.fcc-print-footer {

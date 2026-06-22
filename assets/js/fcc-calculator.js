@@ -71,8 +71,7 @@
 	const addToMealBtn = root.querySelector( '.fcc-add-to-meal' );
 	const nutrientsBody = root.querySelector( '.fcc-nutrients-body' );
 	const servingDesc   = root.querySelector( '.fcc-serving-desc' );
-	const macroCanvas   = features.macro_chart  ? root.querySelector( '#fcc-macro-chart' ) : null;
-	const macroLegend   = features.macro_chart  ? root.querySelector( '.fcc-macro-legend' ) : null;
+	const macroRings    = features.macro_chart  ? root.querySelector( '.fcc-macro-rings' ) : null;
 	const macroWrapper  = features.macro_chart  ? root.querySelector( '.fcc-macro-chart-wrapper' ) : null;
 	const omega3Sec     = features.omega3_display  ? root.querySelector( '.fcc-omega3-section' )  : null;
 	const caffeineSec   = features.caffeine_display ? root.querySelector( '.fcc-caffeine-section' ) : null;
@@ -641,8 +640,8 @@
 			trafficLights.hidden = false;
 		}
 
-		// Macro chart.
-		if ( macroWrapper && macroCanvas && features.macro_chart && window.FccChart ) {
+		// Macro breakdown — SVG rings + bars + stats.
+		if ( macroWrapper && features.macro_chart ) {
 			const protein_kcal = ( food.protein_g || 0 ) * factor * 4;
 			const carbs_kcal   = ( food.carbohydrate_g || 0 ) * factor * 4;
 			const fat_kcal     = ( food.fat_g || 0 ) * factor * 9;
@@ -651,13 +650,6 @@
 				carbs:   appearance.chartCarbsColour   || '#f59e0b',
 				fat:     appearance.chartFatColour     || '#ef4444',
 			};
-			window.FccChart.draw(
-				macroCanvas,
-				{ protein: protein_kcal, carbs: carbs_kcal, fat: fat_kcal },
-				macroLegend,
-				{ protein: 'Protein', carbs: 'Carbs', fat: 'Fat' },
-				chartColors
-			);
 			var pG = fmt( ( food.protein_g || 0 ) * factor, d );
 			var cG = fmt( ( food.carbohydrate_g || 0 ) * factor, d );
 			var fG = fmt( ( food.fat_g || 0 ) * factor, d );
@@ -666,6 +658,13 @@
 			var cPct = totalKcal > 0 ? Math.round( carbs_kcal / totalKcal * 100 ) : 0;
 			var fPct = totalKcal > 0 ? Math.round( fat_kcal / totalKcal * 100 ) : 0;
 			var cPerG = totalKcal > 0 && grams > 0 ? fmt( totalKcal / grams, 1 ) : '—';
+
+			if ( macroRings ) {
+				macroRings.innerHTML =
+					buildMacroRing( 'Protein', pG, pPct, chartColors.protein )
+					+ buildMacroRing( 'Carbs', cG, cPct, chartColors.carbs )
+					+ buildMacroRing( 'Fat', fG, fPct, chartColors.fat );
+			}
 
 			var macroBars = macroWrapper.querySelector( '.fcc-macro-bars' );
 			if ( macroBars ) {
@@ -957,6 +956,22 @@
 	// -------------------------------------------------------------------------
 	// Health Highlights
 	// -------------------------------------------------------------------------
+	function buildMacroRing( label, grams, pct, color ) {
+		var r = 34, c = 2 * Math.PI * r;
+		var offset = c - ( pct / 100 ) * c;
+		return '<div class="fcc-macro-ring-wrap">'
+			+ '<svg class="fcc-macro-ring" width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">'
+			+   '<circle cx="45" cy="45" r="' + r + '" fill="none" stroke="#eee" stroke-width="7"/>'
+			+   '<circle cx="45" cy="45" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="7"'
+			+     ' stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + offset.toFixed(1) + '"'
+			+     ' stroke-linecap="round" transform="rotate(-90 45 45)"/>'
+			+   '<text x="45" y="42" text-anchor="middle" font-size="15" font-weight="800" fill="#1a2e2f">' + grams + 'g</text>'
+			+   '<text x="45" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="' + color + '">' + pct + '%</text>'
+			+ '</svg>'
+			+ '<span class="fcc-macro-ring-label">' + label + '</span>'
+			+ '</div>';
+	}
+
 	function buildMacroBar( label, grams, pct, kcal, color ) {
 		return '<div class="fcc-macro-bar">'
 			+ '<div class="fcc-macro-bar__header">'
@@ -2029,19 +2044,7 @@
 				}
 			} );
 
-			// Convert donut chart to image for print.
-			var origCanvas = root.querySelector( '#fcc-macro-chart' );
-			var cloneCanvas = clone.querySelector( '#fcc-macro-chart' );
-			if ( origCanvas && cloneCanvas && origCanvas.width > 0 ) {
-				var dataUrl = origCanvas.toDataURL( 'image/png' );
-				var img = document.createElement( 'img' );
-				img.src = dataUrl;
-				img.alt = 'Macro chart';
-				img.style.cssText = 'display:block!important;width:140px!important;height:140px!important;margin:0 auto!important;';
-				cloneCanvas.parentNode.replaceChild( img, cloneCanvas );
-			} else if ( cloneCanvas ) {
-				cloneCanvas.remove();
-			}
+			// SVG rings print natively — no canvas conversion needed.
 
 			// Build data for header.
 			var food = state.food;
