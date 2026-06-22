@@ -36,7 +36,8 @@
 			if ( s ) s.style.display = 'none';
 		}
 
-		function ajaxPost( tab, cb ) {
+		function ajaxPost( tab, cb, overrideRange, dateFrom, dateTo ) {
+			var r = overrideRange !== undefined ? overrideRange : range;
 			var xhr = new XMLHttpRequest();
 			xhr.open( 'POST', fccAnalytics.ajaxUrl );
 			xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
@@ -47,12 +48,13 @@
 					if ( res.success ) cb( res.data );
 				} catch ( e ) {}
 			};
-			xhr.send(
-				'action=fcc_analytics_charts' +
-				'&_ajax_nonce=' + encodeURIComponent( nonce ) +
-				'&range=' + range +
-				'&tab=' + encodeURIComponent( tab )
-			);
+			var params = 'action=fcc_analytics_charts'
+				+ '&_ajax_nonce=' + encodeURIComponent( nonce )
+				+ '&range=' + r
+				+ '&tab=' + encodeURIComponent( tab );
+			if ( dateFrom ) params += '&date_from=' + encodeURIComponent( dateFrom );
+			if ( dateTo ) params += '&date_to=' + encodeURIComponent( dateTo );
+			xhr.send( params );
 		}
 
 		// ── Tab system ──────────────────────────────────────────────────
@@ -89,10 +91,16 @@
 
 		// ── Overview ────────────────────────────────────────────────────
 		function loadOverview() {
+			loadVolumeChart( range );
+			loadFoodsChart( 0 );
+		}
+
+		function loadVolumeChart( r, dateFrom, dateTo ) {
+			if ( charts.volume ) { charts.volume.destroy(); charts.volume = null; }
+			var spinner = document.getElementById( 'fcc-an-volume-spinner' );
+			if ( spinner ) spinner.style.display = '';
 			ajaxPost( 'overview', function ( d ) {
 				hideSpinner( 'fcc-an-volume-spinner' );
-				hideSpinner( 'fcc-an-foods-spinner' );
-
 				var ve = document.getElementById( 'fcc-an-volume-chart' );
 				if ( ve && d.volume ) {
 					charts.volume = new Chart( ve, {
@@ -105,7 +113,15 @@
 						options: chartOpts( false ),
 					} );
 				}
+			}, r, dateFrom, dateTo );
+		}
 
+		function loadFoodsChart( r, dateFrom, dateTo ) {
+			if ( charts.foods ) { charts.foods.destroy(); charts.foods = null; }
+			var spinner = document.getElementById( 'fcc-an-foods-spinner' );
+			if ( spinner ) spinner.style.display = '';
+			ajaxPost( 'overview', function ( d ) {
+				hideSpinner( 'fcc-an-foods-spinner' );
 				var fe = document.getElementById( 'fcc-an-foods-chart' );
 				if ( fe && d.foods ) {
 					charts.foods = new Chart( fe, {
@@ -117,7 +133,7 @@
 						options: Object.assign( {}, chartOpts( false ), { indexAxis: 'y' } ),
 					} );
 				}
-			} );
+			}, r, dateFrom, dateTo );
 		}
 
 		// ── Search ──────────────────────────────────────────────────────
@@ -329,6 +345,48 @@
 			for ( var i = 0; i < arr.length; i++ ) { if ( arr[i] > max ) { max = arr[i]; idx = i; } }
 			return idx;
 		}
+
+		// ── Per-card filter pills ───────────────────────────────────────
+		wrap.addEventListener( 'click', function ( e ) {
+			var pill = e.target.closest( '.fcc-an-card-pill' );
+			if ( ! pill ) return;
+			var card  = pill.closest( '.fcc-an-chart-card' );
+			var chart = card ? card.dataset.chart : '';
+			var days  = pill.dataset.days;
+			var dp    = card.querySelector( '.fcc-an-card-datepicker' );
+
+			if ( days === 'custom' ) {
+				if ( dp ) dp.hidden = ! dp.hidden;
+				return;
+			}
+
+			// Update active pill.
+			card.querySelectorAll( '.fcc-an-card-pill' ).forEach( function ( p ) { p.classList.remove( 'fcc-an-card-pill--active' ); } );
+			pill.classList.add( 'fcc-an-card-pill--active' );
+			if ( dp ) dp.hidden = true;
+
+			var r = parseInt( days, 10 );
+			if ( chart === 'volume' ) loadVolumeChart( r );
+			else if ( chart === 'foods' ) loadFoodsChart( r );
+		} );
+
+		// ── Custom date apply ───────────────────────────────────────────
+		wrap.addEventListener( 'click', function ( e ) {
+			var applyBtn = e.target.closest( '.fcc-an-date-apply' );
+			if ( ! applyBtn ) return;
+			var dp    = applyBtn.closest( '.fcc-an-card-datepicker' );
+			var card  = applyBtn.closest( '.fcc-an-chart-card' );
+			var chart = card ? card.dataset.chart : '';
+			var from  = dp.querySelector( '[data-role="from"]' ).value;
+			var to    = dp.querySelector( '[data-role="to"]' ).value;
+			if ( ! from || ! to ) return;
+
+			card.querySelectorAll( '.fcc-an-card-pill' ).forEach( function ( p ) { p.classList.remove( 'fcc-an-card-pill--active' ); } );
+			card.querySelector( '.fcc-an-card-pill--custom' ).classList.add( 'fcc-an-card-pill--active' );
+
+			if ( chart === 'volume' ) loadVolumeChart( -1, from, to );
+			else if ( chart === 'foods' ) loadFoodsChart( -1, from, to );
+		} );
 
 		// ── CSV export buttons ──────────────────────────────────────────
 		wrap.addEventListener( 'click', function ( e ) {

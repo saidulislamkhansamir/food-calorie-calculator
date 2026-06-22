@@ -36,20 +36,31 @@ class Analytics {
 			wp_send_json_error( [ 'message' => 'Unauthorized' ], 403 );
 		}
 
-		$allowed = [ 7, 30, 90, 0 ];
-		$range   = absint( $_POST['range'] ?? 30 );
+		$allowed = [ -1, 7, 30, 90, 0 ];
+		$range   = (int) ( $_POST['range'] ?? 30 );
 		if ( ! in_array( $range, $allowed, true ) ) {
 			$range = 30;
+		}
+
+		$date_from = sanitize_text_field( $_POST['date_from'] ?? '' );
+		$date_to   = sanitize_text_field( $_POST['date_to'] ?? '' );
+
+		if ( $range === -1 && $date_from && $date_to ) {
+			$range_days = max( 1, (int) ( ( strtotime( $date_to ) - strtotime( $date_from ) ) / 86400 ) );
+		} else {
+			$date_from = '';
+			$date_to   = '';
+			$range_days = $range;
 		}
 
 		$tab = sanitize_key( $_POST['tab'] ?? 'overview' );
 
 		switch ( $tab ) {
 			case 'search':
-				$data = $this->get_search_tab_data( $range );
+				$data = $this->get_search_tab_data( $range_days, $date_from, $date_to );
 				break;
 			case 'monetization':
-				$data = $this->get_monetization_tab_data( $range );
+				$data = $this->get_monetization_tab_data( $range_days );
 				break;
 			case 'content':
 				$data = $this->get_content_tab_data();
@@ -58,7 +69,7 @@ class Analytics {
 				$data = $this->get_audience_tab_data();
 				break;
 			default:
-				$data = $this->get_overview_tab_data( $range );
+				$data = $this->get_overview_tab_data( $range_days, $date_from, $date_to );
 				break;
 		}
 
@@ -69,10 +80,10 @@ class Analytics {
 	// Tab data assemblers.
 	// ─────────────────────────────────────────────────────────────────────
 
-	private function get_overview_tab_data( int $range ): array {
+	private function get_overview_tab_data( int $range, string $date_from = '', string $date_to = '' ): array {
 		$chart_days  = $range > 0 ? $range : 365;
-		$volume_rows = \FCC\Database::get_search_volume_by_day( $chart_days );
-		$top_foods   = \FCC\Database::get_top_foods_by_hits( 10 );
+		$volume_rows = \FCC\Database::get_search_volume_by_day( $chart_days, $date_from, $date_to );
+		$top_foods   = \FCC\Database::get_top_foods_by_hits( 10, $date_from, $date_to );
 
 		return [
 			'volume' => [

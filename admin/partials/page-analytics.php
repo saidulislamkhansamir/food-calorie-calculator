@@ -274,22 +274,50 @@ function fcc_completeness_ring( float $pct ): string {
 
 		<!-- Charts Row -->
 		<div class="fcc-an-charts-row">
-			<div class="fcc-card fcc-an-chart-card">
+			<div class="fcc-card fcc-an-chart-card" data-chart="volume">
 				<div class="fcc-an-chart-card__header">
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
 					<strong><?php esc_html_e( 'Search Volume', 'food-calorie-calculator' ); ?></strong>
-					<span class="fcc-an-chart-card__sub"><?php echo esc_html( $range_labels[ $range ] ); ?></span>
+					<div class="fcc-an-card-filters">
+						<button type="button" class="fcc-an-card-pill" data-days="7">7d</button>
+						<button type="button" class="fcc-an-card-pill fcc-an-card-pill--active" data-days="30">30d</button>
+						<button type="button" class="fcc-an-card-pill" data-days="90">90d</button>
+						<button type="button" class="fcc-an-card-pill" data-days="0">All</button>
+						<button type="button" class="fcc-an-card-pill fcc-an-card-pill--custom" data-days="custom" title="Custom range">
+							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+						</button>
+					</div>
+				</div>
+				<div class="fcc-an-card-datepicker" hidden>
+					<input type="date" class="fcc-an-date-input" data-role="from">
+					<span>to</span>
+					<input type="date" class="fcc-an-date-input" data-role="to">
+					<button type="button" class="fcc-an-date-apply">Apply</button>
 				</div>
 				<div class="fcc-an-chart-wrap">
 					<canvas id="fcc-an-volume-chart"></canvas>
 					<div class="fcc-an-spinner" id="fcc-an-volume-spinner"><span class="spinner is-active"></span></div>
 				</div>
 			</div>
-			<div class="fcc-card fcc-an-chart-card">
+			<div class="fcc-card fcc-an-chart-card" data-chart="foods">
 				<div class="fcc-an-chart-card__header">
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
 					<strong><?php esc_html_e( 'Top 10 Foods', 'food-calorie-calculator' ); ?></strong>
-					<span class="fcc-an-chart-card__sub"><?php esc_html_e( 'By search hits (all time)', 'food-calorie-calculator' ); ?></span>
+					<div class="fcc-an-card-filters">
+						<button type="button" class="fcc-an-card-pill" data-days="7">7d</button>
+						<button type="button" class="fcc-an-card-pill" data-days="30">30d</button>
+						<button type="button" class="fcc-an-card-pill" data-days="90">90d</button>
+						<button type="button" class="fcc-an-card-pill fcc-an-card-pill--active" data-days="0">All</button>
+						<button type="button" class="fcc-an-card-pill fcc-an-card-pill--custom" data-days="custom" title="Custom range">
+							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+						</button>
+					</div>
+				</div>
+				<div class="fcc-an-card-datepicker" hidden>
+					<input type="date" class="fcc-an-date-input" data-role="from">
+					<span>to</span>
+					<input type="date" class="fcc-an-date-input" data-role="to">
+					<button type="button" class="fcc-an-date-apply">Apply</button>
 				</div>
 				<div class="fcc-an-chart-wrap">
 					<canvas id="fcc-an-foods-chart"></canvas>

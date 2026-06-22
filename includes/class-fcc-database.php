@@ -1398,9 +1398,21 @@ class Database {
 	 *
 	 * @return array<int,array{log_date:string,count:int}>
 	 */
-	public static function get_search_volume_by_day( int $days = 30 ): array {
+	public static function get_search_volume_by_day( int $days = 30, string $date_from = '', string $date_to = '' ): array {
 		global $wpdb;
 		$table = self::search_log_table();
+		if ( $date_from && $date_to ) {
+			return $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT log_date, SUM(count) AS count FROM {$table}
+					 WHERE log_date >= %s AND log_date <= %s
+					 GROUP BY log_date ORDER BY log_date ASC",
+					$date_from,
+					$date_to
+				),
+				ARRAY_A
+			) ?: [];
+		}
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return $wpdb->get_results(
 			$wpdb->prepare(
@@ -1418,8 +1430,24 @@ class Database {
 	 *
 	 * @return array<int,array{name:string,search_count:int}>
 	 */
-	public static function get_top_foods_by_hits( int $limit = 10 ): array {
+	public static function get_top_foods_by_hits( int $limit = 10, string $date_from = '', string $date_to = '' ): array {
 		global $wpdb;
+		if ( $date_from && $date_to ) {
+			$log   = self::search_log_table();
+			$foods = self::foods_table();
+			return $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT f.name, SUM(s.count) AS search_count FROM {$log} s
+					 INNER JOIN {$foods} f ON f.id = s.food_id
+					 WHERE s.food_id IS NOT NULL AND s.log_date >= %s AND s.log_date <= %s
+					 GROUP BY f.id ORDER BY search_count DESC LIMIT %d",
+					$date_from,
+					$date_to,
+					$limit
+				),
+				ARRAY_A
+			) ?: [];
+		}
 		$table = self::foods_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return $wpdb->get_results(
