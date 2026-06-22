@@ -2519,6 +2519,7 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-meal-categories,
 	.fcc-print-clone .fcc-meal-actions,
 	.fcc-print-clone .fcc-meal-print-btn,
+	.fcc-print-clone .fcc-meal-cat-pills,
 	.fcc-print-clone .fcc-pwa-install-btn,
 	.fcc-print-clone .fcc-promo-banner,
 	.fcc-print-clone .fcc-tabs-nav,
@@ -2529,7 +2530,11 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-voice-btn,
 	.fcc-print-clone .fcc-search-clear,
 	.fcc-print-clone .fcc-meal-item__remove,
-	.fcc-print-clone .fcc-label--search { display: none !important; }
+	.fcc-print-clone .fcc-label--search,
+	.fcc-print-clone .fcc-autocomplete,
+	.fcc-print-clone .fcc-search-hint,
+	.fcc-print-clone .fcc-meal-tpl-save,
+	.fcc-print-clone .fcc-meal-actions-row { display: none !important; }
 
 	/* Force-show result sections */
 	.fcc-print-clone .fcc-tab-panel,
@@ -2703,77 +2708,103 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-omega3-card { padding: 6px !important; }
 
 	/* ── Meal print cleanup ── */
+	.fcc-print-clone .fcc-meal-section {
+		border: none !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+	}
 	.fcc-print-clone .fcc-meal-header {
 		background: linear-gradient(135deg, #043e40, #075B5E) !important;
-		border-radius: 8px !important;
-		padding: 10px 14px !important;
-		margin-bottom: 8px !important;
+		border-radius: 6px !important;
+		padding: 8px 12px !important;
+		margin-bottom: 6px !important;
 	}
-	.fcc-print-clone .fcc-meal-macro-row {
+	.fcc-print-clone .fcc-meal-header__icon { width: 28px !important; height: 28px !important; }
+	.fcc-print-clone .fcc-meal-header__title { font-size: 11pt !important; }
+	.fcc-print-clone .fcc-meal-header__kcal-num { font-size: 14pt !important; }
+
+	.fcc-print-clone .fcc-meal-macros {
 		gap: 4px !important;
-		margin-bottom: 6px !important;
+		margin-bottom: 4px !important;
 	}
-	.fcc-print-clone .fcc-meal-macro-card {
-		padding: 4px 8px !important;
-		font-size: 9pt !important;
+	.fcc-print-clone .fcc-meal-macro {
+		padding: 3px 6px !important;
+		font-size: 8pt !important;
+		border-radius: 4px !important;
 	}
+	.fcc-print-clone .fcc-meal-macro__val { font-size: 10pt !important; }
+
 	.fcc-print-clone .fcc-meal-serves {
-		padding: 4px 8px !important;
-		margin-bottom: 6px !important;
-		font-size: 9pt !important;
+		padding: 3px 8px !important;
+		margin-bottom: 4px !important;
+		font-size: 8pt !important;
+		border-radius: 4px !important;
 	}
 	.fcc-print-clone .fcc-meal-serves__input {
-		border: 1.5px solid #075B5E !important;
+		border: 1px solid #075B5E !important;
 		background: #fff !important;
-		width: 36px !important;
-		padding: 2px !important;
-		font-size: 10pt !important;
+		width: 30px !important;
+		padding: 1px !important;
+		font-size: 9pt !important;
+		border-radius: 3px !important;
 	}
+	.fcc-print-clone .fcc-meal-daily-goal { margin-bottom: 4px !important; padding: 3px 6px !important; font-size: 8pt !important; }
+
+	.fcc-print-clone .fcc-meal-cat-header {
+		padding: 3px 8px !important;
+		font-size: 9pt !important;
+		margin-bottom: 1px !important;
+		border-radius: 3px !important;
+	}
+
+	.fcc-print-clone .fcc-meal-items { margin-bottom: 4px !important; }
 	.fcc-print-clone .fcc-meal-item {
 		border: none !important;
 		border-bottom: 1px solid #e8f0e8 !important;
 		border-radius: 0 !important;
-		padding: 5px 8px !important;
+		padding: 4px 6px !important;
 		margin: 0 !important;
 		background: transparent !important;
 		font-size: 9pt !important;
 		box-shadow: none !important;
+		gap: 4px !important;
 	}
 	.fcc-print-clone .fcc-meal-item:nth-child(even) { background: #f8fafa !important; }
-	.fcc-print-clone .fcc-meal-item__controls { gap: 4px !important; }
+	.fcc-print-clone .fcc-meal-item__controls { gap: 3px !important; }
 	.fcc-print-clone .fcc-meal-item__qty {
-		width: 40px !important;
-		padding: 2px !important;
-		font-size: 9pt !important;
-		border: 1px solid #ccc !important;
+		width: 36px !important;
+		padding: 1px 2px !important;
+		font-size: 8pt !important;
+		border: 1px solid #bbb !important;
 		background: #fff !important;
-		border-radius: 4px !important;
+		border-radius: 3px !important;
+		font-weight: 600 !important;
+		color: #333 !important;
 	}
 	.fcc-print-clone .fcc-meal-item__unit {
 		font-size: 7pt !important;
-		padding: 1px 3px !important;
+		padding: 0 3px !important;
+		border-radius: 2px !important;
+		background: #075B5E !important;
 	}
 	.fcc-print-clone .fcc-meal-item__kcal {
 		font-size: 8pt !important;
-		padding: 2px 6px !important;
+		padding: 1px 5px !important;
 		min-width: auto !important;
+		border-radius: 3px !important;
 	}
 	.fcc-print-clone .fcc-meal-item__num {
-		width: 18px !important;
-		height: 18px !important;
-		font-size: 7pt !important;
+		width: 16px !important;
+		height: 16px !important;
+		font-size: 6pt !important;
 	}
-	.fcc-print-clone .fcc-meal-cat-header {
-		padding: 4px 8px !important;
-		font-size: 9pt !important;
-		margin-bottom: 2px !important;
-		border-radius: 4px !important;
-	}
+	.fcc-print-clone .fcc-meal-item__name { font-size: 9pt !important; }
+
 	.fcc-print-clone .fcc-meal-totals {
-		margin-top: 6px !important;
+		margin-top: 4px !important;
 		break-inside: avoid;
 	}
-	.fcc-print-clone .fcc-meal-daily-goal { margin-bottom: 6px !important; padding: 4px 8px !important; }
+	.fcc-print-clone .fcc-meal-totals__hd { font-size: 9pt !important; margin-bottom: 2px !important; }
 
 	@page { margin: 1cm 1.2cm; }
 }
