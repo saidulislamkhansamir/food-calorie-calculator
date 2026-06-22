@@ -2795,6 +2795,8 @@
 	border-color: #a3d4d6;
 	box-shadow: 0 4px 16px rgba(7,91,94,.08);
 }
+.fcc-pincard--dropdown-open,
+.fcc-promo-card--dropdown-open { z-index: 100; position: relative; }
 .fcc-pincard__topbar {
 	display: flex;
 	align-items: center;
@@ -3034,11 +3036,11 @@
 	background: #fff;
 	border: 1.5px solid #d1d5db;
 	border-radius: 10px;
-	box-shadow: 0 8px 24px rgba(0,0,0,.12);
+	box-shadow: 0 8px 24px rgba(0,0,0,.15);
 	list-style: none;
 	margin: 0;
 	padding: .3rem;
-	z-index: 999;
+	z-index: 99999;
 	max-height: 200px;
 	overflow-y: auto;
 }

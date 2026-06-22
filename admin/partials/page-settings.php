@@ -1428,6 +1428,8 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					dd.appendChild( li );
 				} );
 				dd.hidden = false;
+				var parentCard = dd.closest( '.fcc-pincard' ) || dd.closest( '.fcc-promo-card' );
+				if ( parentCard ) parentCard.classList.add( parentCard.classList.contains( 'fcc-pincard' ) ? 'fcc-pincard--dropdown-open' : 'fcc-promo-card--dropdown-open' );
 			} )
 			.catch( function () { dd.hidden = true; } );
 		}, 250 );
@@ -1441,10 +1443,15 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 			parent.querySelector( '.fcc-pin-food-id' ).value     = item.dataset.id;
 			parent.querySelector( '.fcc-pin-food-name' ).value   = item.dataset.name;
 			item.closest( '.fcc-pin-dropdown' ).hidden = true;
+			var card = item.closest( '.fcc-pincard' ) || item.closest( '.fcc-promo-card' );
+			if ( card ) card.classList.remove( 'fcc-pincard--dropdown-open', 'fcc-promo-card--dropdown-open' );
 			return;
 		}
 		if ( ! e.target.closest( '.fcc-pin-food-search' ) ) {
 			document.querySelectorAll( '.fcc-pin-dropdown' ).forEach( function ( dd ) { dd.hidden = true; } );
+			document.querySelectorAll( '.fcc-pincard--dropdown-open, .fcc-promo-card--dropdown-open' ).forEach( function ( c ) {
+				c.classList.remove( 'fcc-pincard--dropdown-open', 'fcc-promo-card--dropdown-open' );
+			} );
 		}
 	} );
 } )();
