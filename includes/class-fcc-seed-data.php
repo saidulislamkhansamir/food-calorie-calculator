@@ -1,6 +1,6 @@
 <?php
 /**
- * Seeds the food database with 110+ UK foods.
+ * Seeds the food database with 5,200+ foods from 190+ countries.
  *
  * All per-100g values sourced from:
  *   M&W = McCance & Widdowson's Composition of Foods, 8th Summary Ed. (2015)
