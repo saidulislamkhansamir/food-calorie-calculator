@@ -2029,52 +2029,18 @@
 				}
 			} );
 
-			// Convert donut chart to image for print — redraw on a temp canvas.
-			var cloneChartArea = clone.querySelector( '.fcc-macro-left' );
+			// Convert donut chart to image for print.
+			var origCanvas = root.querySelector( '#fcc-macro-chart' );
 			var cloneCanvas = clone.querySelector( '#fcc-macro-chart' );
-			var printFood = state.food;
-			var printFactor = quantityInGrams() / 100;
-			if ( cloneChartArea && cloneCanvas && printFood ) {
-				try {
-					var tmpCanvas = document.createElement( 'canvas' );
-					var sz = 300;
-					tmpCanvas.width = sz;
-					tmpCanvas.height = sz;
-					var protein_kcal = ( printFood.protein_g || 0 ) * printFactor * 4;
-					var carbs_kcal   = ( printFood.carbohydrate_g || 0 ) * printFactor * 4;
-					var fat_kcal     = ( printFood.fat_g || 0 ) * printFactor * 9;
-					var ctx = tmpCanvas.getContext( '2d' );
-					var cx = sz/2, cy = sz/2, outer = sz/2 - 8, inner = outer * 0.55;
-					var total = protein_kcal + carbs_kcal + fat_kcal;
-					var segs = [
-						{ val: protein_kcal, color: appearance.chartProteinColour || '#3b82f6' },
-						{ val: carbs_kcal,   color: appearance.chartCarbsColour   || '#f59e0b' },
-						{ val: fat_kcal,     color: appearance.chartFatColour     || '#ef4444' },
-					].filter( function(s) { return s.val > 0; } );
-					var angle = -Math.PI / 2;
-					segs.forEach( function(s) {
-						var slice = (s.val / total) * 2 * Math.PI;
-						ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,outer,angle,angle+slice); ctx.closePath();
-						ctx.fillStyle = s.color; ctx.fill(); angle += slice;
-					} );
-					ctx.beginPath(); ctx.arc(cx,cy,inner,0,2*Math.PI); ctx.fillStyle='#fff'; ctx.fill();
-					ctx.fillStyle='#075B5E'; ctx.textAlign='center'; ctx.textBaseline='middle';
-					ctx.font='bold ' + Math.round(inner*0.35) + 'px sans-serif';
-					ctx.fillText(Math.round(total)+' kcal',cx,cy);
-					var dataUrl = tmpCanvas.toDataURL('image/png');
-					if ( dataUrl && dataUrl.indexOf('data:image') === 0 && dataUrl.length > 500 ) {
-						var img = document.createElement('img');
-						img.src = dataUrl;
-						img.alt = 'Macro chart';
-						img.className = 'fcc-print-chart-img';
-						img.style.cssText = 'display:block!important;width:140px!important;height:140px!important;margin:0 auto!important;';
-						cloneCanvas.parentNode.replaceChild( img, cloneCanvas );
-					} else {
-						cloneCanvas.remove();
-					}
-				} catch ( e ) {
-					if ( cloneCanvas ) cloneCanvas.remove();
-				}
+			if ( origCanvas && cloneCanvas && origCanvas.width > 0 ) {
+				var dataUrl = origCanvas.toDataURL( 'image/png' );
+				var img = document.createElement( 'img' );
+				img.src = dataUrl;
+				img.alt = 'Macro chart';
+				img.style.cssText = 'display:block!important;width:140px!important;height:140px!important;margin:0 auto!important;';
+				cloneCanvas.parentNode.replaceChild( img, cloneCanvas );
+			} else if ( cloneCanvas ) {
+				cloneCanvas.remove();
 			}
 
 			// Build data for header.
