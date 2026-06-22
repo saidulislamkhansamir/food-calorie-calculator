@@ -2035,10 +2035,12 @@
 			if ( origCanvas && cloneCanvas ) {
 				try {
 					var dataUrl = origCanvas.toDataURL( 'image/png' );
-					if ( dataUrl && dataUrl.length > 200 ) {
+					if ( dataUrl && dataUrl.indexOf( 'data:image' ) === 0 && dataUrl.length > 200 ) {
 						var img = document.createElement( 'img' );
 						img.src = dataUrl;
+						img.alt = 'Macro chart';
 						img.className = 'fcc-print-chart-img';
+						img.style.cssText = 'display:block!important;width:140px!important;height:140px!important;margin:0 auto!important;';
 						cloneCanvas.parentNode.replaceChild( img, cloneCanvas );
 					} else {
 						cloneCanvas.remove();

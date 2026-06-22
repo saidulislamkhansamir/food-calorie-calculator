@@ -2599,12 +2599,15 @@ select.fcc-bmr-input {
 	}
 	.fcc-print-clone .fcc-nutrition-table tbody tr:nth-child(even) { background: #f0f7f7 !important; }
 
-	/* Chart */
+	/* Chart — canvas-to-image for print */
 	.fcc-print-clone .fcc-print-chart-img {
 		display: block !important;
-		width: 160px !important;
-		height: 160px !important;
+		visibility: visible !important;
+		width: 140px !important;
+		height: 140px !important;
 		margin: 0 auto !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
 	}
 	.fcc-print-clone .fcc-macro-chart-wrapper {
 		break-inside: avoid;
@@ -2614,6 +2617,13 @@ select.fcc-bmr-input {
 		margin-bottom: 8px !important;
 	}
 	.fcc-print-clone .fcc-macro-chart-wrapper canvas { display: none !important; }
+	.fcc-print-clone .fcc-macro-left .fcc-print-chart-img {
+		display: block !important;
+		visibility: visible !important;
+		width: 140px !important;
+		height: 140px !important;
+		margin: 0 auto !important;
+	}
 
 	/* Omega-3 cards */
 	.fcc-print-clone .fcc-omega3-section { break-inside: avoid; }
@@ -2655,13 +2665,7 @@ select.fcc-bmr-input {
 	}
 	.fcc-print-header__date { font-size: 7pt; opacity: 0.6; }
 
-	/* ── Compact chart for print ── */
-	.fcc-print-clone .fcc-print-chart-img {
-		display: block !important;
-		width: 130px !important;
-		height: 130px !important;
-		margin: 0 auto !important;
-	}
+	/* (chart img rule consolidated above) */
 	.fcc-print-clone .fcc-macro-chart-wrapper {
 		padding: 8px !important;
 		margin-bottom: 6px !important;
