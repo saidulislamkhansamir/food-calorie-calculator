@@ -2820,6 +2820,14 @@ select.fcc-bmr-input {
 		margin: 0 1cm 1.5cm 1cm;
 	}
 	.fcc-print-clone { padding-top: 0.6cm !important; }
+
+	/* Sections that may land on page 2+ get top padding for breathing room */
+	.fcc-print-clone .fcc-meal-totals,
+	.fcc-print-clone .fcc-nutrition-table-wrapper,
+	.fcc-print-clone .fcc-print-footer {
+		break-inside: avoid;
+		padding-top: 0.5cm !important;
+	}
 }
 
 /* ==========================================================================
