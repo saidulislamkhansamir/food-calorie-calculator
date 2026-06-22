@@ -706,7 +706,6 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					<?php
 					$pinned_foods = $pinned_settings['pinned_foods'] ?? [];
 					$pos_labels = [ 1 => '1st', 2 => '2nd', 3 => '3rd' ];
-					<?php $enabled_val = isset( $rule['enabled'] ) ? (int) $rule['enabled'] : 1; ?>
 					foreach ( $pinned_foods as $idx => $rule ) :
 						$is_enabled = ( $rule['enabled'] ?? 1 ) ? true : false;
 					?>
