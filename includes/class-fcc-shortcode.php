@@ -23,6 +23,7 @@ class Shortcode {
 
 	public function register( Loader $loader ): void {
 		$loader->add_action( 'init', $this, 'register_shortcode' );
+		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_style_early' );
 		$loader->add_action( 'wp_footer', $this, 'maybe_enqueue_assets' );
 	}
 
@@ -129,6 +130,36 @@ class Shortcode {
 	}
 
 	/**
+	 * Pre-enqueue CSS in <head> to prevent FOUC.
+	 * Checks if the current post/page contains our shortcode or block.
+	 */
+	public function maybe_enqueue_style_early(): void {
+		if ( ! is_singular() ) return;
+		global $post;
+		if ( ! $post ) return;
+		$has_shortcode = has_shortcode( $post->post_content, 'food_calorie_calculator' );
+		$has_block     = function_exists( 'has_block' ) && has_block( 'fcc/calculator', $post );
+		if ( ! $has_shortcode && ! $has_block ) return;
+
+		wp_enqueue_style(
+			'fcc-public',
+			FCC_PLUGIN_URL . 'assets/css/fcc-public.css',
+			[],
+			FCC_VERSION
+		);
+
+		$settings   = Settings::get_all();
+		$appearance = $settings['appearance'] ?? [];
+		$custom_props = ':root{--fcc-primary:' . esc_attr( $appearance['primary_colour'] ?? '#075B5E' )
+			. ';--fcc-accent:' . esc_attr( $appearance['accent_colour'] ?? '#FF3F33' )
+			. ';--fcc-bg-colour:' . esc_attr( $appearance['background_colour'] ?? '#FFE6E1' ) . ';}';
+		if ( ! empty( $appearance['custom_css'] ) ) {
+			$custom_props .= wp_strip_all_tags( $appearance['custom_css'] );
+		}
+		wp_add_inline_style( 'fcc-public', $custom_props );
+	}
+
+	/**
 	 * Enqueue public assets — called from wp_footer so we know if the
 	 * shortcode was actually used on this page load.
 	 */
@@ -166,18 +197,22 @@ class Shortcode {
 			$ver
 		);
 
-		// Inline CSS custom properties from appearance settings.
-		$custom_props = sprintf(
-			':root{--fcc-primary:%s;--fcc-accent:%s;--fcc-bg:%s;--fcc-radius:%dpx;}',
-			esc_attr( $appearance['primary_colour']    ?? '#075B5E' ),
-			esc_attr( $appearance['accent_colour']     ?? '#FF3F33' ),
-			esc_attr( $appearance['background_colour'] ?? '#FFE6E1' ),
-			absint(   $appearance['button_radius']     ?? 8 )
-		);
-		if ( ! empty( $appearance['custom_css'] ) ) {
-			$custom_props .= wp_strip_all_tags( $appearance['custom_css'] );
+		// Inline CSS custom properties — skip if already added by early hook.
+		static $inline_added = false;
+		if ( ! $inline_added ) {
+			$custom_props = sprintf(
+				':root{--fcc-primary:%s;--fcc-accent:%s;--fcc-bg:%s;--fcc-radius:%dpx;}',
+				esc_attr( $appearance['primary_colour']    ?? '#075B5E' ),
+				esc_attr( $appearance['accent_colour']     ?? '#FF3F33' ),
+				esc_attr( $appearance['background_colour'] ?? '#FFE6E1' ),
+				absint(   $appearance['button_radius']     ?? 8 )
+			);
+			if ( ! empty( $appearance['custom_css'] ) ) {
+				$custom_props .= wp_strip_all_tags( $appearance['custom_css'] );
+			}
+			wp_add_inline_style( 'fcc-public', $custom_props );
+			$inline_added = true;
 		}
-		wp_add_inline_style( 'fcc-public', $custom_props );
 
 		wp_enqueue_script(
 			'fcc-chart',
