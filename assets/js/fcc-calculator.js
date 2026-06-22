@@ -2037,16 +2037,14 @@
 			if ( cloneChartArea && cloneCanvas && printFood ) {
 				try {
 					var tmpCanvas = document.createElement( 'canvas' );
-					tmpCanvas.width = 300;
-					tmpCanvas.height = 300;
-					tmpCanvas.style.cssText = 'width:150px;height:150px;position:absolute;left:-9999px';
-					document.body.appendChild( tmpCanvas );
+					var sz = 300;
+					tmpCanvas.width = sz;
+					tmpCanvas.height = sz;
 					var protein_kcal = ( printFood.protein_g || 0 ) * printFactor * 4;
 					var carbs_kcal   = ( printFood.carbohydrate_g || 0 ) * printFactor * 4;
 					var fat_kcal     = ( printFood.fat_g || 0 ) * printFactor * 9;
 					var ctx = tmpCanvas.getContext( '2d' );
-					ctx.scale( 2, 2 );
-					var sz = 150, cx = sz/2, cy = sz/2, outer = sz/2 - 4, inner = outer * 0.55;
+					var cx = sz/2, cy = sz/2, outer = sz/2 - 8, inner = outer * 0.55;
 					var total = protein_kcal + carbs_kcal + fat_kcal;
 					var segs = [
 						{ val: protein_kcal, color: appearance.chartProteinColour || '#3b82f6' },
@@ -2061,10 +2059,9 @@
 					} );
 					ctx.beginPath(); ctx.arc(cx,cy,inner,0,2*Math.PI); ctx.fillStyle='#fff'; ctx.fill();
 					ctx.fillStyle='#075B5E'; ctx.textAlign='center'; ctx.textBaseline='middle';
-					ctx.font='bold ' + Math.round(inner*0.32) + 'px sans-serif';
+					ctx.font='bold ' + Math.round(inner*0.35) + 'px sans-serif';
 					ctx.fillText(Math.round(total)+' kcal',cx,cy);
 					var dataUrl = tmpCanvas.toDataURL('image/png');
-					document.body.removeChild( tmpCanvas );
 					if ( dataUrl && dataUrl.indexOf('data:image') === 0 && dataUrl.length > 500 ) {
 						var img = document.createElement('img');
 						img.src = dataUrl;
