@@ -2818,22 +2818,24 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-meal-totals__hd { font-size: 9pt !important; margin-bottom: 2px !important; }
 
 	@page {
-		margin: 1cm 1cm 1.5cm 1cm;
+		margin: 0 1cm 1.5cm 1cm;
 	}
-	.fcc-print-clone {
-		padding-top: 0 !important;
-	}
-	.fcc-print-clone .fcc-print-header {
-		margin-top: -1cm !important;
-		margin-left: -1cm !important;
-		margin-right: -1cm !important;
-		padding: 14px calc(18px + 1cm) !important;
-	}
+	.fcc-print-clone { padding-top: 0.6cm !important; }
 
 	.fcc-print-clone .fcc-meal-totals,
 	.fcc-print-clone .fcc-nutrition-table-wrapper,
 	.fcc-print-clone .fcc-print-footer {
 		break-inside: avoid;
+	}
+
+	/* All major sections get break-inside:avoid so they don't split mid-element,
+	   and enough margin-top that if they land at page top there's breathing room */
+	.fcc-print-clone .fcc-meal-section,
+	.fcc-print-clone .fcc-section,
+	.fcc-print-clone .fcc-meal-cat-header,
+	.fcc-print-clone .fcc-meal-totals__hd {
+		break-before: auto;
+		margin-top: 0.3cm !important;
 	}
 }
 
