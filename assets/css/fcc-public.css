@@ -1425,14 +1425,13 @@
    -------------------------------------------------------------------------- */
 .fcc-macro-chart-wrapper {
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	gap: 1.5rem;
 	margin: 1.25rem 0 0;
 	padding: 1.5rem;
 	background: linear-gradient(135deg, #f7fafa 0%, var(--fcc-bg, #FFE6E1) 50%, #f7fafa 100%);
 	border: 2px solid transparent;
 	border-radius: 16px;
-	flex-wrap: wrap;
 	background-clip: padding-box;
 	position: relative;
 }
@@ -1445,96 +1444,138 @@
 	z-index: -1;
 }
 
+.fcc-macro-left {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	flex-shrink: 0;
+}
 .fcc-macro-chart { flex-shrink: 0; }
 
 .fcc-macro-legend {
 	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
+	gap: 0.4rem;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 
 .fcc-macro-legend-item {
 	display: flex;
 	align-items: center;
-	gap: 0.625rem;
-	font-size: 0.875rem;
-	font-weight: 500;
+	gap: 0.4rem;
+	font-size: 0.78rem;
+	font-weight: 600;
 	color: var(--fcc-text);
-	background: rgba(255,255,255,.75);
+	background: rgba(255,255,255,.85);
 	border: 1px solid rgba(0,0,0,.06);
-	padding: 0.3rem 0.75rem 0.3rem 0.5rem;
+	padding: 0.2rem 0.6rem 0.2rem 0.4rem;
 	border-radius: 20px;
 }
 
 .fcc-macro-legend-dot {
-	width: 12px;
-	height: 12px;
-	border-radius: 50%;
-	flex-shrink: 0;
-}
-
-/* Macro detail panel — gram + kcal breakdown */
-.fcc-macro-detail {
-	display: flex;
-	flex-direction: column;
-	gap: 0.4rem;
-	margin-left: auto;
-	min-width: 180px;
-}
-.fcc-macro-detail__row {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	font-size: 0.82rem;
-	padding: 0.45rem 0.75rem;
-	background: #fff;
-	border: 1.5px solid #e6eded;
-	border-radius: 10px;
-	transition: border-color .15s, box-shadow .15s;
-}
-.fcc-macro-detail__row:hover {
-	border-color: var(--fcc-primary, #075B5E);
-	box-shadow: 0 2px 8px rgba(7,91,94,.08);
-}
-.fcc-macro-detail__dot {
 	width: 10px;
 	height: 10px;
 	border-radius: 50%;
 	flex-shrink: 0;
 }
-.fcc-macro-detail__lbl {
+
+/* Right panel — bars + stats */
+.fcc-macro-right {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.75rem;
+	min-width: 0;
+}
+
+/* Macro progress bars */
+.fcc-macro-bars { display: flex; flex-direction: column; gap: 0.6rem; }
+.fcc-macro-bar__header {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.8rem;
+	margin-bottom: 0.2rem;
+}
+.fcc-macro-bar__dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+.fcc-macro-bar__label {
 	font-weight: 600;
 	color: var(--fcc-text, #1a2e2f);
-	min-width: 50px;
 }
-.fcc-macro-detail__val {
+.fcc-macro-bar__val {
 	font-weight: 800;
-	font-size: 0.9rem;
 	color: var(--fcc-text, #1a2e2f);
 	margin-left: auto;
 }
-.fcc-macro-detail__kcal {
+.fcc-macro-bar__kcal {
 	font-size: 0.7rem;
 	font-weight: 500;
 	color: var(--fcc-text-muted, #4a6365);
-	min-width: 50px;
-	text-align: right;
-	padding: 2px 6px;
-	background: #f5fafa;
-	border-radius: 6px;
+	padding: 1px 5px;
+	background: rgba(255,255,255,.7);
+	border-radius: 4px;
 }
-.fcc-macro-detail__footer {
-	text-align: center;
-	font-size: 0.78rem;
+.fcc-macro-bar__pct {
+	font-size: 0.72rem;
 	font-weight: 700;
+	color: var(--fcc-text-muted);
+	min-width: 32px;
+	text-align: right;
+}
+.fcc-macro-bar__track {
+	height: 8px;
+	background: rgba(255,255,255,.6);
+	border-radius: 4px;
+	overflow: hidden;
+}
+.fcc-macro-bar__fill {
+	height: 100%;
+	border-radius: 4px;
+	transition: width .4s ease;
+}
+
+/* Mini stat grid */
+.fcc-macro-detail { margin-top: 0.25rem; }
+.fcc-macro-detail__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	gap: 0.5rem;
+}
+.fcc-macro-detail__stat {
+	text-align: center;
+	background: rgba(255,255,255,.7);
+	border: 1px solid rgba(0,0,0,.05);
+	border-radius: 10px;
+	padding: 0.4rem 0.3rem;
+}
+.fcc-macro-detail__stat-val {
+	display: block;
+	font-size: 0.95rem;
+	font-weight: 800;
 	color: var(--fcc-primary, #075B5E);
-	padding: 0.35rem 0;
-	border-top: 1.5px solid #e6eded;
-	margin-top: 0.125rem;
+	line-height: 1.2;
+}
+.fcc-macro-detail__stat-lbl {
+	display: block;
+	font-size: 0.65rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--fcc-text-muted, #4a6365);
+	margin-top: 0.1rem;
 }
 
 @media (max-width: 600px) {
-	.fcc-macro-detail { margin-left: 0; min-width: auto; }
+	.fcc-macro-chart-wrapper { flex-direction: column; align-items: center; }
+	.fcc-macro-right { width: 100%; }
+	.fcc-macro-detail__grid { grid-template-columns: 1fr 1fr; }
 }
 
 /* --------------------------------------------------------------------------

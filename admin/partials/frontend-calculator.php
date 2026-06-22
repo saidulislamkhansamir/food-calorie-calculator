@@ -343,10 +343,15 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<!-- Macro chart -->
 				<?php if ( ! empty( $features['macro_chart'] ) ) : ?>
 				<div class="fcc-macro-chart-wrapper" hidden>
-					<canvas id="fcc-macro-chart" class="fcc-macro-chart" width="200" height="200"
-						aria-label="<?php esc_attr_e( 'Macro breakdown chart', 'food-calorie-calculator' ); ?>" role="img"></canvas>
-					<div class="fcc-macro-legend" aria-label="<?php esc_attr_e( 'Macro legend', 'food-calorie-calculator' ); ?>"></div>
-					<div class="fcc-macro-detail" aria-label="<?php esc_attr_e( 'Macro details', 'food-calorie-calculator' ); ?>"></div>
+					<div class="fcc-macro-left">
+						<canvas id="fcc-macro-chart" class="fcc-macro-chart" width="200" height="200"
+							aria-label="<?php esc_attr_e( 'Macro breakdown chart', 'food-calorie-calculator' ); ?>" role="img"></canvas>
+						<div class="fcc-macro-legend" aria-label="<?php esc_attr_e( 'Macro legend', 'food-calorie-calculator' ); ?>"></div>
+					</div>
+					<div class="fcc-macro-right">
+						<div class="fcc-macro-bars"></div>
+						<div class="fcc-macro-detail" aria-label="<?php esc_attr_e( 'Macro details', 'food-calorie-calculator' ); ?>"></div>
+					</div>
 				</div>
 				<?php endif; ?>
 
