@@ -2532,8 +2532,8 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-section {
 		border: none !important;
 		box-shadow: none !important;
-		padding: 0.25rem 0 !important;
-		margin: 0 !important;
+		padding: 0.5rem 0 !important;
+		margin: 0 0 0.25rem !important;
 	}
 
 	/* Section title — green accent */
@@ -2597,7 +2597,7 @@ select.fcc-bmr-input {
 		justify-content: space-between;
 		align-items: center;
 		padding: 14px 18px;
-		margin-bottom: 10px;
+		margin-bottom: 4px;
 		background: linear-gradient(135deg, #043e40, #075B5E) !important;
 		color: #fff;
 		border-radius: 10px;
@@ -2667,10 +2667,12 @@ select.fcc-bmr-input {
 		border-top: 1px solid #e0e0e0;
 	}
 
-	/* Compact spacing for single-page fit */
-	.fcc-print-clone .fcc-section-title { font-size: 12pt !important; margin-bottom: 4px !important; }
-	.fcc-print-clone .fcc-health-highlights { padding: 6px 8px !important; margin-bottom: 6px !important; }
-	.fcc-print-clone .fcc-traffic-lights { padding: 6px 8px !important; margin-bottom: 6px !important; }
+	/* Section spacing for print */
+	.fcc-print-clone .fcc-section-title { font-size: 12pt !important; margin-bottom: 6px !important; }
+	.fcc-print-clone .fcc-health-highlights { padding: 8px 10px !important; margin-bottom: 10px !important; }
+	.fcc-print-clone .fcc-allergen-badges { margin-bottom: 10px !important; }
+	.fcc-print-clone .fcc-diet-badges { margin-bottom: 10px !important; }
+	.fcc-print-clone .fcc-traffic-lights { padding: 8px 10px !important; margin-bottom: 12px !important; }
 	.fcc-print-clone .fcc-tl-row { gap: 4px !important; }
 	.fcc-print-clone .fcc-tl-item { padding: 3px 6px !important; font-size: 8pt !important; }
 	.fcc-print-clone .fcc-nutrition-table th,
@@ -2783,7 +2785,7 @@ select.fcc-bmr-input {
 	@page {
 		margin: 0 1cm 1.5cm 1cm;
 	}
-	.fcc-print-clone { padding-top: 0.6cm !important; }
+	.fcc-print-clone { padding-top: 0 !important; }
 
 	.fcc-print-clone .fcc-meal-totals,
 	.fcc-print-clone .fcc-nutrition-table-wrapper,
