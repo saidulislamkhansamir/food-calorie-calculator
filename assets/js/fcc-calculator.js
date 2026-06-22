@@ -2098,23 +2098,21 @@
 
 			// Inject spacers at page break points for top padding on page 2+.
 			( function () {
-				var pageH = 980;
-				var cumH = 0;
-				var children = Array.prototype.slice.call( clone.children );
-				children.forEach( function ( el ) {
-					var h = el.offsetHeight || 0;
-					var newCum = cumH + h;
-					if ( cumH > 0 && newCum > pageH ) {
+				var pageH = 960;
+				var cloneTop = clone.getBoundingClientRect().top;
+				var seen = {};
+				var els = clone.querySelectorAll( '.fcc-section, .fcc-macro-chart-wrapper, .fcc-meal-item, .fcc-meal-cat-header, .fcc-meal-totals, .fcc-nutrition-table-wrapper, .fcc-omega3-section, .fcc-caffeine-section, .fcc-health-highlights, .fcc-traffic-lights, .fcc-allergen-badges, .fcc-diet-badges, .fcc-macro-rings, .fcc-macro-bars, .fcc-macro-detail, .fcc-print-footer' );
+				for ( var i = 0; i < els.length; i++ ) {
+					var el = els[ i ];
+					var top = el.getBoundingClientRect().top - cloneTop;
+					var page = Math.floor( top / pageH );
+					if ( page > 0 && ! seen[ page ] ) {
+						seen[ page ] = true;
 						var spacer = document.createElement( 'div' );
-						spacer.style.cssText = 'height:1cm;width:100%;';
-						spacer.className = 'fcc-print-spacer';
+						spacer.style.cssText = 'height:1cm;width:100%;flex-shrink:0;';
 						el.parentNode.insertBefore( spacer, el );
-						cumH = h;
-					} else {
-						cumH = newCum;
 					}
-					if ( cumH >= pageH ) cumH = cumH - pageH;
-				} );
+				}
 			} )();
 
 			const prevTitle = document.title;
