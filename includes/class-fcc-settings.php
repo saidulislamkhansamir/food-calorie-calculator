@@ -85,6 +85,7 @@ class Settings {
 				'meal_copy'              => true,
 				'meal_micronutrients'    => true,
 				'meal_servings'          => true,
+				'pwa_install'            => true,
 			],
 			'appearance' => [
 				'primary_colour'    => '#075B5E',

@@ -385,6 +385,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 							'share_link'         => [ __( 'Shareable Link', 'food-calorie-calculator' ), __( 'URL with food + quantity', 'food-calorie-calculator' ) ],
 							'json_ld_schema'     => [ __( 'JSON-LD Schema (SEO)', 'food-calorie-calculator' ), __( 'Structured data output', 'food-calorie-calculator' ) ],
 							'powered_by_footer'  => [ __( 'Powered-by Footer', 'food-calorie-calculator' ), __( 'Attribution footer link', 'food-calorie-calculator' ) ],
+							'pwa_install'        => [ __( 'Install as App (PWA)', 'food-calorie-calculator' ), __( 'Add to Home Screen button for mobile visitors', 'food-calorie-calculator' ) ],
 							'add_custom_food'    => [ __( 'Add Custom Food (Frontend)', 'food-calorie-calculator' ), __( 'Visitor-submitted foods', 'food-calorie-calculator' ) ],
 						],
 					],

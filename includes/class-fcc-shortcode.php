@@ -24,6 +24,7 @@ class Shortcode {
 	public function register( Loader $loader ): void {
 		$loader->add_action( 'init', $this, 'register_shortcode' );
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_style_early' );
+		$loader->add_action( 'wp_head', $this, 'maybe_output_pwa_manifest', 1 );
 		$loader->add_action( 'wp_footer', $this, 'maybe_enqueue_assets' );
 	}
 
@@ -127,6 +128,26 @@ class Shortcode {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Output PWA manifest link in <head> if pwa_install feature is enabled.
+	 */
+	public function maybe_output_pwa_manifest(): void {
+		if ( ! is_singular() ) return;
+		$features = Settings::get_section( 'features' );
+		if ( empty( $features['pwa_install'] ) ) return;
+		global $post;
+		if ( ! $post ) return;
+		if ( ! has_shortcode( $post->post_content, 'food_calorie_calculator' )
+			&& ! ( function_exists( 'has_block' ) && has_block( 'fcc/calculator', $post ) ) ) return;
+
+		$manifest_url = FCC_PLUGIN_URL . 'assets/pwa/manifest.json';
+		echo '<link rel="manifest" href="' . esc_url( $manifest_url ) . '">' . "\n";
+		echo '<meta name="theme-color" content="#075B5E">' . "\n";
+		echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
+		echo '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' . "\n";
+		echo '<link rel="apple-touch-icon" href="' . esc_url( FCC_PLUGIN_URL . 'assets/pwa/icon.svg' ) . '">' . "\n";
 	}
 
 	/**
@@ -236,6 +257,7 @@ class Shortcode {
 			'fccData',
 			[
 				'restUrl'    => esc_url_raw( rest_url( 'fcc/v1' ) ),
+				'pluginUrl'  => esc_url_raw( FCC_PLUGIN_URL ),
 				'restNonce'  => wp_create_nonce( 'wp_rest' ),
 				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 				'features'   => $features,

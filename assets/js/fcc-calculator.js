@@ -2968,4 +2968,47 @@
 		setTimeout( function () { toast.style.opacity = '0'; }, 2500 );
 	}
 
+	// -------------------------------------------------------------------------
+	// PWA Install
+	// -------------------------------------------------------------------------
+	if ( features.pwa_install !== false && 'serviceWorker' in navigator ) {
+		var swUrl = ( fccData.pluginUrl || '' ) + 'assets/pwa/sw.js';
+		navigator.serviceWorker.register( swUrl, { scope: '/' } ).catch( function () {} );
+
+		var deferredPrompt = null;
+
+		window.addEventListener( 'beforeinstallprompt', function ( e ) {
+			e.preventDefault();
+			deferredPrompt = e;
+
+			var btn = document.createElement( 'button' );
+			btn.type = 'button';
+			btn.className = 'fcc-pwa-install-btn';
+			btn.innerHTML =
+				'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+				'<span>Install App</span>';
+			btn.addEventListener( 'click', function () {
+				if ( ! deferredPrompt ) return;
+				deferredPrompt.prompt();
+				deferredPrompt.userChoice.then( function ( result ) {
+					if ( result.outcome === 'accepted' ) btn.remove();
+					deferredPrompt = null;
+				} );
+			} );
+
+			var footer = root.querySelector( '.fcc-footer' );
+			if ( footer ) {
+				footer.insertBefore( btn, footer.firstChild );
+			} else {
+				root.querySelector( '.fcc-tabs-body' ).appendChild( btn );
+			}
+		} );
+
+		window.addEventListener( 'appinstalled', function () {
+			var b = root.querySelector( '.fcc-pwa-install-btn' );
+			if ( b ) b.remove();
+			deferredPrompt = null;
+		} );
+	}
+
 } )();
