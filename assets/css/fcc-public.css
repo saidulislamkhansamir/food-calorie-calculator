@@ -2693,6 +2693,15 @@ select.fcc-bmr-input {
 		font-size: 7pt;
 		color: #999;
 	}
+	.fcc-print-footer__disclaimer {
+		text-align: center;
+		font-size: 6pt;
+		color: #aaa;
+		line-height: 1.5;
+		margin-top: 6px;
+		padding-top: 6px;
+		border-top: 1px solid #e8e8e8;
+	}
 
 	/* Compact spacing for single-page fit */
 	.fcc-print-clone .fcc-section-title { font-size: 12pt !important; margin-bottom: 4px !important; }
