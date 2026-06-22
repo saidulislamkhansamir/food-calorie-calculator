@@ -2096,6 +2096,27 @@
 
 			document.body.appendChild( clone );
 
+			// Inject spacers at page break points for top padding on page 2+.
+			( function () {
+				var pageH = 980;
+				var cumH = 0;
+				var children = Array.prototype.slice.call( clone.children );
+				children.forEach( function ( el ) {
+					var h = el.offsetHeight || 0;
+					var newCum = cumH + h;
+					if ( cumH > 0 && newCum > pageH ) {
+						var spacer = document.createElement( 'div' );
+						spacer.style.cssText = 'height:1cm;width:100%;';
+						spacer.className = 'fcc-print-spacer';
+						el.parentNode.insertBefore( spacer, el );
+						cumH = h;
+					} else {
+						cumH = newCum;
+					}
+					if ( cumH >= pageH ) cumH = cumH - pageH;
+				} );
+			} )();
+
 			const prevTitle = document.title;
 			document.title  = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
 			window.print();
