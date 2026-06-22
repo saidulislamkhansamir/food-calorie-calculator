@@ -1622,6 +1622,7 @@
 				var idx = parseInt( loadBtn.dataset.tplIdx, 10 );
 				var tpls = getTemplates();
 				if ( tpls[ idx ] ) {
+					state.meal = [];
 					tpls[ idx ].items.forEach( function ( item ) {
 						state.meal.push( {
 							food:     item.food,
