@@ -169,8 +169,9 @@ class Settings_Page {
 				$fn    = sanitize_text_field( $rule['food_name'] ?? '' );
 				$pos   = max( 1, min( 3, absint( $rule['position'] ?? 1 ) ) );
 				$badge = sanitize_text_field( $rule['badge'] ?? '' );
+				$enabled = absint( $rule['enabled'] ?? 1 );
 				if ( $kw !== '' && $fid > 0 ) {
-					$pinned[] = [ 'keyword' => $kw, 'food_id' => $fid, 'food_name' => $fn, 'position' => $pos, 'badge' => $badge ];
+					$pinned[] = [ 'keyword' => $kw, 'food_id' => $fid, 'food_name' => $fn, 'position' => $pos, 'badge' => $badge, 'enabled' => $enabled ];
 				}
 			}
 		}

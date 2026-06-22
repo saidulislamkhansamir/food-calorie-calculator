@@ -706,8 +706,11 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					<?php
 					$pinned_foods = $pinned_settings['pinned_foods'] ?? [];
 					$pos_labels = [ 1 => '1st', 2 => '2nd', 3 => '3rd' ];
-					foreach ( $pinned_foods as $idx => $rule ) : ?>
-						<div class="fcc-pincard">
+					<?php $enabled_val = isset( $rule['enabled'] ) ? (int) $rule['enabled'] : 1; ?>
+					foreach ( $pinned_foods as $idx => $rule ) :
+						$is_enabled = ( $rule['enabled'] ?? 1 ) ? true : false;
+					?>
+						<div class="fcc-pincard<?php echo ! $is_enabled ? ' fcc-pincard--disabled' : ''; ?>">
 							<div class="fcc-pincard__topbar">
 								<div class="fcc-pincard__topbar-icon">
 									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 11V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v7"/><path d="M5 11h14l-1.5 6H6.5z"/></svg>
@@ -717,9 +720,21 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 								<?php if ( ! empty( $rule['badge'] ) ) : ?>
 									<span class="fcc-pincard__topbar-badge"><?php echo esc_html( $rule['badge'] ); ?></span>
 								<?php endif; ?>
-								<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
-									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-								</button>
+								<div class="fcc-pincard__actions">
+									<input type="hidden" name="pinned_foods[<?php echo $idx; ?>][enabled]" value="<?php echo $is_enabled ? '1' : '0'; ?>" class="fcc-pincard__enabled-val">
+									<button type="button" class="fcc-pincard__action-btn fcc-pincard__toggle" title="<?php echo $is_enabled ? esc_attr__( 'Disable', 'food-calorie-calculator' ) : esc_attr__( 'Enable', 'food-calorie-calculator' ); ?>">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 11-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+									</button>
+									<button type="button" class="fcc-pincard__action-btn fcc-pincard__duplicate" title="<?php esc_attr_e( 'Duplicate', 'food-calorie-calculator' ); ?>">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+									</button>
+									<button type="button" class="fcc-pincard__action-btn fcc-pincard__collapse" title="<?php esc_attr_e( 'Collapse', 'food-calorie-calculator' ); ?>">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+									</button>
+									<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="<?php esc_attr_e( 'Remove', 'food-calorie-calculator' ); ?>">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+									</button>
+								</div>
 							</div>
 							<div class="fcc-pincard__body">
 								<div class="fcc-pincard__grid">
@@ -1230,29 +1245,48 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 		if ( empty ) empty.style.display = 'none';
 		var card = document.createElement( 'div' );
 		card.className = 'fcc-pincard';
-		card.innerHTML =
-			'<div class="fcc-pincard__topbar">' +
-				'<div class="fcc-pincard__topbar-icon">' + pinIcon + '</div>' +
-				'<span class="fcc-pincard__topbar-label">New Rule</span>' +
-				'<span class="fcc-pincard__topbar-pos">1st</span>' +
-				'<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="Remove">' + rmSvg + '</button>' +
-			'</div>' +
-			'<div class="fcc-pincard__body">' +
-				'<div class="fcc-pincard__grid">' +
-					'<div class="fcc-pincard__cell fcc-pincard__cell--keyword"><label>' + kwIcon + ' Keyword</label>' +
-						'<input type="text" name="pinned_foods[' + pinCount + '][keyword]" placeholder="e.g. caviar" class="fcc-pin-input"></div>' +
-					'<div class="fcc-pincard__cell fcc-pincard__cell--food" style="position:relative"><label>' + fdIcon + ' Food</label>' +
-						foodCell( 'pinned_foods', pinCount ) + '</div>' +
-					'<div class="fcc-pincard__cell fcc-pincard__cell--pos"><label>' + posIcon + ' Position</label>' +
-						'<select name="pinned_foods[' + pinCount + '][position]" class="fcc-pin-select">' +
-						'<option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select></div>' +
-					'<div class="fcc-pincard__cell fcc-pincard__cell--badge"><label>' + starIcon + ' Badge</label>' +
-						'<select name="pinned_foods[' + pinCount + '][badge]" class="fcc-pin-select">' + badgeOpts + '</select></div>' +
-				'</div>' +
-			'</div>';
+		card.innerHTML = buildPinCardHTML( pinCount, '', '', 0, '', '1', 'New Rule' );
 		pinList.appendChild( card );
 		pinCount++;
 	} );
+
+	var toggleSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 11-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>';
+	var dupSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+	var collSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+	function buildPinCardHTML( idx, keyword, foodName, foodId, badge, position, label ) {
+		return '<div class="fcc-pincard__topbar">' +
+			'<div class="fcc-pincard__topbar-icon">' + pinIcon + '</div>' +
+			'<span class="fcc-pincard__topbar-label">' + ( label || 'New Rule' ) + '</span>' +
+			'<span class="fcc-pincard__topbar-pos">' + ( {1:'1st',2:'2nd',3:'3rd'}[position] || '1st' ) + '</span>' +
+			( badge ? '<span class="fcc-pincard__topbar-badge">' + badge + '</span>' : '' ) +
+			'<div class="fcc-pincard__actions">' +
+				'<input type="hidden" name="pinned_foods[' + idx + '][enabled]" value="1" class="fcc-pincard__enabled-val">' +
+				'<button type="button" class="fcc-pincard__action-btn fcc-pincard__toggle" title="Toggle">' + toggleSvg + '</button>' +
+				'<button type="button" class="fcc-pincard__action-btn fcc-pincard__duplicate" title="Duplicate">' + dupSvg + '</button>' +
+				'<button type="button" class="fcc-pincard__action-btn fcc-pincard__collapse" title="Collapse">' + collSvg + '</button>' +
+				'<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="Remove">' + rmSvg + '</button>' +
+			'</div>' +
+		'</div>' +
+		'<div class="fcc-pincard__body">' +
+			'<div class="fcc-pincard__grid">' +
+				'<div class="fcc-pincard__cell fcc-pincard__cell--keyword"><label>' + kwIcon + ' Keyword</label>' +
+					'<input type="text" name="pinned_foods[' + idx + '][keyword]" value="' + keyword + '" placeholder="e.g. caviar" class="fcc-pin-input"></div>' +
+				'<div class="fcc-pincard__cell fcc-pincard__cell--food" style="position:relative"><label>' + fdIcon + ' Food</label>' +
+					'<div style="position:relative"><input type="text" class="fcc-pin-input fcc-pin-food-search" value="' + foodName + '" placeholder="Search food…" autocomplete="off">' +
+					'<input type="hidden" name="pinned_foods[' + idx + '][food_id]" value="' + foodId + '" class="fcc-pin-food-id">' +
+					'<input type="hidden" name="pinned_foods[' + idx + '][food_name]" value="' + foodName + '" class="fcc-pin-food-name">' +
+					'<ul class="fcc-pin-dropdown" hidden></ul></div></div>' +
+				'<div class="fcc-pincard__cell fcc-pincard__cell--pos"><label>' + posIcon + ' Position</label>' +
+					'<select name="pinned_foods[' + idx + '][position]" class="fcc-pin-select">' +
+					'<option value="1"' + ( position == '1' ? ' selected' : '' ) + '>1st</option>' +
+					'<option value="2"' + ( position == '2' ? ' selected' : '' ) + '>2nd</option>' +
+					'<option value="3"' + ( position == '3' ? ' selected' : '' ) + '>3rd</option></select></div>' +
+				'<div class="fcc-pincard__cell fcc-pincard__cell--badge"><label>' + starIcon + ' Badge</label>' +
+					'<select name="pinned_foods[' + idx + '][badge]" class="fcc-pin-select">' + badgeOpts.replace( 'value="' + badge + '"', 'value="' + badge + '" selected' ) + '</select></div>' +
+			'</div>' +
+		'</div>';
+	}
 
 	// ── 2. Curated Trending ──
 	var trendBody  = document.getElementById( 'fcc-trending-tbody' );
@@ -1324,8 +1358,46 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 	document.addEventListener( 'click', function ( e ) {
 		var rm = e.target.closest( '.fcc-pin-remove' );
 		if ( ! rm ) return;
-		var row = rm.closest( '.fcc-pin-row' ) || rm.closest( '.fcc-promo-card' );
+		var row = rm.closest( '.fcc-pincard' ) || rm.closest( '.fcc-pin-row' ) || rm.closest( '.fcc-promo-card' );
 		if ( row ) row.remove();
+	} );
+
+	// ── Toggle ON/OFF ──
+	document.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '.fcc-pincard__toggle' );
+		if ( ! btn ) return;
+		var card = btn.closest( '.fcc-pincard' );
+		var inp  = card.querySelector( '.fcc-pincard__enabled-val' );
+		var isOn = inp.value === '1';
+		inp.value = isOn ? '0' : '1';
+		card.classList.toggle( 'fcc-pincard--disabled', isOn );
+	} );
+
+	// ── Collapse/Expand ──
+	document.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '.fcc-pincard__collapse' );
+		if ( ! btn ) return;
+		btn.closest( '.fcc-pincard' ).classList.toggle( 'fcc-pincard--collapsed' );
+	} );
+
+	// ── Duplicate ──
+	document.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '.fcc-pincard__duplicate' );
+		if ( ! btn ) return;
+		if ( ! pinList ) return;
+		if ( pinCount >= 20 ) { alert( 'Maximum 20 pin rules.' ); return; }
+		var src = btn.closest( '.fcc-pincard' );
+		var kw   = ( src.querySelector( 'input[name*="[keyword]"]' ) || {} ).value || '';
+		var fName = ( src.querySelector( '.fcc-pin-food-name' ) || {} ).value || '';
+		var fId   = ( src.querySelector( '.fcc-pin-food-id' ) || {} ).value || '0';
+		var pos   = ( src.querySelector( 'select[name*="[position]"]' ) || {} ).value || '1';
+		var badge = ( src.querySelector( 'select[name*="[badge]"]' ) || {} ).value || '';
+		var card = document.createElement( 'div' );
+		card.className = 'fcc-pincard';
+		card.innerHTML = buildPinCardHTML( pinCount, '', fName, fId, badge, pos, fName || 'New Rule' );
+		src.after( card );
+		pinCount++;
+		card.querySelector( 'input[name*="[keyword]"]' ).focus();
 	} );
 
 	// ── Global: food autocomplete ──

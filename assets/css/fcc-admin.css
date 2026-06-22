@@ -2885,6 +2885,47 @@
 	background: #075B5E;
 	flex-shrink: 0;
 }
+/* Pin card actions */
+.fcc-pincard__actions {
+	display: flex;
+	align-items: center;
+	gap: .3rem;
+	margin-left: auto;
+}
+.fcc-pincard__action-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: rgba(7,91,94,.5);
+	padding: .25rem;
+	border-radius: 5px;
+	transition: color .15s, background .15s;
+	display: flex;
+	align-items: center;
+}
+.fcc-pincard__action-btn:hover {
+	color: #075B5E;
+	background: rgba(7,91,94,.08);
+}
+
+/* Disabled state */
+.fcc-pincard--disabled {
+	opacity: .5;
+	border-style: dashed;
+}
+.fcc-pincard--disabled .fcc-pincard__topbar {
+	background: linear-gradient(135deg, #f5f5f5 0%, #eee 100%);
+	border-bottom-color: #ddd;
+}
+.fcc-pincard--disabled .fcc-pincard__topbar-icon { background: #aaa; }
+.fcc-pincard--disabled .fcc-pincard__topbar-label { color: #999; }
+.fcc-pincard--disabled .fcc-pincard__toggle { color: #e74c3c; }
+
+/* Collapsed state */
+.fcc-pincard--collapsed .fcc-pincard__body,
+.fcc-pincard--collapsed .fcc-pincard__preview { display: none; }
+.fcc-pincard--collapsed .fcc-pincard__collapse svg { transform: rotate(-90deg); }
+
 .fcc-pincard__preview strong { color: #333; }
 .fcc-pincard__preview-badge {
 	font-size: .6rem;

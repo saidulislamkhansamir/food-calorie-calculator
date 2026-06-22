@@ -370,6 +370,7 @@ class Database {
 		$matched = [];
 		foreach ( $rules as $rule ) {
 			if ( empty( $rule['keyword'] ) || empty( $rule['food_id'] ) ) continue;
+			if ( isset( $rule['enabled'] ) && ! $rule['enabled'] ) continue;
 			if ( mb_stripos( $query, $rule['keyword'] ) === false ) continue;
 			$matched[] = $rule;
 		}
