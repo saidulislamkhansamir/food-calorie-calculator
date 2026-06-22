@@ -2532,8 +2532,11 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-section {
 		border: none !important;
 		box-shadow: none !important;
-		padding: 0.5rem 0 !important;
+		padding: 0.35rem 0 !important;
 		margin: 0 0 0.25rem !important;
+	}
+	.fcc-print-clone .fcc-section:first-child {
+		padding-top: 0 !important;
 	}
 
 	/* Section title — green accent */
@@ -2597,7 +2600,7 @@ select.fcc-bmr-input {
 		justify-content: space-between;
 		align-items: center;
 		padding: 14px 18px;
-		margin-bottom: 4px;
+		margin-bottom: 2px;
 		background: linear-gradient(135deg, #043e40, #075B5E) !important;
 		color: #fff;
 		border-radius: 10px;
@@ -2785,7 +2788,8 @@ select.fcc-bmr-input {
 	@page {
 		margin: 0 1cm 1.5cm 1cm;
 	}
-	.fcc-print-clone { padding-top: 0 !important; }
+	.fcc-print-clone { padding-top: 0.6cm !important; }
+	.fcc-print-clone .fcc-section-title:first-of-type { margin-top: 0 !important; }
 
 	.fcc-print-clone .fcc-meal-totals,
 	.fcc-print-clone .fcc-nutrition-table-wrapper,
