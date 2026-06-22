@@ -2840,6 +2840,33 @@
 .fcc-pincard__body {
 	padding: 1rem 1.15rem 1.15rem;
 }
+.fcc-pincard__grid {
+	display: grid;
+	grid-template-columns: 1.2fr 2fr .6fr 1fr;
+	gap: .6rem;
+	align-items: end;
+}
+.fcc-pincard__cell { min-width: 0; }
+.fcc-pincard__cell label {
+	display: flex;
+	align-items: center;
+	gap: .3rem;
+	font-size: .7rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	color: #888;
+	margin-bottom: .3rem;
+}
+.fcc-pincard__cell label svg { flex-shrink: 0; opacity: .6; }
+.fcc-pincard__cell .fcc-pin-input,
+.fcc-pincard__cell .fcc-pin-select { width: 100%; display: block; }
+@media screen and (max-width: 768px) {
+	.fcc-pincard__grid { grid-template-columns: 1fr 1fr; }
+}
+@media screen and (max-width: 480px) {
+	.fcc-pincard__grid { grid-template-columns: 1fr; }
+}
 .fcc-pincard__preview {
 	display: flex;
 	align-items: center;

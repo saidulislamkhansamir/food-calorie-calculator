@@ -722,8 +722,8 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 								</button>
 							</div>
 							<div class="fcc-pincard__body">
-								<div class="fcc-promo-card__row fcc-promo-card__row--wide">
-									<div class="fcc-promo-card__field">
+								<div class="fcc-pincard__grid">
+									<div class="fcc-pincard__cell fcc-pincard__cell--keyword">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 											<?php esc_html_e( 'Keyword', 'food-calorie-calculator' ); ?>
@@ -732,7 +732,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 											value="<?php echo esc_attr( $rule['keyword'] ); ?>"
 											placeholder="e.g. caviar" class="fcc-pin-input">
 									</div>
-									<div class="fcc-promo-card__field" style="position:relative">
+									<div class="fcc-pincard__cell fcc-pincard__cell--food" style="position:relative">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>
 											<?php esc_html_e( 'Food', 'food-calorie-calculator' ); ?>
@@ -747,25 +747,23 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 											value="<?php echo esc_attr( $rule['food_name'] ); ?>" class="fcc-pin-food-name">
 										<ul class="fcc-pin-dropdown" hidden></ul>
 									</div>
-								</div>
-								<div class="fcc-promo-card__row">
-									<div class="fcc-promo-card__field">
+									<div class="fcc-pincard__cell fcc-pincard__cell--pos">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>
 											<?php esc_html_e( 'Position', 'food-calorie-calculator' ); ?>
 										</label>
-										<select name="pinned_foods[<?php echo $idx; ?>][position]" class="fcc-pin-select" style="width:100%">
-											<option value="1"<?php selected( $rule['position'] ?? 1, 1 ); ?>>1st — Top result</option>
-											<option value="2"<?php selected( $rule['position'] ?? 1, 2 ); ?>>2nd — Second result</option>
-											<option value="3"<?php selected( $rule['position'] ?? 1, 3 ); ?>>3rd — Third result</option>
+										<select name="pinned_foods[<?php echo $idx; ?>][position]" class="fcc-pin-select">
+											<option value="1"<?php selected( $rule['position'] ?? 1, 1 ); ?>>1st</option>
+											<option value="2"<?php selected( $rule['position'] ?? 1, 2 ); ?>>2nd</option>
+											<option value="3"<?php selected( $rule['position'] ?? 1, 3 ); ?>>3rd</option>
 										</select>
 									</div>
-									<div class="fcc-promo-card__field">
+									<div class="fcc-pincard__cell fcc-pincard__cell--badge">
 										<label>
 											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
 											<?php esc_html_e( 'Badge', 'food-calorie-calculator' ); ?>
 										</label>
-										<select name="pinned_foods[<?php echo $idx; ?>][badge]" class="fcc-pin-select" style="width:100%">
+										<select name="pinned_foods[<?php echo $idx; ?>][badge]" class="fcc-pin-select">
 											<?php foreach ( $badge_options as $val => $lbl ) : ?>
 												<option value="<?php echo esc_attr( $val ); ?>"<?php selected( $rule['badge'] ?? '', $val ); ?>><?php echo esc_html( $lbl ); ?></option>
 											<?php endforeach; ?>
@@ -1240,18 +1238,16 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 				'<button type="button" class="fcc-promo-card__close fcc-pin-remove" title="Remove">' + rmSvg + '</button>' +
 			'</div>' +
 			'<div class="fcc-pincard__body">' +
-				'<div class="fcc-promo-card__row fcc-promo-card__row--wide">' +
-					'<div class="fcc-promo-card__field"><label>' + kwIcon + ' Keyword</label>' +
+				'<div class="fcc-pincard__grid">' +
+					'<div class="fcc-pincard__cell fcc-pincard__cell--keyword"><label>' + kwIcon + ' Keyword</label>' +
 						'<input type="text" name="pinned_foods[' + pinCount + '][keyword]" placeholder="e.g. caviar" class="fcc-pin-input"></div>' +
-					'<div class="fcc-promo-card__field" style="position:relative"><label>' + fdIcon + ' Food</label>' +
+					'<div class="fcc-pincard__cell fcc-pincard__cell--food" style="position:relative"><label>' + fdIcon + ' Food</label>' +
 						foodCell( 'pinned_foods', pinCount ) + '</div>' +
-				'</div>' +
-				'<div class="fcc-promo-card__row">' +
-					'<div class="fcc-promo-card__field"><label>' + posIcon + ' Position</label>' +
-						'<select name="pinned_foods[' + pinCount + '][position]" class="fcc-pin-select" style="width:100%">' +
-						'<option value="1">1st — Top result</option><option value="2">2nd — Second result</option><option value="3">3rd — Third result</option></select></div>' +
-					'<div class="fcc-promo-card__field"><label>' + starIcon + ' Badge</label>' +
-						'<select name="pinned_foods[' + pinCount + '][badge]" class="fcc-pin-select" style="width:100%">' + badgeOpts + '</select></div>' +
+					'<div class="fcc-pincard__cell fcc-pincard__cell--pos"><label>' + posIcon + ' Position</label>' +
+						'<select name="pinned_foods[' + pinCount + '][position]" class="fcc-pin-select">' +
+						'<option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select></div>' +
+					'<div class="fcc-pincard__cell fcc-pincard__cell--badge"><label>' + starIcon + ' Badge</label>' +
+						'<select name="pinned_foods[' + pinCount + '][badge]" class="fcc-pin-select">' + badgeOpts + '</select></div>' +
 				'</div>' +
 			'</div>';
 		pinList.appendChild( card );
