@@ -2677,30 +2677,31 @@ select.fcc-bmr-input {
 	/* ── Branded print footer with CTA ── */
 	.fcc-print-footer {
 		display: block !important;
-		margin-top: 12px;
-		border-top: 2px solid #075B5E;
-		padding-top: 8px;
+		margin-top: 14px;
 	}
 	.fcc-print-footer__cta {
 		text-align: center;
 		font-size: 9pt;
-		color: #075B5E;
-		padding: 6px 0;
-		margin-bottom: 4px;
+		color: #fff;
+		padding: 10px 12px;
+		background: linear-gradient(135deg, #043e40, #075B5E, #0a7a7e) !important;
+		border-radius: 8px;
+		margin-bottom: 8px;
 	}
+	.fcc-print-footer__cta strong { color: #fff; }
 	.fcc-print-footer__line {
 		text-align: center;
 		font-size: 7pt;
-		color: #999;
+		color: #888;
+		margin-bottom: 6px;
 	}
 	.fcc-print-footer__disclaimer {
 		text-align: center;
-		font-size: 6pt;
+		font-size: 5.5pt;
 		color: #aaa;
 		line-height: 1.5;
-		margin-top: 6px;
 		padding-top: 6px;
-		border-top: 1px solid #e8e8e8;
+		border-top: 1px solid #e0e0e0;
 	}
 
 	/* Compact spacing for single-page fit */
