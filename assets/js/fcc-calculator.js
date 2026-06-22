@@ -2029,14 +2029,42 @@
 				}
 			} );
 
-			// Convert canvas donut chart to image for print.
-			var origCanvas = root.querySelector( '#fcc-macro-chart' );
+			// Convert donut chart to image for print — redraw on a temp canvas.
+			var cloneChartArea = clone.querySelector( '.fcc-macro-left' );
 			var cloneCanvas = clone.querySelector( '#fcc-macro-chart' );
-			if ( origCanvas && cloneCanvas ) {
+			if ( cloneChartArea && cloneCanvas && food && window.FccChart ) {
 				try {
-					var dataUrl = origCanvas.toDataURL( 'image/png' );
-					if ( dataUrl && dataUrl.indexOf( 'data:image' ) === 0 && dataUrl.length > 200 ) {
-						var img = document.createElement( 'img' );
+					var tmpCanvas = document.createElement( 'canvas' );
+					tmpCanvas.width = 300;
+					tmpCanvas.height = 300;
+					tmpCanvas.style.cssText = 'width:150px;height:150px;position:absolute;left:-9999px';
+					document.body.appendChild( tmpCanvas );
+					var protein_kcal = ( food.protein_g || 0 ) * factor * 4;
+					var carbs_kcal   = ( food.carbohydrate_g || 0 ) * factor * 4;
+					var fat_kcal     = ( food.fat_g || 0 ) * factor * 9;
+					var ctx = tmpCanvas.getContext( '2d' );
+					ctx.scale( 2, 2 );
+					var sz = 150, cx = sz/2, cy = sz/2, outer = sz/2 - 4, inner = outer * 0.55;
+					var total = protein_kcal + carbs_kcal + fat_kcal;
+					var segs = [
+						{ val: protein_kcal, color: appearance.chartProteinColour || '#3b82f6' },
+						{ val: carbs_kcal,   color: appearance.chartCarbsColour   || '#f59e0b' },
+						{ val: fat_kcal,     color: appearance.chartFatColour     || '#ef4444' },
+					].filter( function(s) { return s.val > 0; } );
+					var angle = -Math.PI / 2;
+					segs.forEach( function(s) {
+						var slice = (s.val / total) * 2 * Math.PI;
+						ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,outer,angle,angle+slice); ctx.closePath();
+						ctx.fillStyle = s.color; ctx.fill(); angle += slice;
+					} );
+					ctx.beginPath(); ctx.arc(cx,cy,inner,0,2*Math.PI); ctx.fillStyle='#fff'; ctx.fill();
+					ctx.fillStyle='#075B5E'; ctx.textAlign='center'; ctx.textBaseline='middle';
+					ctx.font='bold ' + Math.round(inner*0.32) + 'px sans-serif';
+					ctx.fillText(Math.round(total)+' kcal',cx,cy);
+					var dataUrl = tmpCanvas.toDataURL('image/png');
+					document.body.removeChild( tmpCanvas );
+					if ( dataUrl && dataUrl.indexOf('data:image') === 0 && dataUrl.length > 500 ) {
+						var img = document.createElement('img');
 						img.src = dataUrl;
 						img.alt = 'Macro chart';
 						img.className = 'fcc-print-chart-img';
@@ -2046,7 +2074,7 @@
 						cloneCanvas.remove();
 					}
 				} catch ( e ) {
-					cloneCanvas.remove();
+					if ( cloneCanvas ) cloneCanvas.remove();
 				}
 			}
 
