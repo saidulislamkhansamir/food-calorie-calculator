@@ -2679,6 +2679,12 @@ select.fcc-bmr-input {
 		display: block !important;
 		margin-top: 14px;
 	}
+	.fcc-print-footer__line {
+		text-align: center;
+		font-size: 7pt;
+		color: #888;
+		margin-bottom: 8px;
+	}
 	.fcc-print-footer__cta {
 		text-align: center;
 		font-size: 9pt;
@@ -2689,12 +2695,6 @@ select.fcc-bmr-input {
 		margin-bottom: 8px;
 	}
 	.fcc-print-footer__cta strong { color: #fff; }
-	.fcc-print-footer__line {
-		text-align: center;
-		font-size: 7pt;
-		color: #888;
-		margin-bottom: 6px;
-	}
 	.fcc-print-footer__disclaimer {
 		text-align: center;
 		font-size: 5.5pt;
