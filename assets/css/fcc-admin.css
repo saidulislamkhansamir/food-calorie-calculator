@@ -5167,6 +5167,154 @@ button.fcc-reqs-tab {
 	padding-bottom: .6rem;
 }
 
+/* Email opt-in card */
+.fcc-an-email-card {
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 2px 12px rgba(0,0,0,.06);
+	border: 1.5px solid #e8ecec;
+	overflow: hidden;
+	margin-bottom: 1.5rem;
+}
+.fcc-an-email-card__header {
+	display: flex;
+	align-items: center;
+	gap: .75rem;
+	padding: 1rem 1.25rem;
+	background: linear-gradient(135deg, #075B5E 0%, #0a7a7e 100%);
+	color: #fff;
+}
+.fcc-an-email-card__icon {
+	width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255,255,255,.15);
+	border-radius: 10px;
+	flex-shrink: 0;
+}
+.fcc-an-email-card__header strong {
+	font-size: .95rem;
+	display: block;
+}
+.fcc-an-email-card__header span {
+	font-size: .75rem;
+	opacity: .8;
+}
+.fcc-an-email-card__count {
+	margin-left: auto;
+	font-size: 1.5rem;
+	font-weight: 800;
+	background: rgba(255,255,255,.2);
+	padding: .2rem .7rem;
+	border-radius: 10px;
+	min-width: 36px;
+	text-align: center;
+}
+.fcc-an-email-card__empty {
+	text-align: center;
+	padding: 2rem 1rem;
+	color: #aaa;
+}
+.fcc-an-email-card__empty p { margin: .5rem 0 0; font-size: .82rem; }
+.fcc-an-email-card__list {
+	padding: .5rem 0;
+}
+.fcc-an-email-card__row {
+	display: flex;
+	align-items: center;
+	gap: .75rem;
+	padding: .6rem 1.25rem;
+	transition: background .15s;
+}
+.fcc-an-email-card__row:hover { background: #f8fafa; }
+.fcc-an-email-card__avatar {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #075B5E, #2D7A4F);
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: .8rem;
+	font-weight: 800;
+	flex-shrink: 0;
+}
+.fcc-an-email-card__info {
+	flex: 1;
+	min-width: 0;
+}
+.fcc-an-email-card__email {
+	display: block;
+	font-size: .85rem;
+	font-weight: 600;
+	color: #1E2A1E;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.fcc-an-email-card__food {
+	display: block;
+	font-size: .72rem;
+	color: #888;
+}
+.fcc-an-email-card__date {
+	font-size: .72rem;
+	font-weight: 600;
+	color: #999;
+	flex-shrink: 0;
+	background: #f0f7f7;
+	padding: .15rem .5rem;
+	border-radius: 6px;
+}
+.fcc-an-email-card__viewall {
+	display: block;
+	text-align: center;
+	padding: .5rem;
+	font-size: .78rem;
+	font-weight: 600;
+	color: #075B5E;
+	text-decoration: none;
+	border-top: 1px solid #f0f0f0;
+	transition: background .15s;
+}
+.fcc-an-email-card__viewall:hover { background: #f0f7f7; }
+.fcc-an-email-card__export {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: .85rem 1.25rem;
+	background: linear-gradient(135deg, #f0f9f9, #e8f5f5);
+	border-top: 1.5px solid #d4eaeb;
+}
+.fcc-an-email-card__export-text {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	font-size: .78rem;
+	color: #555;
+}
+.fcc-an-email-card__export-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+	padding: .45rem .9rem;
+	background: #075B5E;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-size: .78rem;
+	font-weight: 600;
+	cursor: pointer;
+	font-family: inherit;
+	transition: background .15s;
+	white-space: nowrap;
+}
+.fcc-an-email-card__export-btn:hover { background: #044547; }
+
 .fcc-an-loading {
 	text-align: center;
 	padding: 2rem;

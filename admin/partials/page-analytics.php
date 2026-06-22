@@ -942,49 +942,54 @@ function fcc_completeness_ring( float $pct ): string {
 		</div>
 
 		<!-- Recent Opt-ins + Export -->
-		<div class="fcc-card fcc-an-section fcc-an-email-section">
-			<div class="fcc-an-section__header">
-				<div class="fcc-an-section__title">
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+		<div class="fcc-an-email-card">
+			<div class="fcc-an-email-card__header">
+				<div class="fcc-an-email-card__icon">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+				</div>
+				<div>
 					<strong><?php esc_html_e( 'Recent Opt-ins', 'food-calorie-calculator' ); ?></strong>
+					<span><?php printf( esc_html__( '%d subscriber(s) ready for your newsletter', 'food-calorie-calculator' ), $kpi_subs ); ?></span>
 				</div>
-				<span class="fcc-an-section__desc">
-					<?php printf( esc_html__( '%d opted-in subscribers ready for your newsletter.', 'food-calorie-calculator' ), $kpi_subs ); ?>
-				</span>
+				<span class="fcc-an-email-card__count"><?php echo $kpi_subs; ?></span>
 			</div>
-			<div class="fcc-an-email-body">
-				<div class="fcc-an-email-list">
-					<?php if ( empty( $recent_optins ) ) : ?>
-						<p class="fcc-an-empty"><?php esc_html_e( 'No opt-ins yet.', 'food-calorie-calculator' ); ?></p>
-					<?php else : ?>
-						<table class="fcc-an-table">
-							<thead><tr><th><?php esc_html_e( 'Email', 'food-calorie-calculator' ); ?></th><th><?php esc_html_e( 'Requested Food', 'food-calorie-calculator' ); ?></th><th><?php esc_html_e( 'Date', 'food-calorie-calculator' ); ?></th></tr></thead>
-							<tbody>
-							<?php foreach ( $recent_optins as $sub ) : ?>
-								<tr>
-									<td><?php echo esc_html( $sub['requester_email'] ); ?></td>
-									<td><?php echo esc_html( $sub['food_name'] ); ?></td>
-									<td class="fcc-an-td--date"><?php echo esc_html( date_i18n( 'Y-m-d', strtotime( $sub['created_at'] ) ) ); ?></td>
-								</tr>
-							<?php endforeach; ?>
-							</tbody>
-						</table>
-						<div class="fcc-an-section__footer">
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-email-hub' ) ); ?>" class="fcc-an-view-all"><?php esc_html_e( 'View all subscribers →', 'food-calorie-calculator' ); ?></a>
+
+			<?php if ( empty( $recent_optins ) ) : ?>
+				<div class="fcc-an-email-card__empty">
+					<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+					<p><?php esc_html_e( 'No opt-ins yet. Subscribers will appear here when visitors opt in via the food request form.', 'food-calorie-calculator' ); ?></p>
+				</div>
+			<?php else : ?>
+				<div class="fcc-an-email-card__list">
+					<?php foreach ( $recent_optins as $sub ) : ?>
+						<div class="fcc-an-email-card__row">
+							<div class="fcc-an-email-card__avatar">
+								<?php echo strtoupper( mb_substr( $sub['requester_email'], 0, 1 ) ); ?>
+							</div>
+							<div class="fcc-an-email-card__info">
+								<span class="fcc-an-email-card__email"><?php echo esc_html( $sub['requester_email'] ); ?></span>
+								<span class="fcc-an-email-card__food"><?php esc_html_e( 'Requested:', 'food-calorie-calculator' ); ?> <?php echo esc_html( $sub['food_name'] ); ?></span>
+							</div>
+							<span class="fcc-an-email-card__date"><?php echo esc_html( date_i18n( 'M j', strtotime( $sub['created_at'] ) ) ); ?></span>
 						</div>
-					<?php endif; ?>
+					<?php endforeach; ?>
 				</div>
-				<div class="fcc-an-email-export">
-					<p class="fcc-an-email-export__desc"><?php esc_html_e( 'Export all opted-in subscribers to use in Mailchimp, ConvertKit, or any email platform.', 'food-calorie-calculator' ); ?></p>
-					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-						<input type="hidden" name="action" value="fcc_export_subscribers">
-						<?php wp_nonce_field( 'fcc_export_subscribers' ); ?>
-						<button type="submit" class="fcc-reqs-btn fcc-reqs-btn--mark-added">
-							<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-							<?php esc_html_e( 'Export CSV', 'food-calorie-calculator' ); ?>
-						</button>
-					</form>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-email-hub' ) ); ?>" class="fcc-an-email-card__viewall"><?php esc_html_e( 'View all subscribers →', 'food-calorie-calculator' ); ?></a>
+			<?php endif; ?>
+
+			<div class="fcc-an-email-card__export">
+				<div class="fcc-an-email-card__export-text">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#075B5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					<span><?php esc_html_e( 'Export to Mailchimp, ConvertKit, or any email platform', 'food-calorie-calculator' ); ?></span>
 				</div>
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="fcc_export_subscribers">
+					<?php wp_nonce_field( 'fcc_export_subscribers' ); ?>
+					<button type="submit" class="fcc-an-email-card__export-btn">
+						<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+						<?php esc_html_e( 'Export CSV', 'food-calorie-calculator' ); ?>
+					</button>
+				</form>
 			</div>
 		</div>
 
