@@ -4509,6 +4509,7 @@ select.fcc-bmr-input {
 	margin-top: 8px;
 }
 .fcc-meal-print-btn,
+.fcc-meal-save-tpl__btn,
 .fcc-meal-copy-btn,
 .fcc-meal-share-btn {
 	display: inline-flex;
@@ -4525,6 +4526,7 @@ select.fcc-bmr-input {
 	transition: border-color .15s, color .15s, background .15s;
 }
 .fcc-meal-print-btn:hover,
+.fcc-meal-save-tpl__btn:hover,
 .fcc-meal-copy-btn:hover,
 .fcc-meal-share-btn:hover {
 	border-color: var(--fcc-primary, #075B5E);
@@ -4539,24 +4541,7 @@ select.fcc-bmr-input {
 	margin-top: 8px;
 	text-align: center;
 }
-.fcc-meal-save-tpl__btn {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	padding: 6px 16px;
-	border: 1.5px solid var(--fcc-border, #d4ddd8);
-	border-radius: 8px;
-	background: var(--fcc-surface, #fff);
-	font-size: 0.78rem;
-	font-weight: 600;
-	color: var(--fcc-text-muted, #4a6365);
-	cursor: pointer;
-	transition: border-color .15s, color .15s;
-}
-.fcc-meal-save-tpl__btn:hover {
-	border-color: var(--fcc-primary, #075B5E);
-	color: var(--fcc-primary, #075B5E);
-}
+/* .fcc-meal-save-tpl__btn shares styles with action buttons above */
 
 /* ── Templates section ── */
 .fcc-meal-templates {
