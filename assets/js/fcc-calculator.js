@@ -2032,16 +2032,17 @@
 			// Convert donut chart to image for print — redraw on a temp canvas.
 			var cloneChartArea = clone.querySelector( '.fcc-macro-left' );
 			var cloneCanvas = clone.querySelector( '#fcc-macro-chart' );
-			if ( cloneChartArea && cloneCanvas && food && window.FccChart ) {
+			var printFood = state.food;
+			if ( cloneChartArea && cloneCanvas && printFood ) {
 				try {
 					var tmpCanvas = document.createElement( 'canvas' );
 					tmpCanvas.width = 300;
 					tmpCanvas.height = 300;
 					tmpCanvas.style.cssText = 'width:150px;height:150px;position:absolute;left:-9999px';
 					document.body.appendChild( tmpCanvas );
-					var protein_kcal = ( food.protein_g || 0 ) * factor * 4;
-					var carbs_kcal   = ( food.carbohydrate_g || 0 ) * factor * 4;
-					var fat_kcal     = ( food.fat_g || 0 ) * factor * 9;
+					var protein_kcal = ( printFood.protein_g || 0 ) * factor * 4;
+					var carbs_kcal   = ( printFood.carbohydrate_g || 0 ) * factor * 4;
+					var fat_kcal     = ( printFood.fat_g || 0 ) * factor * 9;
 					var ctx = tmpCanvas.getContext( '2d' );
 					ctx.scale( 2, 2 );
 					var sz = 150, cx = sz/2, cy = sz/2, outer = sz/2 - 4, inner = outer * 0.55;
