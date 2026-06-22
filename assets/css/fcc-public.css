@@ -2817,9 +2817,12 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-meal-totals__hd { font-size: 9pt !important; margin-bottom: 2px !important; }
 
 	@page {
-		margin: 0 1cm 1.5cm 1cm;
+		margin: 1cm 1cm 1.5cm 1cm;
 	}
-	.fcc-print-clone { padding-top: 0.8cm !important; }
+	@page :first {
+		margin-top: 0;
+	}
+	.fcc-print-clone { padding-top: 0.5cm !important; }
 }
 
 /* ==========================================================================
