@@ -2560,23 +2560,51 @@ select.fcc-bmr-input {
 	/* Traffic lights — compact */
 	.fcc-print-clone .fcc-traffic-lights { margin-bottom: 8px !important; }
 
-	/* Nutrition table — colourful header */
-	.fcc-print-clone .fcc-nutrition-table { border: 1.5px solid #075B5E !important; border-radius: 6px !important; overflow: hidden !important; }
-	.fcc-print-clone .fcc-nutrition-table th {
+	/* Nutrition table — dynamic print design */
+	.fcc-print-clone .fcc-nutrition-table {
 		border: none !important;
-		border-bottom: 1.5px solid #075B5E !important;
+		border-radius: 8px !important;
+		overflow: hidden !important;
+		box-shadow: 0 0 0 1.5px #075B5E !important;
+	}
+	.fcc-print-clone .fcc-nutrition-table thead th {
+		border: none !important;
 		padding: 8px 10px !important;
-		font-size: 9pt !important;
-		background: #075B5E !important;
+		font-size: 8pt !important;
+		background: linear-gradient(135deg, #043e40, #075B5E) !important;
 		color: #fff !important;
+		text-transform: uppercase !important;
+		letter-spacing: 0.05em !important;
 	}
 	.fcc-print-clone .fcc-nutrition-table td {
 		border: none !important;
 		border-bottom: 1px solid #e8f0e8 !important;
 		padding: 6px 10px !important;
-		font-size: 10pt !important;
+		font-size: 9pt !important;
+	}
+	.fcc-print-clone .fcc-nutrition-table th[scope="row"] {
+		background: transparent !important;
+		color: #1a2e2f !important;
+		font-weight: 600 !important;
+		text-transform: none !important;
+		letter-spacing: normal !important;
 	}
 	.fcc-print-clone .fcc-nutrition-table tbody tr:nth-child(even) { background: #f0f7f7 !important; }
+	.fcc-print-clone .fcc-nutrition-table tbody tr:hover { background: #e8f5f5 !important; }
+	.fcc-print-clone .fcc-ri-cell { min-width: 50px !important; }
+	.fcc-print-clone .fcc-ri-val { font-size: 9pt !important; font-weight: 800 !important; }
+	.fcc-print-clone .fcc-ri-bar {
+		height: 5px !important;
+		background: #e0eaea !important;
+		border-radius: 3px !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+	.fcc-print-clone .fcc-ri-bar__fill {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+	.fcc-print-clone .fcc-row--sub th { font-style: italic !important; color: #555 !important; font-weight: 400 !important; }
 
 	/* SVG rings print natively — no special handling needed */
 	.fcc-print-clone .fcc-macro-chart-wrapper {
