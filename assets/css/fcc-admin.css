@@ -4972,15 +4972,59 @@ button.fcc-reqs-tab {
 
 .fcc-an-chart-card {
 	background: #fff;
-	border-radius: 12px;
-	padding: 1.5rem;
-	box-shadow: 0 2px 8px rgba(0,0,0,.07);
+	border-radius: 16px;
+	padding: 0;
+	box-shadow: 0 2px 12px rgba(0,0,0,.06);
+	border: 1.5px solid #e8ecec;
+	overflow: hidden;
+	transition: box-shadow .2s, border-color .2s;
+}
+.fcc-an-chart-card:hover {
+	box-shadow: 0 6px 24px rgba(7,91,94,.1);
+	border-color: #a3d4d6;
+}
+
+.fcc-an-chart-card__header {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .85rem 1.25rem;
+	background: linear-gradient(135deg, #f0f9f9 0%, #e8f5f5 100%);
+	border-bottom: 1.5px solid #d4eaeb;
+}
+.fcc-an-chart-card__header svg {
+	flex-shrink: 0;
+	padding: 5px;
+	background: #075B5E;
+	stroke: #fff !important;
+	border-radius: 7px;
+	width: 28px;
+	height: 28px;
+	box-sizing: content-box;
+}
+.fcc-an-chart-card__header strong {
+	font-size: .92rem;
+	color: #1E2A1E;
+}
+.fcc-an-chart-card__sub {
+	font-size: .72rem;
+	color: #888;
+	margin-left: auto;
+	background: #fff;
+	padding: .15rem .55rem;
+	border-radius: 10px;
+	border: 1px solid #e0e0e0;
+	font-weight: 600;
 }
 
 .fcc-an-chart-card h3 {
 	margin: 0 0 1rem;
 	font-size: 1rem;
 	color: #1E2A1E;
+}
+
+.fcc-an-chart-wrap {
+	padding: 1.25rem;
 }
 
 .fcc-an-chart-card canvas {
