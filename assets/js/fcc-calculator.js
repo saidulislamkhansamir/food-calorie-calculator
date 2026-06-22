@@ -2091,7 +2091,7 @@
 			document.body.appendChild( clone );
 
 			const prevTitle = document.title;
-			document.title  = ( food ? food.name + ' – ' : '' ) + 'Food Calorie Calculator';
+			document.title  = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
 			window.print();
 			document.title  = prevTitle;
 
