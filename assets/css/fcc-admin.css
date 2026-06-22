@@ -8377,6 +8377,7 @@ button.fcc-reqs-tab {
 	background: rgba(255,255,255,.12);
 	border: 1px solid rgba(255,255,255,.18);
 	border-radius: 8px;
+	-webkit-backdrop-filter: blur(4px);
 	backdrop-filter: blur(4px);
 }
 .fcc-reqs-export__mini-stat--green { border-color: rgba(109,191,103,.4); background: rgba(109,191,103,.15); }
@@ -8591,6 +8592,7 @@ button.fcc-reqs-tab {
 	background: rgba(255,255,255,.12);
 	border: 1px solid rgba(255,255,255,.18);
 	border-radius: 8px;
+	-webkit-backdrop-filter: blur(4px);
 	backdrop-filter: blur(4px);
 }
 .fcc-eh-hero-stat__value { display: block; font-size: 1.1rem; font-weight: 700; color: #fff; line-height: 1; }
@@ -8766,7 +8768,7 @@ button.fcc-reqs-tab {
 .fcc-cp-hero-stat {
 	text-align: center; padding: 8px 16px;
 	background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18);
-	border-radius: 8px; backdrop-filter: blur(4px);
+	border-radius: 8px; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
 }
 .fcc-cp-hero-stat--hot { border-color: rgba(230,126,34,.5); background: rgba(230,126,34,.2); }
 .fcc-cp-hero-stat__value { display: block; font-size: 1.1rem; font-weight: 700; color: #fff; line-height: 1; }
