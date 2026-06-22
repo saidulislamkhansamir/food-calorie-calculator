@@ -2033,6 +2033,7 @@
 			var cloneChartArea = clone.querySelector( '.fcc-macro-left' );
 			var cloneCanvas = clone.querySelector( '#fcc-macro-chart' );
 			var printFood = state.food;
+			var printFactor = quantityInGrams() / 100;
 			if ( cloneChartArea && cloneCanvas && printFood ) {
 				try {
 					var tmpCanvas = document.createElement( 'canvas' );
@@ -2040,9 +2041,9 @@
 					tmpCanvas.height = 300;
 					tmpCanvas.style.cssText = 'width:150px;height:150px;position:absolute;left:-9999px';
 					document.body.appendChild( tmpCanvas );
-					var protein_kcal = ( printFood.protein_g || 0 ) * factor * 4;
-					var carbs_kcal   = ( printFood.carbohydrate_g || 0 ) * factor * 4;
-					var fat_kcal     = ( printFood.fat_g || 0 ) * factor * 9;
+					var protein_kcal = ( printFood.protein_g || 0 ) * printFactor * 4;
+					var carbs_kcal   = ( printFood.carbohydrate_g || 0 ) * printFactor * 4;
+					var fat_kcal     = ( printFood.fat_g || 0 ) * printFactor * 9;
 					var ctx = tmpCanvas.getContext( '2d' );
 					ctx.scale( 2, 2 );
 					var sz = 150, cx = sz/2, cy = sz/2, outer = sz/2 - 4, inner = outer * 0.55;
