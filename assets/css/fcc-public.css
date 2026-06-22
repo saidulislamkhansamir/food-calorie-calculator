@@ -4586,7 +4586,25 @@ select.fcc-bmr-input {
 	background: #e8f5f5;
 	color: #043e40;
 }
-.fcc-meal-tpl-chip__count { color: var(--fcc-text-muted); font-weight: 400; }
+.fcc-meal-tpl-chip__count { color: inherit; font-weight: 400; opacity: .7; }
+
+/* Active template chip */
+.fcc-meal-tpl-chip--active {
+	border-color: var(--fcc-primary, #075B5E);
+	background: var(--fcc-primary, #075B5E);
+}
+.fcc-meal-tpl-chip--active .fcc-meal-tpl-chip__load {
+	background: var(--fcc-primary, #075B5E);
+	color: #fff;
+}
+.fcc-meal-tpl-chip--active .fcc-meal-tpl-chip__del {
+	border-left-color: rgba(255,255,255,.2);
+	color: rgba(255,255,255,.6);
+}
+.fcc-meal-tpl-chip--active .fcc-meal-tpl-chip__del:hover {
+	color: #fff;
+	background: rgba(255,255,255,.1);
+}
 .fcc-meal-tpl-chip__del {
 	padding: 5px 8px;
 	border: none;

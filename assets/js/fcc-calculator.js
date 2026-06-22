@@ -1631,6 +1631,8 @@
 							category: item.category || 'snack',
 						} );
 					} );
+					tplList.querySelectorAll( '.fcc-meal-tpl-chip' ).forEach( function ( c ) { c.classList.remove( 'fcc-meal-tpl-chip--active' ); } );
+					loadBtn.closest( '.fcc-meal-tpl-chip' ).classList.add( 'fcc-meal-tpl-chip--active' );
 					renderMeal();
 					var mealTab = root.querySelector( '.fcc-tab-btn[data-tab="meal"]' );
 					if ( mealTab ) mealTab.click();
