@@ -3,7 +3,7 @@
 Comprehensive UK food calorie and nutrition calculator WordPress plugin. Ships with **5,200+ real-sourced foods** covering 190+ countries, FSA traffic lights, SVG macro rings, Omega-3/caffeine/micronutrient tracking, meal builder with templates, BMR/TDEE calculator, promotion suite, analytics dashboard, and CSV/XLSX import-export.
 
 **Plugin URI:** https://foodcaloriecalculator.co.uk
-**Version:** 3.8.2
+**Version:** 13.8.2
 **Requires:** WordPress 6.0+, PHP 8.1+
 **Text Domain:** `food-calorie-calculator`
 
