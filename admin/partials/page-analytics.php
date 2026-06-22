@@ -132,20 +132,31 @@ function fcc_completeness_ring( float $pct ): string {
 	<div class="fcc-an-hero">
 		<div class="fcc-an-hero__main">
 			<div class="fcc-an-hero__icon">
-				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
 			</div>
 			<div>
 				<h1 class="fcc-an-hero__title"><?php esc_html_e( 'Analytics', 'food-calorie-calculator' ); ?></h1>
 				<p class="fcc-an-hero__desc"><?php esc_html_e( 'Business intelligence — search, monetization, content, and audience.', 'food-calorie-calculator' ); ?></p>
 			</div>
 		</div>
-		<div class="fcc-an-range-pills">
-			<?php foreach ( $range_labels as $val => $label ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( [ 'range' => $val, 'tab' => $active_tab ] ) ); ?>"
-					class="fcc-reqs-pill<?php echo $range === $val ? ' fcc-reqs-pill--active' : ''; ?>">
-					<?php echo esc_html( $label ); ?>
-				</a>
-			<?php endforeach; ?>
+		<div class="fcc-an-hero__filters">
+			<div class="fcc-an-range-pills">
+				<?php foreach ( $range_labels as $val => $label ) : ?>
+					<a href="<?php echo esc_url( add_query_arg( [ 'range' => $val, 'tab' => $active_tab ] ) ); ?>"
+						class="fcc-reqs-pill<?php echo $range === $val ? ' fcc-reqs-pill--active' : ''; ?>">
+						<?php echo esc_html( $label ); ?>
+					</a>
+				<?php endforeach; ?>
+				<button type="button" class="fcc-reqs-pill fcc-an-hero-custom-btn" id="fcc-an-hero-custom-toggle" title="<?php esc_attr_e( 'Custom date range', 'food-calorie-calculator' ); ?>">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+				</button>
+			</div>
+			<div class="fcc-an-hero-datepicker" id="fcc-an-hero-datepicker" hidden>
+				<input type="date" id="fcc-an-hero-from" class="fcc-an-hero-date-input">
+				<span class="fcc-an-hero-date-sep">to</span>
+				<input type="date" id="fcc-an-hero-to" class="fcc-an-hero-date-input">
+				<a id="fcc-an-hero-date-apply" href="#" class="fcc-reqs-pill fcc-reqs-pill--active"><?php esc_html_e( 'Apply', 'food-calorie-calculator' ); ?></a>
+			</div>
 		</div>
 	</div>
 

@@ -4890,6 +4890,17 @@ button.fcc-reqs-tab {
 	gap: 1rem;
 }
 
+.fcc-an-hero__icon {
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255,255,255,.15);
+	border-radius: 12px;
+	flex-shrink: 0;
+}
+
 .fcc-an-hero h1 {
 	color: #fff;
 	font-size: 1.6rem;
@@ -4904,11 +4915,49 @@ button.fcc-reqs-tab {
 	font-size: .9rem;
 }
 
+.fcc-an-hero__filters {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: .5rem;
+}
+
 .fcc-an-range-pills {
 	display: flex;
 	gap: .5rem;
 	flex-wrap: wrap;
+	align-items: center;
 }
+
+.fcc-an-hero-custom-btn {
+	display: inline-flex !important;
+	align-items: center;
+	padding: .35rem .6rem !important;
+}
+.fcc-an-hero-custom-btn svg { flex-shrink: 0; }
+
+.fcc-an-hero-datepicker {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	background: rgba(255,255,255,.12);
+	padding: .4rem .75rem;
+	border-radius: 12px;
+	border: 1.5px solid rgba(255,255,255,.2);
+}
+.fcc-an-hero-datepicker[hidden] { display: none; }
+.fcc-an-hero-date-input {
+	padding: .3rem .5rem;
+	border: 1.5px solid rgba(255,255,255,.3);
+	border-radius: 6px;
+	background: rgba(255,255,255,.15);
+	color: #fff;
+	font-size: .8rem;
+	font-family: inherit;
+}
+.fcc-an-hero-date-input:focus { outline: none; border-color: #fff; background: rgba(255,255,255,.25); }
+.fcc-an-hero-date-sep { color: rgba(255,255,255,.6); font-size: .78rem; }
+.fcc-an-hero-date-input::-webkit-calendar-picker-indicator { filter: invert(1); }
 
 .fcc-an-range-pill {
 	display: inline-block;

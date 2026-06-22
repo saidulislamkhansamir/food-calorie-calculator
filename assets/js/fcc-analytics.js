@@ -400,6 +400,28 @@
 				+ '&_wpnonce=' + encodeURIComponent( csvNonce );
 		} );
 
+		// ── Hero custom date toggle ─────────────────────────────────────
+		var heroToggle = document.getElementById( 'fcc-an-hero-custom-toggle' );
+		var heroPicker = document.getElementById( 'fcc-an-hero-datepicker' );
+		if ( heroToggle && heroPicker ) {
+			heroToggle.addEventListener( 'click', function () {
+				heroPicker.hidden = ! heroPicker.hidden;
+			} );
+		}
+		var heroApply = document.getElementById( 'fcc-an-hero-date-apply' );
+		if ( heroApply ) {
+			heroApply.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				var from = document.getElementById( 'fcc-an-hero-from' ).value;
+				var to   = document.getElementById( 'fcc-an-hero-to' ).value;
+				if ( ! from || ! to ) return;
+				window.location.href = window.location.pathname
+					+ '?page=fcc-analytics&tab=' + encodeURIComponent( wrap.dataset.tab || 'overview' )
+					+ '&range=-1&date_from=' + encodeURIComponent( from )
+					+ '&date_to=' + encodeURIComponent( to );
+			} );
+		}
+
 		// ── Init ────────────────────────────────────────────────────────
 		var startTab = wrap.dataset.tab || 'overview';
 		loadTabData( startTab );
