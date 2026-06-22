@@ -1037,7 +1037,7 @@
 				}
 			} );
 			if ( html ) {
-				allergenEl.innerHTML = '<span class="fcc-badge-label">Allergens:</span>' + html;
+				allergenEl.innerHTML = '<span class="fcc-badge-label">Allergens</span><div class="fcc-badge-pills">' + html + '</div>';
 				allergenEl.hidden = false;
 			} else {
 				allergenEl.hidden = true;
@@ -1061,7 +1061,7 @@
 				}
 			} );
 			if ( dhtml ) {
-				dietEl.innerHTML = '<span class="fcc-badge-label">Dietary:</span>' + dhtml;
+				dietEl.innerHTML = '<span class="fcc-badge-label">Dietary</span><div class="fcc-badge-pills">' + dhtml + '</div>';
 				dietEl.hidden = false;
 			} else {
 				dietEl.hidden = true;

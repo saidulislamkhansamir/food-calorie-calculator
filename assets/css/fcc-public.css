@@ -4429,19 +4429,21 @@ select.fcc-bmr-input {
    ─────────────────────────────────────────────────────────────── */
 .fcc-allergen-badges,
 .fcc-diet-badges {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
-	align-items: center;
 	margin-bottom: 0.625rem;
 }
 .fcc-badge-label {
-	font-size: 0.68rem;
+	display: block;
+	font-size: 0.7rem;
 	font-weight: 700;
 	text-transform: uppercase;
-	letter-spacing: .04em;
-	color: var(--fcc-text-muted, #4a6365);
-	margin-right: 2px;
+	letter-spacing: .07em;
+	color: var(--fcc-text-light, #4a6365);
+	margin: 0 0 0.4rem;
+}
+.fcc-badge-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
 }
 .fcc-allergen-badge {
 	display: inline-flex;
