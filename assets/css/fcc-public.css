@@ -2804,8 +2804,9 @@ select.fcc-bmr-input {
 		border-radius: 3px !important;
 	}
 	.fcc-print-clone .fcc-meal-item__num {
-		width: 16px !important;
-		height: 16px !important;
+		width: 20px !important;
+		min-width: 20px !important;
+		height: 20px !important;
 		font-size: 6pt !important;
 	}
 	.fcc-print-clone .fcc-meal-item__name { font-size: 9pt !important; }
@@ -3488,6 +3489,7 @@ select.fcc-bmr-input {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	min-width: 22px;
 	width: 22px;
 	height: 22px;
 	border-radius: 50%;
