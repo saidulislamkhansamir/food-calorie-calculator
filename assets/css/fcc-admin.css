@@ -2787,9 +2787,10 @@
 	border: 1.5px solid #e5e7eb;
 	border-radius: 14px;
 	margin-bottom: 1rem;
-	overflow: hidden;
+	overflow: visible;
 	transition: border-color .2s, box-shadow .2s;
 }
+.fcc-pincard__topbar { border-radius: 12px 12px 0 0; }
 .fcc-pincard:hover {
 	border-color: #a3d4d6;
 	box-shadow: 0 4px 16px rgba(7,91,94,.08);
@@ -2839,7 +2840,10 @@
 }
 .fcc-pincard__body {
 	padding: 1rem 1.15rem 1.15rem;
+	position: relative;
+	z-index: 2;
 }
+.fcc-pincard__preview { position: relative; z-index: 1; }
 .fcc-pincard__grid {
 	display: grid;
 	grid-template-columns: 1.2fr 2fr .6fr 1fr;
@@ -3060,7 +3064,7 @@
 	padding: 0;
 	margin-bottom: 1rem;
 	position: relative;
-	overflow: hidden;
+	overflow: visible;
 	transition: border-color .2s, box-shadow .2s;
 }
 .fcc-promo-card:hover {
@@ -3074,6 +3078,7 @@
 	padding: .6rem 1.15rem;
 	background: linear-gradient(135deg, #f3e8f9 0%, #ede4f7 100%);
 	border-bottom: 1px solid #e8d8f3;
+	border-radius: 12px 12px 0 0;
 }
 .fcc-promo-card__topbar-icon {
 	width: 28px;
@@ -3115,6 +3120,8 @@
 }
 .fcc-promo-card__body {
 	padding: 1rem 1.15rem 1.15rem;
+	position: relative;
+	z-index: 2;
 }
 .fcc-promo-card__row {
 	display: grid;
