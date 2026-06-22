@@ -4566,26 +4566,36 @@ select.fcc-bmr-input {
 	border: 1.5px solid var(--fcc-border, #d4ddd8);
 	border-radius: 20px;
 	overflow: hidden;
+	transition: border-color .15s, box-shadow .15s;
+}
+.fcc-meal-tpl-chip:hover {
+	border-color: var(--fcc-primary, #075B5E);
+	box-shadow: 0 2px 8px rgba(7,91,94,.1);
 }
 .fcc-meal-tpl-chip__load {
-	padding: 4px 10px;
+	padding: 5px 12px;
 	border: none;
 	background: var(--fcc-surface, #fff);
-	font-size: 0.75rem;
+	font-size: 0.78rem;
 	font-weight: 600;
 	color: var(--fcc-primary, #075B5E);
 	cursor: pointer;
+	transition: background .15s, color .15s;
 }
-.fcc-meal-tpl-chip__load:hover { background: rgba(7,91,94,.05); }
+.fcc-meal-tpl-chip__load:hover {
+	background: #e8f5f5;
+	color: #043e40;
+}
 .fcc-meal-tpl-chip__count { color: var(--fcc-text-muted); font-weight: 400; }
 .fcc-meal-tpl-chip__del {
-	padding: 4px 8px;
+	padding: 5px 8px;
 	border: none;
 	border-left: 1px solid var(--fcc-border, #e6eded);
 	background: transparent;
 	color: #ccc;
 	font-size: 0.85rem;
 	cursor: pointer;
+	transition: color .15s, background .15s;
 }
 .fcc-meal-tpl-chip__del:hover { color: #e74c3c; background: #fff5f5; }
 
