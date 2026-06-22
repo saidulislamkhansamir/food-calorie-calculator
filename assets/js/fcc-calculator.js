@@ -1356,11 +1356,13 @@
 				div.innerHTML =
 					'<span class="fcc-meal-item__num">' + ( g.idx + 1 ) + '</span>' +
 					'<span class="fcc-meal-item__name">' + escHtml( f.name ) + '</span>' +
-					qtyHtml +
-					'<span class="fcc-meal-item__kcal">' + fmt( f.energy_kcal * factor, 0 ) + ' kcal</span>' +
-					'<button type="button" class="fcc-meal-item__remove" data-idx="' + g.idx + '" aria-label="Remove ' + escHtml( f.name ) + '">' +
-					'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-					'</button>';
+					'<div class="fcc-meal-item__controls">' +
+						qtyHtml +
+						'<span class="fcc-meal-item__kcal">' + fmt( f.energy_kcal * factor, 0 ) + ' kcal</span>' +
+						'<button type="button" class="fcc-meal-item__remove" data-idx="' + g.idx + '" aria-label="Remove ' + escHtml( f.name ) + '">' +
+						'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+						'</button>' +
+					'</div>';
 				itemsEl.appendChild( div );
 			} );
 		} );

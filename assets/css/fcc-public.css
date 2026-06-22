@@ -3368,14 +3368,16 @@ select.fcc-bmr-input {
 }
 
 .fcc-meal-item__kcal {
-	font-size: 0.78rem;
+	font-size: 0.75rem;
 	font-weight: 800;
 	color: #fff;
 	white-space: nowrap;
 	flex-shrink: 0;
 	background: linear-gradient(135deg, #075B5E, #2D7A4F);
-	padding: 0.25rem 0.6rem;
+	padding: 0.25rem 0.55rem;
 	border-radius: 8px;
+	min-width: 65px;
+	text-align: center;
 }
 
 .fcc-meal-item__remove {
@@ -4302,19 +4304,27 @@ select.fcc-bmr-input {
 }
 
 /* ── Meal item inline quantity editor ── */
+/* Controls group — fixed width for perfect vertical alignment */
+.fcc-meal-item__controls {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	flex-shrink: 0;
+}
+
 .fcc-meal-item__qty {
-	width: 58px;
-	padding: 0.3rem 0.35rem;
+	width: 56px;
+	padding: 0.3rem 0.3rem;
 	border: 2px solid transparent;
 	border-radius: 10px;
 	font-size: 0.85rem;
 	font-weight: 800;
 	font-family: inherit;
 	text-align: center;
-	background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #075B5E, #2D7A4F) border-box;
+	background: linear-gradient(#f0f9f9, #e8f5f5) padding-box, linear-gradient(135deg, #075B5E, #2D7A4F, #9FC87E) border-box;
 	color: var(--fcc-primary, #075B5E);
 	flex-shrink: 0;
-	transition: box-shadow 0.2s;
+	transition: box-shadow 0.2s, background 0.2s;
 	-moz-appearance: textfield;
 	appearance: textfield;
 }
@@ -4322,16 +4332,18 @@ select.fcc-bmr-input {
 .fcc-meal-item__qty::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .fcc-meal-item__qty:focus {
 	outline: none;
+	background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #075B5E, #2D7A4F, #9FC87E) border-box;
 	box-shadow: 0 0 0 3px rgba(7,91,94,.15);
 }
 .fcc-meal-item__unit {
-	font-size: 0.72rem;
+	font-size: 0.68rem;
 	font-weight: 700;
 	color: #fff;
-	background: var(--fcc-primary, #075B5E);
-	padding: 0.1rem 0.35rem;
-	border-radius: 4px;
-	line-height: 1.3;
+	background: linear-gradient(135deg, #075B5E, #2D7A4F);
+	padding: 0.15rem 0.4rem;
+	border-radius: 6px;
+	line-height: 1.2;
+	flex-shrink: 0;
 	margin-right: 4px;
 }
 
