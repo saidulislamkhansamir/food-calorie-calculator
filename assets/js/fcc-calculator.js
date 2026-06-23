@@ -678,10 +678,10 @@
 			if ( macroDetail ) {
 				macroDetail.innerHTML =
 					'<div class="fcc-macro-detail__grid">'
-					+  '<div class="fcc-macro-detail__stat"><span class="fcc-macro-detail__stat-val">' + totalKcal + '</span><span class="fcc-macro-detail__stat-lbl">Total kcal</span></div>'
-					+  '<div class="fcc-macro-detail__stat"><span class="fcc-macro-detail__stat-val">' + cPerG + '</span><span class="fcc-macro-detail__stat-lbl">kcal/g</span></div>'
-					+  '<div class="fcc-macro-detail__stat"><span class="fcc-macro-detail__stat-val">' + pPct + '%</span><span class="fcc-macro-detail__stat-lbl">Protein</span></div>'
-					+  '<div class="fcc-macro-detail__stat"><span class="fcc-macro-detail__stat-val">' + fPct + '%</span><span class="fcc-macro-detail__stat-lbl">Fat</span></div>'
+					+  '<div class="fcc-macro-detail__stat fcc-macro-detail__stat--kcal"><span class="fcc-macro-detail__stat-val">' + totalKcal + '</span><span class="fcc-macro-detail__stat-lbl">Total kcal</span></div>'
+					+  '<div class="fcc-macro-detail__stat fcc-macro-detail__stat--density"><span class="fcc-macro-detail__stat-val">' + cPerG + '</span><span class="fcc-macro-detail__stat-lbl">kcal/g</span></div>'
+					+  '<div class="fcc-macro-detail__stat fcc-macro-detail__stat--protein"><span class="fcc-macro-detail__stat-val">' + pPct + '%</span><span class="fcc-macro-detail__stat-lbl">Protein</span></div>'
+					+  '<div class="fcc-macro-detail__stat fcc-macro-detail__stat--fat"><span class="fcc-macro-detail__stat-val">' + fPct + '%</span><span class="fcc-macro-detail__stat-lbl">Fat</span></div>'
 					+ '</div>';
 			}
 			macroWrapper.hidden = false;
