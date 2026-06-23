@@ -2111,37 +2111,34 @@
 
 			var printTitle = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
 
-			var isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent )
-				|| ( navigator.maxTouchPoints > 1 && /Mobi|Tablet/i.test( navigator.userAgent ) );
+			var iframe = document.createElement( 'iframe' );
+			iframe.style.cssText = 'position:fixed;top:-10000px;left:-10000px;width:0;height:0;border:none;';
+			document.body.appendChild( iframe );
 
-			if ( isMobile ) {
-				// Mobile: open new window — needed because mobile browsers
-				// cannot print in-page clones reliably.
-				var w = window.open( '', '_blank' );
-				if ( w ) {
-					w.document.write(
-						'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">'
-						+ '<title>' + printTitle + '</title>'
-						+ styles
-						+ '<style>body{margin:0;padding:1cm;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
-						+ '.fcc-print-clone{display:block!important;visibility:visible!important;opacity:1!important;max-width:100%!important;width:100%!important;box-shadow:none!important;border-radius:0!important;margin:0!important;padding:0!important;}'
-						+ '.fcc-print-clone .fcc-tab-panel,.fcc-print-clone .fcc-section,.fcc-print-clone .fcc-results-section,.fcc-print-clone .fcc-tabs-body,.fcc-print-clone .fcc-meal-section,.fcc-print-clone .fcc-print-footer{display:block!important;visibility:visible!important;}'
-						+ '.fcc-print-clone .fcc-print-header{display:flex!important;visibility:visible!important;justify-content:space-between;align-items:flex-start;}'
-						+ '@page{margin:0 1cm 1.5cm 1cm;}'
-						+ '</style>'
-						+ '</head><body>'
-						+ clone.outerHTML
-						+ '</body></html>'
-					);
-					w.document.close();
-					setTimeout( function () { w.print(); }, 300 );
-				}
-			} else {
-				// Desktop: inject clone into current page and print directly.
-				document.body.appendChild( clone );
-				window.print();
-				clone.remove();
-			}
+			var idoc = iframe.contentDocument || iframe.contentWindow.document;
+			idoc.open();
+			idoc.write(
+				'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">'
+				+ '<title>' + printTitle + '</title>'
+				+ styles
+				+ '<style>body{margin:0;padding:1cm;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
+				+ '.fcc-print-clone{display:block!important;visibility:visible!important;opacity:1!important;max-width:100%!important;width:100%!important;box-shadow:none!important;border-radius:0!important;margin:0!important;padding:0!important;}'
+				+ '.fcc-print-clone .fcc-tab-panel,.fcc-print-clone .fcc-section,.fcc-print-clone .fcc-results-section,.fcc-print-clone .fcc-tabs-body,.fcc-print-clone .fcc-meal-section,.fcc-print-clone .fcc-print-footer{display:block!important;visibility:visible!important;}'
+				+ '.fcc-print-clone .fcc-print-header{display:flex!important;visibility:visible!important;justify-content:space-between;align-items:flex-start;}'
+				+ '@page{margin:0 1cm 1.5cm 1cm;}'
+				+ '</style>'
+				+ '</head><body>'
+				+ clone.outerHTML
+				+ '</body></html>'
+			);
+			idoc.close();
+
+			iframe.contentWindow.onafterprint = function () { iframe.remove(); };
+			setTimeout( function () {
+				iframe.contentWindow.focus();
+				iframe.contentWindow.print();
+			}, 400 );
+			setTimeout( function () { if ( iframe.parentNode ) iframe.remove(); }, 60000 );
 		} );
 	}
 
