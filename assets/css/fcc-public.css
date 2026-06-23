@@ -165,7 +165,11 @@
 	border-bottom: 1px solid var(--fcc-border);
 	padding: 0 1rem;
 	gap: 0;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
 }
+.fcc-tabs-nav::-webkit-scrollbar { display: none; }
 
 .fcc-calculator .fcc-tab-btn {
 	display: inline-flex;
@@ -173,6 +177,8 @@
 	gap: 0.5rem;
 	padding: 0.875rem 1.25rem;
 	background: transparent !important;
+	white-space: nowrap;
+	flex-shrink: 0;
 	border: none !important;
 	border-bottom: 3px solid transparent !important;
 	border-radius: 0 !important;
@@ -2336,7 +2342,7 @@ select.fcc-bmr-input {
 	/* macro wrapper is already column layout */
 	/* macro rings stack on mobile via flex-wrap */
 
-	.fcc-tab-btn { padding: 0.75rem 0.875rem; font-size: 0.8rem; }
+	.fcc-tab-btn { padding: 0.75rem 1rem; font-size: 0.82rem; }
 	.fcc-tab-btn svg { display: none; }
 
 	.fcc-nutrition-table th,
@@ -2351,8 +2357,8 @@ select.fcc-bmr-input {
 	.fcc-hero { padding: 1.25rem 1rem; }
 	.fcc-subtitle { font-size: 0.75rem; }
 
-	.fcc-tabs-nav { padding: 0 0.5rem; gap: 0; }
-	.fcc-tab-btn { padding: 0.7rem 0.625rem; font-size: 0.75rem; }
+	.fcc-tabs-nav { padding: 0 0.5rem; }
+	.fcc-tab-btn { padding: 0.7rem 0.9rem; font-size: 0.78rem; }
 
 	.fcc-search-input { padding: 0.8rem 2.5rem; font-size: 0.9rem; }
 	.fcc-search-icon { left: 0.75rem; }
@@ -2395,7 +2401,7 @@ select.fcc-bmr-input {
 	.fcc-section { padding: 0.625rem; border-radius: 10px; }
 
 	.fcc-tabs-nav { padding: 0 0.25rem; }
-	.fcc-tab-btn { padding: 0.6rem 0.5rem; font-size: 0.7rem; letter-spacing: -0.01em; }
+	.fcc-tab-btn { padding: 0.6rem 0.85rem; font-size: 0.75rem; }
 
 	.fcc-search-section { padding: 0 !important; }
 	.fcc-search-input { padding: 0.7rem 2.25rem; font-size: 0.85rem; border-radius: 10px; }
@@ -2448,7 +2454,7 @@ select.fcc-bmr-input {
 
 	.fcc-tabs-body { padding: 0.5rem; }
 	.fcc-section { padding: 0.5rem; }
-	.fcc-tab-btn { padding: 0.5rem 0.35rem; font-size: 0.65rem; }
+	.fcc-tab-btn { padding: 0.55rem 0.75rem; font-size: 0.72rem; }
 
 	.fcc-search-input { padding: 0.65rem 2rem; font-size: 0.8rem; }
 
