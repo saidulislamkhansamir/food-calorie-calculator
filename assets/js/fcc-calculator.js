@@ -2125,7 +2125,7 @@
 				+ '.fcc-print-clone{display:block!important;visibility:visible!important;opacity:1!important;max-width:100%!important;width:100%!important;box-shadow:none!important;border-radius:0!important;margin:0!important;padding:0!important;}'
 				+ '.fcc-print-clone .fcc-tab-panel,.fcc-print-clone .fcc-section,.fcc-print-clone .fcc-results-section,.fcc-print-clone .fcc-tabs-body,.fcc-print-clone .fcc-meal-section,.fcc-print-clone .fcc-print-footer{display:block!important;visibility:visible!important;}'
 				+ '.fcc-print-clone .fcc-print-header{display:flex!important;visibility:visible!important;justify-content:space-between;align-items:flex-start;}'
-				+ '@page{margin:0 1cm 1.5cm 1cm;}'
+				+ '@page{margin:0.8cm 1cm 1.5cm 1cm;}'
 				+ '</style>'
 				+ '</head><body>'
 				+ clone.outerHTML
