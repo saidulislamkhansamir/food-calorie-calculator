@@ -2494,6 +2494,7 @@ select.fcc-bmr-input {
 
 	.fcc-print-clone {
 		display: block !important;
+		visibility: visible !important;
 		box-shadow: none !important;
 		border-radius: 0 !important;
 		max-width: 100% !important;

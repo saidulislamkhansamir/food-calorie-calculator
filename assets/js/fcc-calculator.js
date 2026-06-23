@@ -2121,8 +2121,8 @@
 				}
 			} )();
 
-			// Reset clone for print media.
-			clone.style.cssText = '';
+			// Reset clone for print media — ensure visible.
+			clone.style.cssText = 'visibility:visible;';
 
 			const prevTitle = document.title;
 			document.title  = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
