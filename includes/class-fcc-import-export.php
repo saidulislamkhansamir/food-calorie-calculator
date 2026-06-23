@@ -107,7 +107,7 @@ class Import_Export {
 
 		$data = array_merge( [ $headers ], $rows );
 
-		$xlsx = \Shuchkin\SimpleXLSXGen::fromArray( $data );
+		$xlsx = \SimpleXLSXGen::fromArray( $data );
 		$xlsx->downloadAs( 'food-calorie-calculator-export-' . gmdate( 'Y-m-d' ) . '.xlsx' );
 		exit;
 	}
@@ -150,7 +150,7 @@ class Import_Export {
 		$headers = self::requests_export_headers();
 		$data    = array_merge( [ $headers ], $rows );
 
-		$xlsx = \Shuchkin\SimpleXLSXGen::fromArray( $data );
+		$xlsx = \SimpleXLSXGen::fromArray( $data );
 		$xlsx->downloadAs( self::requests_export_filename( $args, 'xlsx' ) );
 		exit;
 	}
@@ -273,13 +273,13 @@ class Import_Export {
 	public static function import_xlsx( string $file_path ): array {
 		require_once FCC_PLUGIN_DIR . 'vendor/SimpleXLSX.php';
 
-		$xlsx = \Shuchkin\SimpleXLSX::parse( $file_path );
+		$xlsx = \SimpleXLSX::parse( $file_path );
 		if ( ! $xlsx ) {
 			return [
 				'imported' => 0,
 				'skipped'  => 0,
 				// translators: %s = library error message.
-				'errors'   => [ sprintf( __( 'Could not parse XLSX file: %s', 'food-calorie-calculator' ), \Shuchkin\SimpleXLSX::parseError() ) ],
+				'errors'   => [ sprintf( __( 'Could not parse XLSX file: %s', 'food-calorie-calculator' ), \SimpleXLSX::parseError() ) ],
 			];
 		}
 
