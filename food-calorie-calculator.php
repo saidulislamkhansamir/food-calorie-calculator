@@ -3,7 +3,7 @@
  * Plugin Name:       Food Calorie Calculator
  * Plugin URI:        https://foodcaloriecalculator.co.uk
  * Description:       A comprehensive UK food calorie calculator. Ships with 5,200+ foods from 190+ countries, FSA traffic lights, SVG macro rings, Omega-3/caffeine/micronutrient tracking, meal builder with templates, BMR/TDEE, promotion suite, analytics dashboard, and a fully-featured admin control panel — no coding required.
- * Version:           13.9.9
+ * Version:           13.9.10
  * Requires at least: 6.0
  * Requires PHP:      8.1
  * Author:            The Khan Digital
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 // ---------------------------------------------------------------------------
 // Constants.
 // ---------------------------------------------------------------------------
-define( 'FCC_VERSION',         '13.9.9' );
+define( 'FCC_VERSION',         '13.9.10' );
 define( 'FCC_DB_VERSION',      '1.5' );
 define( 'FCC_PLUGIN_FILE',     __FILE__ );
 define( 'FCC_PLUGIN_DIR',      plugin_dir_path( __FILE__ ) );
@@ -210,4 +210,5 @@ add_action( 'plugins_loaded', function (): void {
 	FCC\Seed_Data::seed_v92();
 	FCC\Seed_Data::seed_v93();
 	FCC\Seed_Data::seed_v94();
+	FCC\Seed_Data::seed_v95();
 } );
