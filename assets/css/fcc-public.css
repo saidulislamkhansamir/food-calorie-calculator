@@ -1537,7 +1537,8 @@
 	text-align: center;
 	border-radius: 10px;
 	padding: 0.5rem 0.3rem;
-	border: none;
+	border: 2px solid rgba(255,255,255,.8);
+	box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 .fcc-macro-detail__stat-val {
 	display: block;
@@ -1553,18 +1554,18 @@
 	letter-spacing: 0.04em;
 	margin-top: 0.1rem;
 }
-.fcc-macro-detail__stat--kcal     { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
-.fcc-macro-detail__stat--kcal .fcc-macro-detail__stat-val { color: #e65100; }
-.fcc-macro-detail__stat--kcal .fcc-macro-detail__stat-lbl { color: #bf360c; }
-.fcc-macro-detail__stat--density  { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
-.fcc-macro-detail__stat--density .fcc-macro-detail__stat-val { color: #2e7d32; }
-.fcc-macro-detail__stat--density .fcc-macro-detail__stat-lbl { color: #1b5e20; }
-.fcc-macro-detail__stat--protein  { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
-.fcc-macro-detail__stat--protein .fcc-macro-detail__stat-val { color: #1565c0; }
-.fcc-macro-detail__stat--protein .fcc-macro-detail__stat-lbl { color: #0d47a1; }
-.fcc-macro-detail__stat--fat      { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
-.fcc-macro-detail__stat--fat .fcc-macro-detail__stat-val { color: #c62828; }
-.fcc-macro-detail__stat--fat .fcc-macro-detail__stat-lbl { color: #b71c1c; }
+.fcc-macro-detail__stat--kcal     { background: linear-gradient(135deg, #e65100, #ff8f00); }
+.fcc-macro-detail__stat--kcal .fcc-macro-detail__stat-val { color: #fff; }
+.fcc-macro-detail__stat--kcal .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
+.fcc-macro-detail__stat--density  { background: linear-gradient(135deg, #1b5e20, #43a047); }
+.fcc-macro-detail__stat--density .fcc-macro-detail__stat-val { color: #fff; }
+.fcc-macro-detail__stat--density .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
+.fcc-macro-detail__stat--protein  { background: linear-gradient(135deg, #0d47a1, #1e88e5); }
+.fcc-macro-detail__stat--protein .fcc-macro-detail__stat-val { color: #fff; }
+.fcc-macro-detail__stat--protein .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
+.fcc-macro-detail__stat--fat      { background: linear-gradient(135deg, #b71c1c, #e53935); }
+.fcc-macro-detail__stat--fat .fcc-macro-detail__stat-val { color: #fff; }
+.fcc-macro-detail__stat--fat .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
 
 @media (max-width: 600px) {
 	/* macro wrapper is already column layout */
