@@ -2561,9 +2561,13 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-meal-section,
 	.fcc-print-clone .fcc-meal-items,
 	.fcc-print-clone .fcc-meal-totals,
-	.fcc-print-clone .fcc-print-header,
 	.fcc-print-clone .fcc-print-footer {
 		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+	.fcc-print-clone .fcc-print-header {
+		display: flex !important;
 		visibility: visible !important;
 		opacity: 1 !important;
 	}
@@ -2669,7 +2673,7 @@ select.fcc-bmr-input {
 	.fcc-print-header {
 		display: flex !important;
 		justify-content: space-between;
-		align-items: center;
+		align-items: flex-start;
 		padding: 14px 18px;
 		margin-bottom: 2px;
 		background: linear-gradient(135deg, #043e40, #075B5E) !important;
@@ -2680,16 +2684,19 @@ select.fcc-bmr-input {
 		display: flex;
 		flex-direction: column;
 		gap: 2px;
+		flex-shrink: 0;
+		padding-top: 2px;
 	}
-	.fcc-print-header__brand strong { font-size: 13pt; }
-	.fcc-print-header__brand span { font-size: 7pt; opacity: 0.7; }
+	.fcc-print-header__brand strong { font-size: 13pt; line-height: 1.2; }
+	.fcc-print-header__brand a { font-size: 7pt; opacity: 0.7; }
 	.fcc-print-header__info {
 		text-align: right;
 		display: flex;
 		flex-direction: column;
+		align-items: flex-end;
 		gap: 3px;
 	}
-	.fcc-print-header__food { font-size: 12pt; font-weight: 700; }
+	.fcc-print-header__food { font-size: 12pt; font-weight: 700; line-height: 1.2; }
 	.fcc-print-header__kcal {
 		font-size: 8pt;
 		opacity: 0.85;
