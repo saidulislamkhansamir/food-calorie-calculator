@@ -2111,13 +2111,7 @@
 
 			var printTitle = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
 
-			var iframe = document.createElement( 'iframe' );
-			iframe.style.cssText = 'position:fixed;top:-10000px;left:-10000px;width:0;height:0;border:none;';
-			document.body.appendChild( iframe );
-
-			var idoc = iframe.contentDocument || iframe.contentWindow.document;
-			idoc.open();
-			idoc.write(
+			var printHTML =
 				'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">'
 				+ '<title>' + printTitle + '</title>'
 				+ styles
@@ -2129,24 +2123,43 @@
 				+ '</style>'
 				+ '</head><body>'
 				+ clone.outerHTML
-				+ '</body></html>'
-			);
-			idoc.close();
+				+ '</body></html>';
 
-			var originalTitle = document.title;
-			iframe.contentWindow.onafterprint = function () {
-				document.title = originalTitle;
-				iframe.remove();
-			};
-			setTimeout( function () {
-				document.title = printTitle;
-				iframe.contentWindow.focus();
-				iframe.contentWindow.print();
-			}, 400 );
-			setTimeout( function () {
-				document.title = originalTitle;
-				if ( iframe.parentNode ) iframe.remove();
-			}, 60000 );
+			var isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent )
+				|| ( navigator.maxTouchPoints > 1 && /Mobi|Tablet/i.test( navigator.userAgent ) );
+
+			if ( isMobile ) {
+				var w = window.open( '', '_blank' );
+				if ( w ) {
+					w.document.write( printHTML );
+					w.document.close();
+					setTimeout( function () { w.print(); }, 400 );
+				}
+			} else {
+				var iframe = document.createElement( 'iframe' );
+				iframe.style.cssText = 'position:fixed;top:-10000px;left:-10000px;width:0;height:0;border:none;';
+				document.body.appendChild( iframe );
+
+				var idoc = iframe.contentDocument || iframe.contentWindow.document;
+				idoc.open();
+				idoc.write( printHTML );
+				idoc.close();
+
+				var originalTitle = document.title;
+				iframe.contentWindow.onafterprint = function () {
+					document.title = originalTitle;
+					iframe.remove();
+				};
+				setTimeout( function () {
+					document.title = printTitle;
+					iframe.contentWindow.focus();
+					iframe.contentWindow.print();
+				}, 400 );
+				setTimeout( function () {
+					document.title = originalTitle;
+					if ( iframe.parentNode ) iframe.remove();
+				}, 60000 );
+			}
 		} );
 	}
 
