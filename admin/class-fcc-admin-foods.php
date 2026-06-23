@@ -206,7 +206,7 @@ class Foods {
 			'page'        => 1,
 		];
 		$result  = \FCC\Database::get_foods( $args );
-		$headers = [ 'Name','Category ID','kcal','kJ','Protein','Carbs','Sugars','Fat','Saturates','Fibre','Salt','Omega-3 Total','Caffeine' ];
+		$headers = [ 'Name','Category ID','kcal','kJ','Protein','Carbs','Sugars','Fat','Saturates','Fibre','Salt','Omega-3 Total','Caffeine','Iron (mg)','Calcium (mg)','Vitamin C (mg)' ];
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename="fcc-foods-' . gmdate( 'Y-m-d' ) . '.csv"' );
 		$out = fopen( 'php://output', 'w' );
@@ -217,6 +217,7 @@ class Foods {
 				$f['protein_g'], $f['carbohydrate_g'], $f['of_which_sugars_g'],
 				$f['fat_g'], $f['of_which_saturates_g'], $f['fibre_g'], $f['salt_g'],
 				$f['omega3_total_mg'], $f['caffeine_mg'],
+				$f['iron_mg'], $f['calcium_mg'], $f['vitamin_c_mg'],
 			] );
 		}
 		fclose( $out );
