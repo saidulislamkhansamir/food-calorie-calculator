@@ -2133,12 +2133,20 @@
 			);
 			idoc.close();
 
-			iframe.contentWindow.onafterprint = function () { iframe.remove(); };
+			var originalTitle = document.title;
+			iframe.contentWindow.onafterprint = function () {
+				document.title = originalTitle;
+				iframe.remove();
+			};
 			setTimeout( function () {
+				document.title = printTitle;
 				iframe.contentWindow.focus();
 				iframe.contentWindow.print();
 			}, 400 );
-			setTimeout( function () { if ( iframe.parentNode ) iframe.remove(); }, 60000 );
+			setTimeout( function () {
+				document.title = originalTitle;
+				if ( iframe.parentNode ) iframe.remove();
+			}, 60000 );
 		} );
 	}
 
