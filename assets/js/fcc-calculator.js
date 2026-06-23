@@ -2098,33 +2098,38 @@
 			clone.querySelectorAll( '.fcc-tab-panel' ).forEach( function ( p ) { p.style.display = 'block'; } );
 			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
 
-			// Hide all body children, append clone visible — works on mobile + desktop.
-			var bodyChildren = Array.prototype.slice.call( document.body.children );
-			bodyChildren.forEach( function ( el ) { el.dataset.fccPrintHidden = el.style.display; el.style.display = 'none'; } );
-			clone.style.cssText = 'display:block;visibility:visible;opacity:1;position:static;width:100%;max-width:100%;margin:0;padding:0;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;';
-			document.body.appendChild( clone );
+			// Collect all stylesheets for the print window.
+			var styles = '';
+			document.querySelectorAll( 'link[rel="stylesheet"], style' ).forEach( function ( s ) {
+				styles += s.outerHTML;
+			} );
 
-			const prevTitle = document.title;
-			document.title  = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
+			// Ensure all panels visible.
+			clone.querySelectorAll( '.fcc-tab-panel' ).forEach( function ( p ) { p.style.display = 'block'; } );
+			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
+			clone.classList.add( 'fcc-print-clone' );
 
-			var cleanup = function () {
-				document.title = prevTitle;
-				if ( clone.parentNode ) document.body.removeChild( clone );
-				bodyChildren.forEach( function ( el ) {
-					el.style.display = el.dataset.fccPrintHidden || '';
-					delete el.dataset.fccPrintHidden;
-				} );
-				window.removeEventListener( 'afterprint', cleanup );
-				window.removeEventListener( 'focus', delayedCleanup );
-			};
-			var delayedCleanup = function () {
-				setTimeout( cleanup, 1000 );
-			};
+			var printTitle = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
 
-			window.addEventListener( 'afterprint', cleanup );
-			window.addEventListener( 'focus', delayedCleanup );
-
-			window.print();
+			// Open a new window with ONLY the clone content — works on mobile.
+			var w = window.open( '', '_blank' );
+			if ( w ) {
+				w.document.write(
+					'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">'
+					+ '<title>' + printTitle + '</title>'
+					+ styles
+					+ '<style>body{margin:0;padding:1cm;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
+					+ '.fcc-print-clone{display:block!important;visibility:visible!important;opacity:1!important;max-width:100%!important;width:100%!important;box-shadow:none!important;border-radius:0!important;margin:0!important;padding:0!important;}'
+					+ '.fcc-print-clone .fcc-tab-panel,.fcc-print-clone .fcc-section,.fcc-print-clone .fcc-results-section,.fcc-print-clone .fcc-tabs-body,.fcc-print-clone .fcc-meal-section,.fcc-print-clone .fcc-print-header,.fcc-print-clone .fcc-print-footer{display:block!important;visibility:visible!important;}'
+					+ '@page{margin:0 1cm 1.5cm 1cm;}'
+					+ '</style>'
+					+ '</head><body>'
+					+ clone.outerHTML
+					+ '</body></html>'
+				);
+				w.document.close();
+				setTimeout( function () { w.print(); }, 300 );
+			}
 		} );
 	}
 
