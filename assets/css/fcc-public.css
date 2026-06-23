@@ -2324,11 +2324,12 @@ select.fcc-bmr-input {
 	.fcc-qty-group:first-child { flex: 0 0 110px; max-width: 110px; }
 
 	.fcc-tl-row { display: grid !important; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
-	.fcc-tl-item { padding: 0.35rem 0.4rem; gap: 0.25rem; min-width: 0; overflow: hidden; }
+	.fcc-tl-item { padding: 0.35rem 0.35rem; gap: 0.2rem; min-width: 0; overflow: hidden; flex-wrap: wrap; }
 	.fcc-tl-item__info { min-width: 0; }
-	.fcc-tl-item__label { font-size: 0.7rem; }
-	.fcc-tl-item__val { font-size: 0.6rem; }
-	.fcc-tl-rating { font-size: 0.55rem; padding: 0.12rem 0.3rem; flex-shrink: 0; }
+	.fcc-tl-item__label { font-size: 0.68rem; }
+	.fcc-tl-item__val { font-size: 0.58rem; }
+	.fcc-tl-dot { width: 8px; height: 8px; }
+	.fcc-tl-rating { font-size: 0.5rem; padding: 0.1rem 0.25rem; white-space: nowrap; }
 	.fcc-tl-item { padding: 0.4rem 0.625rem; }
 
 	.fcc-bmr-grid { grid-template-columns: 1fr; }
@@ -4235,8 +4236,9 @@ select.fcc-bmr-input {
    PWA INSTALL BUTTON
    ─────────────────────────────────────────────────────────────── */
 .fcc-pwa-install-btn {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: .4rem;
 	padding: .5rem 1.1rem;
 	background: linear-gradient(135deg, var(--fcc-primary), #0a7a7e);
@@ -4250,6 +4252,7 @@ select.fcc-bmr-input {
 	transition: transform .15s, box-shadow .15s;
 	box-shadow: 0 2px 8px rgba(7,91,94,.25);
 	margin: .75rem auto;
+	width: fit-content;
 }
 .fcc-pwa-install-btn:hover {
 	transform: translateY(-1px);
