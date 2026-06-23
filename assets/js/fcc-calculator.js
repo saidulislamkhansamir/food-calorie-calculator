@@ -2126,10 +2126,21 @@
 
 			const prevTitle = document.title;
 			document.title  = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
-			window.print();
-			document.title  = prevTitle;
 
-			document.body.removeChild( clone );
+			var cleanup = function () {
+				document.title = prevTitle;
+				if ( clone.parentNode ) document.body.removeChild( clone );
+				window.removeEventListener( 'afterprint', cleanup );
+				window.removeEventListener( 'focus', delayedCleanup );
+			};
+			var delayedCleanup = function () {
+				setTimeout( cleanup, 500 );
+			};
+
+			window.addEventListener( 'afterprint', cleanup );
+			window.addEventListener( 'focus', delayedCleanup );
+
+			window.print();
 		} );
 	}
 
