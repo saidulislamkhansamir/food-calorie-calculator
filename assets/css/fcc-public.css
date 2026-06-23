@@ -2495,9 +2495,16 @@ select.fcc-bmr-input {
 	.fcc-print-clone {
 		display: block !important;
 		visibility: visible !important;
+		opacity: 1 !important;
+		position: static !important;
+		overflow: visible !important;
 		box-shadow: none !important;
 		border-radius: 0 !important;
 		max-width: 100% !important;
+		width: 100% !important;
+		height: auto !important;
+		transform: none !important;
+		z-index: auto !important;
 		margin: 0 !important;
 		padding: 0 !important;
 		font-size: 11pt !important;
@@ -2549,9 +2556,19 @@ select.fcc-bmr-input {
 	.fcc-print-clone .fcc-macro-detail,
 	.fcc-print-clone .fcc-traffic-lights,
 	.fcc-print-clone .fcc-omega3-section,
-	.fcc-print-clone .fcc-caffeine-section {
+	.fcc-print-clone .fcc-caffeine-section,
+	.fcc-print-clone .fcc-tabs-body,
+	.fcc-print-clone .fcc-meal-section,
+	.fcc-print-clone .fcc-meal-items,
+	.fcc-print-clone .fcc-meal-totals,
+	.fcc-print-clone .fcc-print-header,
+	.fcc-print-clone .fcc-print-footer {
 		display: block !important;
 		visibility: visible !important;
+		opacity: 1 !important;
+	}
+	.fcc-print-clone .fcc-tab-panel[hidden] {
+		display: block !important;
 	}
 
 	/* Clean up sections */

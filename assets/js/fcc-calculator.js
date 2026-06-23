@@ -2094,35 +2094,11 @@
 				+ '</div>';
 			clone.appendChild( printFooter );
 
-			// Make clone measurable on screen before printing.
-			clone.style.cssText = 'position:absolute;left:0;top:0;width:210mm;visibility:hidden;z-index:-9999;';
-			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
+			// Ensure all panels visible in clone.
 			clone.querySelectorAll( '.fcc-tab-panel' ).forEach( function ( p ) { p.style.display = 'block'; } );
+
+			// Append clone — @media print CSS handles visibility.
 			document.body.appendChild( clone );
-
-			// Inject spacers at page break points for top padding on page 2+.
-			( function () {
-				var pageH = clone.querySelector( '.fcc-print-header' ) ? 960 : 960;
-				var cloneTop = clone.getBoundingClientRect().top;
-				var seen = {};
-				var els = clone.querySelectorAll( '.fcc-section, .fcc-macro-chart-wrapper, .fcc-meal-item, .fcc-meal-cat-header, .fcc-meal-totals, .fcc-nutrition-table-wrapper, .fcc-omega3-section, .fcc-caffeine-section, .fcc-health-highlights, .fcc-traffic-lights, .fcc-allergen-badges, .fcc-diet-badges, .fcc-macro-rings, .fcc-macro-bars, .fcc-macro-detail, .fcc-print-footer' );
-				for ( var i = 0; i < els.length; i++ ) {
-					var el = els[ i ];
-					var rect = el.getBoundingClientRect();
-					if ( rect.height === 0 ) continue;
-					var top = rect.top - cloneTop;
-					var page = Math.floor( top / pageH );
-					if ( page > 0 && ! seen[ page ] ) {
-						seen[ page ] = true;
-						var spacer = document.createElement( 'div' );
-						spacer.style.cssText = 'height:1cm;width:100%;flex-shrink:0;';
-						el.parentNode.insertBefore( spacer, el );
-					}
-				}
-			} )();
-
-			// Reset clone for print media — ensure visible.
-			clone.style.cssText = 'visibility:visible;';
 
 			const prevTitle = document.title;
 			document.title  = ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + ' – Food Calorie Calculator';
