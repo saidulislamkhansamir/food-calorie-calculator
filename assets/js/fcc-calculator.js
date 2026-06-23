@@ -2096,8 +2096,12 @@
 
 			// Ensure all panels visible in clone.
 			clone.querySelectorAll( '.fcc-tab-panel' ).forEach( function ( p ) { p.style.display = 'block'; } );
+			clone.querySelectorAll( '[hidden]' ).forEach( function ( el ) { el.removeAttribute( 'hidden' ); } );
 
-			// Append clone — @media print CSS handles visibility.
+			// Hide all body children, append clone visible — works on mobile + desktop.
+			var bodyChildren = Array.prototype.slice.call( document.body.children );
+			bodyChildren.forEach( function ( el ) { el.dataset.fccPrintHidden = el.style.display; el.style.display = 'none'; } );
+			clone.style.cssText = 'display:block;visibility:visible;opacity:1;position:static;width:100%;max-width:100%;margin:0;padding:0;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;';
 			document.body.appendChild( clone );
 
 			const prevTitle = document.title;
@@ -2106,11 +2110,15 @@
 			var cleanup = function () {
 				document.title = prevTitle;
 				if ( clone.parentNode ) document.body.removeChild( clone );
+				bodyChildren.forEach( function ( el ) {
+					el.style.display = el.dataset.fccPrintHidden || '';
+					delete el.dataset.fccPrintHidden;
+				} );
 				window.removeEventListener( 'afterprint', cleanup );
 				window.removeEventListener( 'focus', delayedCleanup );
 			};
 			var delayedCleanup = function () {
-				setTimeout( cleanup, 500 );
+				setTimeout( cleanup, 1000 );
 			};
 
 			window.addEventListener( 'afterprint', cleanup );
