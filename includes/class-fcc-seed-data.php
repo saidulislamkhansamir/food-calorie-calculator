@@ -19697,4 +19697,16 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 104 );
 	}
+
+	/** Seed v105: Restore Aam Achar data wiped by toggle bug. */
+	public static function seed_v105(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 105 ) { return; }
+		global $wpdb;
+		$t = $wpdb->prefix . 'fcc_foods';
+		$wpdb->query( $wpdb->prepare(
+			"UPDATE {$t} SET name = %s, energy_kcal = %f, energy_kj = %f, protein_g = %f, carbohydrate_g = %f, of_which_sugars_g = %f, fat_g = %f, of_which_saturates_g = %f, fibre_g = %f, salt_g = %f, iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f, is_active = 1 WHERE slug = %s AND (name = '' OR name IS NULL OR energy_kcal = 0)", // phpcs:ignore
+			'Aam Achar (raw mango pickle)', 135.0, 565.0, 1.5, 15.0, 8.0, 8.0, 1.0, 1.5, 4.0, 0.16, 11.0, 36.4, 'aam-achar-raw-mango-pickle'
+		) );
+		update_option( 'fcc_seed_version', 105 );
+	}
 }
