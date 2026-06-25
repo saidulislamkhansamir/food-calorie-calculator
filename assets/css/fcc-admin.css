@@ -2019,6 +2019,15 @@
 	white-space: nowrap;
 }
 
+.fcc-foods-action-btn--view {
+	background: #f0fdf4;
+	color: #16a34a;
+	border-color: #bbf7d0;
+}
+.fcc-foods-action-btn--view:hover {
+	background: #dcfce7;
+	color: #15803d;
+}
 .fcc-foods-action-btn--edit {
 	background: #eff6ff;
 	color: #1d4ed8;

@@ -67,6 +67,20 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 							value="<?php echo $is_edit ? esc_attr( $food['name'] ) : esc_attr( sanitize_text_field( $_GET['food_name'] ?? '' ) ); ?>"
 							class="regular-text">
 					</div>
+					<?php if ( $is_edit && ! empty( $food['slug'] ) ) :
+						$food_page_url = home_url( '/food/' . $food['slug'] . '/' );
+					?>
+					<div class="fcc-field fcc-food-url-field">
+						<label><?php esc_html_e( 'Food Page URL', 'food-calorie-calculator' ); ?></label>
+						<div style="display:flex;gap:0.5rem;align-items:center;">
+							<a href="<?php echo esc_url( $food_page_url ); ?>" target="_blank" rel="noopener"
+								style="color:#075B5E;font-size:0.88rem;word-break:break-all;"><?php echo esc_html( $food_page_url ); ?></a>
+							<button type="button" class="button button-small" onclick="navigator.clipboard.writeText('<?php echo esc_js( $food_page_url ); ?>');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500);">
+								<?php esc_html_e( 'Copy', 'food-calorie-calculator' ); ?>
+							</button>
+						</div>
+					</div>
+					<?php endif; ?>
 					<div class="fcc-field">
 						<label for="food_category"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></label>
 						<select id="food_category" name="category_id" class="regular-text">

@@ -308,6 +308,13 @@ endif;
 							</td>
 							<td class="fcc-foods-td fcc-foods-td--actions">
 								<div class="fcc-foods-action-group">
+									<a href="<?php echo esc_url( home_url( '/food/' . ( $food['slug'] ?? sanitize_title( $food['name'] ) ) . '/' ) ); ?>"
+										target="_blank" rel="noopener"
+										class="fcc-foods-action-btn fcc-foods-action-btn--view"
+										title="<?php esc_attr_e( 'View Food Page', 'food-calorie-calculator' ); ?>">
+										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+										<?php esc_html_e( 'View', 'food-calorie-calculator' ); ?>
+									</a>
 									<button type="button" class="fcc-foods-action-btn fcc-foods-action-btn--qe fcc-foods-qe-trigger"
 										title="<?php esc_attr_e( 'Quick Edit', 'food-calorie-calculator' ); ?>">
 										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
