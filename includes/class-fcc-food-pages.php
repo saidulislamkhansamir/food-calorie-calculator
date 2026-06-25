@@ -23,7 +23,6 @@ class Food_Pages {
 		$loader->add_action( 'template_redirect', $this, 'handle_food_page' );
 		$loader->add_action( 'wp_head',           $this, 'output_seo_meta', 1 );
 		$loader->add_filter( 'document_title_parts', $this, 'filter_title' );
-		$loader->add_filter( 'wp_sitemaps_add_provider', $this, 'register_sitemap_provider', 10, 2 );
 	}
 
 	public function add_rewrite_rules(): void {
@@ -48,11 +47,12 @@ class Food_Pages {
 
 		self::$current_food = $food;
 
-		// Tell the shortcode to preload this food by ID.
+		// Tell the shortcode to preload this food by ID and use h2 for calculator title.
 		$food_id = $food['id'];
 		add_filter( 'fcc_preload_food', function () use ( $food_id ) {
 			return $food_id;
 		} );
+		add_filter( 'fcc_heading_tag', function () { return 'h2'; } );
 
 		$this->render_food_page( $food );
 		exit;
@@ -381,20 +381,6 @@ class Food_Pages {
 				],
 			],
 		];
-	}
-
-	// -------------------------------------------------------------------------
-	// XML Sitemap Provider
-	// -------------------------------------------------------------------------
-
-	public function register_sitemap_provider( $provider, string $name ) {
-		if ( 'posts' === $name ) {
-			// Also register our custom food pages sitemap.
-			add_filter( 'wp_sitemaps_add_provider', function ( $p, $n ) {
-				return $p;
-			}, 10, 2 );
-		}
-		return $provider;
 	}
 
 	public static function get_current_food(): ?array {

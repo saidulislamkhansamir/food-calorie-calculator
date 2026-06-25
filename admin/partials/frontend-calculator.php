@@ -44,7 +44,8 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 4 5.5 4 10c0 3.9 2.5 7.1 6 8.5V21h4v-2.5c3.5-1.4 6-4.6 6-8.5C20 5.5 16 2 12 2z"/><line x1="12" y1="6" x2="12" y2="10"/><line x1="10" y1="8" x2="14" y2="8"/></svg>
 			</div>
 			<div class="fcc-hero__text">
-				<h1 class="fcc-title"><?php echo esc_html( $title ); ?></h1>
+				<?php $htag = apply_filters( 'fcc_heading_tag', 'h1' ); ?>
+				<<?php echo esc_attr( $htag ); ?> class="fcc-title"><?php echo esc_html( $title ); ?></<?php echo esc_attr( $htag ); ?>>
 				<p class="fcc-hero__sub"><?php esc_html_e( 'UK nutrition data · FSA traffic lights · Reference Intakes', 'food-calorie-calculator' ); ?></p>
 			</div>
 		</div>
