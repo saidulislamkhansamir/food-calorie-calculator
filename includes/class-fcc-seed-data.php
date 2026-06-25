@@ -19698,15 +19698,38 @@ class Seed_Data {
 		update_option( 'fcc_seed_version', 104 );
 	}
 
-	/** Seed v105: Restore Aam Achar data wiped by toggle bug. */
+	/** Seed v105: (superseded by v106). */
 	public static function seed_v105(): void {
 		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 105 ) { return; }
-		global $wpdb;
-		$t = $wpdb->prefix . 'fcc_foods';
-		$wpdb->query( $wpdb->prepare(
-			"UPDATE {$t} SET name = %s, energy_kcal = %f, energy_kj = %f, protein_g = %f, carbohydrate_g = %f, of_which_sugars_g = %f, fat_g = %f, of_which_saturates_g = %f, fibre_g = %f, salt_g = %f, iron_mg = %f, calcium_mg = %f, vitamin_c_mg = %f, is_active = 1 WHERE slug = %s AND (name = '' OR name IS NULL OR energy_kcal = 0)", // phpcs:ignore
-			'Aam Achar (raw mango pickle)', 135.0, 565.0, 1.5, 15.0, 8.0, 8.0, 1.0, 1.5, 4.0, 0.16, 11.0, 36.4, 'aam-achar-raw-mango-pickle'
-		) );
 		update_option( 'fcc_seed_version', 105 );
+	}
+
+	/** Seed v106: Re-insert Aam Achar (was deleted after toggle bug wiped its data). */
+	public static function seed_v106(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 106 ) { return; }
+		global $wpdb;
+		$t    = $wpdb->prefix . 'fcc_foods';
+		$slug = 'aam-achar-raw-mango-pickle';
+		$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$t} WHERE slug = %s", $slug ) ); // phpcs:ignore
+		if ( ! $exists ) {
+			$co = $wpdb->get_var( "SELECT id FROM {$wpdb->prefix}fcc_categories WHERE slug = 'condiments-sauces' OR name LIKE '%condiment%' LIMIT 1" ); // phpcs:ignore
+			$wpdb->insert( $t, [
+				'name' => 'Aam Achar (raw mango pickle)', 'slug' => $slug,
+				'category_id' => (int) $co ?: 12,
+				'energy_kcal' => 135, 'energy_kj' => 565, 'protein_g' => 1.5,
+				'carbohydrate_g' => 15.0, 'of_which_sugars_g' => 8.0,
+				'fat_g' => 8.0, 'of_which_saturates_g' => 1.0,
+				'fibre_g' => 1.5, 'salt_g' => 4.0,
+				'iron_mg' => 0.16, 'calcium_mg' => 11.0, 'vitamin_c_mg' => 36.4,
+				'diet_halal' => 1, 'diet_kosher' => 1, 'diet_vegan' => 1, 'diet_vegetarian' => 1,
+				'is_active' => 1,
+			] );
+		} else {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$t} SET name = %s, energy_kcal = 135, energy_kj = 565, protein_g = 1.5, carbohydrate_g = 15.0, of_which_sugars_g = 8.0, fat_g = 8.0, of_which_saturates_g = 1.0, fibre_g = 1.5, salt_g = 4.0, iron_mg = 0.16, calcium_mg = 11.0, vitamin_c_mg = 36.4, is_active = 1 WHERE slug = %s AND (name = '' OR name IS NULL OR energy_kcal = 0)", // phpcs:ignore
+				'Aam Achar (raw mango pickle)', $slug
+			) );
+		}
+		update_option( 'fcc_seed_version', 106 );
 	}
 }
