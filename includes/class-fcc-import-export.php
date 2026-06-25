@@ -56,6 +56,7 @@ class Import_Export {
 			'calcium_mg'           => [ 'label' => 'Calcium (mg)',               'required' => false, 'nullable' => true,  'type' => 'float'  ],
 			'vitamin_c_mg'         => [ 'label' => 'Vitamin C (mg)',             'required' => false, 'nullable' => true,  'type' => 'float'  ],
 			'is_active'            => [ 'label' => 'Active (1/0)',              'required' => false, 'nullable' => false, 'type' => 'int'    ],
+			'page_content'         => [ 'label' => 'Page Content',              'required' => false, 'nullable' => true,  'type' => 'string' ],
 			'serving_sizes'        => [ 'label' => 'Serving Sizes (JSON)',       'required' => false, 'nullable' => true,  'type' => 'json'   ],
 			'source_notes'         => [ 'label' => 'Source / Notes',            'required' => false, 'nullable' => true,  'type' => 'string' ],
 		];

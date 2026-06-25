@@ -190,6 +190,18 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 					</div>
 				</div>
 
+				<!-- Food page content (optional override for auto-generated SEO text) -->
+				<div class="fcc-card">
+					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg><?php esc_html_e( 'Food Page Content', 'food-calorie-calculator' ); ?></h2>
+					<div class="fcc-field">
+						<label for="page_content"><?php esc_html_e( 'Custom page content (optional)', 'food-calorie-calculator' ); ?></label>
+						<textarea id="page_content" name="page_content" rows="6" class="large-text"><?php
+							echo $is_edit ? esc_textarea( $food['page_content'] ?? '' ) : '';
+						?></textarea>
+						<p class="description"><?php esc_html_e( 'If filled, replaces the auto-generated description on the individual food page (/food/slug/). Leave blank for auto-generated content.', 'food-calorie-calculator' ); ?></p>
+					</div>
+				</div>
+
 				<!-- Source notes -->
 				<div class="fcc-card">
 					<h2 class="fcc-card__title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><?php esc_html_e( 'Source / Notes', 'food-calorie-calculator' ); ?></h2>

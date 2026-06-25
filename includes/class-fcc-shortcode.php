@@ -371,6 +371,7 @@ class Shortcode {
 				'affiliates'  => \FCC\Admin\Affiliates::get_enabled_for_frontend(),
 				'supplements' => \FCC\Admin\Supplements::get_frontend_data(),
 				'promotions'  => self::get_promotions_for_frontend(),
+				'preloadFood' => apply_filters( 'fcc_preload_food', null ),
 			]
 		);
 

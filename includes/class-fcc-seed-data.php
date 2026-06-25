@@ -19732,4 +19732,16 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 106 );
 	}
+
+	/** Seed v107: Add page_content column for custom food page content. */
+	public static function seed_v107(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 107 ) { return; }
+		global $wpdb;
+		$t    = $wpdb->prefix . 'fcc_foods';
+		$cols = $wpdb->get_col( "SHOW COLUMNS FROM {$t}" ); // phpcs:ignore
+		if ( ! in_array( 'page_content', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN page_content text DEFAULT NULL AFTER is_active" ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 107 );
+	}
 }

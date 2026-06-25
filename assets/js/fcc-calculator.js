@@ -1941,9 +1941,17 @@
 	// Load popular foods on page init.
 	loadPopularFoods();
 
-	// Restore state from URL params on page load.
+	// Restore state from URL params or preloaded food on page load.
 	( function restoreFromUrl() {
 		var p = new URLSearchParams( window.location.search );
+
+		// Preloaded food page (individual food URL).
+		if ( settings.preloadFood && ! p.get( 'fcc_food' ) ) {
+			apiFetch( '/foods/' + encodeURIComponent( settings.preloadFood ) ).then( function ( food ) {
+				selectFood( food );
+				renderResults();
+			} ).catch( function () {} );
+		}
 
 		// Compare restore.
 		var caId = p.get( 'fcc_ca' ), cbId = p.get( 'fcc_cb' );

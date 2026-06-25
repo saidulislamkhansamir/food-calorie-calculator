@@ -24,7 +24,11 @@ class Activator {
 		Settings::install_defaults();
 		Seed_Data::seed();
 
-		// Flush rewrite rules so the REST API namespace is available immediately.
+		// Register food page rewrite rules before flushing.
+		require_once FCC_PLUGIN_DIR . 'includes/class-fcc-food-pages.php';
+		add_rewrite_rule( 'food/([^/]+)/?$', 'index.php?fcc_food_slug=$matches[1]', 'top' );
+
+		// Flush rewrite rules so the REST API + food pages are available immediately.
 		flush_rewrite_rules();
 	}
 }

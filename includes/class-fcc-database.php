@@ -129,6 +129,7 @@ class Database {
   diet_vegan tinyint(1) DEFAULT NULL,
   diet_vegetarian tinyint(1) DEFAULT NULL,
   is_active tinyint(1) NOT NULL DEFAULT 1,
+  page_content text DEFAULT NULL,
   is_sponsored tinyint(1) NOT NULL DEFAULT 0,
   sponsor_active tinyint(1) NOT NULL DEFAULT 0,
   sponsor_name varchar(200) DEFAULT NULL,
@@ -592,6 +593,17 @@ class Database {
 		) );
 	}
 
+	public static function get_related_foods( int $category_id, int $exclude_id, int $limit = 6 ): array {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT * FROM {$table} WHERE category_id = %d AND id != %d AND is_active = 1 ORDER BY search_count DESC, name ASC LIMIT %d",
+			$category_id, $exclude_id, $limit
+		), ARRAY_A );
+		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
+	}
+
 	public static function set_food_field( int $id, string $field, mixed $value ): bool {
 		global $wpdb;
 		return false !== $wpdb->update( self::foods_table(), [ $field => $value ], [ 'id' => $id ] );
@@ -811,6 +823,7 @@ class Database {
 			'is_fruit_veg'       => isset( $data['is_fruit_veg'] ) ? (int) (bool) $data['is_fruit_veg'] : null,
 			'source_notes'       => isset( $data['source_notes'] ) ? sanitize_textarea_field( $data['source_notes'] ) : null,
 			'is_active'          => (int) (bool) ( $data['is_active'] ?? 1 ),
+			'page_content'       => isset( $data['page_content'] ) && '' !== $data['page_content'] ? wp_kses_post( $data['page_content'] ) : null,
 			'is_sponsored'       => (int) (bool) ( $data['is_sponsored'] ?? 0 ),
 			'sponsor_active'     => (int) (bool) ( $data['sponsor_active'] ?? 0 ),
 			'sponsor_name'       => isset( $data['sponsor_name'] ) && '' !== $data['sponsor_name'] ? sanitize_text_field( $data['sponsor_name'] ) : null,
@@ -840,7 +853,7 @@ class Database {
 		$int_cols    = [ 'category_id', 'is_fruit_veg', 'is_active', 'is_sponsored', 'sponsor_active', 'sponsor_logo_id',
 			'allergen_fish', 'allergen_shellfish', 'allergen_dairy', 'allergen_eggs', 'allergen_nuts', 'allergen_gluten', 'allergen_soy', 'allergen_celery',
 			'diet_keto', 'diet_paleo', 'diet_halal', 'diet_kosher', 'diet_vegan', 'diet_vegetarian' ];
-		$string_cols = [ 'name', 'slug', 'serving_sizes', 'source_notes', 'sponsor_name', 'sponsor_url', 'sponsor_expires_at' ];
+		$string_cols = [ 'name', 'slug', 'serving_sizes', 'source_notes', 'page_content', 'sponsor_name', 'sponsor_url', 'sponsor_expires_at' ];
 
 		$formats = [];
 		foreach ( array_keys( $row ) as $col ) {

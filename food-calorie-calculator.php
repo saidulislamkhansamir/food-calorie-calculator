@@ -3,7 +3,7 @@
  * Plugin Name:       Food Calorie Calculator
  * Plugin URI:        https://foodcaloriecalculator.co.uk
  * Description:       A comprehensive UK food calorie calculator. Ships with 5,200+ foods from 190+ countries, FSA traffic lights, SVG macro rings, Omega-3/caffeine/micronutrient tracking, meal builder with templates, BMR/TDEE, promotion suite, analytics dashboard, and a fully-featured admin control panel — no coding required.
- * Version:           13.11.3
+ * Version:           14.0.0
  * Requires at least: 6.0
  * Requires PHP:      8.1
  * Author:            The Khan Digital
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 // ---------------------------------------------------------------------------
 // Constants.
 // ---------------------------------------------------------------------------
-define( 'FCC_VERSION',         '13.11.3' );
+define( 'FCC_VERSION',         '14.0.0' );
 define( 'FCC_DB_VERSION',      '1.5' );
 define( 'FCC_PLUGIN_FILE',     __FILE__ );
 define( 'FCC_PLUGIN_DIR',      plugin_dir_path( __FILE__ ) );
@@ -37,6 +37,7 @@ require_once FCC_PLUGIN_DIR . 'includes/class-fcc-seed-data.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-import-export.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-rest-api.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-shortcode.php';
+require_once FCC_PLUGIN_DIR . 'includes/class-fcc-food-pages.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-block.php';
 
 // Affiliates, Ads, and Supplements classes loaded unconditionally — their static helpers are called by the shortcode on the frontend.
@@ -90,6 +91,11 @@ add_action( 'plugins_loaded', function (): void {
 
 	$block = new FCC\FCC_Block();
 	$block->register( $loader );
+
+	// Individual food pages (/food/{slug}/).
+	$food_pages = new FCC\Food_Pages();
+	$food_pages->register( $loader );
+	add_action( 'init', [ FCC\Food_Pages::class, 'register_sitemap' ], 20 );
 
 	// Affiliates, Ads, and Supplements AJAX handlers registered for admin + frontend.
 	( new FCC\Admin\Affiliates() )->register( $loader );
@@ -222,4 +228,5 @@ add_action( 'plugins_loaded', function (): void {
 	FCC\Seed_Data::seed_v104();
 	FCC\Seed_Data::seed_v105();
 	FCC\Seed_Data::seed_v106();
+	FCC\Seed_Data::seed_v107();
 } );
