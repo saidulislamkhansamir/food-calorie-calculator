@@ -313,16 +313,14 @@ endif;
 										class="fcc-foods-action-btn fcc-foods-action-btn--view"
 										title="<?php esc_attr_e( 'View Food Page', 'food-calorie-calculator' ); ?>">
 										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-										<?php esc_html_e( 'View', 'food-calorie-calculator' ); ?>
 									</a>
 									<button type="button" class="fcc-foods-action-btn fcc-foods-action-btn--qe fcc-foods-qe-trigger"
 										title="<?php esc_attr_e( 'Quick Edit', 'food-calorie-calculator' ); ?>">
 										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-										<?php esc_html_e( 'Quick', 'food-calorie-calculator' ); ?>
 									</button>
-									<a href="<?php echo $edit_url; ?>" class="fcc-foods-action-btn fcc-foods-action-btn--edit">
+									<a href="<?php echo $edit_url; ?>" class="fcc-foods-action-btn fcc-foods-action-btn--edit"
+										title="<?php esc_attr_e( 'Edit', 'food-calorie-calculator' ); ?>">
 										<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-										<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
 									</a>
 									<a href="<?php echo $dup_url; ?>" class="fcc-foods-action-btn fcc-foods-action-btn--dup"
 										title="<?php esc_attr_e( 'Duplicate', 'food-calorie-calculator' ); ?>">
