@@ -265,7 +265,7 @@ class Foods {
 		$food = \FCC\Database::get_food( $id );
 		if ( ! $food ) { wp_send_json_error( 'Food not found.' ); }
 		$new_val = $food['is_active'] ? 0 : 1;
-		\FCC\Database::update_food( $id, [ 'is_active' => $new_val ] );
+		\FCC\Database::set_food_field( $id, 'is_active', $new_val );
 		wp_send_json_success( [ 'is_active' => $new_val ] );
 	}
 

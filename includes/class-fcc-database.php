@@ -592,6 +592,11 @@ class Database {
 		) );
 	}
 
+	public static function set_food_field( int $id, string $field, mixed $value ): bool {
+		global $wpdb;
+		return false !== $wpdb->update( self::foods_table(), [ $field => $value ], [ 'id' => $id ] );
+	}
+
 	public static function bulk_set_active( array $ids, int $active ): int {
 		global $wpdb;
 		$table = self::foods_table();
