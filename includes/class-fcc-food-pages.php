@@ -205,8 +205,8 @@ class Food_Pages {
 	// FAQ Section
 	// -------------------------------------------------------------------------
 
-	private function render_faq( array $food ): void {
-		$name = esc_html( $food['name'] );
+	private function build_faqs( array $food ): array {
+		$name = $food['name'];
 		$kcal = number_format( (float) $food['energy_kcal'], 0 );
 		$prot = number_format( (float) $food['protein_g'], 1 );
 		$fat  = number_format( (float) $food['fat_g'], 1 );
@@ -252,9 +252,14 @@ class Food_Pages {
 				: "{$name} does not contain any of the 8 major allergens (fish, shellfish, dairy, eggs, tree nuts, gluten, soy, celery). However, always check the label for potential cross-contamination.",
 		];
 
+		return $faqs;
+	}
+
+	private function render_faq( array $food ): void {
+		$faqs = $this->build_faqs( $food );
+
 		echo '<div class="fcc-food-page__faq">';
 		echo '<h2>Frequently Asked Questions</h2>';
-		// FAQ schema-friendly markup.
 		foreach ( $faqs as $faq ) {
 			echo '<div class="fcc-food-page__faq-item" itemscope itemtype="https://schema.org/Question">';
 			echo '<h3 itemprop="name">' . esc_html( $faq['q'] ) . '</h3>';
@@ -361,31 +366,22 @@ class Food_Pages {
 	}
 
 	private function build_faq_schema( array $food ): array {
-		$name = $food['name'];
-		$kcal = number_format( (float) $food['energy_kcal'], 0 );
-		$prot = number_format( (float) $food['protein_g'], 1 );
-
+		$faqs = $this->build_faqs( $food );
+		$entities = [];
+		foreach ( $faqs as $faq ) {
+			$entities[] = [
+				'@type' => 'Question',
+				'name'  => $faq['q'],
+				'acceptedAnswer' => [
+					'@type' => 'Answer',
+					'text'  => $faq['a'],
+				],
+			];
+		}
 		return [
 			'@context'   => 'https://schema.org',
 			'@type'      => 'FAQPage',
-			'mainEntity' => [
-				[
-					'@type' => 'Question',
-					'name'  => "How many calories are in {$name}?",
-					'acceptedAnswer' => [
-						'@type' => 'Answer',
-						'text'  => "{$name} contains {$kcal} kcal per 100g.",
-					],
-				],
-				[
-					'@type' => 'Question',
-					'name'  => "Is {$name} high in protein?",
-					'acceptedAnswer' => [
-						'@type' => 'Answer',
-						'text'  => "{$name} contains {$prot}g of protein per 100g.",
-					],
-				],
-			],
+			'mainEntity' => $entities,
 		];
 	}
 
