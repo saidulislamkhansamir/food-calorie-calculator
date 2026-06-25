@@ -16,6 +16,8 @@ defined( 'ABSPATH' ) || exit;
 class Food_Pages {
 
 	private static ?array $current_food = null;
+	private static ?string $page_type = null;
+	private static ?array $current_category = null;
 
 	public function register( Loader $loader ): void {
 		$loader->add_action( 'init',              $this, 'add_rewrite_rules' );
@@ -27,20 +29,47 @@ class Food_Pages {
 	}
 
 	public function maybe_enqueue_assets(): void {
-		if ( ! get_query_var( 'fcc_food_slug' ) ) { return; }
-		Shortcode::enqueue_public_assets();
+		if ( get_query_var( 'fcc_food_slug' ) || get_query_var( 'fcc_food_directory' ) || get_query_var( 'fcc_food_category_slug' ) ) {
+			Shortcode::enqueue_public_assets();
+		}
 	}
 
 	public function add_rewrite_rules(): void {
+		add_rewrite_rule( 'food/category/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]', 'top' );
+		add_rewrite_rule( 'food/?$', 'index.php?fcc_food_directory=1', 'top' );
 		add_rewrite_rule( 'food/([^/]+)/?$', 'index.php?fcc_food_slug=$matches[1]', 'top' );
 	}
 
 	public function add_query_vars( array $vars ): array {
 		$vars[] = 'fcc_food_slug';
+		$vars[] = 'fcc_food_directory';
+		$vars[] = 'fcc_food_category_slug';
 		return $vars;
 	}
 
 	public function handle_food_page(): void {
+		// Directory hub: /food/
+		if ( get_query_var( 'fcc_food_directory' ) ) {
+			self::$page_type = 'directory';
+			$this->render_directory_page();
+			exit;
+		}
+
+		// Category page: /food/category/{slug}/
+		$cat_slug = get_query_var( 'fcc_food_category_slug' );
+		if ( $cat_slug ) {
+			$cat = Database::get_category_by_slug( sanitize_title( $cat_slug ) );
+			if ( ! $cat ) {
+				wp_safe_redirect( home_url( '/food/' ), 301 );
+				exit;
+			}
+			self::$page_type = 'category';
+			self::$current_category = $cat;
+			$this->render_category_page( $cat );
+			exit;
+		}
+
+		// Individual food page: /food/{slug}/
 		$slug = get_query_var( 'fcc_food_slug' );
 		if ( ! $slug ) { return; }
 
@@ -97,6 +126,113 @@ class Food_Pages {
 
 		echo '</div>';
 
+		get_footer();
+	}
+
+	// -------------------------------------------------------------------------
+	// Directory Page (/food/)
+	// -------------------------------------------------------------------------
+
+	private function render_directory_page(): void {
+		$categories = Database::get_category_food_counts();
+		$total = 0;
+		foreach ( $categories as $c ) { $total += (int) $c['food_count']; }
+
+		status_header( 200 );
+		get_header();
+
+		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
+		echo '<h1 class="fcc-food-page__title">Food Nutrition Database</h1>';
+		echo '<p class="fcc-food-page__intro">Explore detailed nutrition facts, calorie counts, and macro breakdowns for over ' . number_format( $total ) . ' foods. Browse by category or use the calculator to search for any food.</p>';
+
+		echo '<div class="fcc-directory__grid">';
+		foreach ( $categories as $cat ) {
+			$url   = home_url( '/food/category/' . $cat['slug'] . '/' );
+			$count = (int) $cat['food_count'];
+			echo '<a href="' . esc_url( $url ) . '" class="fcc-directory__card">';
+			echo '<span class="fcc-directory__card-name">' . esc_html( $cat['name'] ) . '</span>';
+			echo '<span class="fcc-directory__card-count">' . $count . ' ' . ( 1 === $count ? 'food' : 'foods' ) . '</span>';
+			echo '</a>';
+		}
+		echo '</div>';
+
+		// Show top foods per category.
+		foreach ( $categories as $cat ) {
+			$foods = Database::get_foods_in_category( (int) $cat['id'] );
+			if ( empty( $foods ) ) { continue; }
+			$cat_url = home_url( '/food/category/' . $cat['slug'] . '/' );
+
+			echo '<div class="fcc-directory__section">';
+			echo '<h2><a href="' . esc_url( $cat_url ) . '">' . esc_html( $cat['name'] ) . '</a></h2>';
+			echo '<ul class="fcc-directory__list">';
+			$shown = array_slice( $foods, 0, 15 );
+			foreach ( $shown as $f ) {
+				$url = home_url( '/food/' . $f['slug'] . '/' );
+				echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $f['name'] ) . '</a> <span class="fcc-directory__kcal">' . number_format( (float) $f['energy_kcal'], 0 ) . ' kcal</span></li>';
+			}
+			echo '</ul>';
+			if ( count( $foods ) > 15 ) {
+				echo '<a href="' . esc_url( $cat_url ) . '" class="fcc-directory__viewall">View all ' . count( $foods ) . ' ' . esc_html( $cat['name'] ) . ' foods &rarr;</a>';
+			}
+			echo '</div>';
+		}
+
+		echo '</div>';
+		get_footer();
+	}
+
+	// -------------------------------------------------------------------------
+	// Category Page (/food/category/{slug}/)
+	// -------------------------------------------------------------------------
+
+	private function render_category_page( array $cat ): void {
+		$foods = Database::get_foods_in_category( (int) $cat['id'] );
+		$count = count( $foods );
+
+		$cat_descriptions = [
+			'fruits & vegetables'    => 'Discover the nutritional value of fresh fruits and vegetables. These natural foods are rich in vitamins, minerals, and fibre, forming the foundation of a healthy diet.',
+			'fruit & vegetables'     => 'Discover the nutritional value of fresh fruits and vegetables. These natural foods are rich in vitamins, minerals, and fibre, forming the foundation of a healthy diet.',
+			'meat & poultry'         => 'Explore calorie and protein content for meat and poultry products. These foods are primary sources of complete protein, iron, and B vitamins in the diet.',
+			'fish & seafood'         => 'Browse nutrition data for fish and seafood. These foods are valued for their protein content, omega-3 fatty acids, and essential minerals.',
+			'dairy & eggs'           => 'View nutrition facts for dairy products and eggs. These foods provide calcium, protein, and essential vitamins important for bone health and growth.',
+			'grains & cereals'       => 'Check calorie and carbohydrate content for grains, cereals, and bread products. These staple foods provide energy, fibre, and B vitamins.',
+			'nuts & seeds'           => 'Explore the nutritional profile of nuts and seeds. These energy-dense foods are rich in healthy fats, protein, and minerals.',
+			'legumes & pulses'       => 'Browse nutrition data for beans, lentils, and other pulses. These plant-based foods are excellent sources of protein, fibre, and iron.',
+			'drinks'                 => 'View calorie counts and nutritional information for beverages. From water to smoothies, see what each drink contributes to your daily intake.',
+			'condiments & sauces'    => 'Check nutrition facts for sauces, dressings, and condiments. These flavouring ingredients can vary significantly in their calorie and salt content.',
+			'snacks & confectionery' => 'Browse calorie and sugar content for snacks and sweet treats. Understanding the nutritional value helps with mindful snacking and portion control.',
+			'takeaway & ready meals' => 'View nutrition data for takeaway dishes and ready meals from around the world. These convenient foods range widely in their nutritional profiles.',
+		];
+		$desc = $cat_descriptions[ strtolower( $cat['name'] ) ] ?? 'Browse nutrition facts for foods in the ' . esc_html( $cat['name'] ) . ' category.';
+
+		status_header( 200 );
+		get_header();
+
+		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
+		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/food/' ) ) . '">Food Database</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
+		echo '<h1 class="fcc-food-page__title">' . esc_html( $cat['name'] ) . ' &mdash; Calories &amp; Nutrition Facts</h1>';
+		echo '<p class="fcc-food-page__intro">' . esc_html( $desc ) . ' Showing <strong>' . $count . '</strong> foods in this category.</p>';
+
+		if ( $foods ) {
+			echo '<div class="fcc-category-page__table-wrap">';
+			echo '<table class="fcc-category-page__table">';
+			echo '<thead><tr><th>Food</th><th>kcal</th><th>Protein</th><th>Fat</th></tr></thead>';
+			echo '<tbody>';
+			foreach ( $foods as $f ) {
+				$url = home_url( '/food/' . $f['slug'] . '/' );
+				echo '<tr>';
+				echo '<td><a href="' . esc_url( $url ) . '">' . esc_html( $f['name'] ) . '</a></td>';
+				echo '<td>' . number_format( (float) $f['energy_kcal'], 0 ) . '</td>';
+				echo '<td>' . number_format( (float) $f['protein_g'], 1 ) . 'g</td>';
+				echo '<td>' . number_format( (float) $f['fat_g'], 1 ) . 'g</td>';
+				echo '</tr>';
+			}
+			echo '</tbody></table>';
+			echo '</div>';
+		}
+
+		echo '<p style="margin-top:1.5rem;font-size:0.88rem;color:#718096;">All values are per 100g. Click any food to see the full nutritional breakdown, FSA traffic lights, and interactive calculator.</p>';
+		echo '</div>';
 		get_footer();
 	}
 
@@ -588,6 +724,21 @@ class Food_Pages {
 	// -------------------------------------------------------------------------
 
 	public function output_seo_meta(): void {
+		// Directory page.
+		if ( 'directory' === self::$page_type ) {
+			echo '<meta name="description" content="Browse nutrition facts for over 4,900 foods. Calories, protein, fat, carbs, vitamins, and minerals — all in one free UK food calorie calculator.">' . "\n";
+			echo '<link rel="canonical" href="' . esc_url( home_url( '/food/' ) ) . '">' . "\n";
+			return;
+		}
+
+		// Category page.
+		if ( 'category' === self::$page_type && self::$current_category ) {
+			$cn = esc_attr( self::$current_category['name'] );
+			echo '<meta name="description" content="' . esc_attr( "{$cn} — browse calories, protein, fat, and full nutrition facts for all foods in this category. Free UK food calorie calculator." ) . '">' . "\n";
+			echo '<link rel="canonical" href="' . esc_url( home_url( '/food/category/' . self::$current_category['slug'] . '/' ) ) . '">' . "\n";
+			return;
+		}
+
 		$food = self::$current_food;
 		if ( ! $food ) { return; }
 
@@ -624,7 +775,13 @@ class Food_Pages {
 	}
 
 	public function filter_title( array $title ): array {
-		if ( self::$current_food ) {
+		if ( 'directory' === self::$page_type ) {
+			$title['title'] = 'Food Nutrition Database — Browse All Foods';
+			$title['site']  = 'Food Calorie Calculator';
+		} elseif ( 'category' === self::$page_type && self::$current_category ) {
+			$title['title'] = self::$current_category['name'] . ' — Calories & Nutrition';
+			$title['site']  = 'Food Calorie Calculator';
+		} elseif ( self::$current_food ) {
 			$title['title'] = self::$current_food['name'] . ' Calories & Nutrition';
 			$title['site']  = 'Food Calorie Calculator';
 		}
@@ -691,6 +848,16 @@ class Food_Sitemap_Provider extends \WP_Sitemaps_Provider {
 		), ARRAY_A );
 
 		$urls = [];
+
+		// First page: include /food/ hub and category pages.
+		if ( 1 === $page_num ) {
+			$urls[] = [ 'loc' => home_url( '/food/' ) ];
+			$cats = $wpdb->get_results( "SELECT slug FROM {$wpdb->prefix}fcc_categories ORDER BY display_order ASC", ARRAY_A ); // phpcs:ignore
+			foreach ( $cats ?? [] as $c ) {
+				$urls[] = [ 'loc' => home_url( '/food/category/' . $c['slug'] . '/' ) ];
+			}
+		}
+
 		foreach ( $rows ?? [] as $row ) {
 			$urls[] = [
 				'loc'     => home_url( '/food/' . $row['slug'] . '/' ),

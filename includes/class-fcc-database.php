@@ -593,6 +593,36 @@ class Database {
 		) );
 	}
 
+	public static function get_category_by_slug( string $slug ): ?array {
+		global $wpdb;
+		$table = self::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE slug = %s", $slug ), ARRAY_A ) ?: null;
+	}
+
+	public static function get_foods_in_category( int $category_id ): array {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT id, name, slug, energy_kcal, protein_g, fat_g FROM {$table} WHERE category_id = %d AND is_active = 1 ORDER BY name ASC",
+			$category_id
+		), ARRAY_A );
+		return $rows ?? [];
+	}
+
+	public static function get_category_food_counts(): array {
+		global $wpdb;
+		$ft = self::foods_table();
+		$ct = self::categories_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			"SELECT c.id, c.name, c.slug, COUNT(f.id) AS food_count FROM {$ct} c LEFT JOIN {$ft} f ON f.category_id = c.id AND f.is_active = 1 GROUP BY c.id ORDER BY c.display_order ASC, c.name ASC",
+			ARRAY_A
+		);
+		return $rows ?? [];
+	}
+
 	public static function get_related_foods( int $category_id, int $exclude_id, int $limit = 6 ): array {
 		global $wpdb;
 		$table = self::foods_table();
