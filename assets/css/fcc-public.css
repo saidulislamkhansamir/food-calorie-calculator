@@ -4775,6 +4775,28 @@ select.fcc-bmr-input {
 	font-size: 0.9rem;
 }
 
+/* Nutritional Overview */
+.fcc-food-page__overview {
+	margin-top: 2rem;
+	padding: 1.25rem 1.5rem;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+}
+.fcc-food-page__overview > h2 {
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: #075B5E;
+	margin: 0 0 0.75rem;
+}
+.fcc-food-page__overview p {
+	font-size: 0.92rem;
+	color: #4a5568;
+	line-height: 1.7;
+	margin: 0 0 0.6rem;
+}
+.fcc-food-page__overview p:last-child { margin-bottom: 0; }
+
 /* FAQ */
 .fcc-food-page__faq {
 	margin-top: 2rem;

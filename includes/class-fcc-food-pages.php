@@ -83,6 +83,9 @@ class Food_Pages {
 		// Calculator widget pre-loaded with this food.
 		echo do_shortcode( '[food_calorie_calculator]' );
 
+		// Nutritional overview (100-150 words).
+		$this->render_nutritional_overview( $food );
+
 		// FAQ section.
 		$this->render_faq( $food );
 
@@ -199,6 +202,104 @@ class Food_Pages {
 			}
 			echo '</ul>';
 		}
+	}
+
+	// -------------------------------------------------------------------------
+	// Nutritional Overview (100-150 words)
+	// -------------------------------------------------------------------------
+
+	private function render_nutritional_overview( array $food ): void {
+		$name     = esc_html( $food['name'] );
+		$kcal     = number_format( (float) $food['energy_kcal'], 0 );
+		$prot     = number_format( (float) $food['protein_g'], 1 );
+		$carb     = number_format( (float) $food['carbohydrate_g'], 1 );
+		$fat      = number_format( (float) $food['fat_g'], 1 );
+		$prot_raw = (float) $food['protein_g'];
+		$fat_raw  = (float) $food['fat_g'];
+		$kcal_raw = (float) $food['energy_kcal'];
+
+		$cat      = Database::get_category( (int) $food['category_id'] );
+		$cat_name = $cat ? strtolower( $cat['name'] ) : 'food';
+
+		$cat_context = [
+			'fruits & vegetables' => 'a natural whole food enjoyed worldwide as part of a balanced diet',
+			'fruit & vegetables'  => 'a natural whole food enjoyed worldwide as part of a balanced diet',
+			'meat & poultry'      => 'a protein-rich food commonly used in main meals across many cuisines',
+			'fish & seafood'      => 'a seafood item valued for its nutritional profile and versatility in cooking',
+			'dairy & eggs'        => 'a dairy or egg-based product that forms a staple part of many diets',
+			'grains & cereals'    => 'a grain-based food that provides carbohydrates and energy for daily activities',
+			'nuts & seeds'        => 'a nutrient-dense food rich in healthy fats, often eaten as a snack or ingredient',
+			'legumes & pulses'    => 'a plant-based protein source widely used in soups, stews, and salads',
+			'drinks'              => 'a beverage consumed for hydration, energy, or enjoyment',
+			'condiments & sauces' => 'a flavouring or condiment used to enhance the taste of dishes',
+			'snacks & confectionery' => 'a snack or confectionery item typically eaten between meals',
+			'takeaway & ready meals' => 'a prepared or takeaway food designed for convenience',
+		];
+		$context = $cat_context[ strtolower( $cat['name'] ?? '' ) ] ?? 'a food item that can be part of a varied diet';
+
+		echo '<div class="fcc-food-page__overview">';
+		echo '<h2>Nutritional Overview</h2>';
+
+		// Paragraph 1: What it is.
+		echo '<p>' . $name . ' is ' . $context . '. Per 100g serving, it provides ' . $kcal . ' kcal of energy, '
+			. $prot . 'g of protein, ' . $carb . 'g of carbohydrates, and ' . $fat . 'g of fat.</p>';
+
+		// Paragraph 2: Nutritional highlights (conditional).
+		$highlights = [];
+		if ( $prot_raw >= 15 ) {
+			$highlights[] = 'It is notably high in protein (' . $prot . 'g per 100g), making it valuable for muscle maintenance, recovery, and satiety.';
+		}
+		if ( $fat_raw <= 3 ) {
+			$highlights[] = 'With only ' . $fat . 'g of fat per 100g, it is classified as low-fat under UK FSA traffic-light guidelines.';
+		}
+		if ( $fat_raw >= 17.5 ) {
+			$highlights[] = 'It is high in fat (' . $fat . 'g per 100g) according to FSA guidelines, so portion awareness is recommended.';
+		}
+		if ( null !== $food['omega3_total_mg'] && (float) $food['omega3_total_mg'] > 100 ) {
+			$highlights[] = 'It is a notable source of omega-3 fatty acids (' . number_format( $food['omega3_total_mg'], 0 ) . 'mg per 100g), which support cardiovascular and cognitive health.';
+		}
+		if ( null !== $food['iron_mg'] && (float) $food['iron_mg'] >= 2.0 ) {
+			$highlights[] = 'It provides ' . number_format( $food['iron_mg'], 1 ) . 'mg of iron per 100g, contributing to healthy red blood cell formation.';
+		} elseif ( null !== $food['calcium_mg'] && (float) $food['calcium_mg'] >= 100 ) {
+			$highlights[] = 'It is a useful source of calcium (' . number_format( $food['calcium_mg'], 0 ) . 'mg per 100g), supporting bone and dental health.';
+		} elseif ( null !== $food['vitamin_c_mg'] && (float) $food['vitamin_c_mg'] >= 10 ) {
+			$highlights[] = 'It contains ' . number_format( $food['vitamin_c_mg'], 1 ) . 'mg of vitamin C per 100g, supporting immune function and skin health.';
+		}
+		if ( null !== $food['fibre_g'] && (float) $food['fibre_g'] >= 3 ) {
+			$highlights[] = 'With ' . number_format( $food['fibre_g'], 1 ) . 'g of fibre per 100g, it supports digestive health.';
+		}
+		if ( null !== $food['caffeine_mg'] && (float) $food['caffeine_mg'] > 10 ) {
+			$highlights[] = 'It contains ' . number_format( $food['caffeine_mg'], 0 ) . 'mg of caffeine per 100g.';
+		}
+		if ( $highlights ) {
+			echo '<p>' . implode( ' ', $highlights ) . '</p>';
+		}
+
+		// Paragraph 3: Who benefits (conditional).
+		$benefits = [];
+		if ( $kcal_raw <= 100 && $fat_raw <= 3 ) {
+			$benefits[] = 'those managing their weight or following a calorie-controlled eating plan';
+		}
+		if ( $prot_raw >= 15 ) {
+			$benefits[] = 'athletes, gym-goers, and anyone looking to increase their daily protein intake';
+		}
+		if ( ! empty( $food['diet_keto'] ) ) {
+			$benefits[] = 'individuals following a ketogenic or low-carbohydrate diet';
+		}
+		if ( ! empty( $food['diet_vegan'] ) ) {
+			$benefits[] = 'those on a plant-based or vegan diet';
+		} elseif ( ! empty( $food['diet_vegetarian'] ) ) {
+			$benefits[] = 'vegetarians seeking varied meal options';
+		}
+
+		if ( $benefits ) {
+			echo '<p>' . $name . ' may be particularly suitable for ' . implode( ', ', $benefits )
+				. '. Use the calculator above to adjust the serving size and see personalised nutrition values.</p>';
+		} else {
+			echo '<p>' . $name . ' can be enjoyed as part of a balanced diet. Use the calculator above to adjust the serving size and see personalised nutrition values for your chosen portion.</p>';
+		}
+
+		echo '</div>';
 	}
 
 	// -------------------------------------------------------------------------
