@@ -220,7 +220,7 @@ class Foods {
 		$result  = \FCC\Database::get_foods( $args );
 		$headers = [ 'Name','Category ID','kcal','kJ','Protein','Carbs','Sugars','Fat','Saturates','Fibre','Salt','Omega-3 Total','Caffeine','Iron (mg)','Calcium (mg)','Vitamin C (mg)','Active','Food Page URL' ];
 		header( 'Content-Type: text/csv; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename="fcc-foods-' . gmdate( 'Y-m-d' ) . '.csv"' );
+		header( 'Content-Disposition: attachment; filename="Food-Calorie-Calculator-Foods-' . gmdate( 'Y-m-d' ) . '.csv"' );
 		$out = fopen( 'php://output', 'w' );
 		fputcsv( $out, $headers );
 		foreach ( $result['rows'] as $f ) {

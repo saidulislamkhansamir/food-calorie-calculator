@@ -77,7 +77,7 @@ class Import_Export {
 
 		nocache_headers();
 		header( 'Content-Type: text/csv; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename="food-calorie-calculator-export-' . gmdate( 'Y-m-d' ) . '.csv"' );
+		header( 'Content-Disposition: attachment; filename="Food-Calorie-Calculator-Export-' . gmdate( 'Y-m-d' ) . '.csv"' );
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
@@ -111,7 +111,7 @@ class Import_Export {
 		$data = array_merge( [ $headers ], $rows );
 
 		$xlsx = \SimpleXLSXGen::fromArray( $data );
-		$xlsx->downloadAs( 'food-calorie-calculator-export-' . gmdate( 'Y-m-d' ) . '.xlsx' );
+		$xlsx->downloadAs( 'Food-Calorie-Calculator-Export-' . gmdate( 'Y-m-d' ) . '.xlsx' );
 		exit;
 	}
 
