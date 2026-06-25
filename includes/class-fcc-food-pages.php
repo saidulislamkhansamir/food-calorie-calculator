@@ -207,50 +207,192 @@ class Food_Pages {
 
 	private function build_faqs( array $food ): array {
 		$name = $food['name'];
-		$kcal = number_format( (float) $food['energy_kcal'], 0 );
-		$prot = number_format( (float) $food['protein_g'], 1 );
-		$fat  = number_format( (float) $food['fat_g'], 1 );
-		$carb = number_format( (float) $food['carbohydrate_g'], 1 );
+		$kcal_raw = (float) $food['energy_kcal'];
+		$kcal = number_format( $kcal_raw, 0 );
+		$prot_raw = (float) $food['protein_g'];
+		$prot = number_format( $prot_raw, 1 );
+		$fat_raw = (float) $food['fat_g'];
+		$fat  = number_format( $fat_raw, 1 );
+		$carb_raw = (float) $food['carbohydrate_g'];
+		$carb = number_format( $carb_raw, 1 );
+		$sugars_raw = null !== $food['of_which_sugars_g'] ? (float) $food['of_which_sugars_g'] : null;
+		$salt_raw = null !== $food['salt_g'] ? (float) $food['salt_g'] : null;
+		$daily_pct = round( $kcal_raw / 2000 * 100 );
 
 		$faqs = [];
 
+		// 1. Always: calorie question.
 		$faqs[] = [
 			'q' => "How many calories are in {$name}?",
-			'a' => "{$name} contains {$kcal} kcal per 100g. This represents approximately " . round( (float) $food['energy_kcal'] / 2000 * 100 ) . "% of the recommended daily intake of 2,000 kcal for an average adult.",
+			'a' => "{$name} contains {$kcal} kcal per 100g, which is approximately {$daily_pct}% of the recommended daily intake of 2,000 kcal for an average adult."
+				. ( $kcal_raw <= 100 ? " This makes it a relatively low-calorie food choice." : '' )
+				. ( $kcal_raw >= 400 ? " This is considered energy-dense." : '' ),
 		];
 
-		$faqs[] = [
-			'q' => "What is the nutritional breakdown of {$name}?",
-			'a' => "Per 100g, {$name} provides {$prot}g of protein, {$carb}g of carbohydrates, and {$fat}g of fat. " .
-				( null !== $food['fibre_g'] ? "It contains " . number_format( $food['fibre_g'], 1 ) . "g of fibre. " : '' ) .
-				( null !== $food['salt_g'] ? "Salt content is " . number_format( $food['salt_g'], 2 ) . "g per 100g." : '' ),
-		];
-
-		if ( (float) $food['protein_g'] >= 10 ) {
+		// 2. High protein (≥15g).
+		if ( $prot_raw >= 15 ) {
 			$faqs[] = [
 				'q' => "Is {$name} high in protein?",
-				'a' => "Yes, {$name} contains {$prot}g of protein per 100g, which is " . ( (float) $food['protein_g'] >= 20 ? 'a very high' : 'a good' ) . " source of protein. Protein contributes to the growth and maintenance of muscle mass.",
+				'a' => "Yes, {$name} provides {$prot}g of protein per 100g, making it " . ( $prot_raw >= 25 ? 'an excellent' : 'a good' ) . " source of protein. The UK Reference Nutrient Intake for protein is around 50g per day for adults. A 100g serving of {$name} provides " . round( $prot_raw / 50 * 100 ) . "% of this.",
 			];
 		}
 
+		// 3. Low protein (<3g).
+		if ( $prot_raw < 3 ) {
+			$faqs[] = [
+				'q' => "Is {$name} a good source of protein?",
+				'a' => "{$name} contains {$prot}g of protein per 100g, which is relatively low. If you are looking to increase your protein intake, consider pairing it with protein-rich foods such as lean meat, fish, eggs, or legumes.",
+			];
+		}
+
+		// 4. High fat (FSA ≥17.5g).
+		if ( $fat_raw >= 17.5 ) {
+			$faqs[] = [
+				'q' => "Is {$name} high in fat?",
+				'a' => "Yes, according to FSA traffic-light guidelines, {$name} is classified as high in fat with {$fat}g per 100g (the threshold is 17.5g). Of this, " . ( null !== $food['of_which_saturates_g'] ? number_format( $food['of_which_saturates_g'], 1 ) . 'g is saturated fat.' : 'saturated fat content should be checked on the label.' ),
+			];
+		}
+
+		// 5. Low fat (FSA ≤3g).
+		if ( $fat_raw <= 3 && $fat_raw >= 0 ) {
+			$faqs[] = [
+				'q' => "Is {$name} low in fat?",
+				'a' => "Yes, {$name} contains only {$fat}g of fat per 100g, which is classified as low fat under FSA traffic-light guidelines (below 3g per 100g). This makes it a suitable choice for those watching their fat intake.",
+			];
+		}
+
+		// 6. High sugar (FSA ≥22.5g).
+		if ( null !== $sugars_raw && $sugars_raw >= 22.5 ) {
+			$faqs[] = [
+				'q' => "Is {$name} high in sugar?",
+				'a' => "{$name} contains " . number_format( $sugars_raw, 1 ) . "g of sugar per 100g, which the FSA classifies as high (above 22.5g per 100g). If you are managing sugar intake, consider moderating portion sizes.",
+			];
+		}
+
+		// 7. Low sugar (FSA ≤5g).
+		if ( null !== $sugars_raw && $sugars_raw <= 5 && $sugars_raw >= 0 ) {
+			$faqs[] = [
+				'q' => "Is {$name} low in sugar?",
+				'a' => "Yes, {$name} has only " . number_format( $sugars_raw, 1 ) . "g of sugar per 100g, which is classified as low under FSA guidelines (below 5g per 100g).",
+			];
+		}
+
+		// 8. High salt (FSA ≥1.5g).
+		if ( null !== $salt_raw && $salt_raw >= 1.5 ) {
+			$faqs[] = [
+				'q' => "Is {$name} high in salt?",
+				'a' => "{$name} contains " . number_format( $salt_raw, 2 ) . "g of salt per 100g, which the FSA classifies as high (above 1.5g per 100g). The recommended daily maximum for adults is 6g. A 100g serving provides " . round( $salt_raw / 6 * 100 ) . "% of this.",
+			];
+		}
+
+		// 9. Keto.
 		if ( ! empty( $food['diet_keto'] ) ) {
 			$faqs[] = [
 				'q' => "Is {$name} keto-friendly?",
-				'a' => "Yes, {$name} is considered keto-friendly with only {$carb}g of carbohydrates per 100g, making it suitable for a ketogenic diet.",
+				'a' => "Yes, with only {$carb}g of carbohydrates per 100g, {$name} fits within a standard ketogenic diet that typically limits carbs to 20-50g per day.",
 			];
 		}
 
+		// 10. Vegan.
+		if ( ! empty( $food['diet_vegan'] ) ) {
+			$faqs[] = [
+				'q' => "Is {$name} suitable for vegans?",
+				'a' => "Yes, {$name} is suitable for a vegan diet as it contains no animal-derived ingredients. It provides {$kcal} kcal and {$prot}g of protein per 100g.",
+			];
+		}
+
+		// 11. Vegetarian (but not vegan).
+		if ( ! empty( $food['diet_vegetarian'] ) && empty( $food['diet_vegan'] ) ) {
+			$faqs[] = [
+				'q' => "Is {$name} suitable for vegetarians?",
+				'a' => "Yes, {$name} is suitable for a vegetarian diet, though it is not vegan as it may contain dairy, eggs, or other animal by-products.",
+			];
+		}
+
+		// 12. Halal.
+		if ( ! empty( $food['diet_halal'] ) && ( ! empty( $food['allergen_fish'] ) || $prot_raw >= 10 ) ) {
+			$faqs[] = [
+				'q' => "Is {$name} halal?",
+				'a' => "Yes, {$name} is considered halal. However, preparation methods and cross-contamination may vary, so always verify with the specific brand or supplier.",
+			];
+		}
+
+		// 13. Contains allergens.
 		$allergens = [];
 		$allergen_map = [ 'allergen_fish' => 'fish', 'allergen_shellfish' => 'shellfish', 'allergen_dairy' => 'dairy', 'allergen_eggs' => 'eggs', 'allergen_nuts' => 'tree nuts', 'allergen_gluten' => 'gluten', 'allergen_soy' => 'soy', 'allergen_celery' => 'celery' ];
 		foreach ( $allergen_map as $key => $label ) {
 			if ( ! empty( $food[ $key ] ) ) { $allergens[] = $label; }
 		}
-		$faqs[] = [
-			'q' => "What allergens does {$name} contain?",
-			'a' => $allergens
-				? "{$name} contains the following allergens: " . implode( ', ', $allergens ) . ". Always check the label if you have food allergies or intolerances."
-				: "{$name} does not contain any of the 8 major allergens (fish, shellfish, dairy, eggs, tree nuts, gluten, soy, celery). However, always check the label for potential cross-contamination.",
-		];
+		if ( $allergens ) {
+			$faqs[] = [
+				'q' => "Does {$name} contain any allergens?",
+				'a' => "Yes, {$name} contains the following allergens: " . implode( ', ', $allergens ) . ". Under UK food labelling regulations, these must be clearly declared. Always check the product label if you have food allergies or intolerances.",
+			];
+		}
+
+		// 14. Allergen-free.
+		if ( ! $allergens ) {
+			$faqs[] = [
+				'q' => "Is {$name} free from major allergens?",
+				'a' => "{$name} does not contain any of the 14 major allergens recognised under UK food law. However, cross-contamination during manufacturing is always possible — check the packaging for 'may contain' warnings.",
+			];
+		}
+
+		// 15. Good source of iron (≥2mg).
+		if ( null !== $food['iron_mg'] && (float) $food['iron_mg'] >= 2.0 ) {
+			$faqs[] = [
+				'q' => "Is {$name} a good source of iron?",
+				'a' => "{$name} contains " . number_format( $food['iron_mg'], 2 ) . "mg of iron per 100g. The UK recommended daily intake is 8.7mg for men and 14.8mg for women. Iron is essential for red blood cell production and preventing anaemia.",
+			];
+		}
+
+		// 16. Good source of calcium (≥100mg).
+		if ( null !== $food['calcium_mg'] && (float) $food['calcium_mg'] >= 100 ) {
+			$faqs[] = [
+				'q' => "Is {$name} a good source of calcium?",
+				'a' => "{$name} provides " . number_format( $food['calcium_mg'], 0 ) . "mg of calcium per 100g. The UK recommended daily intake is 700mg for adults. Calcium is vital for strong bones, teeth, and muscle function.",
+			];
+		}
+
+		// 17. Rich in vitamin C (≥10mg).
+		if ( null !== $food['vitamin_c_mg'] && (float) $food['vitamin_c_mg'] >= 10 ) {
+			$faqs[] = [
+				'q' => "Is {$name} rich in vitamin C?",
+				'a' => "Yes, {$name} contains " . number_format( $food['vitamin_c_mg'], 1 ) . "mg of vitamin C per 100g. The UK recommended daily intake is 40mg. Vitamin C supports immune function, skin health, and iron absorption.",
+			];
+		}
+
+		// 18. Contains omega-3.
+		if ( null !== $food['omega3_total_mg'] && (float) $food['omega3_total_mg'] > 0 ) {
+			$faqs[] = [
+				'q' => "Does {$name} contain omega-3 fatty acids?",
+				'a' => "Yes, {$name} contains " . number_format( $food['omega3_total_mg'], 0 ) . "mg of total omega-3 fatty acids per 100g. Omega-3s are essential fats that support heart health, brain function, and may reduce inflammation.",
+			];
+		}
+
+		// 19. Contains caffeine.
+		if ( null !== $food['caffeine_mg'] && (float) $food['caffeine_mg'] > 0 ) {
+			$faqs[] = [
+				'q' => "Does {$name} contain caffeine?",
+				'a' => "{$name} contains " . number_format( $food['caffeine_mg'], 0 ) . "mg of caffeine per 100g. The NHS recommends no more than 400mg of caffeine per day for most adults, and 200mg per day during pregnancy.",
+			];
+		}
+
+		// 20. Good for weight loss (low kcal + low fat).
+		if ( $kcal_raw <= 100 && $fat_raw <= 3 ) {
+			$faqs[] = [
+				'q' => "Is {$name} good for weight loss?",
+				'a' => "With only {$kcal} kcal and {$fat}g of fat per 100g, {$name} is a low-calorie, low-fat food that can be a helpful part of a calorie-controlled diet for weight management.",
+			];
+		}
+
+		// 21. Energy-dense (≥400 kcal).
+		if ( $kcal_raw >= 400 ) {
+			$faqs[] = [
+				'q' => "Why is {$name} so high in calories?",
+				'a' => "At {$kcal} kcal per 100g, {$name} is energy-dense" . ( $fat_raw >= 17.5 ? ", primarily due to its high fat content ({$fat}g per 100g). Fat provides 9 calories per gram, more than double that of protein or carbohydrates." : ". Portion control is recommended if you are managing your calorie intake." ),
+			];
+		}
 
 		return $faqs;
 	}
