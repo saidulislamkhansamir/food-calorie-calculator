@@ -20,9 +20,15 @@ class Food_Pages {
 	public function register( Loader $loader ): void {
 		$loader->add_action( 'init',              $this, 'add_rewrite_rules' );
 		$loader->add_filter( 'query_vars',        $this, 'add_query_vars' );
+		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_assets' );
 		$loader->add_action( 'template_redirect', $this, 'handle_food_page' );
 		$loader->add_action( 'wp_head',           $this, 'output_seo_meta', 1 );
 		$loader->add_filter( 'document_title_parts', $this, 'filter_title' );
+	}
+
+	public function maybe_enqueue_assets(): void {
+		if ( ! get_query_var( 'fcc_food_slug' ) ) { return; }
+		Shortcode::enqueue_public_assets();
 	}
 
 	public function add_rewrite_rules(): void {
