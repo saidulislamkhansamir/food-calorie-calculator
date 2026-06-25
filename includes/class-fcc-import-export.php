@@ -59,6 +59,7 @@ class Import_Export {
 			'page_content'         => [ 'label' => 'Page Content',              'required' => false, 'nullable' => true,  'type' => 'string' ],
 			'serving_sizes'        => [ 'label' => 'Serving Sizes (JSON)',       'required' => false, 'nullable' => true,  'type' => 'json'   ],
 			'source_notes'         => [ 'label' => 'Source / Notes',            'required' => false, 'nullable' => true,  'type' => 'string' ],
+			'food_page_url'        => [ 'label' => 'Food Page URL',             'required' => false, 'nullable' => true,  'type' => 'virtual' ],
 		];
 	}
 
@@ -348,6 +349,8 @@ class Import_Export {
 					$row[] = empty( $food['serving_sizes'] ) ? '' : wp_json_encode( $food['serving_sizes'] );
 				} elseif ( 'is_active' === $col ) {
 					$row[] = empty( $food['is_active'] ) ? '0' : '1';
+				} elseif ( 'food_page_url' === $col ) {
+					$row[] = home_url( '/food/' . ( $food['slug'] ?? sanitize_title( $food['name'] ) ) . '/' );
 				} else {
 					// NULL → '' so it round-trips correctly.
 					$row[] = null === $food[ $col ] ? '' : (string) $food[ $col ];
@@ -432,6 +435,10 @@ class Import_Export {
 		$data = [];
 		foreach ( $values as $key => $raw_val ) {
 			$def = $cols[ $key ];
+
+			if ( 'virtual' === $def['type'] ) {
+				continue;
+			}
 
 			if ( 'category' === $key ) {
 				$data['category_id'] = self::resolve_category( $raw_val, $cat_cache );
