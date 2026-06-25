@@ -4735,3 +4735,157 @@ select.fcc-bmr-input {
 	color: #075B5E;
 }
 
+/* ==========================================================================
+   Individual Food Pages (/food/{slug}/)
+   ========================================================================== */
+.fcc-food-page {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	color: #2d3748;
+	line-height: 1.7;
+}
+.fcc-food-page__title {
+	font-size: 1.8rem;
+	font-weight: 800;
+	color: #075B5E;
+	margin: 0 0 0.75rem;
+	line-height: 1.25;
+}
+.fcc-food-page__intro {
+	font-size: 1rem;
+	color: #4a5568;
+	margin-bottom: 1.25rem;
+	padding: 1rem 1.25rem;
+	background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+	border-left: 4px solid #075B5E;
+	border-radius: 0 10px 10px 0;
+}
+.fcc-food-page__facts {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 1.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.fcc-food-page__facts li {
+	padding: 0.6rem 1rem;
+	background: #f7fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	font-size: 0.9rem;
+}
+
+/* FAQ */
+.fcc-food-page__faq {
+	margin-top: 2rem;
+	padding-top: 1.5rem;
+	border-top: 2px solid #e2e8f0;
+}
+.fcc-food-page__faq > h2 {
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: #075B5E;
+	margin: 0 0 1rem;
+}
+.fcc-food-page__faq-item {
+	margin-bottom: 0.75rem;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	overflow: hidden;
+}
+.fcc-food-page__faq-item h3 {
+	font-size: 0.92rem;
+	font-weight: 600;
+	color: #1a202c;
+	margin: 0;
+	padding: 0.75rem 1rem;
+	background: #f7fafc;
+	border-bottom: 1px solid #e2e8f0;
+}
+.fcc-food-page__faq-item p {
+	font-size: 0.88rem;
+	color: #4a5568;
+	margin: 0;
+	padding: 0.75rem 1rem;
+	line-height: 1.6;
+}
+
+/* Sources & References */
+.fcc-food-page__sources {
+	margin-top: 2rem;
+	padding: 1.25rem;
+	background: #f7fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+}
+.fcc-food-page__sources > h2 {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #075B5E;
+	margin: 0 0 0.75rem;
+}
+.fcc-food-page__sources ol {
+	margin: 0 0 0.75rem;
+	padding-left: 1.25rem;
+	font-size: 0.85rem;
+	color: #4a5568;
+}
+.fcc-food-page__sources ol li {
+	margin-bottom: 0.4rem;
+}
+.fcc-food-page__sources a {
+	color: #075B5E;
+	font-weight: 600;
+	text-decoration: none;
+}
+.fcc-food-page__sources a:hover {
+	text-decoration: underline;
+}
+.fcc-food-page__disclaimer {
+	font-size: 0.78rem;
+	color: #718096;
+	margin: 0;
+	padding-top: 0.5rem;
+	border-top: 1px solid #e2e8f0;
+}
+
+/* Related Foods */
+.fcc-food-page__related {
+	margin-top: 2rem;
+	padding-top: 1.5rem;
+	border-top: 2px solid #e2e8f0;
+}
+.fcc-food-page__related > h2 {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #075B5E;
+	margin: 0 0 0.75rem;
+}
+.fcc-food-page__related ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.5rem;
+}
+.fcc-food-page__related li {
+	padding: 0.6rem 1rem;
+	background: linear-gradient(135deg, #f0fdf4, #f7fafc);
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	font-size: 0.88rem;
+}
+.fcc-food-page__related a {
+	color: #075B5E;
+	font-weight: 600;
+	text-decoration: none;
+}
+.fcc-food-page__related a:hover {
+	text-decoration: underline;
+}
+@media (max-width: 600px) {
+	.fcc-food-page__title { font-size: 1.4rem; }
+	.fcc-food-page__related ul { grid-template-columns: 1fr; }
+}
+
