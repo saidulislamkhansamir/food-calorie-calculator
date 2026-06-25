@@ -128,6 +128,7 @@ class Database {
   diet_kosher tinyint(1) DEFAULT NULL,
   diet_vegan tinyint(1) DEFAULT NULL,
   diet_vegetarian tinyint(1) DEFAULT NULL,
+  is_active tinyint(1) NOT NULL DEFAULT 1,
   is_sponsored tinyint(1) NOT NULL DEFAULT 0,
   sponsor_active tinyint(1) NOT NULL DEFAULT 0,
   sponsor_name varchar(200) DEFAULT NULL,
@@ -338,7 +339,7 @@ class Database {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM {$table} WHERE name LIKE %s AND category_id = %d ORDER BY {$sponsor_order} LIMIT %d",
+					"SELECT * FROM {$table} WHERE name LIKE %s AND category_id = %d AND is_active = 1 ORDER BY {$sponsor_order} LIMIT %d",
 					$like,
 					$category_id,
 					$limit
@@ -349,7 +350,7 @@ class Database {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM {$table} WHERE name LIKE %s ORDER BY {$sponsor_order} LIMIT %d",
+					"SELECT * FROM {$table} WHERE name LIKE %s AND is_active = 1 ORDER BY {$sponsor_order} LIMIT %d",
 					$like,
 					$limit
 				),
@@ -407,7 +408,7 @@ class Database {
 		$table = self::foods_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results(
-			$wpdb->prepare( "SELECT * FROM {$table} WHERE search_count > 0 ORDER BY search_count DESC LIMIT %d", $limit ),
+			$wpdb->prepare( "SELECT * FROM {$table} WHERE search_count > 0 AND is_active = 1 ORDER BY search_count DESC LIMIT %d", $limit ),
 			ARRAY_A
 		);
 		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
@@ -476,6 +477,10 @@ class Database {
 			$where_parts[] = "({$col_prefix}energy_kcal IS NOT NULL AND {$col_prefix}protein_g IS NOT NULL AND {$col_prefix}carbohydrate_g IS NOT NULL AND {$col_prefix}fat_g IS NOT NULL AND {$col_prefix}fibre_g IS NOT NULL AND {$col_prefix}salt_g IS NOT NULL)";
 		} elseif ( 'sponsored' === $args['status'] ) {
 			$where_parts[] = "{$col_prefix}is_sponsored = 1";
+		} elseif ( 'hidden' === $args['status'] ) {
+			$where_parts[] = "{$col_prefix}is_active = 0";
+		} elseif ( 'active' === $args['status'] ) {
+			$where_parts[] = "{$col_prefix}is_active = 1";
 		}
 
 		$where_sql = $where_parts ? 'WHERE ' . implode( ' AND ', $where_parts ) : '';
@@ -584,6 +589,19 @@ class Database {
 		return (int) $wpdb->query( $wpdb->prepare(
 			"UPDATE {$table} SET category_id = %d WHERE id IN ({$placeholders})",
 			$category_id, ...$ids
+		) );
+	}
+
+	public static function bulk_set_active( array $ids, int $active ): int {
+		global $wpdb;
+		$table = self::foods_table();
+		$ids   = array_filter( array_map( 'absint', $ids ) );
+		if ( ! $ids ) { return 0; }
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (int) $wpdb->query( $wpdb->prepare(
+			"UPDATE {$table} SET is_active = %d WHERE id IN ({$placeholders})",
+			$active, ...$ids
 		) );
 	}
 
@@ -787,6 +805,7 @@ class Database {
 			'fat_g'              => (float) ( $data['fat_g']       ?? 0 ),
 			'is_fruit_veg'       => isset( $data['is_fruit_veg'] ) ? (int) (bool) $data['is_fruit_veg'] : null,
 			'source_notes'       => isset( $data['source_notes'] ) ? sanitize_textarea_field( $data['source_notes'] ) : null,
+			'is_active'          => (int) (bool) ( $data['is_active'] ?? 1 ),
 			'is_sponsored'       => (int) (bool) ( $data['is_sponsored'] ?? 0 ),
 			'sponsor_active'     => (int) (bool) ( $data['sponsor_active'] ?? 0 ),
 			'sponsor_name'       => isset( $data['sponsor_name'] ) && '' !== $data['sponsor_name'] ? sanitize_text_field( $data['sponsor_name'] ) : null,
@@ -813,7 +832,7 @@ class Database {
 	 * @return array<int,string>
 	 */
 	private static function food_formats( array $row ): array {
-		$int_cols    = [ 'category_id', 'is_fruit_veg', 'is_sponsored', 'sponsor_active', 'sponsor_logo_id',
+		$int_cols    = [ 'category_id', 'is_fruit_veg', 'is_active', 'is_sponsored', 'sponsor_active', 'sponsor_logo_id',
 			'allergen_fish', 'allergen_shellfish', 'allergen_dairy', 'allergen_eggs', 'allergen_nuts', 'allergen_gluten', 'allergen_soy', 'allergen_celery',
 			'diet_keto', 'diet_paleo', 'diet_halal', 'diet_kosher', 'diet_vegan', 'diet_vegetarian' ];
 		$string_cols = [ 'name', 'slug', 'serving_sizes', 'source_notes', 'sponsor_name', 'sponsor_url', 'sponsor_expires_at' ];
@@ -864,6 +883,7 @@ class Database {
 
 		$row['id']            = (int) $row['id'];
 		$row['category_id']   = (int) $row['category_id'];
+		$row['is_active']      = (bool) ( $row['is_active'] ?? 1 );
 		$row['is_sponsored']  = (bool) ( $row['is_sponsored'] ?? 0 );
 		$row['sponsor_active'] = (bool) ( $row['sponsor_active'] ?? 0 );
 		$row['sponsor_logo_id'] = isset( $row['sponsor_logo_id'] ) && null !== $row['sponsor_logo_id'] ? (int) $row['sponsor_logo_id'] : null;

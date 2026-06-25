@@ -148,6 +148,7 @@ endif;
 							</span>
 						</a>
 					</th>
+					<th class="fcc-foods-th fcc-foods-th--active"><?php esc_html_e( 'Visible', 'food-calorie-calculator' ); ?></th>
 					<th class="fcc-foods-th">
 						<a href="<?php echo esc_url( fcc_sort_url( 'category_name', $orderby, $order ) ); ?>"
 							class="fcc-foods-sort <?php echo 'category_name' === $orderby ? 'fcc-foods-sort--active' : ''; ?>">
@@ -217,7 +218,7 @@ endif;
 			<tbody>
 				<?php if ( empty( $foods ) ) : ?>
 					<tr>
-						<td colspan="11" class="fcc-foods-empty-row">
+						<td colspan="12" class="fcc-foods-empty-row">
 							<div class="fcc-foods-empty">
 								<span class="fcc-foods-empty__icon" aria-hidden="true">&#128269;</span>
 								<p><?php esc_html_e( 'No foods found. Try a different search or filter.', 'food-calorie-calculator' ); ?></p>
@@ -259,6 +260,16 @@ endif;
 								<?php if ( ! empty( $food['is_sponsored'] ) ) : ?>
 									<span class="fcc-foods-sponsored-pill"><?php esc_html_e( 'Sponsored', 'food-calorie-calculator' ); ?></span>
 								<?php endif; ?>
+							</td>
+							<td class="fcc-foods-td fcc-foods-td--active">
+								<button type="button"
+									class="fcc-foods-toggle-active <?php echo ! empty( $food['is_active'] ) ? 'fcc-foods-toggle-active--on' : 'fcc-foods-toggle-active--off'; ?>"
+									data-id="<?php echo absint( $food['id'] ); ?>"
+									title="<?php echo ! empty( $food['is_active'] ) ? esc_attr__( 'Visible — click to hide', 'food-calorie-calculator' ) : esc_attr__( 'Hidden — click to show', 'food-calorie-calculator' ); ?>">
+									<span class="fcc-foods-toggle-active__track">
+										<span class="fcc-foods-toggle-active__thumb"></span>
+									</span>
+								</button>
 							</td>
 							<td class="fcc-foods-td">
 								<?php if ( isset( $cat_map[ (int) $food['category_id'] ] ) ) : ?>

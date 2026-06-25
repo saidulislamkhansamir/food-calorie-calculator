@@ -19685,4 +19685,16 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 103 );
 	}
+
+	/** Seed v104: Add is_active column for food visibility toggle. */
+	public static function seed_v104(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 104 ) { return; }
+		global $wpdb;
+		$t    = $wpdb->prefix . 'fcc_foods';
+		$cols = $wpdb->get_col( "SHOW COLUMNS FROM {$t}" ); // phpcs:ignore
+		if ( ! in_array( 'is_active', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN is_active tinyint(1) NOT NULL DEFAULT 1 AFTER vitamin_c_mg" ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 104 );
+	}
 }

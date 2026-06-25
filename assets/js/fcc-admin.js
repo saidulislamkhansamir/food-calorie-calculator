@@ -216,6 +216,30 @@
 	} );
 
 	// -------------------------------------------------------------------------
+	// Visibility toggle — AJAX flip is_active
+	// -------------------------------------------------------------------------
+	$( document ).on( 'click', '.fcc-foods-toggle-active', function () {
+		var $btn  = $( this );
+		var $row  = $btn.closest( '.fcc-foods-row' );
+		var $list = $( '#fcc-foods-list' );
+		var id    = $btn.data( 'id' );
+
+		$.post( fccAdmin.ajaxUrl, {
+			action:      'fcc_toggle_active',
+			_ajax_nonce: $list.data( 'nonce' ),
+			food_id:     id,
+		}, function ( res ) {
+			if ( res.success ) {
+				var on = !! res.data.is_active;
+				$btn.removeClass( 'fcc-foods-toggle-active--on fcc-foods-toggle-active--off' )
+					.addClass( on ? 'fcc-foods-toggle-active--on' : 'fcc-foods-toggle-active--off' )
+					.attr( 'title', on ? 'Visible — click to hide' : 'Hidden — click to show' );
+				$row.css( 'opacity', on ? 1 : 0.5 );
+			}
+		} );
+	} );
+
+	// -------------------------------------------------------------------------
 	// Per-page selector — AJAX reload (no full page refresh)
 	// -------------------------------------------------------------------------
 	$( document ).on( 'change', '#fcc-perpage', function () {

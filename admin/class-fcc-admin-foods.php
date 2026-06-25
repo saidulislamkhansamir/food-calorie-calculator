@@ -23,6 +23,7 @@ class Foods {
 		$loader->add_action( 'admin_post_fcc_export_foods_view', $this, 'handle_export_view' );
 		$loader->add_action( 'wp_ajax_fcc_foods_page',          $this, 'ajax_foods_page' );
 		$loader->add_action( 'wp_ajax_fcc_quick_update_food',   $this, 'ajax_quick_update' );
+		$loader->add_action( 'wp_ajax_fcc_toggle_active',      $this, 'ajax_toggle_active' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -121,6 +122,17 @@ class Foods {
 			return;
 		}
 
+		if ( ( 'hide' === $action || 'show' === $action ) && $ids ) {
+			$val     = 'show' === $action ? 1 : 0;
+			$updated = \FCC\Database::bulk_set_active( $ids, $val );
+			$this->redirect_with_notice(
+				'fcc-foods',
+				'success',
+				sprintf( __( '%d food(s) %s.', 'food-calorie-calculator' ), $updated, 'show' === $action ? 'shown' : 'hidden' )
+			);
+			return;
+		}
+
 		$this->redirect_with_notice( 'fcc-foods', 'info', __( 'No action taken.', 'food-calorie-calculator' ) );
 	}
 
@@ -206,7 +218,7 @@ class Foods {
 			'page'        => 1,
 		];
 		$result  = \FCC\Database::get_foods( $args );
-		$headers = [ 'Name','Category ID','kcal','kJ','Protein','Carbs','Sugars','Fat','Saturates','Fibre','Salt','Omega-3 Total','Caffeine','Iron (mg)','Calcium (mg)','Vitamin C (mg)' ];
+		$headers = [ 'Name','Category ID','kcal','kJ','Protein','Carbs','Sugars','Fat','Saturates','Fibre','Salt','Omega-3 Total','Caffeine','Iron (mg)','Calcium (mg)','Vitamin C (mg)','Active' ];
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename="fcc-foods-' . gmdate( 'Y-m-d' ) . '.csv"' );
 		$out = fopen( 'php://output', 'w' );
@@ -218,6 +230,7 @@ class Foods {
 				$f['fat_g'], $f['of_which_saturates_g'], $f['fibre_g'], $f['salt_g'],
 				$f['omega3_total_mg'], $f['caffeine_mg'],
 				$f['iron_mg'], $f['calcium_mg'], $f['vitamin_c_mg'],
+				$f['is_active'] ? 1 : 0,
 			] );
 		}
 		fclose( $out );
@@ -241,6 +254,19 @@ class Foods {
 		if ( empty( $data['name'] ) ) { wp_send_json_error( 'Name is required.' ); }
 		\FCC\Database::update_food( $id, $data );
 		wp_send_json_success( [ 'message' => __( 'Updated.', 'food-calorie-calculator' ) ] );
+	}
+
+	/** AJAX: toggle is_active on/off for a food. */
+	public function ajax_toggle_active(): void {
+		check_ajax_referer( 'fcc_foods_page' );
+		if ( ! current_user_can( 'manage_options' ) ) { wp_send_json_error( 'Permission denied', 403 ); }
+		$id = absint( $_POST['food_id'] ?? 0 );
+		if ( ! $id ) { wp_send_json_error( 'Missing food ID.' ); }
+		$food = \FCC\Database::get_food( $id );
+		if ( ! $food ) { wp_send_json_error( 'Food not found.' ); }
+		$new_val = $food['is_active'] ? 0 : 1;
+		\FCC\Database::update_food( $id, [ 'is_active' => $new_val ] );
+		wp_send_json_success( [ 'is_active' => $new_val ] );
 	}
 
 	// -------------------------------------------------------------------------

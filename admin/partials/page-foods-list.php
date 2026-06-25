@@ -53,6 +53,8 @@ $total_incomplete = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ft} WHERE ener
 $total_complete   = $total_all - $total_incomplete;
 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 $total_sponsored  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ft} WHERE is_sponsored = 1" );
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+$total_hidden     = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ft} WHERE is_active = 0" );
 $export_nonce     = wp_create_nonce( 'fcc_export_foods_view' );
 
 $list_url = admin_url( 'admin.php?page=fcc-foods' );
@@ -138,6 +140,8 @@ $list_url = admin_url( 'admin.php?page=fcc-foods' );
 				<option value=""><?php esc_html_e( 'Bulk Actions', 'food-calorie-calculator' ); ?></option>
 				<option value="delete"><?php esc_html_e( 'Delete', 'food-calorie-calculator' ); ?></option>
 				<option value="change_category"><?php esc_html_e( 'Change Category', 'food-calorie-calculator' ); ?></option>
+				<option value="hide"><?php esc_html_e( 'Hide Selected', 'food-calorie-calculator' ); ?></option>
+				<option value="show"><?php esc_html_e( 'Show Selected', 'food-calorie-calculator' ); ?></option>
 			</select>
 			<select name="bulk_category_id" form="fcc-bulk-form" id="fcc-bulk-cat" class="fcc-foods-bulk-cat" style="display:none">
 				<?php foreach ( $categories as $cat ) : ?>
@@ -181,6 +185,12 @@ $list_url = admin_url( 'admin.php?page=fcc-foods' );
 		<a href="<?php echo esc_url( add_query_arg( 'status', 'sponsored', $list_url ) ); ?>"
 			class="fcc-foods-pill fcc-foods-pill--gold<?php echo 'sponsored' === $status ? ' fcc-foods-pill--active' : ''; ?>">
 			<?php esc_html_e( 'Sponsored', 'food-calorie-calculator' ); ?> <span class="fcc-foods-pill__count"><?php echo $total_sponsored; ?></span>
+		</a>
+		<?php endif; ?>
+		<?php if ( $total_hidden > 0 ) : ?>
+		<a href="<?php echo esc_url( add_query_arg( 'status', 'hidden', $list_url ) ); ?>"
+			class="fcc-foods-pill fcc-foods-pill--red<?php echo 'hidden' === $status ? ' fcc-foods-pill--active' : ''; ?>">
+			<?php esc_html_e( 'Hidden', 'food-calorie-calculator' ); ?> <span class="fcc-foods-pill__count"><?php echo $total_hidden; ?></span>
 		</a>
 		<?php endif; ?>
 

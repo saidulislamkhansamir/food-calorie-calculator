@@ -221,7 +221,7 @@ class Rest_Api {
 		$id   = (int) $request->get_param( 'id' );
 		$food = Database::get_food( $id );
 
-		if ( ! $food ) {
+		if ( ! $food || empty( $food['is_active'] ) ) {
 			return new \WP_Error(
 				'fcc_food_not_found',
 				__( 'Food not found.', 'food-calorie-calculator' ),

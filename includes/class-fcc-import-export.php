@@ -55,6 +55,7 @@ class Import_Export {
 			'iron_mg'              => [ 'label' => 'Iron (mg)',                  'required' => false, 'nullable' => true,  'type' => 'float'  ],
 			'calcium_mg'           => [ 'label' => 'Calcium (mg)',               'required' => false, 'nullable' => true,  'type' => 'float'  ],
 			'vitamin_c_mg'         => [ 'label' => 'Vitamin C (mg)',             'required' => false, 'nullable' => true,  'type' => 'float'  ],
+			'is_active'            => [ 'label' => 'Active (1/0)',              'required' => false, 'nullable' => false, 'type' => 'int'    ],
 			'serving_sizes'        => [ 'label' => 'Serving Sizes (JSON)',       'required' => false, 'nullable' => true,  'type' => 'json'   ],
 			'source_notes'         => [ 'label' => 'Source / Notes',            'required' => false, 'nullable' => true,  'type' => 'string' ],
 		];
@@ -344,6 +345,8 @@ class Import_Export {
 					$row[] = $cats[ $food['category_id'] ] ?? '';
 				} elseif ( 'serving_sizes' === $col ) {
 					$row[] = empty( $food['serving_sizes'] ) ? '' : wp_json_encode( $food['serving_sizes'] );
+				} elseif ( 'is_active' === $col ) {
+					$row[] = empty( $food['is_active'] ) ? '0' : '1';
 				} else {
 					// NULL → '' so it round-trips correctly.
 					$row[] = null === $food[ $col ] ? '' : (string) $food[ $col ];
@@ -449,6 +452,11 @@ class Import_Export {
 					}
 					$data[ $key ] = $parsed;
 				}
+				continue;
+			}
+
+			if ( 'int' === $def['type'] ) {
+				$data[ $key ] = (int) $raw_val;
 				continue;
 			}
 
