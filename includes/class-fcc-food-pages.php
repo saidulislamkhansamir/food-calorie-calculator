@@ -219,86 +219,109 @@ class Food_Pages {
 		$kcal_raw = (float) $food['energy_kcal'];
 
 		$cat      = Database::get_category( (int) $food['category_id'] );
-		$cat_name = $cat ? strtolower( $cat['name'] ) : 'food';
 
 		$cat_context = [
-			'fruits & vegetables' => 'a natural whole food enjoyed worldwide as part of a balanced diet',
-			'fruit & vegetables'  => 'a natural whole food enjoyed worldwide as part of a balanced diet',
-			'meat & poultry'      => 'a protein-rich food commonly used in main meals across many cuisines',
-			'fish & seafood'      => 'a seafood item valued for its nutritional profile and versatility in cooking',
-			'dairy & eggs'        => 'a dairy or egg-based product that forms a staple part of many diets',
-			'grains & cereals'    => 'a grain-based food that provides carbohydrates and energy for daily activities',
-			'nuts & seeds'        => 'a nutrient-dense food rich in healthy fats, often eaten as a snack or ingredient',
-			'legumes & pulses'    => 'a plant-based protein source widely used in soups, stews, and salads',
-			'drinks'              => 'a beverage consumed for hydration, energy, or enjoyment',
-			'condiments & sauces' => 'a flavouring or condiment used to enhance the taste of dishes',
+			'fruits & vegetables'    => 'a natural whole food enjoyed worldwide as part of a balanced diet',
+			'fruit & vegetables'     => 'a natural whole food enjoyed worldwide as part of a balanced diet',
+			'meat & poultry'         => 'a protein-rich food commonly used in main meals across many cuisines',
+			'fish & seafood'         => 'a seafood item valued for its nutritional profile and versatility in cooking',
+			'dairy & eggs'           => 'a dairy or egg-based product that forms a staple part of many diets',
+			'grains & cereals'       => 'a grain-based food that provides carbohydrates and energy for daily activities',
+			'nuts & seeds'           => 'a nutrient-dense food rich in healthy fats, often eaten as a snack or ingredient',
+			'legumes & pulses'       => 'a plant-based protein source widely used in soups, stews, and salads',
+			'drinks'                 => 'a beverage consumed for hydration, energy, or enjoyment',
+			'condiments & sauces'    => 'a flavouring or condiment used to enhance the taste of dishes',
 			'snacks & confectionery' => 'a snack or confectionery item typically eaten between meals',
 			'takeaway & ready meals' => 'a prepared or takeaway food designed for convenience',
 		];
 		$context = $cat_context[ strtolower( $cat['name'] ?? '' ) ] ?? 'a food item that can be part of a varied diet';
 
+		// Build paragraph pool — each paragraph only included if its condition is met.
+		$paragraphs = [];
+
+		// 1. Context (always).
+		$paragraphs[] = $name . ' is ' . $context . '. Per 100g serving, it provides ' . $kcal . ' kcal of energy, '
+			. $prot . 'g of protein, ' . $carb . 'g of carbohydrates, and ' . $fat . 'g of fat.';
+
+		// 2. Protein focus.
+		if ( $prot_raw >= 15 ) {
+			$rni_pct = round( $prot_raw / 50 * 100 );
+			$paragraphs[] = $name . ' is ' . ( $prot_raw >= 25 ? 'an excellent' : 'a good' ) . ' source of protein, providing ' . $prot . 'g per 100g — approximately ' . $rni_pct . '% of the UK Reference Nutrient Intake of 50g per day. Protein plays a key role in muscle repair, immune function, and keeping you feeling full for longer.';
+		}
+
+		// 3. Fat profile.
+		if ( $fat_raw >= 17.5 ) {
+			$sat = null !== $food['of_which_saturates_g'] ? number_format( $food['of_which_saturates_g'], 1 ) . 'g of which is saturated' : 'check the label for saturated fat content';
+			$paragraphs[] = 'Under UK FSA traffic-light labelling, ' . $name . ' is classified as high in fat with ' . $fat . 'g per 100g (' . $sat . '). The NHS recommends that fat makes up no more than 35% of daily energy intake. Portion awareness is advisable when including this food regularly.';
+		} elseif ( $fat_raw <= 3 ) {
+			$paragraphs[] = 'With just ' . $fat . 'g of fat per 100g, ' . $name . ' falls into the low-fat category under FSA traffic-light guidelines (below 3g per 100g). This makes it a lighter option for those monitoring their fat intake as part of a heart-healthy or weight-management diet.';
+		}
+
+		// 4. Omega-3.
+		if ( null !== $food['omega3_total_mg'] && (float) $food['omega3_total_mg'] > 100 ) {
+			$o3 = number_format( $food['omega3_total_mg'], 0 );
+			$paragraphs[] = $name . ' provides ' . $o3 . 'mg of omega-3 fatty acids per 100g. The British Nutrition Foundation recommends eating at least one portion of oily fish per week for heart health. Omega-3s, particularly EPA and DHA, are linked to reduced inflammation, improved cardiovascular function, and cognitive benefits.';
+		}
+
+		// 5. Micronutrient spotlight (pick the most notable one).
+		if ( null !== $food['iron_mg'] && (float) $food['iron_mg'] >= 2.0 ) {
+			$iron = number_format( $food['iron_mg'], 1 );
+			$paragraphs[] = $name . ' is a useful source of iron, providing ' . $iron . 'mg per 100g. The UK recommended intake is 8.7mg for men and 14.8mg for women per day. Iron is essential for producing haemoglobin, which carries oxygen in the blood. Low iron intake is the most common nutritional deficiency in the UK.';
+		} elseif ( null !== $food['calcium_mg'] && (float) $food['calcium_mg'] >= 100 ) {
+			$cal = number_format( $food['calcium_mg'], 0 );
+			$paragraphs[] = 'With ' . $cal . 'mg of calcium per 100g, ' . $name . ' contributes meaningfully to daily calcium needs (the UK recommendation is 700mg for adults). Calcium is vital for maintaining strong bones and teeth, as well as supporting normal muscle and nerve function.';
+		} elseif ( null !== $food['vitamin_c_mg'] && (float) $food['vitamin_c_mg'] >= 10 ) {
+			$vc = number_format( $food['vitamin_c_mg'], 1 );
+			$paragraphs[] = $name . ' contains ' . $vc . 'mg of vitamin C per 100g. The UK recommended daily intake is 40mg. Vitamin C is an antioxidant that supports immune function, skin health, wound healing, and enhances the absorption of non-haeme iron from plant-based foods.';
+		}
+
+		// 6. Fibre.
+		if ( null !== $food['fibre_g'] && (float) $food['fibre_g'] >= 3 ) {
+			$fib = number_format( $food['fibre_g'], 1 );
+			$paragraphs[] = $name . ' provides ' . $fib . 'g of dietary fibre per 100g. The UK government recommends 30g of fibre per day for adults. Adequate fibre intake supports healthy digestion, helps regulate blood sugar levels, and may reduce the risk of heart disease and bowel cancer.';
+		}
+
+		// 7. Weight management.
+		if ( $kcal_raw <= 100 && $fat_raw <= 3 ) {
+			$paragraphs[] = 'At just ' . $kcal . ' kcal and ' . $fat . 'g of fat per 100g, ' . $name . ' is a low-calorie, low-fat option that can support weight management goals. It can be included generously in calorie-controlled meals without significantly increasing overall energy intake.';
+		}
+
+		// 8. Dietary suitability (merged).
+		$diets = [];
+		if ( ! empty( $food['diet_keto'] ) )       { $diets[] = 'ketogenic (with only ' . $carb . 'g of carbs per 100g)'; }
+		if ( ! empty( $food['diet_vegan'] ) )       { $diets[] = 'vegan'; }
+		elseif ( ! empty( $food['diet_vegetarian'] ) ) { $diets[] = 'vegetarian'; }
+		if ( ! empty( $food['diet_halal'] ) && ! empty( $food['diet_kosher'] ) ) { $diets[] = 'halal and kosher'; }
+		elseif ( ! empty( $food['diet_halal'] ) )  { $diets[] = 'halal'; }
+		if ( $diets ) {
+			$paragraphs[] = $name . ' is suitable for ' . implode( ', ', $diets ) . ' diets, making it a versatile choice for households with mixed dietary requirements.';
+		}
+
+		// 9. Energy density.
+		if ( $kcal_raw >= 400 ) {
+			$paragraphs[] = $name . ' is an energy-dense food at ' . $kcal . ' kcal per 100g' . ( $fat_raw >= 17.5 ? ', largely due to its fat content (' . $fat . 'g per 100g). Fat provides 9 calories per gram — more than double that of protein or carbohydrates' : '' ) . '. While it can be part of a balanced diet, portion control is recommended to avoid exceeding daily calorie needs.';
+		}
+
+		// 10. Caffeine.
+		if ( null !== $food['caffeine_mg'] && (float) $food['caffeine_mg'] > 10 ) {
+			$caf = number_format( $food['caffeine_mg'], 0 );
+			$paragraphs[] = $name . ' contains ' . $caf . 'mg of caffeine per 100g. The NHS advises that most adults can safely consume up to 400mg of caffeine per day, while pregnant women should limit intake to 200mg. Caffeine can improve alertness and concentration but may disrupt sleep if consumed late in the day.';
+		}
+
+		// Cap at 4 paragraphs max.
+		if ( count( $paragraphs ) > 4 ) {
+			$paragraphs = array_slice( $paragraphs, 0, 4 );
+		}
+
+		// Append CTA to the last paragraph.
+		$last = count( $paragraphs ) - 1;
+		$paragraphs[ $last ] .= ' Use the calculator above to adjust the serving size and explore the full nutritional breakdown.';
+
 		echo '<div class="fcc-food-page__overview">';
 		echo '<h2>Nutritional Overview</h2>';
-
-		// Paragraph 1: What it is.
-		echo '<p>' . $name . ' is ' . $context . '. Per 100g serving, it provides ' . $kcal . ' kcal of energy, '
-			. $prot . 'g of protein, ' . $carb . 'g of carbohydrates, and ' . $fat . 'g of fat.</p>';
-
-		// Paragraph 2: Nutritional highlights (conditional).
-		$highlights = [];
-		if ( $prot_raw >= 15 ) {
-			$highlights[] = 'It is notably high in protein (' . $prot . 'g per 100g), making it valuable for muscle maintenance, recovery, and satiety.';
+		foreach ( $paragraphs as $p ) {
+			echo '<p>' . $p . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
-		if ( $fat_raw <= 3 ) {
-			$highlights[] = 'With only ' . $fat . 'g of fat per 100g, it is classified as low-fat under UK FSA traffic-light guidelines.';
-		}
-		if ( $fat_raw >= 17.5 ) {
-			$highlights[] = 'It is high in fat (' . $fat . 'g per 100g) according to FSA guidelines, so portion awareness is recommended.';
-		}
-		if ( null !== $food['omega3_total_mg'] && (float) $food['omega3_total_mg'] > 100 ) {
-			$highlights[] = 'It is a notable source of omega-3 fatty acids (' . number_format( $food['omega3_total_mg'], 0 ) . 'mg per 100g), which support cardiovascular and cognitive health.';
-		}
-		if ( null !== $food['iron_mg'] && (float) $food['iron_mg'] >= 2.0 ) {
-			$highlights[] = 'It provides ' . number_format( $food['iron_mg'], 1 ) . 'mg of iron per 100g, contributing to healthy red blood cell formation.';
-		} elseif ( null !== $food['calcium_mg'] && (float) $food['calcium_mg'] >= 100 ) {
-			$highlights[] = 'It is a useful source of calcium (' . number_format( $food['calcium_mg'], 0 ) . 'mg per 100g), supporting bone and dental health.';
-		} elseif ( null !== $food['vitamin_c_mg'] && (float) $food['vitamin_c_mg'] >= 10 ) {
-			$highlights[] = 'It contains ' . number_format( $food['vitamin_c_mg'], 1 ) . 'mg of vitamin C per 100g, supporting immune function and skin health.';
-		}
-		if ( null !== $food['fibre_g'] && (float) $food['fibre_g'] >= 3 ) {
-			$highlights[] = 'With ' . number_format( $food['fibre_g'], 1 ) . 'g of fibre per 100g, it supports digestive health.';
-		}
-		if ( null !== $food['caffeine_mg'] && (float) $food['caffeine_mg'] > 10 ) {
-			$highlights[] = 'It contains ' . number_format( $food['caffeine_mg'], 0 ) . 'mg of caffeine per 100g.';
-		}
-		if ( $highlights ) {
-			echo '<p>' . implode( ' ', $highlights ) . '</p>';
-		}
-
-		// Paragraph 3: Who benefits (conditional).
-		$benefits = [];
-		if ( $kcal_raw <= 100 && $fat_raw <= 3 ) {
-			$benefits[] = 'those managing their weight or following a calorie-controlled eating plan';
-		}
-		if ( $prot_raw >= 15 ) {
-			$benefits[] = 'athletes, gym-goers, and anyone looking to increase their daily protein intake';
-		}
-		if ( ! empty( $food['diet_keto'] ) ) {
-			$benefits[] = 'individuals following a ketogenic or low-carbohydrate diet';
-		}
-		if ( ! empty( $food['diet_vegan'] ) ) {
-			$benefits[] = 'those on a plant-based or vegan diet';
-		} elseif ( ! empty( $food['diet_vegetarian'] ) ) {
-			$benefits[] = 'vegetarians seeking varied meal options';
-		}
-
-		if ( $benefits ) {
-			echo '<p>' . $name . ' may be particularly suitable for ' . implode( ', ', $benefits )
-				. '. Use the calculator above to adjust the serving size and see personalised nutrition values.</p>';
-		} else {
-			echo '<p>' . $name . ' can be enjoyed as part of a balanced diet. Use the calculator above to adjust the serving size and see personalised nutrition values for your chosen portion.</p>';
-		}
-
 		echo '</div>';
 	}
 
