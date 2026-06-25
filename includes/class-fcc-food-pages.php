@@ -246,44 +246,44 @@ class Food_Pages {
 		// 2. Protein focus.
 		if ( $prot_raw >= 15 ) {
 			$rni_pct = round( $prot_raw / 50 * 100 );
-			$paragraphs[] = $name . ' is ' . ( $prot_raw >= 25 ? 'an excellent' : 'a good' ) . ' source of protein, providing ' . $prot . 'g per 100g — approximately ' . $rni_pct . '% of the UK Reference Nutrient Intake of 50g per day. Protein plays a key role in muscle repair, immune function, and keeping you feeling full for longer.';
+			$paragraphs[] = 'It is ' . ( $prot_raw >= 25 ? 'an excellent' : 'a good' ) . ' source of protein, providing ' . $prot . 'g per 100g — approximately ' . $rni_pct . '% of the UK Reference Nutrient Intake of 50g per day. Protein plays a key role in muscle repair, immune function, and keeping you feeling full for longer.';
 		}
 
 		// 3. Fat profile.
 		if ( $fat_raw >= 17.5 ) {
 			$sat = null !== $food['of_which_saturates_g'] ? number_format( $food['of_which_saturates_g'], 1 ) . 'g of which is saturated' : 'check the label for saturated fat content';
-			$paragraphs[] = 'Under UK FSA traffic-light labelling, ' . $name . ' is classified as high in fat with ' . $fat . 'g per 100g (' . $sat . '). The NHS recommends that fat makes up no more than 35% of daily energy intake. Portion awareness is advisable when including this food regularly.';
+			$paragraphs[] = 'Under UK FSA traffic-light labelling, this food is classified as high in fat with ' . $fat . 'g per 100g (' . $sat . '). The NHS recommends that fat makes up no more than 35% of daily energy intake. Portion awareness is advisable when including it regularly.';
 		} elseif ( $fat_raw <= 3 ) {
-			$paragraphs[] = 'With just ' . $fat . 'g of fat per 100g, ' . $name . ' falls into the low-fat category under FSA traffic-light guidelines (below 3g per 100g). This makes it a lighter option for those monitoring their fat intake as part of a heart-healthy or weight-management diet.';
+			$paragraphs[] = 'With just ' . $fat . 'g of fat per 100g, it falls into the low-fat category under FSA traffic-light guidelines (below 3g per 100g). This makes it a lighter option for those monitoring their fat intake as part of a heart-healthy or weight-management diet.';
 		}
 
 		// 4. Omega-3.
 		if ( null !== $food['omega3_total_mg'] && (float) $food['omega3_total_mg'] > 100 ) {
 			$o3 = number_format( $food['omega3_total_mg'], 0 );
-			$paragraphs[] = $name . ' provides ' . $o3 . 'mg of omega-3 fatty acids per 100g. The British Nutrition Foundation recommends eating at least one portion of oily fish per week for heart health. Omega-3s, particularly EPA and DHA, are linked to reduced inflammation, improved cardiovascular function, and cognitive benefits.';
+			$paragraphs[] = 'It provides ' . $o3 . 'mg of omega-3 fatty acids per 100g. The British Nutrition Foundation recommends eating at least one portion of oily fish per week for heart health. Omega-3s, particularly EPA and DHA, are linked to reduced inflammation, improved cardiovascular function, and cognitive benefits.';
 		}
 
 		// 5. Micronutrient spotlight (pick the most notable one).
 		if ( null !== $food['iron_mg'] && (float) $food['iron_mg'] >= 2.0 ) {
 			$iron = number_format( $food['iron_mg'], 1 );
-			$paragraphs[] = $name . ' is a useful source of iron, providing ' . $iron . 'mg per 100g. The UK recommended intake is 8.7mg for men and 14.8mg for women per day. Iron is essential for producing haemoglobin, which carries oxygen in the blood. Low iron intake is the most common nutritional deficiency in the UK.';
+			$paragraphs[] = 'This food is a useful source of iron, providing ' . $iron . 'mg per 100g. The UK recommended intake is 8.7mg for men and 14.8mg for women per day. Iron is essential for producing haemoglobin, which carries oxygen in the blood. Low iron intake is the most common nutritional deficiency in the UK.';
 		} elseif ( null !== $food['calcium_mg'] && (float) $food['calcium_mg'] >= 100 ) {
 			$cal = number_format( $food['calcium_mg'], 0 );
-			$paragraphs[] = 'With ' . $cal . 'mg of calcium per 100g, ' . $name . ' contributes meaningfully to daily calcium needs (the UK recommendation is 700mg for adults). Calcium is vital for maintaining strong bones and teeth, as well as supporting normal muscle and nerve function.';
+			$paragraphs[] = 'With ' . $cal . 'mg of calcium per 100g, it contributes meaningfully to daily calcium needs (the UK recommendation is 700mg for adults). Calcium is vital for maintaining strong bones and teeth, as well as supporting normal muscle and nerve function.';
 		} elseif ( null !== $food['vitamin_c_mg'] && (float) $food['vitamin_c_mg'] >= 10 ) {
 			$vc = number_format( $food['vitamin_c_mg'], 1 );
-			$paragraphs[] = $name . ' contains ' . $vc . 'mg of vitamin C per 100g. The UK recommended daily intake is 40mg. Vitamin C is an antioxidant that supports immune function, skin health, wound healing, and enhances the absorption of non-haeme iron from plant-based foods.';
+			$paragraphs[] = 'It contains ' . $vc . 'mg of vitamin C per 100g. The UK recommended daily intake is 40mg. Vitamin C is an antioxidant that supports immune function, skin health, wound healing, and enhances the absorption of non-haeme iron from plant-based foods.';
 		}
 
 		// 6. Fibre.
 		if ( null !== $food['fibre_g'] && (float) $food['fibre_g'] >= 3 ) {
 			$fib = number_format( $food['fibre_g'], 1 );
-			$paragraphs[] = $name . ' provides ' . $fib . 'g of dietary fibre per 100g. The UK government recommends 30g of fibre per day for adults. Adequate fibre intake supports healthy digestion, helps regulate blood sugar levels, and may reduce the risk of heart disease and bowel cancer.';
+			$paragraphs[] = 'Each 100g serving provides ' . $fib . 'g of dietary fibre per 100g. The UK government recommends 30g of fibre per day for adults. Adequate fibre intake supports healthy digestion, helps regulate blood sugar levels, and may reduce the risk of heart disease and bowel cancer.';
 		}
 
 		// 7. Weight management.
 		if ( $kcal_raw <= 100 && $fat_raw <= 3 ) {
-			$paragraphs[] = 'At just ' . $kcal . ' kcal and ' . $fat . 'g of fat per 100g, ' . $name . ' is a low-calorie, low-fat option that can support weight management goals. It can be included generously in calorie-controlled meals without significantly increasing overall energy intake.';
+			$paragraphs[] = 'At just ' . $kcal . ' kcal and ' . $fat . 'g of fat per 100g, this is a low-calorie, low-fat option that can support weight management goals. It can be included generously in calorie-controlled meals without significantly increasing overall energy intake.';
 		}
 
 		// 8. Dietary suitability (merged).
@@ -299,13 +299,13 @@ class Food_Pages {
 
 		// 9. Energy density.
 		if ( $kcal_raw >= 400 ) {
-			$paragraphs[] = $name . ' is an energy-dense food at ' . $kcal . ' kcal per 100g' . ( $fat_raw >= 17.5 ? ', largely due to its fat content (' . $fat . 'g per 100g). Fat provides 9 calories per gram — more than double that of protein or carbohydrates' : '' ) . '. While it can be part of a balanced diet, portion control is recommended to avoid exceeding daily calorie needs.';
+			$paragraphs[] = 'This is an energy-dense food at ' . $kcal . ' kcal per 100g' . ( $fat_raw >= 17.5 ? ', largely due to its fat content (' . $fat . 'g per 100g). Fat provides 9 calories per gram — more than double that of protein or carbohydrates' : '' ) . '. While it can be part of a balanced diet, portion control is recommended to avoid exceeding daily calorie needs.';
 		}
 
 		// 10. Caffeine.
 		if ( null !== $food['caffeine_mg'] && (float) $food['caffeine_mg'] > 10 ) {
 			$caf = number_format( $food['caffeine_mg'], 0 );
-			$paragraphs[] = $name . ' contains ' . $caf . 'mg of caffeine per 100g. The NHS advises that most adults can safely consume up to 400mg of caffeine per day, while pregnant women should limit intake to 200mg. Caffeine can improve alertness and concentration but may disrupt sleep if consumed late in the day.';
+			$paragraphs[] = 'It contains ' . $caf . 'mg of caffeine per 100g. The NHS advises that most adults can safely consume up to 400mg of caffeine per day, while pregnant women should limit intake to 200mg. Caffeine can improve alertness and concentration but may disrupt sleep if consumed late in the day.';
 		}
 
 		// Cap at 4 paragraphs max.
