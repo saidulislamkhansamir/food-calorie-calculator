@@ -39,10 +39,12 @@ $total       = $result['total'];
 $foods       = $result['rows'];
 $total_pages = (int) ceil( $total / $per_page );
 
-$categories = FCC\Database::get_all_categories();
-$cat_map    = [];
+$categories   = FCC\Database::get_all_categories();
+$cat_map      = [];
+$cat_slug_map = [];
 foreach ( $categories as $cat ) {
-	$cat_map[ (int) $cat['id'] ] = esc_html( $cat['name'] );
+	$cat_map[ (int) $cat['id'] ]      = esc_html( $cat['name'] );
+	$cat_slug_map[ (int) $cat['id'] ] = $cat['slug'];
 }
 
 global $wpdb;
