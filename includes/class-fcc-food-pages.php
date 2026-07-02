@@ -35,32 +35,88 @@ class Food_Pages {
 	}
 
 	public function add_rewrite_rules(): void {
-		add_rewrite_rule( 'food/category/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]', 'top' );
-		add_rewrite_rule( 'food/?$', 'index.php?fcc_food_directory=1', 'top' );
-		add_rewrite_rule( 'food/([^/]+)/?$', 'index.php?fcc_food_slug=$matches[1]', 'top' );
+		// New /calories/ hierarchy.
+		add_rewrite_rule( 'calories/([^/]+)/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]&fcc_food_slug=$matches[2]', 'top' );
+		add_rewrite_rule( 'calories/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]', 'top' );
+		add_rewrite_rule( 'calories/?$', 'index.php?fcc_food_directory=1', 'top' );
+		// Legacy /food/ redirects — 301 to new URLs.
+		add_rewrite_rule( 'food/category/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]&fcc_food_redirect=category', 'top' );
+		add_rewrite_rule( 'food/?$', 'index.php?fcc_food_directory=1&fcc_food_redirect=hub', 'top' );
+		add_rewrite_rule( 'food/([^/]+)/?$', 'index.php?fcc_food_slug=$matches[1]&fcc_food_redirect=food', 'top' );
 	}
 
 	public function add_query_vars( array $vars ): array {
 		$vars[] = 'fcc_food_slug';
 		$vars[] = 'fcc_food_directory';
 		$vars[] = 'fcc_food_category_slug';
+		$vars[] = 'fcc_food_redirect';
 		return $vars;
 	}
 
 	public function handle_food_page(): void {
-		// Directory hub: /food/
+		// Legacy /food/ 301 redirects.
+		$redirect = get_query_var( 'fcc_food_redirect' );
+		if ( $redirect ) {
+			if ( 'hub' === $redirect ) {
+				wp_safe_redirect( home_url( '/calories/' ), 301 );
+				exit;
+			}
+			if ( 'category' === $redirect ) {
+				$slug = get_query_var( 'fcc_food_category_slug' );
+				wp_safe_redirect( home_url( '/calories/' . sanitize_title( $slug ) . '/' ), 301 );
+				exit;
+			}
+			if ( 'food' === $redirect ) {
+				$slug = get_query_var( 'fcc_food_slug' );
+				$food = Database::get_food_by_slug( sanitize_title( $slug ) );
+				if ( $food ) {
+					$cat = Database::get_category( (int) $food['category_id'] );
+					if ( $cat ) {
+						wp_safe_redirect( home_url( '/calories/' . $cat['slug'] . '/' . $food['slug'] . '/' ), 301 );
+						exit;
+					}
+				}
+				wp_safe_redirect( home_url( '/calories/' ), 301 );
+				exit;
+			}
+		}
+
+		// Directory hub: /calories/
 		if ( get_query_var( 'fcc_food_directory' ) ) {
 			self::$page_type = 'directory';
 			$this->render_directory_page();
 			exit;
 		}
 
-		// Category page: /food/category/{slug}/
-		$cat_slug = get_query_var( 'fcc_food_category_slug' );
+		// Individual food page: /calories/{cat}/{slug}/ — both vars set.
+		$cat_slug  = get_query_var( 'fcc_food_category_slug' );
+		$food_slug = get_query_var( 'fcc_food_slug' );
+
+		if ( $cat_slug && $food_slug ) {
+			$cat  = Database::get_category_by_slug( sanitize_title( $cat_slug ) );
+			$food = Database::get_food_by_slug( sanitize_title( $food_slug ) );
+
+			if ( ! $food || ! $cat || (int) $food['category_id'] !== (int) $cat['id'] || empty( $food['is_active'] ) ) {
+				wp_safe_redirect( home_url( '/calories/' ), 301 );
+				exit;
+			}
+
+			self::$current_food = $food;
+			self::$current_category = $cat;
+
+			$food_id = $food['id'];
+			add_filter( 'fcc_preload_food', function () use ( $food_id ) { return $food_id; } );
+			add_filter( 'fcc_heading_tag', function () { return 'h2'; } );
+
+			$this->render_food_page( $food );
+			exit;
+		}
+
+		// Category page: /calories/{slug}/ — only category var set.
 		if ( $cat_slug ) {
 			$cat = Database::get_category_by_slug( sanitize_title( $cat_slug ) );
 			if ( ! $cat ) {
-				wp_safe_redirect( home_url( '/food/' ), 301 );
+				wp_safe_redirect( home_url( '/calories/' ), 301 );
 				exit;
 			}
 			self::$page_type = 'category';
@@ -68,29 +124,16 @@ class Food_Pages {
 			$this->render_category_page( $cat );
 			exit;
 		}
+	}
 
-		// Individual food page: /food/{slug}/
-		$slug = get_query_var( 'fcc_food_slug' );
-		if ( ! $slug ) { return; }
+	// -------------------------------------------------------------------------
+	// URL helper
+	// -------------------------------------------------------------------------
 
-		$food = Database::get_food_by_slug( sanitize_title( $slug ) );
-
-		if ( ! $food || empty( $food['is_active'] ) ) {
-			wp_safe_redirect( home_url( '/' ), 301 );
-			exit;
-		}
-
-		self::$current_food = $food;
-
-		// Tell the shortcode to preload this food by ID and use h2 for calculator title.
-		$food_id = $food['id'];
-		add_filter( 'fcc_preload_food', function () use ( $food_id ) {
-			return $food_id;
-		} );
-		add_filter( 'fcc_heading_tag', function () { return 'h2'; } );
-
-		$this->render_food_page( $food );
-		exit;
+	private static function food_url( array $food ): string {
+		$cat = Database::get_category( (int) $food['category_id'] );
+		$cat_slug = $cat['slug'] ?? 'uncategorised';
+		return home_url( '/calories/' . $cat_slug . '/' . $food['slug'] . '/' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -105,6 +148,16 @@ class Food_Pages {
 		get_header();
 
 		echo '<div class="fcc-food-page" style="max-width:900px;margin:0 auto;padding:2rem 1rem;">';
+
+		// Breadcrumb: Home > Calories > {Category} > {Food Name}
+		$bread_cat = Database::get_category( (int) $food['category_id'] );
+		if ( $bread_cat ) {
+			echo '<p class="fcc-category-page__breadcrumb">'
+				. '<a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; '
+				. '<a href="' . esc_url( home_url( '/calories/' . $bread_cat['slug'] . '/' ) ) . '">' . esc_html( $bread_cat['name'] ) . '</a> &rsaquo; '
+				. esc_html( $food['name'] )
+				. '</p>';
+		}
 
 		// H1 + intro content.
 		$this->render_seo_content( $food );
@@ -142,12 +195,12 @@ class Food_Pages {
 		get_header();
 
 		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
-		echo '<h1 class="fcc-food-page__title">Food Nutrition Database</h1>';
-		echo '<p class="fcc-food-page__intro">Explore detailed nutrition facts, calorie counts, and macro breakdowns for over ' . number_format( $total ) . ' foods. Browse by category or use the calculator to search for any food.</p>';
+		echo '<h1 class="fcc-food-page__title">Calories &amp; Nutrition for ' . number_format( $total ) . '+ Foods</h1>';
+		echo '<p class="fcc-food-page__intro">Browse calorie counts, macro breakdowns, and full nutrition facts by category. Use the calculator to search any food by name.</p>';
 
 		echo '<div class="fcc-directory__grid">';
 		foreach ( $categories as $cat ) {
-			$url   = home_url( '/food/category/' . $cat['slug'] . '/' );
+			$url   = home_url( '/calories/' . $cat['slug'] . '/' );
 			$count = (int) $cat['food_count'];
 			echo '<a href="' . esc_url( $url ) . '" class="fcc-directory__card">';
 			echo '<span class="fcc-directory__card-name">' . esc_html( $cat['name'] ) . '</span>';
@@ -160,14 +213,14 @@ class Food_Pages {
 		foreach ( $categories as $cat ) {
 			$foods = Database::get_foods_in_category( (int) $cat['id'] );
 			if ( empty( $foods ) ) { continue; }
-			$cat_url = home_url( '/food/category/' . $cat['slug'] . '/' );
+			$cat_url = home_url( '/calories/' . $cat['slug'] . '/' );
 
 			echo '<div class="fcc-directory__section">';
 			echo '<h2><a href="' . esc_url( $cat_url ) . '">' . esc_html( $cat['name'] ) . '</a></h2>';
 			echo '<ul class="fcc-directory__list">';
 			$shown = array_slice( $foods, 0, 15 );
 			foreach ( $shown as $f ) {
-				$url = home_url( '/food/' . $f['slug'] . '/' );
+				$url = self::food_url( $f );
 				echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $f['name'] ) . '</a> <span class="fcc-directory__kcal">' . number_format( (float) $f['energy_kcal'], 0 ) . ' kcal</span></li>';
 			}
 			echo '</ul>';
@@ -209,7 +262,7 @@ class Food_Pages {
 		get_header();
 
 		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
-		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/food/' ) ) . '">Food Database</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
+		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
 		echo '<h1 class="fcc-food-page__title">' . esc_html( $cat['name'] ) . ' &mdash; Calories &amp; Nutrition Facts</h1>';
 		echo '<p class="fcc-food-page__intro">' . esc_html( $desc ) . ' Showing <strong>' . $count . '</strong> foods in this category.</p>';
 
@@ -219,7 +272,7 @@ class Food_Pages {
 			echo '<thead><tr><th>Food</th><th>kcal</th><th>Protein</th><th>Fat</th></tr></thead>';
 			echo '<tbody>';
 			foreach ( $foods as $f ) {
-				$url = home_url( '/food/' . $f['slug'] . '/' );
+				$url = home_url( '/calories/' . $cat['slug'] . '/' . $f['slug'] . '/' );
 				echo '<tr>';
 				echo '<td><a href="' . esc_url( $url ) . '">' . esc_html( $f['name'] ) . '</a></td>';
 				echo '<td>' . number_format( (float) $f['energy_kcal'], 0 ) . '</td>';
@@ -711,7 +764,7 @@ class Food_Pages {
 		echo '<h2>Related Foods</h2>';
 		echo '<ul>';
 		foreach ( $related as $r ) {
-			$url = home_url( '/food/' . $r['slug'] . '/' );
+			$url = self::food_url( $r );
 			echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $r['name'] ) . '</a> — '
 				. number_format( (float) $r['energy_kcal'], 0 ) . ' kcal</li>';
 		}
@@ -726,8 +779,8 @@ class Food_Pages {
 	public function output_seo_meta(): void {
 		// Directory page.
 		if ( 'directory' === self::$page_type ) {
-			echo '<meta name="description" content="Browse nutrition facts for over 4,900 foods. Calories, protein, fat, carbs, vitamins, and minerals — all in one free UK food calorie calculator.">' . "\n";
-			echo '<link rel="canonical" href="' . esc_url( home_url( '/food/' ) ) . '">' . "\n";
+			echo '<meta name="description" content="Browse calories and nutrition facts for over 4,900 foods. Calories, protein, fat, carbs, vitamins, and minerals — free UK food calorie calculator.">' . "\n";
+			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' ) ) . '">' . "\n";
 			return;
 		}
 
@@ -735,7 +788,7 @@ class Food_Pages {
 		if ( 'category' === self::$page_type && self::$current_category ) {
 			$cn = esc_attr( self::$current_category['name'] );
 			echo '<meta name="description" content="' . esc_attr( "{$cn} — browse calories, protein, fat, and full nutrition facts for all foods in this category. Free UK food calorie calculator." ) . '">' . "\n";
-			echo '<link rel="canonical" href="' . esc_url( home_url( '/food/category/' . self::$current_category['slug'] . '/' ) ) . '">' . "\n";
+			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' . self::$current_category['slug'] . '/' ) ) . '">' . "\n";
 			return;
 		}
 
@@ -747,7 +800,7 @@ class Food_Pages {
 		$prot = number_format( (float) $food['protein_g'], 1 );
 		$carb = number_format( (float) $food['carbohydrate_g'], 1 );
 		$fat  = number_format( (float) $food['fat_g'], 1 );
-		$url  = home_url( '/food/' . $food['slug'] . '/' );
+		$url  = self::food_url( $food );
 
 		echo '<meta name="description" content="' . esc_attr( "{$name} has {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full nutrition facts, FSA traffic lights, allergen info, and macro breakdown." ) . '">' . "\n";
 		echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
@@ -776,7 +829,7 @@ class Food_Pages {
 
 	public function filter_title( array $title ): array {
 		if ( 'directory' === self::$page_type ) {
-			$title['title'] = 'Food Nutrition Database — Browse All Foods';
+			$title['title'] = 'Calorie Counter — Browse All Foods by Category';
 			$title['site']  = 'Food Calorie Calculator';
 		} elseif ( 'category' === self::$page_type && self::$current_category ) {
 			$title['title'] = self::$current_category['name'] . ' — Calories & Nutrition';
@@ -843,24 +896,26 @@ class Food_Sitemap_Provider extends \WP_Sitemaps_Provider {
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results( $wpdb->prepare(
-			"SELECT slug, updated_at FROM {$table} WHERE is_active = 1 ORDER BY slug ASC LIMIT %d OFFSET %d",
+			"SELECT slug, category_id, updated_at FROM {$table} WHERE is_active = 1 ORDER BY slug ASC LIMIT %d OFFSET %d",
 			$per, $offset
 		), ARRAY_A );
 
 		$urls = [];
 
-		// First page: include /food/ hub and category pages.
+		// First page: include /calories/ hub and category pages.
 		if ( 1 === $page_num ) {
-			$urls[] = [ 'loc' => home_url( '/food/' ) ];
+			$urls[] = [ 'loc' => home_url( '/calories/' ) ];
 			$cats = $wpdb->get_results( "SELECT slug FROM {$wpdb->prefix}fcc_categories ORDER BY display_order ASC", ARRAY_A ); // phpcs:ignore
 			foreach ( $cats ?? [] as $c ) {
-				$urls[] = [ 'loc' => home_url( '/food/category/' . $c['slug'] . '/' ) ];
+				$urls[] = [ 'loc' => home_url( '/calories/' . $c['slug'] . '/' ) ];
 			}
 		}
 
 		foreach ( $rows ?? [] as $row ) {
+			$cat     = \FCC\Database::get_category( (int) $row['category_id'] );
+			$cat_slug = $cat['slug'] ?? 'uncategorised';
 			$urls[] = [
-				'loc'     => home_url( '/food/' . $row['slug'] . '/' ),
+				'loc'     => home_url( '/calories/' . $cat_slug . '/' . $row['slug'] . '/' ),
 				'lastmod' => $row['updated_at'] ? gmdate( 'Y-m-d\TH:i:s+00:00', strtotime( $row['updated_at'] ) ) : '',
 			];
 		}

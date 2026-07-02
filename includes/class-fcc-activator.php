@@ -26,9 +26,14 @@ class Activator {
 
 		// Register food page rewrite rules before flushing.
 		require_once FCC_PLUGIN_DIR . 'includes/class-fcc-food-pages.php';
-		add_rewrite_rule( 'food/category/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]', 'top' );
-		add_rewrite_rule( 'food/?$', 'index.php?fcc_food_directory=1', 'top' );
-		add_rewrite_rule( 'food/([^/]+)/?$', 'index.php?fcc_food_slug=$matches[1]', 'top' );
+		// New /calories/ hierarchy.
+		add_rewrite_rule( 'calories/([^/]+)/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]&fcc_food_slug=$matches[2]', 'top' );
+		add_rewrite_rule( 'calories/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]', 'top' );
+		add_rewrite_rule( 'calories/?$', 'index.php?fcc_food_directory=1', 'top' );
+		// Legacy /food/ redirects.
+		add_rewrite_rule( 'food/category/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]&fcc_food_redirect=category', 'top' );
+		add_rewrite_rule( 'food/?$', 'index.php?fcc_food_directory=1&fcc_food_redirect=hub', 'top' );
+		add_rewrite_rule( 'food/([^/]+)/?$', 'index.php?fcc_food_slug=$matches[1]&fcc_food_redirect=food', 'top' );
 
 		// Flush rewrite rules so the REST API + food pages are available immediately.
 		flush_rewrite_rules();

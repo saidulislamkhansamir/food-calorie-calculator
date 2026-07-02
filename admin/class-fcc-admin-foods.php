@@ -170,10 +170,12 @@ class Foods {
 		$total_pages = (int) ceil( $total / $per_page );
 		$list_url    = admin_url( 'admin.php?page=fcc-foods' );
 
-		$categories = \FCC\Database::get_all_categories();
-		$cat_map    = [];
+		$categories   = \FCC\Database::get_all_categories();
+		$cat_map      = [];
+		$cat_slug_map = [];
 		foreach ( $categories as $cat ) {
-			$cat_map[ (int) $cat['id'] ] = esc_html( $cat['name'] );
+			$cat_map[ (int) $cat['id'] ]      = esc_html( $cat['name'] );
+			$cat_slug_map[ (int) $cat['id'] ] = $cat['slug'];
 		}
 
 		ob_start();
@@ -231,7 +233,10 @@ class Foods {
 				$f['omega3_total_mg'], $f['caffeine_mg'],
 				$f['iron_mg'], $f['calcium_mg'], $f['vitamin_c_mg'],
 				$f['is_active'] ? 1 : 0,
-				home_url( '/food/' . ( $f['slug'] ?? sanitize_title( $f['name'] ) ) . '/' ),
+				( function() use ( $f ) {
+					$cat = \FCC\Database::get_category( (int) $f['category_id'] );
+					return home_url( '/calories/' . ( $cat['slug'] ?? 'uncategorised' ) . '/' . ( $f['slug'] ?? sanitize_title( $f['name'] ) ) . '/' );
+				} )(),
 			] );
 		}
 		fclose( $out );

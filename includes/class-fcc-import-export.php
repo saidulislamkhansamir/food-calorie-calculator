@@ -350,7 +350,8 @@ class Import_Export {
 				} elseif ( 'is_active' === $col ) {
 					$row[] = empty( $food['is_active'] ) ? '0' : '1';
 				} elseif ( 'food_page_url' === $col ) {
-					$row[] = home_url( '/food/' . ( $food['slug'] ?? sanitize_title( $food['name'] ) ) . '/' );
+					$ie_cat  = \FCC\Database::get_category( (int) $food['category_id'] );
+					$row[] = home_url( '/calories/' . ( $ie_cat['slug'] ?? 'uncategorised' ) . '/' . ( $food['slug'] ?? sanitize_title( $food['name'] ) ) . '/' );
 				} else {
 					// NULL → '' so it round-trips correctly.
 					$row[] = null === $food[ $col ] ? '' : (string) $food[ $col ];

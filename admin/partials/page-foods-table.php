@@ -308,7 +308,11 @@ endif;
 							</td>
 							<td class="fcc-foods-td fcc-foods-td--actions">
 								<div class="fcc-foods-action-group">
-									<a href="<?php echo esc_url( home_url( '/food/' . ( $food['slug'] ?? sanitize_title( $food['name'] ) ) . '/' ) ); ?>"
+									<a href="<?php
+										$_v_slug     = $food['slug'] ?? sanitize_title( $food['name'] );
+										$_v_cat_slug = isset( $cat_slug_map ) ? ( $cat_slug_map[ (int) $food['category_id'] ] ?? 'uncategorised' ) : 'uncategorised';
+										echo esc_url( home_url( '/calories/' . $_v_cat_slug . '/' . $_v_slug . '/' ) );
+									?>"
 										target="_blank" rel="noopener"
 										class="fcc-foods-action-btn fcc-foods-action-btn--view"
 										title="<?php esc_attr_e( 'View Food Page', 'food-calorie-calculator' ); ?>">

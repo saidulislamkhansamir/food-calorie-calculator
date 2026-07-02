@@ -68,7 +68,9 @@ function fcc_num_field( string $id, string $name, $value, string $label, bool $r
 							class="regular-text">
 					</div>
 					<?php if ( $is_edit && ! empty( $food['slug'] ) ) :
-						$food_page_url = home_url( '/food/' . $food['slug'] . '/' );
+						$_edit_cat     = \FCC\Database::get_category( (int) $food['category_id'] );
+						$_edit_catslug = $_edit_cat['slug'] ?? 'uncategorised';
+						$food_page_url = home_url( '/calories/' . $_edit_catslug . '/' . $food['slug'] . '/' );
 					?>
 					<div class="fcc-field fcc-food-url-field">
 						<label><?php esc_html_e( 'Food Page URL', 'food-calorie-calculator' ); ?></label>
