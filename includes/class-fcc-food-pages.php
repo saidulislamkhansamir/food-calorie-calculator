@@ -43,6 +43,12 @@ class Food_Pages {
 		add_rewrite_rule( 'food/category/([^/]+)/?$', 'index.php?fcc_food_category_slug=$matches[1]&fcc_food_redirect=category', 'top' );
 		add_rewrite_rule( 'food/?$', 'index.php?fcc_food_directory=1&fcc_food_redirect=hub', 'top' );
 		add_rewrite_rule( 'food/([^/]+)/?$', 'index.php?fcc_food_slug=$matches[1]&fcc_food_redirect=food', 'top' );
+
+		// Auto-flush when plugin version changes so new rules take effect without manual Permalinks save.
+		if ( get_option( 'fcc_rewrite_ver' ) !== FCC_VERSION ) {
+			flush_rewrite_rules( false );
+			update_option( 'fcc_rewrite_ver', FCC_VERSION );
+		}
 	}
 
 	public function add_query_vars( array $vars ): array {
@@ -220,7 +226,7 @@ class Food_Pages {
 			echo '<ul class="fcc-directory__list">';
 			$shown = array_slice( $foods, 0, 15 );
 			foreach ( $shown as $f ) {
-				$url = self::food_url( $f );
+				$url = home_url( '/calories/' . $cat['slug'] . '/' . $f['slug'] . '/' );
 				echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $f['name'] ) . '</a> <span class="fcc-directory__kcal">' . number_format( (float) $f['energy_kcal'], 0 ) . ' kcal</span></li>';
 			}
 			echo '</ul>';
