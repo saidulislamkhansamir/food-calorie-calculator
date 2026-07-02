@@ -1946,8 +1946,8 @@
 		var p = new URLSearchParams( window.location.search );
 
 		// Preloaded food page (individual food URL).
-		if ( settings.preloadFood && ! p.get( 'fcc_food' ) ) {
-			apiFetch( '/foods/' + encodeURIComponent( settings.preloadFood ) ).then( function ( food ) {
+		if ( cfg.preloadFood && ! p.get( 'fcc_food' ) ) {
+			apiFetch( '/foods/' + encodeURIComponent( cfg.preloadFood ) ).then( function ( food ) {
 				selectFood( food );
 				renderResults();
 			} ).catch( function () {} );
