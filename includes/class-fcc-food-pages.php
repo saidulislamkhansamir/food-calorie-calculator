@@ -169,18 +169,6 @@ class Food_Pages {
 		// H1 + intro content.
 		$this->render_seo_content( $food );
 
-		// Contextual 'compare with similar foods' links — 3 foods from same category.
-		$see_also = Database::get_related_foods( $food['category_id'], $food['id'], 3 );
-		if ( $see_also && $bread_cat ) {
-			$see_links = [];
-			foreach ( $see_also as $sa ) {
-				$see_url     = esc_url( home_url( '/calories/' . $bread_cat['slug'] . '/' . $sa['slug'] . '/' ) );
-				$see_links[] = '<a href="' . $see_url . '">' . esc_html( $sa['name'] ) . '</a>';
-			}
-			echo '<p class="fcc-food-page__see-also">Compare with similar <a href="' . esc_url( home_url( '/calories/' . $bread_cat['slug'] . '/' ) ) . '">' . esc_html( $bread_cat['name'] ) . '</a> foods: '
-				. implode( ', ', $see_links ) . '.</p>';
-		}
-
 		// Calculator widget pre-loaded with this food.
 		echo do_shortcode( '[food_calorie_calculator]' );
 
@@ -656,11 +644,6 @@ class Food_Pages {
 				echo '<li>' . $f . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput
 			}
 			echo '</ul>';
-			$kf_cat = Database::get_category( (int) $food['category_id'] );
-			if ( $kf_cat ) {
-				$kf_cat_url = esc_url( home_url( '/calories/' . $kf_cat['slug'] . '/' ) );
-				echo '<p class="fcc-food-page__facts-link">Browse more <a href="' . $kf_cat_url . '">' . esc_html( $kf_cat['name'] ) . ' nutrition data</a> or search the <a href="' . esc_url( home_url( '/calories/' ) ) . '">full food calorie database</a>.</p>';
-			}
 		}
 	}
 
@@ -696,16 +679,11 @@ class Food_Pages {
 		];
 		$context = $cat_context[ strtolower( $cat['name'] ?? '' ) ] ?? 'a food item that can be part of a varied diet';
 
-		$ov_cat_url  = $cat ? esc_url( home_url( '/calories/' . $cat['slug'] . '/' ) ) : '';
-		$ov_hub_url  = esc_url( home_url( '/calories/' ) );
-		$ov_cat_name = $cat ? esc_html( $cat['name'] ) : 'this category';
-		$ov_cat_link = $ov_cat_url ? '<a href="' . $ov_cat_url . '">' . $ov_cat_name . '</a>' : $ov_cat_name;
-
 		// Build paragraph pool — each paragraph only included if its condition is met.
 		$paragraphs = [];
 
 		// 1. Context (always).
-		$paragraphs[] = $name . ' is ' . $context . ', part of the ' . $ov_cat_link . ' section in our nutrition database. Per 100g serving, it provides ' . $kcal . ' kcal of energy, '
+		$paragraphs[] = $name . ' is ' . $context . '. Per 100g serving, it provides ' . $kcal . ' kcal of energy, '
 			. $prot . 'g of protein, ' . $carb . 'g of carbohydrates, and ' . $fat . 'g of fat.';
 
 		// 2. Protein focus.
@@ -779,11 +757,8 @@ class Food_Pages {
 		}
 
 		// Append CTA to the last paragraph.
-		$last     = count( $paragraphs ) - 1;
-		$ov_nav   = $ov_cat_url
-			? ' Browse all <a href="' . $ov_cat_url . '">' . $ov_cat_name . ' calorie data</a> or explore our <a href="' . $ov_hub_url . '">full food calorie database</a>.'
-			: ' Explore our <a href="' . $ov_hub_url . '">full food calorie database</a> for more.';
-		$paragraphs[ $last ] .= ' Use the calculator above to adjust the serving size and explore the full nutritional breakdown.' . $ov_nav;
+		$last = count( $paragraphs ) - 1;
+		$paragraphs[ $last ] .= ' Use the calculator above to adjust the serving size and explore the full nutritional breakdown.';
 
 		echo '<div class="fcc-food-page__overview">';
 		echo '<h2>Nutritional Overview</h2>';
@@ -811,10 +786,6 @@ class Food_Pages {
 		$salt_raw = null !== $food['salt_g'] ? (float) $food['salt_g'] : null;
 		$daily_pct = round( $kcal_raw / 2000 * 100 );
 
-		$faq_cat     = Database::get_category( (int) $food['category_id'] );
-		$faq_cat_url = $faq_cat ? esc_url( home_url( '/calories/' . $faq_cat['slug'] . '/' ) ) : '';
-		$faq_cat_nm  = $faq_cat ? esc_html( $faq_cat['name'] ) : 'similar foods';
-		$faq_hub_url = esc_url( home_url( '/calories/' ) );
 
 		$faqs = [];
 
@@ -828,12 +799,9 @@ class Food_Pages {
 
 		// 2. High protein (≥15g).
 		if ( $prot_raw >= 15 ) {
-			$prot_quality = $prot_raw >= 25 ? 'an excellent' : 'a good';
-			$prot_pct     = round( $prot_raw / 50 * 100 );
 			$faqs[] = [
-				'q'     => "Is {$name} high in protein?",
-				'a'     => "Yes, {$name} provides {$prot}g of protein per 100g, making it {$prot_quality} source of protein. The UK Reference Nutrient Intake for protein is around 50g per day for adults. A 100g serving of {$name} provides {$prot_pct}% of this.",
-				'a_html' => 'Yes, ' . esc_html( $name ) . ' provides ' . $prot . 'g of protein per 100g, making it ' . $prot_quality . ' source of protein. The UK Reference Nutrient Intake for protein is around 50g per day for adults. A 100g serving provides ' . $prot_pct . '% of this. For more high-protein options, see our <a href="' . esc_url( home_url( '/calories/meat-poultry/' ) ) . '">meat and poultry</a> and <a href="' . esc_url( home_url( '/calories/fish-seafood/' ) ) . '">fish and seafood</a> sections.',
+				'q' => "Is {$name} high in protein?",
+				'a' => "Yes, {$name} provides {$prot}g of protein per 100g, making it " . ( $prot_raw >= 25 ? 'an excellent' : 'a good' ) . " source of protein. The UK Reference Nutrient Intake for protein is around 50g per day for adults. A 100g serving of {$name} provides " . round( $prot_raw / 50 * 100 ) . "% of this.",
 			];
 		}
 
@@ -897,9 +865,8 @@ class Food_Pages {
 		// 10. Vegan.
 		if ( ! empty( $food['diet_vegan'] ) ) {
 			$faqs[] = [
-				'q'     => "Is {$name} suitable for vegans?",
-				'a'     => "Yes, {$name} is suitable for a vegan diet as it contains no animal-derived ingredients. It provides {$kcal} kcal and {$prot}g of protein per 100g.",
-				'a_html' => 'Yes, ' . esc_html( $name ) . ' is suitable for a vegan diet as it contains no animal-derived ingredients. It provides ' . $kcal . ' kcal and ' . $prot . 'g of protein per 100g. For more plant-based options, explore our <a href="' . esc_url( home_url( '/calories/fruit-veg/' ) ) . '">fruits and vegetables</a> and <a href="' . esc_url( home_url( '/calories/legumes-pulses/' ) ) . '">legumes and pulses</a> sections.',
+				'q' => "Is {$name} suitable for vegans?",
+				'a' => "Yes, {$name} is suitable for a vegan diet as it contains no animal-derived ingredients. It provides {$kcal} kcal and {$prot}g of protein per 100g.",
 			];
 		}
 
@@ -982,13 +949,9 @@ class Food_Pages {
 
 		// 20. Good for weight loss (low kcal + low fat).
 		if ( $kcal_raw <= 100 && $fat_raw <= 3 ) {
-			$wl_nav = $faq_cat_url
-				? ' Browse more <a href="' . $faq_cat_url . '">' . $faq_cat_nm . ' foods</a> or explore our <a href="' . $faq_hub_url . '">full calorie database</a> for more low-calorie options.'
-				: ' Explore our <a href="' . $faq_hub_url . '">full calorie database</a> for more low-calorie options.';
 			$faqs[] = [
-				'q'     => "Is {$name} good for weight loss?",
-				'a'     => "With only {$kcal} kcal and {$fat}g of fat per 100g, {$name} is a low-calorie, low-fat food that can be a helpful part of a calorie-controlled diet for weight management.",
-				'a_html' => 'With only ' . $kcal . ' kcal and ' . $fat . 'g of fat per 100g, ' . esc_html( $name ) . ' is a low-calorie, low-fat food that can be a helpful part of a calorie-controlled diet for weight management.' . $wl_nav,
+				'q' => "Is {$name} good for weight loss?",
+				'a' => "With only {$kcal} kcal and {$fat}g of fat per 100g, {$name} is a low-calorie, low-fat food that can be a helpful part of a calorie-controlled diet for weight management.",
 			];
 		}
 

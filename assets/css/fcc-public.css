@@ -4796,27 +4796,6 @@ select.fcc-bmr-input {
 	margin: 0 0 0.6rem;
 }
 .fcc-food-page__overview p:last-child { margin-bottom: 0; }
-.fcc-food-page__overview a { color: #075B5E; text-decoration: underline; text-underline-offset: 2px; }
-.fcc-food-page__overview a:hover { color: #043e40; }
-
-/* See-also / compare bar */
-.fcc-food-page__see-also {
-	font-size: 0.875rem;
-	color: #4a5568;
-	margin: 0.75rem 0 0;
-	line-height: 1.6;
-}
-.fcc-food-page__see-also a { color: #075B5E; text-decoration: underline; text-underline-offset: 2px; }
-.fcc-food-page__see-also a:hover { color: #043e40; }
-
-/* Facts link */
-.fcc-food-page__facts-link {
-	font-size: 0.875rem;
-	color: #4a5568;
-	margin: 0.5rem 0 0;
-}
-.fcc-food-page__facts-link a { color: #075B5E; text-decoration: underline; text-underline-offset: 2px; }
-.fcc-food-page__facts-link a:hover { color: #043e40; }
 
 /* FAQ */
 .fcc-food-page__faq {
