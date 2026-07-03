@@ -201,8 +201,12 @@ class Food_Pages {
 		get_header();
 
 		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
+		$hub_intro = Settings::get( 'content.hub_intro' );
+		if ( '' === $hub_intro ) {
+			$hub_intro = 'Browse calorie counts, macro breakdowns, and full nutrition facts by category. Use the calculator to search any food by name.';
+		}
 		echo '<h1 class="fcc-food-page__title">Calories &amp; Nutrition for ' . number_format( $total ) . '+ Foods</h1>';
-		echo '<p class="fcc-food-page__intro">Browse calorie counts, macro breakdowns, and full nutrition facts by category. Use the calculator to search any food by name.</p>';
+		echo '<p class="fcc-food-page__intro">' . wp_kses_post( $hub_intro ) . '</p>';
 
 		echo '<div class="fcc-directory__grid">';
 		foreach ( $categories as $cat ) {
@@ -248,21 +252,26 @@ class Food_Pages {
 		$foods = Database::get_foods_in_category( (int) $cat['id'] );
 		$count = count( $foods );
 
-		$cat_descriptions = [
-			'fruits & vegetables'    => 'Discover the nutritional value of fresh fruits and vegetables. These natural foods are rich in vitamins, minerals, and fibre, forming the foundation of a healthy diet.',
-			'fruit & vegetables'     => 'Discover the nutritional value of fresh fruits and vegetables. These natural foods are rich in vitamins, minerals, and fibre, forming the foundation of a healthy diet.',
-			'meat & poultry'         => 'Explore calorie and protein content for meat and poultry products. These foods are primary sources of complete protein, iron, and B vitamins in the diet.',
-			'fish & seafood'         => 'Browse nutrition data for fish and seafood. These foods are valued for their protein content, omega-3 fatty acids, and essential minerals.',
-			'dairy & eggs'           => 'View nutrition facts for dairy products and eggs. These foods provide calcium, protein, and essential vitamins important for bone health and growth.',
-			'grains & cereals'       => 'Check calorie and carbohydrate content for grains, cereals, and bread products. These staple foods provide energy, fibre, and B vitamins.',
-			'nuts & seeds'           => 'Explore the nutritional profile of nuts and seeds. These energy-dense foods are rich in healthy fats, protein, and minerals.',
-			'legumes & pulses'       => 'Browse nutrition data for beans, lentils, and other pulses. These plant-based foods are excellent sources of protein, fibre, and iron.',
-			'drinks'                 => 'View calorie counts and nutritional information for beverages. From water to smoothies, see what each drink contributes to your daily intake.',
-			'condiments & sauces'    => 'Check nutrition facts for sauces, dressings, and condiments. These flavouring ingredients can vary significantly in their calorie and salt content.',
-			'snacks & confectionery' => 'Browse calorie and sugar content for snacks and sweet treats. Understanding the nutritional value helps with mindful snacking and portion control.',
-			'takeaway & ready meals' => 'View nutrition data for takeaway dishes and ready meals from around the world. These convenient foods range widely in their nutritional profiles.',
-		];
-		$desc = $cat_descriptions[ strtolower( $cat['name'] ) ] ?? 'Browse nutrition facts for foods in the ' . esc_html( $cat['name'] ) . ' category.';
+		// DB description takes priority; fall back to built-in descriptions, then generic.
+		if ( ! empty( $cat['description'] ) ) {
+			$desc = $cat['description'];
+		} else {
+			$cat_descriptions = [
+				'fruits & vegetables'    => 'Discover the nutritional value of fresh fruits and vegetables. These natural foods are rich in vitamins, minerals, and fibre, forming the foundation of a healthy diet.',
+				'fruit & vegetables'     => 'Discover the nutritional value of fresh fruits and vegetables. These natural foods are rich in vitamins, minerals, and fibre, forming the foundation of a healthy diet.',
+				'meat & poultry'         => 'Explore calorie and protein content for meat and poultry products. These foods are primary sources of complete protein, iron, and B vitamins in the diet.',
+				'fish & seafood'         => 'Browse nutrition data for fish and seafood. These foods are valued for their protein content, omega-3 fatty acids, and essential minerals.',
+				'dairy & eggs'           => 'View nutrition facts for dairy products and eggs. These foods provide calcium, protein, and essential vitamins important for bone health and growth.',
+				'grains & cereals'       => 'Check calorie and carbohydrate content for grains, cereals, and bread products. These staple foods provide energy, fibre, and B vitamins.',
+				'nuts & seeds'           => 'Explore the nutritional profile of nuts and seeds. These energy-dense foods are rich in healthy fats, protein, and minerals.',
+				'legumes & pulses'       => 'Browse nutrition data for beans, lentils, and other pulses. These plant-based foods are excellent sources of protein, fibre, and iron.',
+				'drinks'                 => 'View calorie counts and nutritional information for beverages. From water to smoothies, see what each drink contributes to your daily intake.',
+				'condiments & sauces'    => 'Check nutrition facts for sauces, dressings, and condiments. These flavouring ingredients can vary significantly in their calorie and salt content.',
+				'snacks & confectionery' => 'Browse calorie and sugar content for snacks and sweet treats. Understanding the nutritional value helps with mindful snacking and portion control.',
+				'takeaway & ready meals' => 'View nutrition data for takeaway dishes and ready meals from around the world. These convenient foods range widely in their nutritional profiles.',
+			];
+			$desc = $cat_descriptions[ strtolower( $cat['name'] ) ] ?? 'Browse nutrition facts for foods in the ' . $cat['name'] . ' category.';
+		}
 
 		status_header( 200 );
 		get_header();

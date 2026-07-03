@@ -73,6 +73,15 @@ class Admin {
 
 		add_submenu_page(
 			'fcc-dashboard',
+			__( 'Food Pages', 'food-calorie-calculator' ),
+			__( 'Food Pages', 'food-calorie-calculator' ),
+			$capability,
+			'fcc-food-pages',
+			[ $this, 'page_food_pages' ]
+		);
+
+		add_submenu_page(
+			'fcc-dashboard',
 			__( 'Import / Export', 'food-calorie-calculator' ),
 			__( 'Import / Export', 'food-calorie-calculator' ),
 			$capability,
@@ -199,6 +208,10 @@ class Admin {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'food-calorie-calculator' ) );
 		}
 		include FCC_PLUGIN_DIR . 'admin/partials/page-categories.php';
+	}
+
+	public function page_food_pages(): void {
+		( new Food_Pages_Admin() )->page_food_pages();
 	}
 
 	public function page_import_export(): void {

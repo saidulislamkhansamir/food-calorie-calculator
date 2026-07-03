@@ -706,6 +706,17 @@ class Database {
 		return $result ? (int) $wpdb->insert_id : false;
 	}
 
+	public static function update_category_description( int $id, string $desc ): bool {
+		global $wpdb;
+		return false !== $wpdb->update(
+			self::categories_table(),
+			[ 'description' => sanitize_textarea_field( $desc ) ],
+			[ 'id' => $id ],
+			[ '%s' ],
+			[ '%d' ]
+		);
+	}
+
 	/**
 	 * @param array<string,mixed> $data
 	 */

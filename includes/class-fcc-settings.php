@@ -161,6 +161,9 @@ class Settings {
 				'trending_foods' => [],
 				'promo_banners'  => [],
 			],
+			'content' => [
+				'hub_intro' => '',
+			],
 		];
 	}
 
