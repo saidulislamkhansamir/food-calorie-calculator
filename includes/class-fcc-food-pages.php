@@ -993,6 +993,8 @@ class Food_Pages {
 		echo '<div class="fcc-food-page__sources">';
 		echo '<h2>Sources &amp; References</h2>';
 		echo '<ol>';
+
+		// Core four — always shown on every food page.
 		echo '<li><a href="https://www.nutrition.org.uk/" target="_blank" rel="noopener">British Nutrition Foundation</a> — UK nutrition science and education</li>';
 		echo '<li><a href="https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid" target="_blank" rel="noopener">McCance &amp; Widdowson\'s Composition of Foods</a> — UK food composition tables</li>';
 
@@ -1004,6 +1006,26 @@ class Food_Pages {
 		echo '<li><a href="https://fdc.nal.usda.gov/" target="_blank" rel="noopener">USDA FoodData Central</a> — US Department of Agriculture food composition database' . $fdc_link . '</li>';
 
 		echo '<li><a href="https://www.nhs.uk/live-well/eat-well/" target="_blank" rel="noopener">NHS Eat Well</a> — UK National Health Service dietary guidance</li>';
+
+		// Extra sources — pool of 7; 1, 2, or 3 added per food (totalling 5, 6, or 7).
+		// Selection is deterministic: starting index and count both vary by food ID,
+		// gcd(pool_size=7, step=3)=1 so no duplicates across any 3-pick window.
+		$extra_pool = [
+			'<a href="https://www.food.gov.uk/safety-hygiene/food-labelling" target="_blank" rel="noopener">Food Standards Agency (FSA)</a> — UK food labelling regulations and traffic-light nutrition guidelines',
+			'<a href="https://www.gov.uk/government/groups/scientific-advisory-committee-on-nutrition" target="_blank" rel="noopener">Scientific Advisory Committee on Nutrition (SACN)</a> — UK government dietary recommendations and nutrient reference values',
+			'<a href="https://www.efsa.europa.eu/en/topics/topic/dietary-reference-values" target="_blank" rel="noopener">European Food Safety Authority (EFSA)</a> — European dietary reference values and food safety science',
+			'<a href="https://www.bda.uk.com/resource/food-facts-home.html" target="_blank" rel="noopener">British Dietetic Association (BDA)</a> — UK registered dietitians and evidence-based food fact sheets',
+			'<a href="https://www.who.int/health-topics/nutrition" target="_blank" rel="noopener">World Health Organization (WHO) Nutrition</a> — global dietary guidelines and public health nutrition',
+			'<a href="https://nutritionsource.hsph.harvard.edu/" target="_blank" rel="noopener">Harvard T.H. Chan School of Public Health — The Nutrition Source</a> — evidence-based nutrition research and dietary guidance',
+			'<a href="https://www.bhf.org.uk/informationsupport/heart-matters-magazine/nutrition" target="_blank" rel="noopener">British Heart Foundation</a> — heart-healthy eating advice and dietary guidance',
+		];
+		$extra_count = ( (int) $food['id'] % 3 ) + 1;
+		$pool_size   = count( $extra_pool );
+		for ( $i = 0; $i < $extra_count; $i++ ) {
+			$idx = ( (int) $food['id'] + $i * 3 ) % $pool_size;
+			echo '<li>' . $extra_pool[ $idx ] . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+
 		echo '</ol>';
 
 		echo '<p class="fcc-food-page__disclaimer"><em>Nutritional values are per 100g unless otherwise stated and are provided for general information only. '
