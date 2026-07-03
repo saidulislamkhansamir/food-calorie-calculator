@@ -10,8 +10,9 @@ defined( 'ABSPATH' ) || exit;
 $saved    = isset( $_GET['saved'] ) ? sanitize_key( $_GET['saved'] ) : '';
 $saved_cat = isset( $_GET['cat_id'] ) ? absint( $_GET['cat_id'] ) : 0;
 
-$hub_intro  = FCC\Settings::get( 'content.hub_intro', '' );
-$categories = FCC\Database::get_all_categories();
+$hub_intro     = FCC\Settings::get( 'content.hub_intro', '' );
+$hub_editorial = FCC\Settings::get( 'content.hub_editorial', '' );
+$categories    = FCC\Database::get_all_categories();
 $hub_url    = home_url( '/calories/' );
 
 // Foods list (paginated + searchable).
@@ -403,7 +404,11 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 						</a>
 						<?php if ( ! empty( $hub_intro ) ) : ?>
 							<span class="fcc-fp-badge fcc-fp-badge--custom">&#10003; <?php esc_html_e( 'Custom intro', 'food-calorie-calculator' ); ?></span>
-						<?php else : ?>
+						<?php endif; ?>
+						<?php if ( ! empty( $hub_editorial ) ) : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--custom">&#10003; <?php esc_html_e( 'Custom editorial', 'food-calorie-calculator' ); ?></span>
+						<?php endif; ?>
+						<?php if ( empty( $hub_intro ) && empty( $hub_editorial ) ) : ?>
 							<span class="fcc-fp-badge fcc-fp-badge--default"><?php esc_html_e( 'Using default text', 'food-calorie-calculator' ); ?></span>
 						<?php endif; ?>
 					</div>
@@ -426,6 +431,21 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 					<p class="description">
 						<?php esc_html_e( 'Shown below the page title on /calories/. Leave blank to use the built-in default text.', 'food-calorie-calculator' ); ?>
 					</p>
+				</div>
+
+				<div class="fcc-fp-hub-field">
+					<label for="fcc_hub_editorial"><?php esc_html_e( 'Editorial Content (below category grid)', 'food-calorie-calculator' ); ?></label>
+					<?php
+					wp_editor( $hub_editorial, 'fcc_hub_editorial', [
+						'textarea_name' => 'hub_editorial',
+						'media_buttons' => false,
+						'teeny'         => false,
+						'tinymce'       => true,
+						'quicktags'     => true,
+						'editor_height' => 500,
+					] );
+					?>
+					<p class="description"><?php esc_html_e( 'The editorial H2 sections displayed below the category grid on /calories/. Leave blank to use the built-in default content.', 'food-calorie-calculator' ); ?></p>
 				</div>
 
 				<div class="fcc-fp-hub-actions">
