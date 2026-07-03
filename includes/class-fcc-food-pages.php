@@ -201,6 +201,7 @@ class Food_Pages {
 		get_header();
 
 		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
+		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; Calories</p>';
 		$hub_intro = Settings::get( 'content.hub_intro' );
 		if ( '' === $hub_intro ) {
 			$hub_intro = 'Browse calorie counts, macro breakdowns, and full nutrition facts by category. Use the calculator to search any food by name.';
