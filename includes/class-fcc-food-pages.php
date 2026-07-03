@@ -689,7 +689,7 @@ class Food_Pages {
 		// 2. Protein focus.
 		if ( $prot_raw >= 15 ) {
 			$rni_pct = round( $prot_raw / 50 * 100 );
-			$paragraphs[] = 'It is ' . ( $prot_raw >= 25 ? 'an excellent' : 'a good' ) . ' source of protein, providing ' . $prot . 'g per 100g — approximately ' . $rni_pct . '% of the UK Reference Nutrient Intake of 50g per day. Protein plays a key role in muscle repair, immune function, and keeping you feeling full for longer.';
+			$paragraphs[] = 'It is ' . ( $prot_raw >= 25 ? 'an excellent' : 'a good' ) . ' source of protein, providing ' . $prot . 'g per 100g, approximately ' . $rni_pct . '% of the UK Reference Nutrient Intake of 50g per day. Protein plays a key role in muscle repair, immune function, and keeping you feeling full for longer.';
 		}
 
 		// 3. Fat profile.
@@ -711,7 +711,7 @@ class Food_Pages {
 				foreach ( $oily_fish as $of ) {
 					$fish_links[] = '<a href="' . esc_url( home_url( '/calories/fish-seafood/' . $of['slug'] . '/' ) ) . '">' . esc_html( $of['name'] ) . '</a>';
 				}
-				$fish_clause = ' — such as ' . implode( ' and ', $fish_links ) . ' —';
+				$fish_clause = ' (including ' . implode( ' and ', $fish_links ) . ')';
 			}
 			$paragraphs[] = 'It provides ' . $o3 . 'mg of omega-3 fatty acids per 100g. The British Nutrition Foundation recommends eating at least one portion of oily fish' . $fish_clause . ' per week for heart health. Omega-3s, particularly EPA and DHA, are linked to reduced inflammation, improved cardiovascular function, and cognitive benefits.';
 		}
@@ -752,7 +752,7 @@ class Food_Pages {
 
 		// 9. Energy density.
 		if ( $kcal_raw >= 400 ) {
-			$paragraphs[] = 'This is an energy-dense food at ' . $kcal . ' kcal per 100g' . ( $fat_raw >= 17.5 ? ', largely due to its fat content (' . $fat . 'g per 100g). Fat provides 9 calories per gram — more than double that of protein or carbohydrates' : '' ) . '. While it can be part of a balanced diet, portion control is recommended to avoid exceeding daily calorie needs.';
+			$paragraphs[] = 'This is an energy-dense food at ' . $kcal . ' kcal per 100g' . ( $fat_raw >= 17.5 ? ', largely due to its fat content (' . $fat . 'g per 100g). Fat provides 9 calories per gram, more than double that of protein or carbohydrates' : '' ) . '. While it can be part of a balanced diet, portion control is recommended to avoid exceeding daily calorie needs.';
 		}
 
 		// 10. Caffeine.
@@ -936,7 +936,7 @@ class Food_Pages {
 		if ( ! $allergens ) {
 			$faqs[] = [
 				'q' => "Is {$name} free from major allergens?",
-				'a' => "{$name} does not contain any of the 14 major allergens recognised under UK food law. However, cross-contamination during manufacturing is always possible — check the packaging for 'may contain' warnings.",
+				'a' => "{$name} does not contain any of the 14 major allergens recognised under UK food law. However, cross-contamination during manufacturing is always possible; always check the packaging for 'may contain' warnings.",
 			];
 		}
 
@@ -1080,7 +1080,7 @@ class Food_Pages {
 		echo '<ul>';
 		foreach ( $related as $r ) {
 			$url = self::food_url( $r );
-			echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $r['name'] ) . '</a> — '
+			echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $r['name'] ) . '</a>: '
 				. number_format( (float) $r['energy_kcal'], 0 ) . ' kcal</li>';
 		}
 		echo '</ul>';
