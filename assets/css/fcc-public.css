@@ -5052,6 +5052,15 @@ select.fcc-bmr-input {
 	margin-bottom: 0.4rem;
 }
 .fcc-food-page__editorial strong { color: #1a202c; }
+.fcc-food-page__editorial a {
+	color: #075B5E;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.fcc-food-page__editorial a:hover {
+	color: #043e40;
+	text-decoration: underline;
+}
 
 @media (max-width: 600px) {
 	.fcc-food-page__title { font-size: 1.4rem; }
