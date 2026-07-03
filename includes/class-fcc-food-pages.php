@@ -329,7 +329,7 @@ class Food_Pages {
 
 		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
 		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; <a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
-		echo '<h1 class="fcc-food-page__title">' . esc_html( $cat['name'] ) . ' &mdash; Calories &amp; Nutrition Facts</h1>';
+		echo '<h1 class="fcc-food-page__title">' . $this->get_category_h1( $cat ) . '</h1>';
 		echo '<p class="fcc-food-page__intro">' . esc_html( $desc ) . ' Showing <strong>' . $count . '</strong> foods in this category.</p>';
 
 		if ( $foods ) {
@@ -504,6 +504,46 @@ class Food_Pages {
 	}
 
 	// -------------------------------------------------------------------------
+	// H1 Variation Helpers
+	// -------------------------------------------------------------------------
+
+	private function get_category_h1( array $cat ): string {
+		$map = [
+			'fruit-veg'            => 'Fruit &amp; Vegetables: Calories, Vitamins &amp; Nutrition Guide',
+			'meat-poultry'         => 'Meat &amp; Poultry: Calories, Protein &amp; Nutrition Facts',
+			'fish-seafood'         => 'Fish &amp; Seafood: Calories, Omega-3 &amp; Nutritional Values',
+			'dairy-eggs'           => 'Dairy &amp; Eggs: Calcium, Protein &amp; Calorie Guide',
+			'bread-cereals'        => 'Bread &amp; Cereals: Calories, Carbs &amp; Fibre Content',
+			'nuts-seeds'           => 'Nuts &amp; Seeds: Calories, Healthy Fats &amp; Nutrition Data',
+			'fats-oils'            => 'Fats &amp; Oils: Calorie Counts &amp; Nutritional Breakdown',
+			'drinks'               => 'Drinks: Calories, Sugar &amp; Nutritional Values',
+			'snacks-confectionery' => 'Snacks &amp; Confectionery: Calories, Sugar &amp; Nutrition Guide',
+			'takeaway'             => 'Takeaway &amp; Ready Meals: Calories &amp; Nutrition Data',
+			'legumes-pulses'       => 'Legumes &amp; Pulses: Protein, Fibre &amp; Calorie Count',
+			'condiments-sauces'    => 'Condiments &amp; Sauces: Calories, Salt &amp; Nutrition Data',
+			'condiments'           => 'Condiments &amp; Sauces: Calories, Salt &amp; Nutrition Data',
+		];
+		return $map[ $cat['slug'] ] ?? esc_html( $cat['name'] ) . ' Calories &amp; Nutrition Facts';
+	}
+
+	private function get_food_h1( array $food ): string {
+		$n = esc_html( $food['name'] );
+		$pool = [
+			$n . ' Calories &amp; Nutrition Facts',
+			'How Many Calories in ' . $n . '?',
+			$n . ': Calorie Count &amp; Nutritional Breakdown',
+			'Calories in ' . $n . ': Protein, Carbs &amp; Fat',
+			$n . ' Nutrition Facts per 100g',
+			$n . ': Full Macro &amp; Calorie Guide',
+			'Calorie &amp; Nutrition Information for ' . $n,
+			$n . ': Nutritional Values &amp; Calorie Data',
+			$n . ' Calories, Macros &amp; Key Nutrients',
+			$n . ': Calories, Protein &amp; Nutrition Guide',
+		];
+		return $pool[ (int) $food['id'] % count( $pool ) ];
+	}
+
+	// -------------------------------------------------------------------------
 	// Auto-Generated SEO Content
 	// -------------------------------------------------------------------------
 
@@ -516,13 +556,13 @@ class Food_Pages {
 
 		// Custom content overrides auto-generated if available.
 		if ( ! empty( $food['page_content'] ) ) {
-			echo '<h1 class="fcc-food-page__title">' . $name . ' — Calories &amp; Nutrition Facts</h1>';
+			echo '<h1 class="fcc-food-page__title">' . $this->get_food_h1( $food ) . '</h1>';
 			echo '<div class="fcc-food-page__content">' . wp_kses_post( $food['page_content'] ) . '</div>';
 			return;
 		}
 
 		// Auto-generated content.
-		echo '<h1 class="fcc-food-page__title">' . $name . ' — Calories &amp; Nutrition Facts</h1>';
+		echo '<h1 class="fcc-food-page__title">' . $this->get_food_h1( $food ) . '</h1>';
 
 		// Intro paragraph.
 		$highlights = $this->build_highlights( $food );
