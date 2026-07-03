@@ -5020,6 +5020,40 @@ select.fcc-bmr-input {
 }
 .fcc-category-page__table a:hover { text-decoration: underline; }
 
+/* Hub editorial content */
+.fcc-food-page__editorial {
+	margin-top: 3rem;
+	padding-top: 2.5rem;
+	border-top: 2px solid #e2e8f0;
+}
+.fcc-food-page__editorial h2 {
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: #1a202c;
+	margin: 2rem 0 0.6rem;
+	padding-bottom: 0.35rem;
+	border-bottom: 2px solid #075B5E;
+	display: inline-block;
+}
+.fcc-food-page__editorial h2:first-child { margin-top: 0; }
+.fcc-food-page__editorial p {
+	font-size: 0.95rem;
+	line-height: 1.75;
+	color: #4a5568;
+	margin: 0 0 1rem;
+}
+.fcc-food-page__editorial ul {
+	margin: 0.5rem 0 1rem 1.25rem;
+	padding: 0;
+}
+.fcc-food-page__editorial ul li {
+	font-size: 0.93rem;
+	line-height: 1.7;
+	color: #4a5568;
+	margin-bottom: 0.4rem;
+}
+.fcc-food-page__editorial strong { color: #1a202c; }
+
 @media (max-width: 600px) {
 	.fcc-food-page__title { font-size: 1.4rem; }
 	.fcc-food-page__related ul { grid-template-columns: 1fr; }

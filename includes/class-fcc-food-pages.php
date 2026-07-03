@@ -242,6 +242,44 @@ class Food_Pages {
 			echo '</div>';
 		}
 
+		// Editorial content — semantic SEO section (600–700 words).
+		echo '<div class="fcc-food-page__editorial">';
+
+		echo '<h2>What Are Calories?</h2>';
+		echo '<p>A calorie — more precisely a kilocalorie (kcal) — is the unit used to measure the energy provided by food and drink. Your body uses this energy continuously: to breathe, maintain body temperature, power muscle movement, and support every metabolic process that keeps you alive. When your calorie intake matches your energy expenditure, your weight stays broadly stable. Consume more than you burn and the surplus is stored as body fat; consume less and your body draws on those stores instead.</p>';
+		echo '<p>The NHS recommends that adult women aim for approximately <strong>2,000 kcal per day</strong> and adult men around <strong>2,500 kcal per day</strong>. These are population averages — your personal requirement depends on your age, height, current weight, and how active you are. Use the Daily Calorie Need tab inside the calculator to get a personalised estimate based on your details.</p>';
+
+		echo '<h2>Understanding Macronutrients</h2>';
+		echo '<p>Every calorie you eat comes from one of three macronutrients — carbohydrates, protein, or fat — each of which the body uses differently:</p>';
+		echo '<ul>';
+		echo '<li><strong>Carbohydrates</strong> provide 4 kcal per gram and are the body\'s preferred fuel source, particularly for the brain and during exercise. The UK government recommends that carbohydrates make up around 50% of total energy intake.</li>';
+		echo '<li><strong>Protein</strong> provides 4 kcal per gram and is essential for building and repairing muscle tissue, producing enzymes and hormones, and supporting immune function. The UK Reference Nutrient Intake (RNI) for protein is 50g per day for the average adult.</li>';
+		echo '<li><strong>Fat</strong> provides 9 kcal per gram — more than twice that of carbohydrates or protein — and is vital for absorbing fat-soluble vitamins (A, D, E, and K), hormone production, and insulating body organs. The NHS recommends that fat provides no more than 35% of daily energy.</li>';
+		echo '</ul>';
+		echo '<p>Dietary fibre, a form of carbohydrate that the body cannot fully digest, contributes around 2 kcal per gram and plays a crucial role in gut health, blood sugar regulation, and reducing the risk of bowel disease. UK adults are advised to consume at least <strong>30g of fibre per day</strong> — most people fall well short of this target.</p>';
+
+		echo '<h2>How to Use This Calorie Calculator</h2>';
+		echo '<p>This tool gives you instant access to calorie counts and full nutrition data for over 5,200 foods from 190+ countries. To get started, type the name of any food into the search box — results appear as you type. Select a food to see its energy content alongside a complete breakdown of protein, carbohydrates, fat, fibre, sugars, salt, and key micronutrients including iron, calcium, and vitamin C.</p>';
+		echo '<p>You can adjust the serving size using the quantity and unit controls to match what you actually eat — switching between grams, ounces, cups, or common portion sizes. Use the <strong>Your Meal</strong> tab to build up a full meal or day\'s intake by adding multiple foods. The running total shows you calories and macros at a glance. The <strong>Compare</strong> tab lets you place two foods side by side to see nutritional differences instantly.</p>';
+
+		echo '<h2>FSA Traffic Light Labels Explained</h2>';
+		echo '<p>Each food page displays UK Food Standards Agency (FSA) traffic-light labels for fat, saturated fat, sugar, and salt. These colour-coded ratings — <strong>green</strong> (low), <strong>amber</strong> (medium), and <strong>red</strong> (high) — are the same system used on supermarket packaging and give you an instant read on how a food fits into a healthy diet. As a general guide:</p>';
+		echo '<ul>';
+		echo '<li>Green for fat means less than 3g per 100g; red means more than 17.5g</li>';
+		echo '<li>Green for sugar means less than 5g per 100g; red means more than 22.5g</li>';
+		echo '<li>Green for salt means less than 0.3g per 100g; red means more than 1.5g</li>';
+		echo '</ul>';
+		echo '<p>Choosing mostly green- and amber-rated foods is a practical, evidence-based approach to building a balanced diet — one endorsed by the NHS, Diabetes UK, and the British Heart Foundation.</p>';
+
+		echo '<h2>Why Track What You Eat?</h2>';
+		echo '<p>Research consistently shows that people who monitor their food intake — even loosely — make better dietary choices and are more likely to achieve and maintain a healthy weight. Calorie awareness does not have to mean obsessive counting. Simply knowing that a large latte adds 250 kcal, or that two tablespoons of olive oil contain more calories than a small banana, helps you make informed trade-offs without giving anything up entirely.</p>';
+		echo '<p>Beyond weight management, tracking nutrition helps you spot gaps in your diet: too little protein if you are active, insufficient iron if you feel persistently tired, or hidden salt if you are managing blood pressure. This calculator covers all of those markers, making it a useful tool whether your goal is weight loss, muscle gain, general wellbeing, or simply eating a little more mindfully.</p>';
+
+		echo '<h2>About Our Nutrition Data</h2>';
+		echo '<p>All nutritional values are sourced from established, peer-reviewed databases including <strong>McCance &amp; Widdowson\'s Composition of Foods</strong> (the definitive UK food composition tables), the <strong>USDA FoodData Central</strong> database, and the <strong>British Nutrition Foundation</strong>. Values are provided per 100g unless otherwise stated and are intended for general informational purposes. Individual products may vary by brand, preparation method, and serving size. For clinical dietary advice, please consult a registered dietitian.</p>';
+
+		echo '</div>'; // .fcc-food-page__editorial
+
 		echo '</div>';
 		get_footer();
 	}
