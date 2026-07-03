@@ -1101,7 +1101,7 @@ class Food_Pages {
 	public function output_seo_meta(): void {
 		// Directory page.
 		if ( 'directory' === self::$page_type ) {
-			echo '<meta name="description" content="Browse calories and nutrition facts for over 4,900 foods. Calories, protein, fat, carbs, vitamins, and minerals — free UK food calorie calculator.">' . "\n";
+			echo '<meta name="description" content="Browse calories and nutrition facts for over 4,900 foods. Calories, protein, fat, carbs, vitamins, and minerals. Free UK food calorie calculator.">' . "\n";
 			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' ) ) . '">' . "\n";
 			return;
 		}
@@ -1109,7 +1109,7 @@ class Food_Pages {
 		// Category page.
 		if ( 'category' === self::$page_type && self::$current_category ) {
 			$cn = esc_attr( self::$current_category['name'] );
-			echo '<meta name="description" content="' . esc_attr( "{$cn} — browse calories, protein, fat, and full nutrition facts for all foods in this category. Free UK food calorie calculator." ) . '">' . "\n";
+			echo '<meta name="description" content="' . esc_attr( "{$cn}: browse calories, protein, fat, and full nutrition facts for all foods in this category. Free UK food calorie calculator." ) . '">' . "\n";
 			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' . self::$current_category['slug'] . '/' ) ) . '">' . "\n";
 			return;
 		}
@@ -1151,10 +1151,10 @@ class Food_Pages {
 
 	public function filter_title( array $title ): array {
 		if ( 'directory' === self::$page_type ) {
-			$title['title'] = 'Calorie Counter — Browse All Foods by Category';
+			$title['title'] = 'Calorie Counter: Browse All Foods by Category';
 			$title['site']  = 'Food Calorie Calculator';
 		} elseif ( 'category' === self::$page_type && self::$current_category ) {
-			$title['title'] = self::$current_category['name'] . ' — Calories & Nutrition';
+			$title['title'] = self::$current_category['name'] . ': Calories & Nutrition';
 			$title['site']  = 'Food Calorie Calculator';
 		} elseif ( self::$current_food ) {
 			$title['title'] = self::$current_food['name'] . ' Calories & Nutrition';
