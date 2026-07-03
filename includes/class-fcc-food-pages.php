@@ -159,6 +159,7 @@ class Food_Pages {
 		$bread_cat = Database::get_category( (int) $food['category_id'] );
 		if ( $bread_cat ) {
 			echo '<p class="fcc-category-page__breadcrumb">'
+				. '<a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; '
 				. '<a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; '
 				. '<a href="' . esc_url( home_url( '/calories/' . $bread_cat['slug'] . '/' ) ) . '">' . esc_html( $bread_cat['name'] ) . '</a> &rsaquo; '
 				. esc_html( $food['name'] )
@@ -278,7 +279,7 @@ class Food_Pages {
 		get_header();
 
 		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:2rem 1rem;">';
-		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
+		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; <a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
 		echo '<h1 class="fcc-food-page__title">' . esc_html( $cat['name'] ) . ' &mdash; Calories &amp; Nutrition Facts</h1>';
 		echo '<p class="fcc-food-page__intro">' . esc_html( $desc ) . ' Showing <strong>' . $count . '</strong> foods in this category.</p>';
 
