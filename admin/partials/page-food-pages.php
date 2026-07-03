@@ -39,7 +39,308 @@ foreach ( $categories as $cat ) {
 }
 
 $page_url = admin_url( 'admin.php?page=fcc-food-pages' );
+
+$custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['description'] ) ) );
 ?>
+<style>
+/* ── Food Pages page scoped styles ──────────────────────────────────────── */
+.fcc-food-pages-page { max-width: 1200px; }
+
+/* Section cards */
+.fcc-fp-card {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	margin-bottom: 24px;
+	overflow: hidden;
+}
+
+/* Section header strip */
+.fcc-fp-card__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 14px;
+	padding: 18px 24px;
+	border-bottom: 1px solid #e2e8f0;
+	flex-wrap: wrap;
+}
+.fcc-fp-card__head--hub      { background: linear-gradient(135deg,#eff6ff 0%,#f8faff 100%); }
+.fcc-fp-card__head--cats     { background: linear-gradient(135deg,#f0fdf4 0%,#f8faff 100%); }
+.fcc-fp-card__head--foods    { background: linear-gradient(135deg,#faf5ff 0%,#f8faff 100%); }
+
+.fcc-fp-card__head-left { display: flex; align-items: center; gap: 14px; }
+
+.fcc-fp-card__icon {
+	width: 44px; height: 44px;
+	border-radius: 10px;
+	display: flex; align-items: center; justify-content: center;
+	font-size: 1.3rem; flex-shrink: 0;
+}
+.fcc-fp-card__icon--hub   { background: #dbeafe; }
+.fcc-fp-card__icon--cats  { background: #dcfce7; }
+.fcc-fp-card__icon--foods { background: #ede9fe; }
+
+.fcc-fp-card__title {
+	font-size: 1rem;
+	font-weight: 700;
+	color: #1e293b;
+	margin: 0 0 2px;
+	line-height: 1.2;
+}
+.fcc-fp-card__meta {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+.fcc-fp-url-pill {
+	display: inline-flex; align-items: center; gap: 4px;
+	background: rgba(0,0,0,.05);
+	border: 1px solid rgba(0,0,0,.08);
+	border-radius: 20px;
+	padding: 2px 10px;
+	font-size: 0.78rem;
+	color: #475569;
+	text-decoration: none;
+	transition: background .15s;
+}
+.fcc-fp-url-pill:hover { background: rgba(0,0,0,.1); color: #1e293b; }
+.fcc-fp-url-pill svg { opacity: .6; }
+
+.fcc-fp-stat-pill {
+	display: inline-flex; align-items: center; gap: 5px;
+	font-size: 0.78rem; color: #64748b;
+}
+.fcc-fp-stat-pill strong { color: #1e293b; }
+
+/* Card body */
+.fcc-fp-card__body { padding: 24px; }
+
+/* Hub form */
+.fcc-fp-hub-field label {
+	display: block;
+	font-weight: 600;
+	font-size: 0.875rem;
+	color: #374151;
+	margin-bottom: 6px;
+}
+.fcc-fp-hub-field textarea {
+	width: 100%;
+	max-width: 760px;
+	border: 1px solid #d1d5db;
+	border-radius: 8px;
+	padding: 10px 12px;
+	font-size: 0.9rem;
+	line-height: 1.6;
+	color: #1e293b;
+	resize: vertical;
+	transition: border-color .15s, box-shadow .15s;
+	box-sizing: border-box;
+}
+.fcc-fp-hub-field textarea:focus {
+	border-color: #3b82f6;
+	box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+	outline: none;
+}
+.fcc-fp-hub-field .description {
+	margin-top: 6px;
+	font-size: 0.8rem;
+	color: #94a3b8;
+}
+.fcc-fp-hub-actions { margin-top: 18px; display: flex; align-items: center; gap: 10px; }
+
+/* Save button */
+.fcc-fp-btn-save {
+	display: inline-flex; align-items: center; gap: 6px;
+	background: #2563eb; color: #fff;
+	border: none; border-radius: 8px;
+	padding: 8px 18px; font-size: 0.875rem; font-weight: 600;
+	cursor: pointer; transition: background .15s, transform .1s;
+	line-height: 1;
+}
+.fcc-fp-btn-save:hover { background: #1d4ed8; }
+.fcc-fp-btn-save:active { transform: scale(.97); }
+
+/* Tables */
+.fcc-fp-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+}
+.fcc-fp-table th {
+	background: #f8fafc;
+	border-bottom: 2px solid #e2e8f0;
+	padding: 10px 14px;
+	text-align: left;
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	color: #64748b;
+	white-space: nowrap;
+}
+.fcc-fp-table td {
+	padding: 12px 14px;
+	border-bottom: 1px solid #f1f5f9;
+	vertical-align: middle;
+	color: #374151;
+}
+.fcc-fp-table tbody tr:last-child td { border-bottom: none; }
+.fcc-fp-table tbody tr:hover td { background: #fafbfc; }
+
+.fcc-fp-food-name { font-weight: 600; color: #1e293b; }
+.fcc-fp-cat-label { color: #64748b; font-size: 0.82rem; }
+
+/* URL link inside table */
+.fcc-fp-table-url {
+	color: #3b82f6;
+	font-size: 0.8rem;
+	text-decoration: none;
+	display: inline-flex; align-items: center; gap: 3px;
+}
+.fcc-fp-table-url:hover { text-decoration: underline; }
+
+/* Badges */
+.fcc-fp-badge {
+	display: inline-flex; align-items: center; gap: 4px;
+	padding: 3px 10px; border-radius: 20px;
+	font-size: 0.72rem; font-weight: 700;
+	letter-spacing: .03em;
+	white-space: nowrap;
+}
+.fcc-fp-badge--custom { background: #d1fae5; color: #065f46; }
+.fcc-fp-badge--auto   { background: #f1f5f9; color: #64748b; }
+.fcc-fp-badge--default { background: #fef9c3; color: #854d0e; }
+
+/* Action buttons */
+.fcc-fp-actions { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.fcc-fp-btn-view {
+	display: inline-flex; align-items: center; gap: 4px;
+	background: #fff; color: #374151;
+	border: 1px solid #d1d5db; border-radius: 6px;
+	padding: 5px 12px; font-size: 0.78rem; font-weight: 500;
+	cursor: pointer; text-decoration: none; transition: border-color .15s, background .15s;
+	line-height: 1.2;
+}
+.fcc-fp-btn-view:hover { border-color: #6b7280; background: #f9fafb; color: #111827; }
+.fcc-fp-btn-edit {
+	display: inline-flex; align-items: center; gap: 4px;
+	background: #2563eb; color: #fff;
+	border: 1px solid #2563eb; border-radius: 6px;
+	padding: 5px 12px; font-size: 0.78rem; font-weight: 600;
+	cursor: pointer; text-decoration: none; transition: background .15s;
+	line-height: 1.2;
+}
+.fcc-fp-btn-edit:hover { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+.fcc-fp-btn-toggle {
+	display: inline-flex; align-items: center; gap: 4px;
+	background: #f1f5f9; color: #374151;
+	border: 1px solid #d1d5db; border-radius: 6px;
+	padding: 5px 12px; font-size: 0.78rem; font-weight: 500;
+	cursor: pointer; transition: background .15s, border-color .15s;
+	line-height: 1.2;
+}
+.fcc-fp-btn-toggle:hover { background: #e2e8f0; border-color: #94a3b8; }
+.fcc-fp-btn-toggle.is-open { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; }
+.fcc-fp-btn-cancel {
+	background: none; color: #6b7280; border: 1px solid #d1d5db;
+	border-radius: 6px; padding: 5px 12px; font-size: 0.78rem;
+	cursor: pointer; transition: background .15s; line-height: 1.2;
+}
+.fcc-fp-btn-cancel:hover { background: #f3f4f6; color: #374151; }
+
+/* Inline edit row */
+.fcc-fp-edit-row td {
+	padding: 0 !important;
+	border-bottom: none !important;
+}
+.fcc-fp-edit-inner {
+	background: #f0f7ff;
+	border-left: 3px solid #3b82f6;
+	padding: 20px 24px;
+	margin: 0;
+}
+.fcc-fp-edit-inner label {
+	display: block; font-weight: 600; font-size: 0.85rem; color: #1e293b; margin-bottom: 8px;
+}
+.fcc-fp-edit-inner textarea {
+	width: 100%; max-width: 700px;
+	border: 1px solid #93c5fd; border-radius: 8px;
+	padding: 10px 12px; font-size: 0.875rem; line-height: 1.6; color: #1e293b;
+	resize: vertical; box-sizing: border-box; background: #fff;
+	transition: border-color .15s, box-shadow .15s;
+}
+.fcc-fp-edit-inner textarea:focus {
+	border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); outline: none;
+}
+.fcc-fp-edit-inner .description { font-size: 0.78rem; color: #94a3b8; margin: 6px 0 14px; }
+.fcc-fp-edit-actions { display: flex; align-items: center; gap: 8px; }
+
+/* Search bar (Food Pages) */
+.fcc-fp-search-row {
+	display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.fcc-fp-search-input {
+	flex: 1; min-width: 220px; max-width: 360px;
+	border: 1px solid #d1d5db; border-radius: 8px;
+	padding: 8px 12px; font-size: 0.875rem; color: #1e293b;
+	transition: border-color .15s, box-shadow .15s; box-sizing: border-box;
+}
+.fcc-fp-search-input:focus {
+	border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,.12); outline: none;
+}
+.fcc-fp-btn-search {
+	background: #7c3aed; color: #fff;
+	border: none; border-radius: 8px;
+	padding: 8px 16px; font-size: 0.875rem; font-weight: 600;
+	cursor: pointer; transition: background .15s; line-height: 1.2;
+}
+.fcc-fp-btn-search:hover { background: #6d28d9; }
+.fcc-fp-btn-clear {
+	background: #fff; color: #6b7280;
+	border: 1px solid #d1d5db; border-radius: 8px;
+	padding: 8px 14px; font-size: 0.875rem;
+	cursor: pointer; text-decoration: none; transition: background .15s; line-height: 1.2;
+}
+.fcc-fp-btn-clear:hover { background: #f9fafb; color: #374151; }
+
+/* Pagination */
+.fcc-fp-pagination {
+	display: flex; align-items: center; gap: 8px;
+	padding: 16px 24px;
+	border-top: 1px solid #f1f5f9;
+	flex-wrap: wrap;
+}
+.fcc-fp-pagination-info {
+	font-size: 0.82rem; color: #94a3b8; flex: 1; min-width: 160px;
+}
+.fcc-fp-pagination-info strong { color: #475569; }
+.fcc-fp-page-btn {
+	display: inline-flex; align-items: center; gap: 4px;
+	background: #fff; color: #374151;
+	border: 1px solid #d1d5db; border-radius: 7px;
+	padding: 6px 14px; font-size: 0.82rem; font-weight: 500;
+	text-decoration: none; transition: background .15s, border-color .15s;
+}
+.fcc-fp-page-btn:hover { background: #f1f5f9; border-color: #94a3b8; color: #1e293b; }
+
+/* Notice */
+.fcc-fp-notice {
+	display: flex; align-items: center; gap: 10px;
+	background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+	padding: 12px 18px; margin-bottom: 20px; font-size: 0.875rem; color: #166534;
+}
+
+/* Empty state */
+.fcc-fp-empty {
+	text-align: center; padding: 48px 24px; color: #94a3b8;
+}
+.fcc-fp-empty svg { margin-bottom: 12px; opacity: .4; }
+.fcc-fp-empty p { font-size: 0.9rem; margin: 0; }
+</style>
+
 <div class="wrap fcc-admin-wrap fcc-food-pages-page">
 
 	<h1 class="screen-reader-text"><?php esc_html_e( 'Food Pages', 'food-calorie-calculator' ); ?></h1>
@@ -52,11 +353,15 @@ $page_url = admin_url( 'admin.php?page=fcc-food-pages' );
 				<div>
 					<div class="fcc-foods-hero__title"><?php esc_html_e( 'Food Pages', 'food-calorie-calculator' ); ?></div>
 					<p class="fcc-foods-hero__sub">
-						<?php esc_html_e( 'Manage content for your hub page, category pages, and individual food pages.', 'food-calorie-calculator' ); ?>
+						<?php esc_html_e( 'Manage content for your hub page, category pages, and individual food pages — all in one place.', 'food-calorie-calculator' ); ?>
 					</p>
 				</div>
 			</div>
 			<div class="fcc-foods-hero__stats">
+				<div class="fcc-foods-hero-stat">
+					<span class="fcc-foods-hero-stat__value">1</span>
+					<span class="fcc-foods-hero-stat__label"><?php esc_html_e( 'Hub Page', 'food-calorie-calculator' ); ?></span>
+				</div>
 				<div class="fcc-foods-hero-stat">
 					<span class="fcc-foods-hero-stat__value"><?php echo count( $categories ); ?></span>
 					<span class="fcc-foods-hero-stat__label"><?php esc_html_e( 'Category Pages', 'food-calorie-calculator' ); ?></span>
@@ -70,59 +375,100 @@ $page_url = admin_url( 'admin.php?page=fcc-food-pages' );
 	</div>
 
 	<?php if ( 'hub' === $saved ) : ?>
-		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Hub page content saved.', 'food-calorie-calculator' ); ?></p></div>
+		<div class="fcc-fp-notice">
+			<svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			<?php esc_html_e( 'Hub page content saved successfully.', 'food-calorie-calculator' ); ?>
+		</div>
 	<?php elseif ( 'cat' === $saved && $saved_cat ) : ?>
-		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Category description saved.', 'food-calorie-calculator' ); ?></p></div>
+		<div class="fcc-fp-notice">
+			<svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			<?php esc_html_e( 'Category description saved successfully.', 'food-calorie-calculator' ); ?>
+		</div>
 	<?php endif; ?>
 
 	<!-- ======================================================================
 	     1. HUB PAGE
 	     ====================================================================== -->
-	<div class="fcc-fp-section postbox" style="padding:20px 24px;margin-bottom:20px;">
-		<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-			<h2 style="margin:0;font-size:1.1rem;"><?php esc_html_e( 'Hub Page', 'food-calorie-calculator' ); ?>
-				<span style="font-weight:400;font-size:0.85rem;color:#718096;margin-left:8px;"><?php echo esc_html( $hub_url ); ?></span>
-			</h2>
-			<a href="<?php echo esc_url( $hub_url ); ?>" target="_blank" class="button button-secondary">
-				<?php esc_html_e( 'View Page', 'food-calorie-calculator' ); ?> ↗
+	<div class="fcc-fp-card">
+		<div class="fcc-fp-card__head fcc-fp-card__head--hub">
+			<div class="fcc-fp-card__head-left">
+				<div class="fcc-fp-card__icon fcc-fp-card__icon--hub">🏠</div>
+				<div>
+					<p class="fcc-fp-card__title"><?php esc_html_e( 'Hub Page', 'food-calorie-calculator' ); ?></p>
+					<div class="fcc-fp-card__meta">
+						<a href="<?php echo esc_url( $hub_url ); ?>" target="_blank" class="fcc-fp-url-pill">
+							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+							<?php echo esc_html( str_replace( home_url(), '', $hub_url ) ); ?>
+							<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+						</a>
+						<?php if ( ! empty( $hub_intro ) ) : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--custom">&#10003; <?php esc_html_e( 'Custom intro', 'food-calorie-calculator' ); ?></span>
+						<?php else : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--default"><?php esc_html_e( 'Using default text', 'food-calorie-calculator' ); ?></span>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+			<a href="<?php echo esc_url( $hub_url ); ?>" target="_blank" class="fcc-fp-btn-view">
+				<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+				<?php esc_html_e( 'View Page', 'food-calorie-calculator' ); ?>
 			</a>
 		</div>
 
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="fcc_save_hub_content">
-			<?php wp_nonce_field( 'fcc_save_hub_content' ); ?>
+		<div class="fcc-fp-card__body">
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="fcc_save_hub_content">
+				<?php wp_nonce_field( 'fcc_save_hub_content' ); ?>
 
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row">
-						<label for="fcc-hub-intro"><?php esc_html_e( 'Intro Paragraph', 'food-calorie-calculator' ); ?></label>
-					</th>
-					<td>
-						<textarea id="fcc-hub-intro" name="hub_intro" rows="4" class="large-text"><?php echo esc_textarea( $hub_intro ); ?></textarea>
-						<p class="description">
-							<?php esc_html_e( 'Shown below the title on /calories/. Leave blank to use the built-in default text.', 'food-calorie-calculator' ); ?>
-						</p>
-					</td>
-				</tr>
-			</table>
+				<div class="fcc-fp-hub-field">
+					<label for="fcc-hub-intro"><?php esc_html_e( 'Intro Paragraph', 'food-calorie-calculator' ); ?></label>
+					<textarea id="fcc-hub-intro" name="hub_intro" rows="4"><?php echo esc_textarea( $hub_intro ); ?></textarea>
+					<p class="description">
+						<?php esc_html_e( 'Shown below the page title on /calories/. Leave blank to use the built-in default text.', 'food-calorie-calculator' ); ?>
+					</p>
+				</div>
 
-			<?php submit_button( __( 'Save Hub Content', 'food-calorie-calculator' ), 'primary', 'submit', false ); ?>
-		</form>
+				<div class="fcc-fp-hub-actions">
+					<button type="submit" class="fcc-fp-btn-save">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+						<?php esc_html_e( 'Save Hub Content', 'food-calorie-calculator' ); ?>
+					</button>
+				</div>
+			</form>
+		</div>
 	</div>
 
 	<!-- ======================================================================
 	     2. CATEGORY PAGES
 	     ====================================================================== -->
-	<div class="fcc-fp-section postbox" style="padding:20px 24px;margin-bottom:20px;">
-		<h2 style="margin:0 0 14px;font-size:1.1rem;"><?php esc_html_e( 'Category Pages', 'food-calorie-calculator' ); ?></h2>
+	<div class="fcc-fp-card">
+		<div class="fcc-fp-card__head fcc-fp-card__head--cats">
+			<div class="fcc-fp-card__head-left">
+				<div class="fcc-fp-card__icon fcc-fp-card__icon--cats">📂</div>
+				<div>
+					<p class="fcc-fp-card__title"><?php esc_html_e( 'Category Pages', 'food-calorie-calculator' ); ?></p>
+					<div class="fcc-fp-card__meta">
+						<span class="fcc-fp-stat-pill">
+							<strong><?php echo count( $categories ); ?></strong> <?php esc_html_e( 'categories', 'food-calorie-calculator' ); ?>
+						</span>
+						<?php if ( $custom_cat_count > 0 ) : ?>
+							<span class="fcc-fp-stat-pill">
+								<strong><?php echo $custom_cat_count; ?></strong> <?php esc_html_e( 'with custom descriptions', 'food-calorie-calculator' ); ?>
+							</span>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+		</div>
 
-		<table class="wp-list-table widefat striped">
+		<table class="fcc-fp-table">
 			<thead>
 				<tr>
 					<th style="width:22%"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
 					<th style="width:30%"><?php esc_html_e( 'URL', 'food-calorie-calculator' ); ?></th>
 					<th><?php esc_html_e( 'Description', 'food-calorie-calculator' ); ?></th>
-					<th style="width:12%"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
+					<th style="width:10%"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></th>
+					<th style="width:10%"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -132,44 +478,67 @@ $page_url = admin_url( 'admin.php?page=fcc-food-pages' );
 				$row_id     = 'fcc-cat-edit-' . (int) $cat['id'];
 			?>
 				<tr id="fcc-cat-row-<?php echo (int) $cat['id']; ?>">
-					<td><strong><?php echo esc_html( $cat['name'] ); ?></strong></td>
+					<td class="fcc-fp-food-name"><?php echo esc_html( $cat['name'] ); ?></td>
 					<td>
-						<a href="<?php echo esc_url( $cat_url ); ?>" target="_blank" style="font-size:0.82rem;">
-							/calories/<?php echo esc_html( $cat['slug'] ); ?>/ ↗
+						<a href="<?php echo esc_url( $cat_url ); ?>" target="_blank" class="fcc-fp-table-url">
+							/calories/<?php echo esc_html( $cat['slug'] ); ?>/
+							<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 						</a>
 					</td>
-					<td>
+					<td style="color:#64748b;font-size:0.82rem;max-width:260px;">
 						<?php if ( $has_custom ) : ?>
-							<span style="color:#2d6a4f;">&#10003; <?php esc_html_e( 'Custom', 'food-calorie-calculator' ); ?></span>
-							<span style="color:#718096;font-size:0.82rem;margin-left:6px;"><?php echo esc_html( mb_strimwidth( $cat['description'], 0, 80, '…' ) ); ?></span>
+							<?php echo esc_html( mb_strimwidth( $cat['description'], 0, 90, '…' ) ); ?>
 						<?php else : ?>
-							<span style="color:#a0aec0;"><?php esc_html_e( 'Built-in default', 'food-calorie-calculator' ); ?></span>
+							<em style="color:#cbd5e1;"><?php esc_html_e( 'No custom description set', 'food-calorie-calculator' ); ?></em>
 						<?php endif; ?>
 					</td>
 					<td>
-						<button type="button" class="button button-small fcc-fp-cat-toggle" data-target="<?php echo esc_attr( $row_id ); ?>">
-							<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
-						</button>
+						<?php if ( $has_custom ) : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--custom">&#10003; <?php esc_html_e( 'Custom', 'food-calorie-calculator' ); ?></span>
+						<?php else : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--default"><?php esc_html_e( 'Default', 'food-calorie-calculator' ); ?></span>
+						<?php endif; ?>
+					</td>
+					<td>
+						<div class="fcc-fp-actions">
+							<button type="button"
+								class="fcc-fp-btn-toggle fcc-fp-cat-toggle"
+								data-target="<?php echo esc_attr( $row_id ); ?>">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+								<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
+							</button>
+						</div>
 					</td>
 				</tr>
-				<tr id="<?php echo esc_attr( $row_id ); ?>" class="fcc-fp-cat-edit-row" style="display:none;">
-					<td colspan="4" style="padding:16px 20px;background:#f8fafc;">
-						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-							<input type="hidden" name="action" value="fcc_save_cat_content">
-							<input type="hidden" name="cat_id" value="<?php echo (int) $cat['id']; ?>">
-							<?php wp_nonce_field( 'fcc_save_cat_content' ); ?>
-							<label style="display:block;font-weight:600;margin-bottom:6px;">
-								<?php printf( esc_html__( 'Description for %s', 'food-calorie-calculator' ), esc_html( $cat['name'] ) ); ?>
-							</label>
-							<textarea name="description" rows="4" class="large-text" style="margin-bottom:8px;"><?php echo esc_textarea( $cat['description'] ?? '' ); ?></textarea>
-							<p class="description" style="margin-bottom:10px;">
-								<?php esc_html_e( 'Leave blank to use the built-in default description for this category.', 'food-calorie-calculator' ); ?>
-							</p>
-							<button type="submit" class="button button-primary"><?php esc_html_e( 'Save Description', 'food-calorie-calculator' ); ?></button>
-							<button type="button" class="button fcc-fp-cat-cancel" data-target="<?php echo esc_attr( $row_id ); ?>" style="margin-left:6px;">
-								<?php esc_html_e( 'Cancel', 'food-calorie-calculator' ); ?>
-							</button>
-						</form>
+				<tr id="<?php echo esc_attr( $row_id ); ?>" class="fcc-fp-edit-row" style="display:none;">
+					<td colspan="5">
+						<div class="fcc-fp-edit-inner">
+							<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+								<input type="hidden" name="action" value="fcc_save_cat_content">
+								<input type="hidden" name="cat_id" value="<?php echo (int) $cat['id']; ?>">
+								<?php wp_nonce_field( 'fcc_save_cat_content' ); ?>
+								<label>
+									<?php printf(
+										/* translators: %s: category name */
+										esc_html__( 'Description for %s', 'food-calorie-calculator' ),
+										'<strong>' . esc_html( $cat['name'] ) . '</strong>'
+									); ?>
+								</label>
+								<textarea name="description" rows="4"><?php echo esc_textarea( $cat['description'] ?? '' ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'Leave blank to use the built-in default description for this category.', 'food-calorie-calculator' ); ?></p>
+								<div class="fcc-fp-edit-actions">
+									<button type="submit" class="fcc-fp-btn-save">
+										<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+										<?php esc_html_e( 'Save Description', 'food-calorie-calculator' ); ?>
+									</button>
+									<button type="button"
+										class="fcc-fp-btn-cancel fcc-fp-cat-cancel"
+										data-target="<?php echo esc_attr( $row_id ); ?>">
+										<?php esc_html_e( 'Cancel', 'food-calorie-calculator' ); ?>
+									</button>
+								</div>
+							</form>
+						</div>
 					</td>
 				</tr>
 			<?php endforeach; ?>
@@ -180,68 +549,87 @@ $page_url = admin_url( 'admin.php?page=fcc-food-pages' );
 	<!-- ======================================================================
 	     3. FOOD PAGES
 	     ====================================================================== -->
-	<div class="fcc-fp-section postbox" style="padding:20px 24px;">
-		<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-			<h2 style="margin:0;font-size:1.1rem;"><?php esc_html_e( 'Food Pages', 'food-calorie-calculator' ); ?></h2>
+	<div class="fcc-fp-card">
+		<div class="fcc-fp-card__head fcc-fp-card__head--foods">
+			<div class="fcc-fp-card__head-left">
+				<div class="fcc-fp-card__icon fcc-fp-card__icon--foods">🍽️</div>
+				<div>
+					<p class="fcc-fp-card__title"><?php esc_html_e( 'Food Pages', 'food-calorie-calculator' ); ?></p>
+					<div class="fcc-fp-card__meta">
+						<span class="fcc-fp-stat-pill">
+							<strong><?php echo number_format( $total_foods ); ?></strong> <?php esc_html_e( 'food pages', 'food-calorie-calculator' ); ?>
+						</span>
+						<?php if ( $search ) : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--auto"><?php printf( esc_html__( 'Filtering: "%s"', 'food-calorie-calculator' ), esc_html( $search ) ); ?></span>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
 
-			<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" style="display:flex;gap:6px;">
+			<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>">
 				<input type="hidden" name="page" value="fcc-food-pages">
-				<input type="search" name="fps" value="<?php echo esc_attr( $search ); ?>"
-					placeholder="<?php esc_attr_e( 'Search food pages…', 'food-calorie-calculator' ); ?>"
-					class="regular-text">
-				<button type="submit" class="button"><?php esc_html_e( 'Search', 'food-calorie-calculator' ); ?></button>
-				<?php if ( $search ) : ?>
-					<a href="<?php echo esc_url( $page_url ); ?>" class="button"><?php esc_html_e( 'Clear', 'food-calorie-calculator' ); ?></a>
-				<?php endif; ?>
+				<div class="fcc-fp-search-row">
+					<input type="search" name="fps" value="<?php echo esc_attr( $search ); ?>"
+						placeholder="<?php esc_attr_e( 'Search food pages…', 'food-calorie-calculator' ); ?>"
+						class="fcc-fp-search-input">
+					<button type="submit" class="fcc-fp-btn-search">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+						<?php esc_html_e( 'Search', 'food-calorie-calculator' ); ?>
+					</button>
+					<?php if ( $search ) : ?>
+						<a href="<?php echo esc_url( $page_url ); ?>" class="fcc-fp-btn-clear"><?php esc_html_e( 'Clear', 'food-calorie-calculator' ); ?></a>
+					<?php endif; ?>
+				</div>
 			</form>
 		</div>
 
 		<?php if ( $foods ) : ?>
-		<table class="wp-list-table widefat striped">
+		<table class="fcc-fp-table">
 			<thead>
 				<tr>
-					<th style="width:28%"><?php esc_html_e( 'Food Name', 'food-calorie-calculator' ); ?></th>
-					<th style="width:18%"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
+					<th style="width:26%"><?php esc_html_e( 'Food Name', 'food-calorie-calculator' ); ?></th>
+					<th style="width:17%"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
 					<th><?php esc_html_e( 'Page URL', 'food-calorie-calculator' ); ?></th>
 					<th style="width:10%"><?php esc_html_e( 'Content', 'food-calorie-calculator' ); ?></th>
-					<th style="width:14%"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
+					<th style="width:12%"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 			<?php foreach ( $foods as $food ) :
-				$cid      = (int) $food['category_id'];
-				$cat_slug = $cat_slug_map[ $cid ] ?? 'uncategorised';
-				$cat_name = $cat_map[ $cid ] ?? '—';
-				$food_url = home_url( '/calories/' . $cat_slug . '/' . $food['slug'] . '/' );
+				$cid         = (int) $food['category_id'];
+				$cat_slug    = $cat_slug_map[ $cid ] ?? 'uncategorised';
+				$cat_name    = $cat_map[ $cid ] ?? '—';
+				$food_url    = home_url( '/calories/' . $cat_slug . '/' . $food['slug'] . '/' );
 				$has_content = ! empty( $food['page_content'] );
-				$edit_url = admin_url( 'admin.php?page=fcc-foods&action=edit&food_id=' . (int) $food['id'] );
+				$edit_url    = admin_url( 'admin.php?page=fcc-foods&action=edit&food_id=' . (int) $food['id'] );
 			?>
 				<tr>
-					<td><strong><?php echo esc_html( $food['name'] ); ?></strong></td>
-					<td><?php echo esc_html( $cat_name ); ?></td>
-					<td style="font-size:0.82rem;">
-						<a href="<?php echo esc_url( $food_url ); ?>" target="_blank">
-							/calories/<?php echo esc_html( $cat_slug . '/' . $food['slug'] ); ?>/ ↗
+					<td class="fcc-fp-food-name"><?php echo esc_html( $food['name'] ); ?></td>
+					<td class="fcc-fp-cat-label"><?php echo esc_html( $cat_name ); ?></td>
+					<td>
+						<a href="<?php echo esc_url( $food_url ); ?>" target="_blank" class="fcc-fp-table-url">
+							/calories/<?php echo esc_html( $cat_slug . '/' . $food['slug'] ); ?>/
+							<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 						</a>
 					</td>
 					<td>
 						<?php if ( $has_content ) : ?>
-							<span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-size:0.78rem;font-weight:600;">
-								<?php esc_html_e( 'Custom', 'food-calorie-calculator' ); ?>
-							</span>
+							<span class="fcc-fp-badge fcc-fp-badge--custom">&#10003; <?php esc_html_e( 'Custom', 'food-calorie-calculator' ); ?></span>
 						<?php else : ?>
-							<span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:10px;font-size:0.78rem;">
-								<?php esc_html_e( 'Auto', 'food-calorie-calculator' ); ?>
-							</span>
+							<span class="fcc-fp-badge fcc-fp-badge--auto"><?php esc_html_e( 'Auto', 'food-calorie-calculator' ); ?></span>
 						<?php endif; ?>
 					</td>
-					<td style="white-space:nowrap;">
-						<a href="<?php echo esc_url( $food_url ); ?>" target="_blank" class="button button-small">
-							<?php esc_html_e( 'View', 'food-calorie-calculator' ); ?>
-						</a>
-						<a href="<?php echo esc_url( $edit_url ); ?>" class="button button-primary button-small" style="margin-left:4px;">
-							<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
-						</a>
+					<td>
+						<div class="fcc-fp-actions">
+							<a href="<?php echo esc_url( $food_url ); ?>" target="_blank" class="fcc-fp-btn-view">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+								<?php esc_html_e( 'View', 'food-calorie-calculator' ); ?>
+							</a>
+							<a href="<?php echo esc_url( $edit_url ); ?>" class="fcc-fp-btn-edit">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+								<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
+							</a>
+						</div>
 					</td>
 				</tr>
 			<?php endforeach; ?>
@@ -249,21 +637,36 @@ $page_url = admin_url( 'admin.php?page=fcc-food-pages' );
 		</table>
 
 		<?php if ( $total_pages > 1 ) : ?>
-		<div style="margin-top:14px;display:flex;align-items:center;gap:6px;">
-			<?php if ( $paged > 1 ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( [ 'fpp' => $paged - 1, 'fps' => $search ], $page_url ) ); ?>" class="button">&laquo; <?php esc_html_e( 'Prev', 'food-calorie-calculator' ); ?></a>
-			<?php endif; ?>
-			<span style="color:#718096;font-size:0.9rem;">
-				<?php printf( esc_html__( 'Page %1$d of %2$d (%3$s foods)', 'food-calorie-calculator' ), $paged, $total_pages, number_format( $total_foods ) ); ?>
-			</span>
-			<?php if ( $paged < $total_pages ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( [ 'fpp' => $paged + 1, 'fps' => $search ], $page_url ) ); ?>" class="button"><?php esc_html_e( 'Next', 'food-calorie-calculator' ); ?> &raquo;</a>
-			<?php endif; ?>
+		<div class="fcc-fp-pagination">
+			<div class="fcc-fp-pagination-info">
+				<?php printf(
+					/* translators: 1: current page, 2: total pages, 3: total foods */
+					esc_html__( 'Page %1$s of %2$s · %3$s foods total', 'food-calorie-calculator' ),
+					'<strong>' . $paged . '</strong>',
+					'<strong>' . $total_pages . '</strong>',
+					'<strong>' . number_format( $total_foods ) . '</strong>'
+				); ?>
+			</div>
+			<div style="display:flex;gap:6px;align-items:center;">
+				<?php if ( $paged > 1 ) : ?>
+					<a href="<?php echo esc_url( add_query_arg( [ 'fpp' => $paged - 1, 'fps' => $search ], $page_url ) ); ?>" class="fcc-fp-page-btn">
+						&#8592; <?php esc_html_e( 'Previous', 'food-calorie-calculator' ); ?>
+					</a>
+				<?php endif; ?>
+				<?php if ( $paged < $total_pages ) : ?>
+					<a href="<?php echo esc_url( add_query_arg( [ 'fpp' => $paged + 1, 'fps' => $search ], $page_url ) ); ?>" class="fcc-fp-page-btn">
+						<?php esc_html_e( 'Next', 'food-calorie-calculator' ); ?> &#8594;
+					</a>
+				<?php endif; ?>
+			</div>
 		</div>
 		<?php endif; ?>
 
 		<?php else : ?>
-			<p><?php esc_html_e( 'No food pages found.', 'food-calorie-calculator' ); ?></p>
+		<div class="fcc-fp-empty">
+			<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+			<p><?php echo $search ? esc_html__( 'No food pages match your search.', 'food-calorie-calculator' ) : esc_html__( 'No food pages found.', 'food-calorie-calculator' ); ?></p>
+		</div>
 		<?php endif; ?>
 	</div>
 
@@ -273,21 +676,26 @@ $page_url = admin_url( 'admin.php?page=fcc-food-pages' );
 ( function () {
 	document.querySelectorAll( '.fcc-fp-cat-toggle' ).forEach( function ( btn ) {
 		btn.addEventListener( 'click', function () {
-			var row = document.getElementById( btn.dataset.target );
-			if ( row ) {
-				var isOpen = row.style.display !== 'none';
-				row.style.display = isOpen ? 'none' : '';
-				btn.textContent   = isOpen ? '<?php echo esc_js( __( 'Edit', 'food-calorie-calculator' ) ); ?>' : '<?php echo esc_js( __( 'Close', 'food-calorie-calculator' ) ); ?>';
+			var row    = document.getElementById( btn.dataset.target );
+			var isOpen = row && row.style.display !== 'none';
+			if ( row ) row.style.display = isOpen ? 'none' : '';
+			btn.classList.toggle( 'is-open', ! isOpen );
+			btn.querySelector( 'svg + span, span' );
+			var label = btn.lastChild;
+			if ( label && label.nodeType === 3 ) {
+				btn.lastChild.textContent = isOpen
+					? ' <?php echo esc_js( __( 'Edit', 'food-calorie-calculator' ) ); ?>'
+					: ' <?php echo esc_js( __( 'Close', 'food-calorie-calculator' ) ); ?>';
 			}
 		} );
 	} );
 	document.querySelectorAll( '.fcc-fp-cat-cancel' ).forEach( function ( btn ) {
 		btn.addEventListener( 'click', function () {
 			var row = document.getElementById( btn.dataset.target );
-			if ( row ) {
-				row.style.display = 'none';
-				var toggle = document.querySelector( '[data-target="' + btn.dataset.target + '"].fcc-fp-cat-toggle' );
-				if ( toggle ) toggle.textContent = '<?php echo esc_js( __( 'Edit', 'food-calorie-calculator' ) ); ?>';
+			if ( row ) row.style.display = 'none';
+			var toggle = document.querySelector( '[data-target="' + btn.dataset.target + '"].fcc-fp-cat-toggle' );
+			if ( toggle ) {
+				toggle.classList.remove( 'is-open' );
 			}
 		} );
 	} );
