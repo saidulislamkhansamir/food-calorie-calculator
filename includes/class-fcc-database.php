@@ -634,6 +634,31 @@ class Database {
 		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
 	}
 
+	/**
+	 * Fetch the top N foods in a category ranked by a nutritional column.
+	 * Column name is whitelisted to prevent injection.
+	 *
+	 * @param string $nutrient_col  Column to rank by (e.g. 'protein_g', 'omega3_total_mg').
+	 * @param int    $category_id   Category to search within.
+	 * @param int    $exclude_id    Food ID to exclude (the current food).
+	 * @param int    $limit         Max results.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_top_foods_by_nutrient( string $nutrient_col, int $category_id, int $exclude_id, int $limit = 2 ): array {
+		$allowed = [ 'protein_g', 'omega3_total_mg', 'iron_mg', 'calcium_mg', 'vitamin_c_mg', 'fibre_g' ];
+		if ( ! in_array( $nutrient_col, $allowed, true ) ) {
+			return [];
+		}
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT * FROM {$table} WHERE category_id = %d AND id != %d AND is_active = 1 AND `{$nutrient_col}` IS NOT NULL AND `{$nutrient_col}` > 0 ORDER BY `{$nutrient_col}` DESC, search_count DESC LIMIT %d",
+			$category_id, $exclude_id, $limit
+		), ARRAY_A );
+		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
+	}
+
 	public static function set_food_field( int $id, string $field, mixed $value ): bool {
 		global $wpdb;
 		return false !== $wpdb->update( self::foods_table(), [ $field => $value ], [ 'id' => $id ] );

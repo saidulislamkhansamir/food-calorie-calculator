@@ -702,8 +702,18 @@ class Food_Pages {
 
 		// 4. Omega-3.
 		if ( null !== $food['omega3_total_mg'] && (float) $food['omega3_total_mg'] > 100 ) {
-			$o3 = number_format( $food['omega3_total_mg'], 0 );
-			$paragraphs[] = 'It provides ' . $o3 . 'mg of omega-3 fatty acids per 100g. The British Nutrition Foundation recommends eating at least one portion of oily fish per week for heart health. Omega-3s, particularly EPA and DHA, are linked to reduced inflammation, improved cardiovascular function, and cognitive benefits.';
+			$o3          = number_format( $food['omega3_total_mg'], 0 );
+			$fish_cat    = Database::get_category_by_slug( 'fish-seafood' );
+			$oily_fish   = $fish_cat ? Database::get_top_foods_by_nutrient( 'omega3_total_mg', (int) $fish_cat['id'], (int) $food['id'], 2 ) : [];
+			$fish_clause = '';
+			if ( ! empty( $oily_fish ) ) {
+				$fish_links = [];
+				foreach ( $oily_fish as $of ) {
+					$fish_links[] = '<a href="' . esc_url( home_url( '/calories/fish-seafood/' . $of['slug'] . '/' ) ) . '">' . esc_html( $of['name'] ) . '</a>';
+				}
+				$fish_clause = ' — such as ' . implode( ' and ', $fish_links ) . ' —';
+			}
+			$paragraphs[] = 'It provides ' . $o3 . 'mg of omega-3 fatty acids per 100g. The British Nutrition Foundation recommends eating at least one portion of oily fish' . $fish_clause . ' per week for heart health. Omega-3s, particularly EPA and DHA, are linked to reduced inflammation, improved cardiovascular function, and cognitive benefits.';
 		}
 
 		// 5. Micronutrient spotlight (pick the most notable one).
@@ -807,10 +817,33 @@ class Food_Pages {
 
 		// 3. Low protein (<3g).
 		if ( $prot_raw < 3 ) {
+			// Fetch 1 top-protein food from each high-protein category for natural food-to-food links.
+			$mp_cat  = Database::get_category_by_slug( 'meat-poultry' );
+			$fs_cat  = Database::get_category_by_slug( 'fish-seafood' );
+			$lp_cat  = Database::get_category_by_slug( 'legumes-pulses' );
+			$mp_food = $mp_cat ? Database::get_top_foods_by_nutrient( 'protein_g', (int) $mp_cat['id'], (int) $food['id'], 1 ) : [];
+			$fs_food = $fs_cat ? Database::get_top_foods_by_nutrient( 'protein_g', (int) $fs_cat['id'], (int) $food['id'], 1 ) : [];
+			$lp_food = $lp_cat ? Database::get_top_foods_by_nutrient( 'protein_g', (int) $lp_cat['id'], (int) $food['id'], 1 ) : [];
+
+			$examples = [];
+			if ( ! empty( $mp_food[0] ) ) {
+				$examples[] = '<a href="' . esc_url( home_url( '/calories/meat-poultry/' . $mp_food[0]['slug'] . '/' ) ) . '">' . esc_html( $mp_food[0]['name'] ) . '</a>';
+			}
+			if ( ! empty( $fs_food[0] ) ) {
+				$examples[] = '<a href="' . esc_url( home_url( '/calories/fish-seafood/' . $fs_food[0]['slug'] . '/' ) ) . '">' . esc_html( $fs_food[0]['name'] ) . '</a>';
+			}
+			if ( ! empty( $lp_food[0] ) ) {
+				$examples[] = '<a href="' . esc_url( home_url( '/calories/legumes-pulses/' . $lp_food[0]['slug'] . '/' ) ) . '">' . esc_html( $lp_food[0]['name'] ) . '</a>';
+			}
+
+			$lp_a_html = ! empty( $examples )
+				? esc_html( $name ) . ' contains ' . $prot . 'g of protein per 100g, which is relatively low. To increase your protein intake, consider pairing it with ' . implode( ', ', $examples ) . ', or other protein-rich foods.'
+				: esc_html( $name ) . ' contains ' . $prot . 'g of protein per 100g, which is relatively low. To increase your protein intake, consider pairing it with foods from our <a href="' . esc_url( home_url( '/calories/meat-poultry/' ) ) . '">meat and poultry</a>, <a href="' . esc_url( home_url( '/calories/fish-seafood/' ) ) . '">fish and seafood</a>, or <a href="' . esc_url( home_url( '/calories/legumes-pulses/' ) ) . '">legumes and pulses</a> sections.';
+
 			$faqs[] = [
-				'q'     => "Is {$name} a good source of protein?",
-				'a'     => "{$name} contains {$prot}g of protein per 100g, which is relatively low. If you are looking to increase your protein intake, consider pairing it with protein-rich foods such as lean meat, fish, eggs, or legumes.",
-				'a_html' => esc_html( $name ) . ' contains ' . $prot . 'g of protein per 100g, which is relatively low. To increase your protein intake, consider pairing it with foods from our <a href="' . esc_url( home_url( '/calories/meat-poultry/' ) ) . '">meat and poultry</a>, <a href="' . esc_url( home_url( '/calories/fish-seafood/' ) ) . '">fish and seafood</a>, or <a href="' . esc_url( home_url( '/calories/legumes-pulses/' ) ) . '">legumes and pulses</a> sections.',
+				'q'      => "Is {$name} a good source of protein?",
+				'a'      => "{$name} contains {$prot}g of protein per 100g, which is relatively low. If you are looking to increase your protein intake, consider pairing it with protein-rich foods such as lean meat, fish, eggs, or legumes.",
+				'a_html' => $lp_a_html,
 			];
 		}
 
