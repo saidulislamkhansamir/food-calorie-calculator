@@ -1,4 +1,4 @@
-name: Deploy to salmoncaviar.co.uk
+name: Deploy to foodcaloriecalculator.co.uk
 
 on:
   push:
@@ -19,8 +19,8 @@ jobs:
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.salmoncaviar.co.uk
-          username: u591585971.salmoncaviar.co.uk
+          server: ftp.foodcaloriecalculator.co.uk
+          username: u591585971.foodcaloriecalculator.co.uk
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
           port: 21
