@@ -191,6 +191,8 @@
 	white-space: nowrap;
 	margin-bottom: -1px;
 	text-decoration: none !important;
+	text-transform: none !important;
+	letter-spacing: normal !important;
 	outline-offset: -2px;
 }
 
