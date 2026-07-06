@@ -1,14 +1,14 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Food Calorie Calculator â€” Frontend Styles v2
    Brand palette â€” Option 1 "Fresh & Healthy":
-     Primary  Forest Green  #21BA5F
+     Primary  Forest Green  #1AAF54
      Accent   Lime Pop      #6DBF67
      CTA      Tangerine     #F47B20
      BG       Off-White     #F8FAF5
      Text     Deep Charcoal #1E2A1E
 
    Custom properties injected via PHP (wp_add_inline_style):
-     --fcc-primary      default #21BA5F
+     --fcc-primary      default #1AAF54
      --fcc-accent       default #F47B20
      --fcc-bg           default #F8FAF5
      --fcc-radius       default 8px
@@ -25,7 +25,7 @@
    Root + custom properties
    -------------------------------------------------------------------------- */
 .fcc-calculator {
-	--fcc-primary:       #21BA5F;
+	--fcc-primary:       #1AAF54;
 	--fcc-accent:        #FF3F33;
 	--fcc-bg:            #FFE6E1;
 	--fcc-radius:        8px;
@@ -89,7 +89,7 @@
    Hero header
    -------------------------------------------------------------------------- */
 .fcc-hero {
-	background: linear-gradient(135deg, #159A4C 0%, var(--fcc-primary) 55%, #43C977 100%);
+	background: linear-gradient(135deg, #159A4C 0%, var(--fcc-primary) 55%, #38C269 100%);
 	padding: 1.5rem 1.75rem;
 	position: relative;
 	overflow: hidden;
@@ -322,7 +322,7 @@
 .fcc-search-input {
 	width: 100%;
 	padding: 0.9rem 3rem 0.9rem 3rem !important;
-	border: 2px solid #43C977 !important;
+	border: 2px solid #38C269 !important;
 	border-radius: 10px !important;
 	font-size: 1rem !important;
 	font-weight: 400 !important;
@@ -338,7 +338,7 @@
 
 .fcc-search-input:focus {
 	border-color: var(--fcc-primary) !important;
-	box-shadow: 0 0 0 3px rgba(33,186,95,.15), 0 2px 8px rgba(21,154,76,.08) !important;
+	box-shadow: 0 0 0 3px rgba(26,175,84,.15), 0 2px 8px rgba(21,154,76,.08) !important;
 }
 
 .fcc-search-input::placeholder {
@@ -403,7 +403,7 @@
 	padding: 0.3rem 0.75rem;
 	font-size: 0.8rem;
 	font-family: inherit;
-	color: #21BA5F;
+	color: #1AAF54;
 	background: rgba(33, 186, 95, 0.08);
 	border: 1px solid rgba(33, 186, 95, 0.25);
 	border-radius: 999px;
@@ -415,7 +415,7 @@
 .fcc-popular-chip:hover,
 .fcc-popular-chip:focus-visible {
 	background: rgba(33, 186, 95, 0.15);
-	border-color: #21BA5F;
+	border-color: #1AAF54;
 	color: #159A4C;
 	outline: none;
 }
@@ -438,7 +438,7 @@
 	font-size: 0.8rem;
 	font-family: inherit;
 	font-weight: 600;
-	color: #21BA5F;
+	color: #1AAF54;
 	background: none;
 	border: 1px solid rgba(33, 186, 95, 0.4);
 	border-radius: 6px;
@@ -449,7 +449,7 @@
 
 .fcc-no-results__request:hover {
 	background: rgba(33, 186, 95, 0.08);
-	border-color: #21BA5F;
+	border-color: #1AAF54;
 }
 
 /* ---- Food request panel ---- */
@@ -478,7 +478,7 @@
 }
 
 .fcc-request-panel__title strong {
-	color: #21BA5F;
+	color: #1AAF54;
 }
 
 .fcc-request-close {
@@ -551,7 +551,7 @@
 .fcc-req-optin-label input[type="checkbox"] {
 	flex-shrink: 0;
 	margin-top: 2px;
-	accent-color: #21BA5F;
+	accent-color: #1AAF54;
 	width: 14px;
 	height: 14px;
 	cursor: pointer;
@@ -574,7 +574,7 @@
 .fcc-req-input:focus,
 .fcc-req-textarea:focus {
 	outline: none;
-	border-color: #21BA5F;
+	border-color: #1AAF54;
 	box-shadow: 0 0 0 3px rgba(33, 186, 95, 0.12);
 }
 
@@ -592,7 +592,7 @@
 	font-family: inherit;
 	font-weight: 600;
 	color: #fff;
-	background: #21BA5F;
+	background: #1AAF54;
 	border: none;
 	border-radius: 8px;
 	cursor: pointer;
@@ -608,7 +608,7 @@
 	gap: 0.5rem;
 	font-size: 0.875rem;
 	font-weight: 600;
-	color: #21BA5F;
+	color: #1AAF54;
 	padding: 0.25rem 0;
 }
 
@@ -865,7 +865,7 @@
 
 .fcc-quantity-controls:focus-within {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(33,186,95,.12);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.12);
 }
 
 .fcc-qty-group {
@@ -1057,12 +1057,12 @@
 .fcc-btn--primary {
 	background: var(--fcc-primary);
 	color: #fff;
-	box-shadow: 0 2px 8px rgba(33,186,95,.3);
+	box-shadow: 0 2px 8px rgba(26,175,84,.3);
 }
 
 .fcc-btn--primary:hover {
 	background: #236940;
-	box-shadow: 0 4px 12px rgba(33,186,95,.35);
+	box-shadow: 0 4px 12px rgba(26,175,84,.35);
 }
 
 .fcc-btn--secondary {
@@ -1271,9 +1271,9 @@
 .fcc-nutrition-table-wrapper {
 	border-radius: 16px;
 	overflow: hidden;
-	box-shadow: 0 4px 16px rgba(33,186,95,.1);
+	box-shadow: 0 4px 16px rgba(26,175,84,.1);
 	padding: 2px;
-	background: linear-gradient(135deg, #159A4C 0%, #21BA5F 50%, #9FC87E 100%);
+	background: linear-gradient(135deg, #159A4C 0%, #1AAF54 50%, #9FC87E 100%);
 }
 
 .fcc-nutrition-table {
@@ -1292,7 +1292,7 @@
 }
 
 .fcc-nutrition-table thead th {
-	background: linear-gradient(135deg, #159A4C 0%, #21BA5F 50%, #43C977 100%);
+	background: linear-gradient(135deg, #159A4C 0%, #1AAF54 50%, #38C269 100%);
 	font-weight: 700;
 	font-size: 0.7rem;
 	text-transform: uppercase;
@@ -1333,7 +1333,7 @@
 	height: 50%;
 	width: 3px;
 	border-radius: 0 2px 2px 0;
-	background: var(--fcc-primary, #21BA5F);
+	background: var(--fcc-primary, #1AAF54);
 	opacity: 0;
 	transition: opacity .15s;
 }
@@ -1361,7 +1361,7 @@
 	font-weight: 800;
 	font-size: 0.9rem;
 	line-height: 1;
-	color: var(--fcc-primary, #21BA5F);
+	color: var(--fcc-primary, #1AAF54);
 }
 
 .fcc-ri-bar {
@@ -1383,7 +1383,7 @@
 .fcc-row--energy th {
 	font-weight: 700;
 	background: linear-gradient(to right, var(--fcc-bg, #FFE6E1) 0%, #faf5f4 60%, transparent 100%) !important;
-	border-bottom: 2px solid rgba(33,186,95,.15);
+	border-bottom: 2px solid rgba(26,175,84,.15);
 }
 
 /* Sub-rows: indented, muted */
@@ -1450,7 +1450,7 @@
 	position: absolute;
 	inset: -2px;
 	border-radius: 18px;
-	background: linear-gradient(135deg, #159A4C, #21BA5F, #9FC87E);
+	background: linear-gradient(135deg, #159A4C, #1AAF54, #9FC87E);
 	z-index: -1;
 }
 
@@ -1674,7 +1674,7 @@
 .fcc-micro-val {
 	font-size: 1.1rem;
 	font-weight: 700;
-	color: var(--fcc-primary, #21BA5F);
+	color: var(--fcc-primary, #1AAF54);
 }
 .fcc-micro-card__label {
 	font-size: 0.72rem;
@@ -1788,7 +1788,7 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem 1.25rem;
-	background: linear-gradient(135deg, #159A4C 0%, var(--fcc-primary) 55%, #43C977 100%);
+	background: linear-gradient(135deg, #159A4C 0%, var(--fcc-primary) 55%, #38C269 100%);
 	border-radius: 14px 14px 0 0;
 	margin: -1.25rem -1.25rem 1.25rem;
 }
@@ -1854,7 +1854,7 @@
 
 .fcc-bmr-input-box:focus-within {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(33,186,95,.12);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.12);
 }
 
 .fcc-bmr-num-input {
@@ -1975,7 +1975,7 @@
 
 .fcc-bmr-input:focus {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(33,186,95,.14);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.14);
 }
 
 select.fcc-bmr-input {
@@ -2024,7 +2024,7 @@ select.fcc-bmr-input {
 	border-color: var(--fcc-primary) !important;
 	background: #EEF8F1 !important;
 	color: #1a5c35 !important;
-	box-shadow: 0 0 0 3px rgba(33,186,95,.14) !important;
+	box-shadow: 0 0 0 3px rgba(26,175,84,.14) !important;
 }
 
 .fcc-bmr-sex-btn__icon {
@@ -2069,7 +2069,7 @@ select.fcc-bmr-input {
 .fcc-bmr-act-card--active {
 	border-color: var(--fcc-primary);
 	background: #EEF8F1;
-	box-shadow: 0 0 0 3px rgba(33,186,95,.15);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.15);
 }
 
 .fcc-bmr-act-card__emoji {
@@ -2123,7 +2123,7 @@ select.fcc-bmr-input {
 .fcc-bmr-goal-pill--maintain.fcc-bmr-goal-pill--active {
 	border-color: var(--fcc-primary);
 	background: #EEF8F1;
-	box-shadow: 0 0 0 3px rgba(33,186,95,.12);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.12);
 }
 
 .fcc-bmr-goal-pill--gain:hover,
@@ -2177,7 +2177,7 @@ select.fcc-bmr-input {
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem 1.25rem;
-	background: linear-gradient(135deg, #159A4C 0%, var(--fcc-primary) 55%, #43C977 100%);
+	background: linear-gradient(135deg, #159A4C 0%, var(--fcc-primary) 55%, #38C269 100%);
 	gap: 1rem;
 }
 
@@ -2600,8 +2600,8 @@ select.fcc-bmr-input {
 
 	/* Section title — green accent */
 	.fcc-print-clone .fcc-section-title {
-		color: #21BA5F !important;
-		border-bottom: 2px solid #21BA5F !important;
+		color: #1AAF54 !important;
+		border-bottom: 2px solid #1AAF54 !important;
 		padding-bottom: 4px !important;
 		margin-bottom: 8px !important;
 	}
@@ -2624,13 +2624,13 @@ select.fcc-bmr-input {
 		border: none !important;
 		border-radius: 8px !important;
 		overflow: hidden !important;
-		box-shadow: 0 0 0 1.5px #21BA5F !important;
+		box-shadow: 0 0 0 1.5px #1AAF54 !important;
 	}
 	.fcc-print-clone .fcc-nutrition-table thead th {
 		border: none !important;
 		padding: 8px 10px !important;
 		font-size: 8pt !important;
-		background: linear-gradient(135deg, #159A4C, #21BA5F) !important;
+		background: linear-gradient(135deg, #159A4C, #1AAF54) !important;
 		color: #fff !important;
 		text-transform: uppercase !important;
 		letter-spacing: 0.05em !important;
@@ -2689,7 +2689,7 @@ select.fcc-bmr-input {
 		align-items: flex-start;
 		padding: 14px 18px;
 		margin-bottom: 2px;
-		background: linear-gradient(135deg, #159A4C, #21BA5F) !important;
+		background: linear-gradient(135deg, #159A4C, #1AAF54) !important;
 		color: #fff;
 		border-radius: 10px;
 	}
@@ -2747,7 +2747,7 @@ select.fcc-bmr-input {
 		font-size: 9pt;
 		color: #fff;
 		padding: 10px 12px;
-		background: linear-gradient(135deg, #159A4C, #21BA5F, #43C977) !important;
+		background: linear-gradient(135deg, #159A4C, #1AAF54, #38C269) !important;
 		border-radius: 8px;
 		margin-bottom: 8px;
 	}
@@ -2783,7 +2783,7 @@ select.fcc-bmr-input {
 		padding: 0 !important;
 	}
 	.fcc-print-clone .fcc-meal-header {
-		background: linear-gradient(135deg, #159A4C, #21BA5F) !important;
+		background: linear-gradient(135deg, #159A4C, #1AAF54) !important;
 		border-radius: 6px !important;
 		padding: 8px 12px !important;
 		margin-bottom: 6px !important;
@@ -2810,7 +2810,7 @@ select.fcc-bmr-input {
 		border-radius: 4px !important;
 	}
 	.fcc-print-clone .fcc-meal-serves__input {
-		border: 1px solid #21BA5F !important;
+		border: 1px solid #1AAF54 !important;
 		background: #fff !important;
 		width: 30px !important;
 		padding: 1px !important;
@@ -2854,7 +2854,7 @@ select.fcc-bmr-input {
 		font-size: 7pt !important;
 		padding: 0 3px !important;
 		border-radius: 2px !important;
-		background: #21BA5F !important;
+		background: #1AAF54 !important;
 	}
 	.fcc-print-clone .fcc-meal-item__kcal {
 		font-size: 8pt !important;
@@ -3019,7 +3019,7 @@ select.fcc-bmr-input {
 
 .fcc-compare-col:focus-within {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(33,186,95,.1);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.1);
 }
 
 .fcc-compare-col[data-slot="b"]:focus-within {
@@ -3068,7 +3068,7 @@ select.fcc-bmr-input {
 
 .fcc-compare-search:focus {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 0 0 3px rgba(33,186,95,.12);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.12);
 }
 
 [data-slot="b"] .fcc-compare-search:focus {
@@ -3550,7 +3550,7 @@ select.fcc-bmr-input {
 
 .fcc-meal-item:hover {
 	border-color: var(--fcc-primary);
-	box-shadow: 0 2px 8px rgba(33,186,95,.08);
+	box-shadow: 0 2px 8px rgba(26,175,84,.08);
 }
 
 .fcc-meal-item__num {
@@ -3584,7 +3584,7 @@ select.fcc-bmr-input {
 	color: #fff;
 	white-space: nowrap;
 	flex-shrink: 0;
-	background: linear-gradient(135deg, #21BA5F, #2D7A4F);
+	background: linear-gradient(135deg, #1AAF54, #2D7A4F);
 	padding: 0.25rem 0.55rem;
 	border-radius: 8px;
 	min-width: 65px;
@@ -3692,7 +3692,7 @@ select.fcc-bmr-input {
 }
 
 .fcc-sponsor-label a {
-	color: #21BA5F;
+	color: #1AAF54;
 	text-decoration: none;
 	font-weight: 600;
 }
@@ -3714,7 +3714,7 @@ select.fcc-bmr-input {
 }
 
 .fcc-powered-by a {
-	color: var(--fcc-primary, #21BA5F);
+	color: var(--fcc-primary, #1AAF54);
 	text-decoration: none;
 }
 
@@ -3848,7 +3848,7 @@ select.fcc-bmr-input {
 	font-weight: 700;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin: 0 0 0.6rem;
 }
 
@@ -3881,8 +3881,8 @@ select.fcc-bmr-input {
 }
 
 .fcc-supp-card:hover {
-	border-color: #21BA5F;
-	box-shadow: 0 2px 10px rgba(33,186,95,0.12);
+	border-color: #1AAF54;
+	box-shadow: 0 2px 10px rgba(26,175,84,0.12);
 }
 
 .fcc-supp-card__img {
@@ -3920,7 +3920,7 @@ select.fcc-bmr-input {
 .fcc-supp-card__badge {
 	font-size: 0.62rem;
 	font-weight: 700;
-	background: linear-gradient(135deg, #21BA5F, #6DBF67);
+	background: linear-gradient(135deg, #1AAF54, #6DBF67);
 	color: #fff;
 	border-radius: 99px;
 	padding: 0.1rem 0.45rem;
@@ -3971,7 +3971,7 @@ select.fcc-bmr-input {
 .fcc-supp-card__cta {
 	font-size: 0.75rem;
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin-left: auto;
 }
 
@@ -3988,7 +3988,7 @@ select.fcc-bmr-input {
 	transition: border-color 0.15s;
 }
 
-.fcc-supp-row:hover { border-color: #21BA5F; }
+.fcc-supp-row:hover { border-color: #1AAF54; }
 
 .fcc-supp-row__name {
 	font-size: 0.82rem;
@@ -4004,7 +4004,7 @@ select.fcc-bmr-input {
 .fcc-supp-row__cta {
 	font-size: 0.72rem;
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin-left: auto;
 }
 
@@ -4085,7 +4085,7 @@ select.fcc-bmr-input {
 .fcc-share-icon:last-child { border-right: none; }
 .fcc-share-icon:hover { background: #f0f4f0; }
 
-.fcc-share-icon--link svg          { stroke: #21BA5F; fill: none; }
+.fcc-share-icon--link svg          { stroke: #1AAF54; fill: none; }
 .fcc-share-icon--link:hover        { background: #EEF8F1; }
 .fcc-share-icon--email svg         { stroke: #888; fill: none; }
 .fcc-share-icon--email:hover       { background: #fef2f0; }
@@ -4164,9 +4164,9 @@ select.fcc-bmr-input {
 	color: var(--fcc-text, #1E2A1E);
 }
 .fcc-action-btn--outline:hover {
-	border-color: var(--fcc-primary, #21BA5F);
-	color: var(--fcc-primary, #21BA5F);
-	background: rgba(33,186,95,.04);
+	border-color: var(--fcc-primary, #1AAF54);
+	color: var(--fcc-primary, #1AAF54);
+	background: rgba(26,175,84,.04);
 }
 
 /* Ghost (Copy, Save, Compare — subtle) */
@@ -4177,9 +4177,9 @@ select.fcc-bmr-input {
 	padding: 0.5rem 0.75rem;
 }
 .fcc-action-btn--ghost:hover {
-	background: rgba(33,186,95,.06);
-	color: var(--fcc-primary, #21BA5F);
-	border-color: rgba(33,186,95,.15);
+	background: rgba(26,175,84,.06);
+	color: var(--fcc-primary, #1AAF54);
+	border-color: rgba(26,175,84,.15);
 }
 
 /* Favourite saved state */
@@ -4246,8 +4246,8 @@ select.fcc-bmr-input {
 	animation: fcc-pulse-glow 1s ease-in-out 3;
 }
 @keyframes fcc-pulse-glow {
-	0%, 100% { box-shadow: 0 0 0 0 rgba(33,186,95,0); }
-	50% { box-shadow: 0 0 0 5px rgba(33,186,95,.2); }
+	0%, 100% { box-shadow: 0 0 0 0 rgba(26,175,84,0); }
+	50% { box-shadow: 0 0 0 5px rgba(26,175,84,.2); }
 }
 
 /* Disabled duplicate food in Compare dropdown */
@@ -4277,8 +4277,8 @@ select.fcc-bmr-input {
 	transition: background .25s, border-color .25s;
 }
 .fcc-compare-dot--filled {
-	background: var(--fcc-primary, #21BA5F);
-	border-color: var(--fcc-primary, #21BA5F);
+	background: var(--fcc-primary, #1AAF54);
+	border-color: var(--fcc-primary, #1AAF54);
 }
 
 
@@ -4291,7 +4291,7 @@ select.fcc-bmr-input {
 	justify-content: center;
 	gap: .4rem;
 	padding: .5rem 1.1rem;
-	background: linear-gradient(135deg, var(--fcc-primary), #43C977);
+	background: linear-gradient(135deg, var(--fcc-primary), #38C269);
 	color: #fff;
 	border: none;
 	border-radius: 20px;
@@ -4300,13 +4300,13 @@ select.fcc-bmr-input {
 	font-family: inherit;
 	cursor: pointer;
 	transition: transform .15s, box-shadow .15s;
-	box-shadow: 0 2px 8px rgba(33,186,95,.25);
+	box-shadow: 0 2px 8px rgba(26,175,84,.25);
 	margin: .75rem auto;
 	width: fit-content;
 }
 .fcc-pwa-install-btn:hover {
 	transform: translateY(-1px);
-	box-shadow: 0 4px 14px rgba(33,186,95,.35);
+	box-shadow: 0 4px 14px rgba(26,175,84,.35);
 }
 .fcc-pwa-install-btn svg { flex-shrink: 0; }
 
@@ -4325,18 +4325,18 @@ select.fcc-bmr-input {
 	align-items: center;
 	justify-content: center;
 	border: none;
-	background: var(--fcc-primary, #21BA5F);
+	background: var(--fcc-primary, #1AAF54);
 	color: #fff;
 	cursor: pointer;
 	border-radius: 50%;
-	box-shadow: 0 2px 6px rgba(33,186,95,.2);
+	box-shadow: 0 2px 6px rgba(26,175,84,.2);
 	transition: background .15s, box-shadow .15s, transform .15s;
 }
 .fcc-voice-icon { font-size: 22px; line-height: 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; overflow: visible; }
 .fcc-voice-icon svg { display: block; flex-shrink: 0; }
 .fcc-voice-btn:hover {
 	background: #044547;
-	box-shadow: 0 3px 10px rgba(33,186,95,.3);
+	box-shadow: 0 3px 10px rgba(26,175,84,.3);
 	transform: scale(1.05);
 }
 
@@ -4396,14 +4396,14 @@ select.fcc-bmr-input {
 	transition: background .15s, border-color .15s, box-shadow .15s;
 }
 .fcc-meal-cat-pill:hover {
-	border-color: var(--fcc-primary, #21BA5F);
-	box-shadow: 0 1px 4px rgba(33,186,95,.1);
+	border-color: var(--fcc-primary, #1AAF54);
+	box-shadow: 0 1px 4px rgba(26,175,84,.1);
 }
 .fcc-meal-cat-pill--active {
-	background: var(--fcc-primary, #21BA5F);
-	border-color: var(--fcc-primary, #21BA5F);
+	background: var(--fcc-primary, #1AAF54);
+	border-color: var(--fcc-primary, #1AAF54);
 	color: #fff;
-	box-shadow: 0 2px 6px rgba(33,186,95,.2);
+	box-shadow: 0 2px 6px rgba(26,175,84,.2);
 }
 
 /* ── Category group headers in meal list ── */
@@ -4425,8 +4425,8 @@ select.fcc-bmr-input {
 .fcc-meal-cat-header__kcal {
 	font-size: 0.72rem;
 	font-weight: 700;
-	color: var(--fcc-primary, #21BA5F);
-	background: rgba(33,186,95,.08);
+	color: var(--fcc-primary, #1AAF54);
+	background: rgba(26,175,84,.08);
 	padding: 2px 8px;
 	border-radius: 10px;
 }
@@ -4445,8 +4445,8 @@ select.fcc-bmr-input {
 	font-size: 13px;
 	color: #374151;
 }
-.fcc-meal-serves svg { stroke: #21BA5F; flex-shrink: 0; }
-.fcc-meal-serves label { font-weight: 600; color: #21BA5F; }
+.fcc-meal-serves svg { stroke: #1AAF54; flex-shrink: 0; }
+.fcc-meal-serves label { font-weight: 600; color: #1AAF54; }
 .fcc-meal-serves__input {
 	width: 46px;
 	padding: 0.25rem 0.3rem;
@@ -4456,8 +4456,8 @@ select.fcc-bmr-input {
 	font-size: 0.88rem;
 	font-weight: 800;
 	font-family: inherit;
-	color: #21BA5F;
-	background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #21BA5F, #2D7A4F, #9FC87E) border-box;
+	color: #1AAF54;
+	background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #1AAF54, #2D7A4F, #9FC87E) border-box;
 	transition: box-shadow .15s;
 	-moz-appearance: textfield;
 	appearance: textfield;
@@ -4466,12 +4466,12 @@ select.fcc-bmr-input {
 .fcc-meal-serves__input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .fcc-meal-serves__input:focus {
 	outline: none;
-	box-shadow: 0 0 0 3px rgba(33,186,95,.12);
+	box-shadow: 0 0 0 3px rgba(26,175,84,.12);
 }
 .fcc-meal-serves__suffix { color: #6b7280; font-size: 12px; }
 .fcc-meal-serves__per-serving {
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin-left: 4px;
 	font-size: 12px;
 	background: #d1fae5;
@@ -4506,7 +4506,7 @@ select.fcc-bmr-input {
 }
 .fcc-meal-daily-fill {
 	height: 100%;
-	background: linear-gradient(90deg, #21BA5F, #9FC87E);
+	background: linear-gradient(90deg, #1AAF54, #9FC87E);
 	border-radius: 5px;
 	transition: width 0.4s ease;
 	width: 0%;
@@ -4538,8 +4538,8 @@ select.fcc-bmr-input {
 	font-weight: 800;
 	font-family: inherit;
 	text-align: center;
-	background: linear-gradient(#f0f9f9, #e8f5f5) padding-box, linear-gradient(135deg, #21BA5F, #2D7A4F, #9FC87E) border-box;
-	color: var(--fcc-primary, #21BA5F);
+	background: linear-gradient(#f0f9f9, #e8f5f5) padding-box, linear-gradient(135deg, #1AAF54, #2D7A4F, #9FC87E) border-box;
+	color: var(--fcc-primary, #1AAF54);
 	flex-shrink: 0;
 	transition: box-shadow 0.2s, background 0.2s;
 	-moz-appearance: textfield;
@@ -4549,14 +4549,14 @@ select.fcc-bmr-input {
 .fcc-meal-item__qty::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .fcc-meal-item__qty:focus {
 	outline: none;
-	background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #21BA5F, #2D7A4F, #9FC87E) border-box;
-	box-shadow: 0 0 0 3px rgba(33,186,95,.15);
+	background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #1AAF54, #2D7A4F, #9FC87E) border-box;
+	box-shadow: 0 0 0 3px rgba(26,175,84,.15);
 }
 .fcc-meal-item__unit {
 	font-size: 0.68rem;
 	font-weight: 700;
 	color: #fff;
-	background: linear-gradient(135deg, #21BA5F, #2D7A4F);
+	background: linear-gradient(135deg, #1AAF54, #2D7A4F);
 	padding: 0.15rem 0.4rem;
 	border-radius: 6px;
 	line-height: 1.2;
@@ -4595,9 +4595,9 @@ select.fcc-bmr-input {
 .fcc-meal-save-tpl__btn:hover,
 .fcc-meal-copy-btn:hover,
 .fcc-meal-share-btn:hover {
-	border-color: var(--fcc-primary, #21BA5F);
-	color: var(--fcc-primary, #21BA5F);
-	background: rgba(33,186,95,.05);
+	border-color: var(--fcc-primary, #1AAF54);
+	color: var(--fcc-primary, #1AAF54);
+	background: rgba(26,175,84,.05);
 }
 
 /* ── Save as Template button ── */
@@ -4635,8 +4635,8 @@ select.fcc-bmr-input {
 	transition: border-color .15s, box-shadow .15s;
 }
 .fcc-meal-tpl-chip:hover {
-	border-color: var(--fcc-primary, #21BA5F);
-	box-shadow: 0 2px 8px rgba(33,186,95,.1);
+	border-color: var(--fcc-primary, #1AAF54);
+	box-shadow: 0 2px 8px rgba(26,175,84,.1);
 }
 .fcc-meal-tpl-chip__load {
 	padding: 5px 12px;
@@ -4644,7 +4644,7 @@ select.fcc-bmr-input {
 	background: var(--fcc-surface, #fff);
 	font-size: 0.78rem;
 	font-weight: 600;
-	color: var(--fcc-primary, #21BA5F);
+	color: var(--fcc-primary, #1AAF54);
 	cursor: pointer;
 	transition: background .15s, color .15s;
 }
@@ -4656,11 +4656,11 @@ select.fcc-bmr-input {
 
 /* Active template chip */
 .fcc-meal-tpl-chip--active {
-	border-color: var(--fcc-primary, #21BA5F);
-	background: var(--fcc-primary, #21BA5F);
+	border-color: var(--fcc-primary, #1AAF54);
+	background: var(--fcc-primary, #1AAF54);
 }
 .fcc-meal-tpl-chip--active .fcc-meal-tpl-chip__load {
-	background: var(--fcc-primary, #21BA5F);
+	background: var(--fcc-primary, #1AAF54);
 	color: #fff;
 }
 .fcc-meal-tpl-chip--active .fcc-meal-tpl-chip__del {
@@ -4734,7 +4734,7 @@ select.fcc-bmr-input {
 	font-weight: 600;
 	background: #EEF8F1;
 	border: 1px solid #a8d5d6;
-	color: #21BA5F;
+	color: #1AAF54;
 }
 
 /* ==========================================================================
@@ -4748,7 +4748,7 @@ select.fcc-bmr-input {
 .fcc-food-page__title {
 	font-size: 1.8rem;
 	font-weight: 800;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin: 0 0 0.75rem;
 	line-height: 1.25;
 }
@@ -4758,7 +4758,7 @@ select.fcc-bmr-input {
 	margin-bottom: 1.25rem;
 	padding: 1rem 1.25rem;
 	background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-	border-left: 4px solid #21BA5F;
+	border-left: 4px solid #1AAF54;
 	border-radius: 0 10px 10px 0;
 }
 .fcc-food-page__facts {
@@ -4788,7 +4788,7 @@ select.fcc-bmr-input {
 .fcc-food-page__overview > h2 {
 	font-size: 1.15rem;
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin: 0 0 0.75rem;
 }
 .fcc-food-page__overview p {
@@ -4798,7 +4798,7 @@ select.fcc-bmr-input {
 	margin: 0 0 0.6rem;
 }
 .fcc-food-page__overview p:last-child { margin-bottom: 0; }
-.fcc-food-page__overview a { color: #21BA5F; text-decoration: underline; text-underline-offset: 2px; }
+.fcc-food-page__overview a { color: #1AAF54; text-decoration: underline; text-underline-offset: 2px; }
 .fcc-food-page__overview a:hover { color: #159A4C; }
 
 /* FAQ */
@@ -4810,7 +4810,7 @@ select.fcc-bmr-input {
 .fcc-food-page__faq > h2 {
 	font-size: 1.2rem;
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin: 0 0 1rem;
 }
 .fcc-food-page__faq-item {
@@ -4835,7 +4835,7 @@ select.fcc-bmr-input {
 	padding: 0.75rem 1rem;
 	line-height: 1.6;
 }
-.fcc-food-page__faq-item p a { color: #21BA5F; text-decoration: underline; text-underline-offset: 2px; }
+.fcc-food-page__faq-item p a { color: #1AAF54; text-decoration: underline; text-underline-offset: 2px; }
 .fcc-food-page__faq-item p a:hover { color: #159A4C; }
 
 /* Sources & References */
@@ -4849,7 +4849,7 @@ select.fcc-bmr-input {
 .fcc-food-page__sources > h2 {
 	font-size: 1.1rem;
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin: 0 0 0.75rem;
 }
 .fcc-food-page__sources ol {
@@ -4862,7 +4862,7 @@ select.fcc-bmr-input {
 	margin-bottom: 0.4rem;
 }
 .fcc-food-page__sources a {
-	color: #21BA5F;
+	color: #1AAF54;
 	font-weight: 600;
 	text-decoration: none;
 }
@@ -4886,7 +4886,7 @@ select.fcc-bmr-input {
 .fcc-food-page__related > h2 {
 	font-size: 1.1rem;
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 	margin: 0 0 0.75rem;
 }
 .fcc-food-page__related ul {
@@ -4905,7 +4905,7 @@ select.fcc-bmr-input {
 	font-size: 0.88rem;
 }
 .fcc-food-page__related a {
-	color: #21BA5F;
+	color: #1AAF54;
 	font-weight: 600;
 	text-decoration: none;
 }
@@ -4937,7 +4937,7 @@ select.fcc-bmr-input {
 .fcc-directory__card-name {
 	font-size: 1rem;
 	font-weight: 700;
-	color: #21BA5F;
+	color: #1AAF54;
 }
 .fcc-directory__card-count {
 	font-size: 0.78rem;
@@ -4955,7 +4955,7 @@ select.fcc-bmr-input {
 	margin: 0 0 0.5rem;
 }
 .fcc-directory__section h2 a {
-	color: #21BA5F;
+	color: #1AAF54;
 	text-decoration: none;
 }
 .fcc-directory__section h2 a:hover { text-decoration: underline; }
@@ -4968,14 +4968,14 @@ select.fcc-bmr-input {
 	gap: 0.3rem 1rem;
 }
 .fcc-directory__list li { font-size: 0.88rem; }
-.fcc-directory__list a { color: #21BA5F; text-decoration: none; }
+.fcc-directory__list a { color: #1AAF54; text-decoration: none; }
 .fcc-directory__list a:hover { text-decoration: underline; }
 .fcc-directory__kcal { color: #718096; font-size: 0.78rem; }
 .fcc-directory__viewall {
 	display: inline-block;
 	margin-top: 0.5rem;
 	font-size: 0.85rem;
-	color: #21BA5F;
+	color: #1AAF54;
 	font-weight: 600;
 	text-decoration: none;
 }
@@ -4988,7 +4988,7 @@ select.fcc-bmr-input {
 	margin-bottom: 0.5rem;
 }
 .fcc-category-page__breadcrumb a {
-	color: #21BA5F;
+	color: #1AAF54;
 	text-decoration: none;
 }
 .fcc-category-page__breadcrumb a:hover { text-decoration: underline; }
@@ -5004,7 +5004,7 @@ select.fcc-bmr-input {
 .fcc-category-page__table th {
 	text-align: left;
 	padding: 0.6rem 0.75rem;
-	background: #21BA5F;
+	background: #1AAF54;
 	color: #fff;
 	font-weight: 600;
 	font-size: 0.82rem;
@@ -5020,7 +5020,7 @@ select.fcc-bmr-input {
 .fcc-category-page__table tr:nth-child(even) { background: #f7fafc; }
 .fcc-category-page__table tr:hover { background: #edf2f7; }
 .fcc-category-page__table a {
-	color: #21BA5F;
+	color: #1AAF54;
 	font-weight: 600;
 	text-decoration: none;
 }
@@ -5037,7 +5037,7 @@ select.fcc-bmr-input {
 	color: #1a202c;
 	margin: 2rem 0 0.6rem;
 	padding-bottom: 0.35rem;
-	border-bottom: 2px solid #21BA5F;
+	border-bottom: 2px solid #1AAF54;
 	display: inline-block;
 }
 .fcc-food-page__editorial h2:first-child { margin-top: 0; }
@@ -5059,7 +5059,7 @@ select.fcc-bmr-input {
 }
 .fcc-food-page__editorial strong { color: #1a202c; }
 .fcc-food-page__editorial a {
-	color: #21BA5F;
+	color: #1AAF54;
 	text-decoration: underline;
 	text-underline-offset: 2px;
 }
@@ -5126,9 +5126,9 @@ select.fcc-bmr-input {
 	font-size: 0.78rem !important;
 	font-family: inherit !important;
 	font-weight: 400 !important;
-	color: #21BA5F !important;
-	background: rgba(33,186,95,0.08) !important;
-	border: 1px solid rgba(33,186,95,0.25) !important;
+	color: #1AAF54 !important;
+	background: rgba(26,175,84,0.08) !important;
+	border: 1px solid rgba(26,175,84,0.25) !important;
 	border-radius: 999px !important;
 	cursor: pointer !important;
 	white-space: nowrap !important;
@@ -5147,8 +5147,8 @@ select.fcc-bmr-input {
 .fcc-calculator .fcc-popular-chips .fcc-popular-chip:focus,
 .fcc-calculator .fcc-popular-chip.fcc-popular-chip:hover,
 .fcc-calculator .fcc-popular-chip.fcc-popular-chip:focus {
-	background: rgba(33,186,95,0.15) !important;
-	border-color: #21BA5F !important;
+	background: rgba(26,175,84,0.15) !important;
+	border-color: #1AAF54 !important;
 	color: #159A4C !important;
 }
 
@@ -5163,7 +5163,7 @@ select.fcc-bmr-input {
 	font-weight: 600 !important;
 	font-family: inherit !important;
 	color: #fff !important;
-	background: #21BA5F !important;
+	background: #1AAF54 !important;
 	border: none !important;
 	border-radius: 8px !important;
 	cursor: pointer !important;
@@ -5174,13 +5174,13 @@ select.fcc-bmr-input {
 	height: auto !important;
 	margin: 0.75rem auto !important;
 	text-decoration: none !important;
-	box-shadow: 0 2px 8px rgba(33,186,95,.25) !important;
+	box-shadow: 0 2px 8px rgba(26,175,84,.25) !important;
 	transition: transform 0.15s, box-shadow 0.15s !important;
 }
 .fcc-calculator .fcc-pwa-install-btn:hover {
 	transform: translateY(-1px) !important;
-	box-shadow: 0 4px 14px rgba(33,186,95,.35) !important;
-	background: #21BA5F !important;
+	box-shadow: 0 4px 14px rgba(26,175,84,.35) !important;
+	background: #1AAF54 !important;
 	color: #fff !important;
 }
 
