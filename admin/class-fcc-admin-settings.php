@@ -246,7 +246,7 @@ class Settings_Page {
 									? sanitize_key( $post['card_style'] ) : 'elevated',
 			'voice_icon'        => in_array( $post['voice_icon'] ?? '', [ 'emoji', 'svg', 'text' ], true )
 									? sanitize_key( $post['voice_icon'] ) : 'emoji',
-			'voice_colour'      => $this->sanitise_hex_colour( $post['voice_colour'] ?? '#1AAF54', '#1AAF54' ),
+			'voice_colour'      => $this->sanitise_hex_colour( $post['voice_colour'] ?? '#179E4C', '#179E4C' ),
 			'voice_size'        => in_array( $post['voice_size'] ?? '', [ 'small', 'medium', 'large' ], true )
 									? sanitize_key( $post['voice_size'] ) : 'medium',
 			// Allow limited CSS; strip script tags but permit valid CSS.
