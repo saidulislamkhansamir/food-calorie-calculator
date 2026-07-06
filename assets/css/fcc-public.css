@@ -3709,12 +3709,12 @@ select.fcc-bmr-input {
 	text-align: center;
 	padding: 0.5rem 1rem 0.25rem;
 	font-size: 0.72rem;
-	color: #888;
+	color: rgba(255,255,255,0.75);
 	letter-spacing: 0.02em;
 }
 
 .fcc-powered-by a {
-	color: var(--fcc-primary, #148B43);
+	color: #fff;
 	text-decoration: none;
 }
 
