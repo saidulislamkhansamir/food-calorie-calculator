@@ -65,14 +65,14 @@ class Shortcode {
 	margin:0!important;white-space:nowrap!important;
 }
 /* PWA install button */
-.fcc-calculator .fcc-pwa-install-btn{
+#fcc-calculator .fcc-pwa-install-btn{
 	display:flex!important;align-items:center!important;justify-content:center!important;
 	min-height:0!important;height:auto!important;
 	padding:0.4rem 1.1rem!important;font-size:0.82rem!important;
 	font-weight:600!important;line-height:1.4!important;
 	text-transform:none!important;letter-spacing:normal!important;
 	width:fit-content!important;border-radius:8px!important;
-	margin-top:0.75rem!important;
+	margin-top:1.5rem!important;
 }
 </style>' . "\n";
 	}
