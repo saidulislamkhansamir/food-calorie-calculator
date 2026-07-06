@@ -51,6 +51,8 @@ class Shortcode {
 #fcc-calculator .fcc-search-clear:hover{background:#fecaca!important;}
 #fcc-calculator .fcc-search-clear svg{display:block!important;width:11px!important;height:11px!important;flex-shrink:0!important;stroke:#dc2626!important;}
 #fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding-left:3rem!important;padding-right:6.5rem!important;}
+/* Search hint — add breathing room below */
+#fcc-calculator .fcc-search-hint{margin-bottom:0.6rem!important;}
 /* Tabs */
 .fcc-calculator .fcc-tab-btn{text-transform:none!important;letter-spacing:normal!important;}
 /* Popular / trending chips */
