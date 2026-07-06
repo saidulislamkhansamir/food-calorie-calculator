@@ -35,7 +35,14 @@ class Shortcode {
 	 */
 	public function output_theme_compat_css(): void {
 		echo '<style id="fcc-theme-compat">
+/* Search bar — fix input overflow and voice button anchor */
+.fcc-calculator .fcc-autocomplete{position:relative!important;display:block!important;width:100%!important;}
+.fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;}
+.fcc-calculator .fcc-autocomplete .fcc-voice-btn{position:absolute!important;right:2.75rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;}
+.fcc-calculator .fcc-autocomplete .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;pointer-events:none!important;}
+/* Tabs */
 .fcc-calculator .fcc-tab-btn{text-transform:none!important;letter-spacing:normal!important;}
+/* Popular / trending chips */
 .fcc-calculator .fcc-popular-chips .fcc-popular-chip,
 .fcc-calculator .fcc-popular-chip.fcc-popular-chip{
 	display:inline-flex!important;align-items:center!important;
@@ -46,11 +53,14 @@ class Shortcode {
 	letter-spacing:normal!important;box-shadow:none!important;
 	margin:0!important;white-space:nowrap!important;
 }
+/* PWA install button */
 .fcc-calculator .fcc-pwa-install-btn{
+	display:flex!important;align-items:center!important;justify-content:center!important;
 	min-height:0!important;height:auto!important;
-	padding:0.55rem 1.4rem!important;font-size:0.85rem!important;
+	padding:0.4rem 1.1rem!important;font-size:0.82rem!important;
+	font-weight:600!important;line-height:1.4!important;
 	text-transform:none!important;letter-spacing:normal!important;
-	width:fit-content!important;
+	width:fit-content!important;border-radius:8px!important;
 }
 </style>' . "\n";
 	}
