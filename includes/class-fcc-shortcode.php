@@ -40,16 +40,16 @@ class Shortcode {
 #fcc-calculator .fcc-results-dropdown{position:absolute!important;top:calc(100% + 6px)!important;left:0!important;right:0!important;z-index:9999!important;}
 #fcc-calculator .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;pointer-events:none!important;display:flex!important;align-items:center!important;z-index:2!important;color:#075B5E!important;}
 #fcc-calculator .fcc-search-icon svg{width:18px!important;height:18px!important;display:block!important;flex-shrink:0!important;}
-/* Voice button: 0.75rem from right border */
-#fcc-calculator .fcc-voice-btn{position:absolute!important;right:0.75rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:36px!important;height:36px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#075B5E!important;color:#fff!important;border:none!important;box-shadow:0 2px 6px rgba(7,91,94,.3)!important;}
+/* Voice button: sits left of clear; clear is on the far right */
+#fcc-calculator .fcc-voice-btn{position:absolute!important;right:3rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:36px!important;height:36px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#075B5E!important;color:#fff!important;border:none!important;box-shadow:0 2px 6px rgba(7,91,94,.3)!important;}
 #fcc-calculator .fcc-voice-btn[hidden]{display:none!important;}
-/* Clear button: 0.5rem gap left of voice (0.75 + 2.25rem voice-width + 0.5rem gap = 3.5rem) */
-#fcc-calculator .fcc-search-clear{position:absolute!important;right:3.5rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;padding:0!important;width:30px!important;height:30px!important;border-radius:50%!important;background:rgba(100,116,139,0.12)!important;border:none!important;color:#475569!important;cursor:pointer!important;transition:background 0.15s,color 0.15s!important;}
+/* Clear button: pink circle on the far right, 0.6rem from border */
+#fcc-calculator .fcc-search-clear{position:absolute!important;right:0.6rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;padding:0!important;width:28px!important;height:28px!important;border-radius:50%!important;background:#fee2e2!important;border:none!important;color:#dc2626!important;cursor:pointer!important;transition:background 0.15s!important;}
 #fcc-calculator .fcc-search-clear[hidden]{display:none!important;}
 #fcc-calculator .fcc-search-clear:not([hidden]){display:flex!important;align-items:center!important;justify-content:center!important;}
-#fcc-calculator .fcc-search-clear:hover{background:#fee2e2!important;color:#dc2626!important;}
-#fcc-calculator .fcc-search-clear svg{display:block!important;width:13px!important;height:13px!important;flex-shrink:0!important;stroke:currentColor!important;}
-#fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding-left:3rem!important;padding-right:6rem!important;}
+#fcc-calculator .fcc-search-clear:hover{background:#fecaca!important;}
+#fcc-calculator .fcc-search-clear svg{display:block!important;width:13px!important;height:13px!important;flex-shrink:0!important;stroke:#dc2626!important;}
+#fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding-left:3rem!important;padding-right:5.5rem!important;}
 /* Tabs */
 .fcc-calculator .fcc-tab-btn{text-transform:none!important;letter-spacing:normal!important;}
 /* Popular / trending chips */
