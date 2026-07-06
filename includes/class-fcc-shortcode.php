@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * [food_calorie_calculator] shortcode.
  *
