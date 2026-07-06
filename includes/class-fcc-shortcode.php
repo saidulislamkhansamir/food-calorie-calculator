@@ -39,7 +39,7 @@ class Shortcode {
 .fcc-calculator .fcc-autocomplete{position:relative!important;display:block!important;width:100%!important;}
 .fcc-calculator .fcc-results-dropdown{position:absolute!important;top:100%!important;left:0!important;right:0!important;}
 .fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;}
-.fcc-calculator .fcc-autocomplete .fcc-voice-btn{position:absolute!important;right:0.5rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:36px!important;height:36px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+.fcc-calculator .fcc-autocomplete .fcc-voice-btn{position:absolute!important;right:0.6rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:36px!important;height:36px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#075B5E!important;color:#fff!important;border:none!important;box-shadow:0 2px 6px rgba(7,91,94,.3)!important;}
 .fcc-calculator .fcc-autocomplete .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:0.9rem!important;bottom:auto!important;transform:none!important;pointer-events:none!important;}
 /* Tabs */
 .fcc-calculator .fcc-tab-btn{text-transform:none!important;letter-spacing:normal!important;}
