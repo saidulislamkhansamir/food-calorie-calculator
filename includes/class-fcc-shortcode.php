@@ -35,14 +35,19 @@ class Shortcode {
 	 */
 	public function output_theme_compat_css(): void {
 		echo '<style id="fcc-theme-compat">
-/* Search bar — #fcc-calculator ID selector (specificity 1,0,0) beats any WoodMart class rule */
+/* Search — #fcc-calculator ID (specificity 1,0,0) beats any WoodMart class rule */
 #fcc-calculator .fcc-autocomplete{position:relative!important;display:block!important;width:100%!important;overflow:visible!important;}
 #fcc-calculator .fcc-results-dropdown{position:absolute!important;top:calc(100% + 6px)!important;left:0!important;right:0!important;z-index:9999!important;}
-#fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding-left:3rem!important;padding-right:3rem!important;}
+#fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding-left:3rem!important;padding-right:4.5rem!important;}
 #fcc-calculator .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;pointer-events:none!important;display:flex!important;align-items:center!important;z-index:2!important;color:#075B5E!important;}
 #fcc-calculator .fcc-search-icon svg{width:18px!important;height:18px!important;display:block!important;flex-shrink:0!important;}
-#fcc-calculator .fcc-voice-btn{position:absolute!important;right:2.75rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:36px!important;height:36px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#075B5E!important;color:#fff!important;border:none!important;box-shadow:0 2px 6px rgba(7,91,94,.3)!important;}
-#fcc-calculator .fcc-search-clear{position:absolute!important;right:0.5rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+/* Voice button: far right; hidden attribute must win */
+#fcc-calculator .fcc-voice-btn{position:absolute!important;right:0.5rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:36px!important;height:36px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#075B5E!important;color:#fff!important;border:none!important;box-shadow:0 2px 6px rgba(7,91,94,.3)!important;}
+#fcc-calculator .fcc-voice-btn[hidden]{display:none!important;}
+/* Clear button: sits left of voice; only flex when JS removes hidden attribute */
+#fcc-calculator .fcc-search-clear{position:absolute!important;right:3rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;}
+#fcc-calculator .fcc-search-clear[hidden]{display:none!important;}
+#fcc-calculator .fcc-search-clear:not([hidden]){display:flex!important;align-items:center!important;justify-content:center!important;}
 /* Tabs */
 .fcc-calculator .fcc-tab-btn{text-transform:none!important;letter-spacing:normal!important;}
 /* Popular / trending chips */
