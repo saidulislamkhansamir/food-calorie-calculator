@@ -1066,9 +1066,9 @@
 }
 
 .fcc-btn--secondary {
-	background: var(--fcc-accent, #FF3F33);
+	background: var(--fcc-primary, #148B43);
 	color: #fff;
-	box-shadow: 0 2px 8px rgba(255,63,51,.25);
+	box-shadow: 0 2px 8px rgba(20,139,67,.3);
 	padding: 0.75rem 1.375rem;
 	border-radius: 12px;
 	font-size: 0.9rem;
@@ -1076,7 +1076,7 @@
 	width: 100%;
 }
 
-.fcc-btn--secondary:hover { background: #e63529; }
+.fcc-btn--secondary:hover { background: #0e6b33; }
 
 .fcc-btn--ghost {
 	background: transparent;
@@ -4147,13 +4147,13 @@ select.fcc-bmr-input {
 
 /* Filled CTA (Add to Meal) */
 .fcc-action-btn--primary {
-	background: var(--fcc-accent, #FF3F33);
-	border: 1.5px solid var(--fcc-accent, #FF3F33);
+	background: var(--fcc-primary, #148B43);
+	border: 1.5px solid var(--fcc-primary, #148B43);
 	color: #fff;
-	box-shadow: 0 2px 8px rgba(255,63,51,.2);
+	box-shadow: 0 2px 8px rgba(20,139,67,.25);
 }
 .fcc-action-btn--primary:hover {
-	box-shadow: 0 4px 14px rgba(255,63,51,.3);
+	box-shadow: 0 4px 14px rgba(20,139,67,.35);
 	transform: translateY(-1px);
 }
 
