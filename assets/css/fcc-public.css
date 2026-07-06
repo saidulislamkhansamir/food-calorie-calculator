@@ -5117,8 +5117,9 @@ select.fcc-bmr-input {
 	box-sizing: border-box !important;
 }
 
-/* Reset theme button styles on popular/trending chips */
-.fcc-calculator .fcc-popular-chip {
+/* Reset theme button styles on popular/trending chips — high-specificity to beat WoodMart */
+.fcc-calculator .fcc-popular-chips .fcc-popular-chip,
+.fcc-calculator .fcc-popular-chip.fcc-popular-chip {
 	display: inline-flex !important;
 	align-items: center !important;
 	padding: 0.25rem 0.65rem !important;
@@ -5142,8 +5143,10 @@ select.fcc-bmr-input {
 	box-shadow: none !important;
 	transition: background 0.15s, border-color 0.15s, color 0.15s !important;
 }
-.fcc-calculator .fcc-popular-chip:hover,
-.fcc-calculator .fcc-popular-chip:focus {
+.fcc-calculator .fcc-popular-chips .fcc-popular-chip:hover,
+.fcc-calculator .fcc-popular-chips .fcc-popular-chip:focus,
+.fcc-calculator .fcc-popular-chip.fcc-popular-chip:hover,
+.fcc-calculator .fcc-popular-chip.fcc-popular-chip:focus {
 	background: rgba(45,122,79,0.15) !important;
 	border-color: #075B5E !important;
 	color: #1a5c37 !important;
