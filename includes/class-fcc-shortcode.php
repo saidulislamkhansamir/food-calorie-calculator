@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * [food_calorie_calculator] shortcode.
  *
@@ -38,10 +38,10 @@ class Shortcode {
 /* Search — #fcc-calculator ID (specificity 1,0,0) beats any WoodMart class rule */
 #fcc-calculator .fcc-autocomplete{position:relative!important;display:block!important;width:100%!important;overflow:visible!important;}
 #fcc-calculator .fcc-results-dropdown{position:absolute!important;top:calc(100% + 6px)!important;left:0!important;right:0!important;z-index:9999!important;}
-#fcc-calculator .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;pointer-events:none!important;display:flex!important;align-items:center!important;z-index:2!important;color:#075B5E!important;}
+#fcc-calculator .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;pointer-events:none!important;display:flex!important;align-items:center!important;z-index:2!important;color:#21BA5F!important;}
 #fcc-calculator .fcc-search-icon svg{width:18px!important;height:18px!important;display:block!important;flex-shrink:0!important;}
 /* Voice button: sits left of clear */
-#fcc-calculator .fcc-voice-btn{position:absolute!important;right:1.25rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:30px!important;height:30px!important;min-width:0!important;min-height:0!important;max-width:30px!important;max-height:30px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#075B5E!important;color:#fff!important;border:none!important;box-shadow:0 2px 6px rgba(7,91,94,.3)!important;flex-shrink:0!important;}
+#fcc-calculator .fcc-voice-btn{position:absolute!important;right:1.25rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;width:30px!important;height:30px!important;min-width:0!important;min-height:0!important;max-width:30px!important;max-height:30px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#21BA5F!important;color:#fff!important;border:none!important;box-shadow:0 2px 6px rgba(33,186,95,.3)!important;flex-shrink:0!important;}
 #fcc-calculator .fcc-voice-btn .fcc-voice-icon{font-size:15px!important;}
 #fcc-calculator .fcc-voice-btn[hidden]{display:none!important;}
 /* Clear button: small pink circle, 1.25rem from border, 20px gap from voice */
@@ -195,7 +195,7 @@ class Shortcode {
 
 		$manifest_url = FCC_PLUGIN_URL . 'assets/pwa/manifest.json';
 		echo '<link rel="manifest" href="' . esc_url( $manifest_url ) . '">' . "\n";
-		echo '<meta name="theme-color" content="#075B5E">' . "\n";
+		echo '<meta name="theme-color" content="#21BA5F">' . "\n";
 		echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
 		echo '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' . "\n";
 		echo '<link rel="apple-touch-icon" href="' . esc_url( FCC_PLUGIN_URL . 'assets/pwa/icon.svg' ) . '">' . "\n";
@@ -222,7 +222,7 @@ class Shortcode {
 
 		$settings   = Settings::get_all();
 		$appearance = $settings['appearance'] ?? [];
-		$custom_props = ':root{--fcc-primary:' . esc_attr( $appearance['primary_colour'] ?? '#075B5E' )
+		$custom_props = ':root{--fcc-primary:' . esc_attr( $appearance['primary_colour'] ?? '#21BA5F' )
 			. ';--fcc-accent:' . esc_attr( $appearance['accent_colour'] ?? '#FF3F33' )
 			. ';--fcc-bg-colour:' . esc_attr( $appearance['background_colour'] ?? '#FFE6E1' ) . ';}';
 		if ( ! empty( $appearance['custom_css'] ) ) {
@@ -274,7 +274,7 @@ class Shortcode {
 		if ( ! $inline_added ) {
 			$custom_props = sprintf(
 				':root{--fcc-primary:%s;--fcc-accent:%s;--fcc-bg:%s;--fcc-radius:%dpx;}',
-				esc_attr( $appearance['primary_colour']    ?? '#075B5E' ),
+				esc_attr( $appearance['primary_colour']    ?? '#21BA5F' ),
 				esc_attr( $appearance['accent_colour']     ?? '#FF3F33' ),
 				esc_attr( $appearance['background_colour'] ?? '#FFE6E1' ),
 				absint(   $appearance['button_radius']     ?? 8 )
@@ -373,7 +373,7 @@ class Shortcode {
 					'resultsAnimation'   => ! empty( $appearance['results_animation'] ?? true ),
 					'cardStyle'          => sanitize_key( $appearance['card_style']       ?? 'elevated' ),
 					'voiceIcon'          => sanitize_key( $appearance['voice_icon']       ?? 'emoji' ),
-					'voiceColour'        => esc_attr( $appearance['voice_colour']         ?? '#075B5E' ),
+					'voiceColour'        => esc_attr( $appearance['voice_colour']         ?? '#21BA5F' ),
 					'voiceSize'          => sanitize_key( $appearance['voice_size']        ?? 'medium' ),
 				],
 				'advanced'    => [
