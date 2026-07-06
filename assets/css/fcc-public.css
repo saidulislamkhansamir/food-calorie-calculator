@@ -5083,6 +5083,29 @@ select.fcc-bmr-input {
 	position: relative !important;
 	display: block !important;
 	width: 100% !important;
+	overflow: visible !important;
+}
+
+/* Force voice button to anchor inside the search field regardless of theme overrides */
+.fcc-calculator .fcc-autocomplete .fcc-voice-btn {
+	position: absolute !important;
+	right: 2.75rem !important;
+	left: auto !important;
+	top: 50% !important;
+	bottom: auto !important;
+	transform: translateY(-50%) !important;
+	z-index: 10 !important;
+}
+
+/* Force search icon to anchor inside the search field */
+.fcc-calculator .fcc-autocomplete .fcc-search-icon {
+	position: absolute !important;
+	left: 0.9rem !important;
+	right: auto !important;
+	top: 50% !important;
+	bottom: auto !important;
+	transform: translateY(-50%) !important;
+	pointer-events: none !important;
 }
 
 /* Fix search input overflow caused by theme box-model overrides */
