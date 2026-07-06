@@ -19,7 +19,7 @@ jobs:
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.foodcaloriecalculator.co.uk
+          server: 195.35.15.105
           username: u591585971.foodcaloriecalculator.co.uk
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
