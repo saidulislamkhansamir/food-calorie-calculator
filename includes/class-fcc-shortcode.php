@@ -45,7 +45,7 @@ class Shortcode {
 #fcc-calculator .fcc-voice-btn .fcc-voice-icon{font-size:15px!important;}
 #fcc-calculator .fcc-voice-btn[hidden]{display:none!important;}
 /* Clear button: small pink circle, 1.25rem from border, 20px gap from voice */
-#fcc-calculator .fcc-search-clear{position:absolute!important;right:3.75rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;padding:0!important;width:24px!important;height:24px!important;min-width:0!important;min-height:0!important;max-width:24px!important;max-height:24px!important;border-radius:50%!important;background:#fee2e2!important;border:none!important;color:#dc2626!important;cursor:pointer!important;transition:background 0.15s!important;flex-shrink:0!important;}
+#fcc-calculator .fcc-search-clear{position:absolute!important;right:4.5rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;padding:0!important;width:24px!important;height:24px!important;min-width:0!important;min-height:0!important;max-width:24px!important;max-height:24px!important;border-radius:50%!important;background:#fee2e2!important;border:none!important;color:#dc2626!important;cursor:pointer!important;transition:background 0.15s!important;flex-shrink:0!important;}
 #fcc-calculator .fcc-search-clear[hidden]{display:none!important;}
 #fcc-calculator .fcc-search-clear:not([hidden]){display:flex!important;align-items:center!important;justify-content:center!important;}
 #fcc-calculator .fcc-search-clear:hover{background:#fecaca!important;}
