@@ -35,11 +35,12 @@ class Shortcode {
 	 */
 	public function output_theme_compat_css(): void {
 		echo '<style id="fcc-theme-compat">
-/* Search bar — fix input overflow and voice button anchor */
+/* Search bar — fix input overflow, anchor icons, keep dropdown out of flow */
 .fcc-calculator .fcc-autocomplete{position:relative!important;display:block!important;width:100%!important;}
+.fcc-calculator .fcc-results-dropdown{position:absolute!important;top:100%!important;left:0!important;right:0!important;}
 .fcc-calculator .fcc-search-input{width:100%!important;max-width:100%!important;box-sizing:border-box!important;}
-.fcc-calculator .fcc-autocomplete .fcc-voice-btn{position:absolute!important;right:2.75rem!important;left:auto!important;top:0!important;bottom:0!important;transform:none!important;z-index:10!important;margin:auto!important;}
-.fcc-calculator .fcc-autocomplete .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:0!important;bottom:0!important;transform:none!important;pointer-events:none!important;}
+.fcc-calculator .fcc-autocomplete .fcc-voice-btn{position:absolute!important;right:2.75rem!important;left:auto!important;top:0!important;bottom:0!important;transform:none!important;z-index:10!important;margin:auto 0!important;}
+.fcc-calculator .fcc-autocomplete .fcc-search-icon{position:absolute!important;left:0.9rem!important;right:auto!important;top:0!important;bottom:0!important;transform:none!important;display:flex!important;align-items:center!important;pointer-events:none!important;}
 /* Tabs */
 .fcc-calculator .fcc-tab-btn{text-transform:none!important;letter-spacing:normal!important;}
 /* Popular / trending chips */
