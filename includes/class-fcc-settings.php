@@ -88,11 +88,11 @@ class Settings {
 				'pwa_install'            => true,
 			],
 			'appearance' => [
-				'primary_colour'    => '#179E4C',
+				'primary_colour'    => '#148B43',
 				'accent_colour'     => '#FF3F33',
 				'background_colour' => '#FFE6E1',
 				'voice_icon'        => 'svg',
-				'voice_colour'      => '#179E4C',
+				'voice_colour'      => '#148B43',
 				'voice_size'        => 'medium',
 				'dark_mode'         => false,
 				'button_radius'     => 8,
