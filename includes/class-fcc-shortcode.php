@@ -72,6 +72,7 @@ class Shortcode {
 	font-weight:600!important;line-height:1.4!important;
 	text-transform:none!important;letter-spacing:normal!important;
 	width:fit-content!important;border-radius:8px!important;
+	margin-top:0.75rem!important;
 }
 </style>' . "\n";
 	}
