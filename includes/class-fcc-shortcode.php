@@ -26,6 +26,33 @@ class Shortcode {
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_style_early' );
 		$loader->add_action( 'wp_head', $this, 'maybe_output_pwa_manifest', 1 );
 		$loader->add_action( 'wp_footer', $this, 'maybe_enqueue_assets' );
+		add_action( 'wp_head', [ $this, 'output_theme_compat_css' ], 9999 );
+	}
+
+	/**
+	 * Output theme-compatibility CSS at the very end of <head> so it loads
+	 * after WoodMart and other aggressive theme stylesheets.
+	 */
+	public function output_theme_compat_css(): void {
+		echo '<style id="fcc-theme-compat">
+.fcc-calculator .fcc-tab-btn{text-transform:none!important;letter-spacing:normal!important;}
+.fcc-calculator .fcc-popular-chips .fcc-popular-chip,
+.fcc-calculator .fcc-popular-chip.fcc-popular-chip{
+	display:inline-flex!important;align-items:center!important;
+	padding:0.25rem 0.65rem!important;font-size:0.78rem!important;
+	font-weight:400!important;line-height:1.4!important;
+	min-height:0!important;height:auto!important;width:auto!important;
+	border-radius:999px!important;text-transform:none!important;
+	letter-spacing:normal!important;box-shadow:none!important;
+	margin:0!important;white-space:nowrap!important;
+}
+.fcc-calculator .fcc-pwa-install-btn{
+	min-height:0!important;height:auto!important;
+	padding:0.55rem 1.4rem!important;font-size:0.85rem!important;
+	text-transform:none!important;letter-spacing:normal!important;
+	width:fit-content!important;
+}
+</style>' . "\n";
 	}
 
 	public function register_shortcode(): void {
