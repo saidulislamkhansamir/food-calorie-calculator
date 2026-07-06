@@ -5073,3 +5073,85 @@ select.fcc-bmr-input {
 	.fcc-directory__list { grid-template-columns: 1fr; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   THEME COMPATIBILITY — resets for aggressive theme CSS
+   (WoodMart and similar themes that override button/input styles)
+   ─────────────────────────────────────────────────────────────── */
+
+/* Fix positioning context so voice button stays inside the search field */
+.fcc-calculator .fcc-autocomplete {
+	position: relative !important;
+	display: block !important;
+	width: 100% !important;
+}
+
+/* Fix search input overflow caused by theme box-model overrides */
+.fcc-calculator .fcc-search-input {
+	width: 100% !important;
+	max-width: 100% !important;
+	box-sizing: border-box !important;
+}
+
+/* Reset theme button styles on popular/trending chips */
+.fcc-calculator .fcc-popular-chip {
+	display: inline-flex !important;
+	align-items: center !important;
+	padding: 0.3rem 0.75rem !important;
+	font-size: 0.8rem !important;
+	font-family: inherit !important;
+	font-weight: 400 !important;
+	color: #075B5E !important;
+	background: rgba(7,91,94,0.08) !important;
+	border: 1px solid rgba(7,91,94,0.25) !important;
+	border-radius: 999px !important;
+	cursor: pointer !important;
+	white-space: nowrap !important;
+	text-transform: none !important;
+	letter-spacing: normal !important;
+	line-height: 1.5 !important;
+	width: auto !important;
+	height: auto !important;
+	margin: 0 !important;
+	text-decoration: none !important;
+	box-shadow: none !important;
+	transition: background 0.15s, border-color 0.15s, color 0.15s !important;
+}
+.fcc-calculator .fcc-popular-chip:hover,
+.fcc-calculator .fcc-popular-chip:focus {
+	background: rgba(45,122,79,0.15) !important;
+	border-color: #075B5E !important;
+	color: #1a5c37 !important;
+}
+
+/* Reset theme button styles on PWA install button */
+.fcc-calculator .fcc-pwa-install-btn {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 0.4rem !important;
+	padding: 0.55rem 1.4rem !important;
+	font-size: 0.85rem !important;
+	font-weight: 600 !important;
+	font-family: inherit !important;
+	color: #fff !important;
+	background: #075B5E !important;
+	border: none !important;
+	border-radius: 8px !important;
+	cursor: pointer !important;
+	text-transform: none !important;
+	letter-spacing: normal !important;
+	line-height: 1.5 !important;
+	width: fit-content !important;
+	height: auto !important;
+	margin: 0.75rem auto !important;
+	text-decoration: none !important;
+	box-shadow: 0 2px 8px rgba(7,91,94,.25) !important;
+	transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.fcc-calculator .fcc-pwa-install-btn:hover {
+	transform: translateY(-1px) !important;
+	box-shadow: 0 4px 14px rgba(7,91,94,.35) !important;
+	background: #075B5E !important;
+	color: #fff !important;
+}
+
