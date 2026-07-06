@@ -60,7 +60,7 @@ class Shortcode {
 .fcc-calculator .fcc-popular-chip.fcc-popular-chip{
 	display:inline-flex!important;align-items:center!important;
 	padding:0.25rem 0.65rem!important;font-size:0.78rem!important;
-	font-weight:400!important;line-height:1.4!important;
+	font-weight:600!important;line-height:1.4!important;
 	min-height:0!important;height:auto!important;width:auto!important;
 	border-radius:999px!important;text-transform:none!important;
 	letter-spacing:normal!important;box-shadow:none!important;
