@@ -162,7 +162,8 @@ class Settings {
 				'promo_banners'  => [],
 			],
 			'content' => [
-				'hub_intro' => '',
+				'hub_intro'     => '',
+				'hub_editorial' => '',
 			],
 		];
 	}

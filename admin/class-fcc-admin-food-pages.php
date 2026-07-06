@@ -33,10 +33,12 @@ class Food_Pages_Admin {
 		}
 		check_admin_referer( 'fcc_save_hub_content' );
 
-		$hub_intro = isset( $_POST['hub_intro'] ) ? wp_kses_post( wp_unslash( $_POST['hub_intro'] ) ) : '';
+		$hub_intro     = isset( $_POST['hub_intro'] )     ? wp_kses_post( wp_unslash( $_POST['hub_intro'] ) )     : '';
+		$hub_editorial = isset( $_POST['hub_editorial'] ) ? wp_kses_post( wp_unslash( $_POST['hub_editorial'] ) ) : '';
 
 		$all = \FCC\Settings::get_all();
-		$all['content']['hub_intro'] = $hub_intro;
+		$all['content']['hub_intro']     = $hub_intro;
+		$all['content']['hub_editorial'] = $hub_editorial;
 		\FCC\Settings::save( $all );
 
 		wp_safe_redirect( add_query_arg( [ 'page' => 'fcc-food-pages', 'saved' => 'hub' ], admin_url( 'admin.php' ) ) );
