@@ -1,4 +1,4 @@
-﻿<?php
+?php
 /**
  * Options API wrapper.
  *
