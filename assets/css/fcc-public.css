@@ -1399,8 +1399,8 @@
 .fcc-ri-footnote {
 	font-size: 0.72rem;
 	color: rgba(255, 255, 255, 0.7);
-	margin: 0.625rem 0 0;
-	padding: 0 0.5rem 0.25rem;
+	margin: 0;
+	padding: 0.5rem 0.5rem;
 }
 
 /* ── Nutrition table mobile ── */

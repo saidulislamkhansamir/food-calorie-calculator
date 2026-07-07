@@ -66,6 +66,8 @@ class Shortcode {
 	letter-spacing:normal!important;box-shadow:none!important;
 	margin:0!important;white-space:nowrap!important;
 }
+/* RI footnote — white text, equal top/bottom spacing */
+#fcc-calculator .fcc-ri-footnote{color:rgba(255,255,255,0.8)!important;margin:0!important;padding:0.5rem 0.5rem!important;}
 /* Add to Meal button — force brand green through WoodMart overrides */
 #fcc-calculator .fcc-add-to-meal{background:#148B43!important;color:#fff!important;border-color:#148B43!important;box-shadow:0 2px 8px rgba(20,139,67,.3)!important;border-radius:5px!important;}
 #fcc-calculator .fcc-add-to-meal:hover{background:#0e6b33!important;border-color:#0e6b33!important;}
