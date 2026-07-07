@@ -1446,7 +1446,7 @@
 	gap: 1rem;
 	margin: 1.25rem 0 0;
 	padding: 1.5rem;
-	background: linear-gradient(135deg, #f7fafa 0%, var(--fcc-bg, #FFE6E1) 50%, #f7fafa 100%);
+	background: #EEF8F1;
 	border: 2px solid transparent;
 	border-radius: 16px;
 	background-clip: padding-box;
@@ -1457,7 +1457,7 @@
 	position: absolute;
 	inset: -2px;
 	border-radius: 18px;
-	background: linear-gradient(135deg, #159A4C, #148B43, #9FC87E);
+	background: #148B43;
 	z-index: -1;
 }
 
@@ -1563,16 +1563,16 @@
 	letter-spacing: 0.04em;
 	margin-top: 0.1rem;
 }
-.fcc-macro-detail__stat--kcal     { background: linear-gradient(135deg, #e65100, #ff8f00); }
+.fcc-macro-detail__stat--kcal     { background: #148B43; }
 .fcc-macro-detail__stat--kcal .fcc-macro-detail__stat-val { color: #fff; }
 .fcc-macro-detail__stat--kcal .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
-.fcc-macro-detail__stat--density  { background: linear-gradient(135deg, #1b5e20, #43a047); }
+.fcc-macro-detail__stat--density  { background: #0e6b33; }
 .fcc-macro-detail__stat--density .fcc-macro-detail__stat-val { color: #fff; }
 .fcc-macro-detail__stat--density .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
-.fcc-macro-detail__stat--protein  { background: linear-gradient(135deg, #0d47a1, #1e88e5); }
+.fcc-macro-detail__stat--protein  { background: #159A4C; }
 .fcc-macro-detail__stat--protein .fcc-macro-detail__stat-val { color: #fff; }
 .fcc-macro-detail__stat--protein .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
-.fcc-macro-detail__stat--fat      { background: linear-gradient(135deg, #b71c1c, #e53935); }
+.fcc-macro-detail__stat--fat      { background: #2D9A54; }
 .fcc-macro-detail__stat--fat .fcc-macro-detail__stat-val { color: #fff; }
 .fcc-macro-detail__stat--fat .fcc-macro-detail__stat-lbl { color: rgba(255,255,255,.85); }
 

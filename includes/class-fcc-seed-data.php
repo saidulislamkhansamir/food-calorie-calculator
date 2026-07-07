@@ -19744,4 +19744,15 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 107 );
 	}
+
+	public static function seed_v108(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 108 ) { return; }
+		$all = Settings::get_all();
+		$all['appearance']['chart_protein_colour'] = '#148B43';
+		$all['appearance']['chart_carbs_colour']   = '#38C269';
+		$all['appearance']['chart_fat_colour']     = '#159A4C';
+		$all['appearance']['chart_other_colour']   = '#2D9A54';
+		Settings::save( $all );
+		update_option( 'fcc_seed_version', 108 );
+	}
 }
