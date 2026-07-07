@@ -4070,10 +4070,10 @@ select.fcc-bmr-input {
    ─────────────────────────────────────────────────────────────── */
 .fcc-share-group {
 	display: inline-flex;
-	gap: 0;
-	border: 1px solid var(--fcc-border, #e2e8f0);
-	border-radius: 8px;
-	overflow: hidden;
+	gap: 5px;
+	border: none;
+	border-radius: 0;
+	overflow: visible;
 }
 .fcc-share-icon {
 	display: inline-flex;
@@ -4081,15 +4081,15 @@ select.fcc-bmr-input {
 	justify-content: center;
 	width: 34px;
 	height: 34px;
-	border: none;
-	border-right: 1px solid var(--fcc-border, #e2e8f0);
+	border: 1px solid var(--fcc-border, #e2e8f0);
+	border-radius: 7px;
 	background: var(--fcc-surface, #fff);
 	cursor: pointer;
-	transition: background .15s;
+	transition: background .15s, border-color .15s;
 	padding: 0;
 }
 .fcc-share-icon svg { display: block; flex-shrink: 0; }
-.fcc-share-icon:last-child { border-right: none; }
+.fcc-share-icon:last-child { border-right: 1px solid var(--fcc-border, #e2e8f0); }
 .fcc-share-icon:hover { background: #f0f4f0; }
 
 .fcc-share-icon--link svg          { stroke: #148B43; fill: none; }
