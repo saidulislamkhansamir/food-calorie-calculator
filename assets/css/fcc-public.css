@@ -2790,7 +2790,7 @@ select.fcc-bmr-input {
 		padding: 0 !important;
 	}
 	.fcc-print-clone .fcc-meal-header {
-		background: linear-gradient(135deg, #159A4C, #148B43) !important;
+		background: #148B43 !important;
 		border-radius: 6px !important;
 		padding: 8px 12px !important;
 		margin-bottom: 6px !important;
@@ -3444,7 +3444,7 @@ select.fcc-bmr-input {
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem 1.25rem;
-	background: linear-gradient(135deg, var(--fcc-primary) 0%, #6DBF67 100%);
+	background: #148B43;
 	border-radius: 14px 14px 0 0;
 	margin: -1.25rem -1.25rem 1.25rem;
 }
@@ -3591,7 +3591,7 @@ select.fcc-bmr-input {
 	color: #fff;
 	white-space: nowrap;
 	flex-shrink: 0;
-	background: linear-gradient(135deg, #148B43, #2D7A4F);
+	background: #148B43;
 	padding: 0.25rem 0.55rem;
 	border-radius: 8px;
 	min-width: 65px;
