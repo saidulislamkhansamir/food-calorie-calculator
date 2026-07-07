@@ -88,6 +88,9 @@ class Shortcode {
 #fcc-calculator .fcc-action-btn--ghost{background:transparent!important;border:1.5px solid #dde3e0!important;color:#555!important;box-shadow:none!important;}
 #fcc-calculator .fcc-action-btn--ghost:hover{border-color:#148B43!important;color:#148B43!important;background:#EEF8F1!important;}
 /* Meal section — prevent WoodMart from breaking meal buttons */
+#fcc-calculator .fcc-meal-item{display:flex!important;align-items:center!important;overflow:hidden!important;box-sizing:border-box!important;}
+#fcc-calculator .fcc-meal-item__controls{display:flex!important;align-items:center!important;flex-shrink:0!important;gap:0.4rem!important;}
+#fcc-calculator .fcc-meal-item__qty{width:56px!important;min-width:0!important;max-width:56px!important;box-sizing:border-box!important;}
 #fcc-calculator .fcc-meal-item__remove{display:inline-flex!important;align-items:center!important;justify-content:center!important;background:transparent!important;border:none!important;box-shadow:none!important;color:#9ca3af!important;width:26px!important;height:26px!important;min-height:0!important;max-height:26px!important;padding:0!important;border-radius:6px!important;cursor:pointer!important;}
 #fcc-calculator .fcc-meal-item__remove:hover{background:#fee2e2!important;color:#ef4444!important;}
 #fcc-calculator .fcc-meal-item__remove svg{display:block!important;pointer-events:none!important;}
