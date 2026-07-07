@@ -73,9 +73,14 @@ class Shortcode {
 #fcc-calculator .fcc-share-group{display:inline-flex!important;gap:5px!important;border:none!important;border-radius:0!important;overflow:visible!important;background:transparent!important;box-shadow:none!important;}
 #fcc-calculator .fcc-share-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:0!important;max-width:34px!important;border:none!important;border-radius:7px!important;background:#fff!important;padding:0!important;box-shadow:0 0 0 1.5px #d0d7d2!important;cursor:pointer!important;}
 #fcc-calculator .fcc-share-icon:hover{background:#f0f4f0!important;box-shadow:0 0 0 1.5px #148B43!important;}
-/* Add to Meal button — force brand green through WoodMart overrides */
-#fcc-calculator .fcc-add-to-meal{background:#148B43!important;color:#fff!important;border-color:#148B43!important;box-shadow:0 2px 8px rgba(20,139,67,.3)!important;border-radius:5px!important;}
-#fcc-calculator .fcc-add-to-meal:hover{background:#0e6b33!important;border-color:#0e6b33!important;}
+/* Action bar buttons — force through WoodMart */
+#fcc-calculator .fcc-action-btn{display:inline-flex!important;align-items:center!important;gap:0.35rem!important;padding:0.42rem 0.85rem!important;border-radius:8px!important;font-size:0.82rem!important;font-weight:600!important;line-height:1.4!important;cursor:pointer!important;white-space:nowrap!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;transition:all .15s!important;}
+#fcc-calculator .fcc-action-btn--primary,#fcc-calculator .fcc-add-to-meal{background:#FF3F33!important;color:#fff!important;border:1.5px solid #FF3F33!important;box-shadow:0 2px 8px rgba(255,63,51,.25)!important;}
+#fcc-calculator .fcc-action-btn--primary:hover,#fcc-calculator .fcc-add-to-meal:hover{background:#e63529!important;border-color:#e63529!important;}
+#fcc-calculator .fcc-action-btn--outline{background:#fff!important;color:#444!important;border:1.5px solid #dde3e0!important;box-shadow:none!important;}
+#fcc-calculator .fcc-action-btn--outline:hover{border-color:#148B43!important;color:#148B43!important;background:#EEF8F1!important;}
+#fcc-calculator .fcc-action-btn--ghost{background:transparent!important;border:1.5px solid #dde3e0!important;color:#555!important;box-shadow:none!important;}
+#fcc-calculator .fcc-action-btn--ghost:hover{border-color:#148B43!important;color:#148B43!important;background:#EEF8F1!important;}
 /* PWA install button */
 #fcc-calculator .fcc-pwa-install-btn{
 	display:flex!important;align-items:center!important;justify-content:center!important;
