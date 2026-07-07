@@ -90,6 +90,11 @@ class Shortcode {
 /* Meal section card — lock padding so header bleeds flush to all edges */
 #fcc-calculator .fcc-meal-section{padding:1.25rem!important;overflow:hidden!important;}
 #fcc-calculator .fcc-meal-header{margin:-1.25rem -1.25rem 1.25rem!important;border-radius:14px 14px 0 0!important;}
+/* Compare tab — prevent grid blowout from WoodMart input width override */
+#fcc-calculator .fcc-compare-grid{display:grid!important;grid-template-columns:1fr auto 1fr!important;overflow:hidden!important;box-sizing:border-box!important;}
+#fcc-calculator .fcc-compare-col{min-width:0!important;overflow:hidden!important;box-sizing:border-box!important;}
+#fcc-calculator .fcc-compare-search-wrap{width:100%!important;min-width:0!important;box-sizing:border-box!important;overflow:hidden!important;}
+#fcc-calculator .fcc-compare-search{width:100%!important;min-width:0!important;box-sizing:border-box!important;}
 /* Meal category pills (ADDING TO) — WoodMart overrides button style */
 #fcc-calculator .fcc-meal-cat-pill{display:inline-flex!important;align-items:center!important;gap:4px!important;padding:5px 12px!important;border:1.5px solid #d4ddd8!important;border-radius:20px!important;background:#fff!important;font-size:0.78rem!important;font-weight:600!important;color:#1a2e2f!important;cursor:pointer!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
 #fcc-calculator .fcc-meal-cat-pill--active{background:#148B43!important;border-color:#148B43!important;color:#fff!important;box-shadow:0 2px 6px rgba(20,139,67,.2)!important;}
