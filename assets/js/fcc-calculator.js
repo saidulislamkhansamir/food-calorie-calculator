@@ -1549,18 +1549,27 @@
 		var params = new URLSearchParams( window.location.search );
 		var mealParam = params.get( 'meal' );
 		if ( ! mealParam ) return;
-		var items = mealParam.split( ',' );
-		var loaded = 0;
-		items.forEach( function ( part ) {
+		var items = mealParam.split( ',' ).filter( Boolean );
+		if ( ! items.length ) return;
+		var promises = items.map( function ( part ) {
 			var bits = part.split( ':' );
 			var foodId = parseInt( bits[0], 10 );
 			var grams  = parseFloat( bits[1] ) || 100;
-			if ( ! foodId ) return;
-			apiFetch( '/foods/' + foodId, function ( food ) {
-				state.meal.push( { food: food, grams: grams, label: food.name + ' (' + Math.round( grams ) + 'g)', category: currentMealCat } );
-				loaded++;
-				if ( loaded === items.length ) renderMeal();
+			if ( ! foodId ) return Promise.resolve( null );
+			return apiFetch( '/foods/' + foodId )
+				.then( function ( food ) { return { food: food, grams: grams }; } )
+				.catch( function () { return null; } );
+		} );
+		Promise.all( promises ).then( function ( results ) {
+			results.forEach( function ( r ) {
+				if ( ! r ) return;
+				state.meal.push( { food: r.food, grams: r.grams, label: r.food.name + ' (' + Math.round( r.grams ) + 'g)', category: currentMealCat } );
 			} );
+			if ( state.meal.length ) {
+				renderMeal();
+				var mealTab = root.querySelector( '.fcc-tab-btn[data-tab="meal"]' );
+				if ( mealTab ) mealTab.click();
+			}
 		} );
 	} )();
 
