@@ -71,7 +71,7 @@ class Shortcode {
 #fcc-calculator p.fcc-ri-footnote{color:rgba(255,255,255,0.8)!important;margin:0!important;padding:0.4rem 0.75rem!important;display:block!important;}
 /* Share buttons — individual boxes with gaps, ::after pseudo-border WoodMart cannot override */
 #fcc-calculator .fcc-share-group{display:inline-flex!important;gap:5px!important;border:none!important;border-radius:0!important;overflow:visible!important;background:transparent!important;box-shadow:none!important;}
-#fcc-calculator .fcc-share-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:0!important;max-width:34px!important;border:none!important;border-radius:7px!important;background:#fff!important;padding:0!important;box-shadow:none!important;cursor:pointer!important;position:relative!important;}
+#fcc-calculator .fcc-share-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:26px!important;min-width:0!important;max-width:34px!important;border:none!important;border-radius:5px!important;background:#fff!important;padding:0!important;box-shadow:none!important;cursor:pointer!important;position:relative!important;}
 #fcc-calculator .fcc-share-icon::after{content:""!important;position:absolute!important;inset:0!important;border:1.5px solid #d0d7d2!important;border-radius:7px!important;pointer-events:none!important;}
 #fcc-calculator .fcc-share-icon:hover{background:#f4f9f6!important;}
 #fcc-calculator .fcc-share-icon:hover::after{border-color:#148B43!important;}
