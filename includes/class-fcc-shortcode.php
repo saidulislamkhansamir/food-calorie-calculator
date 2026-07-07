@@ -67,7 +67,7 @@ class Shortcode {
 	margin:0!important;white-space:nowrap!important;
 }
 /* Add to Meal button — force brand green through WoodMart overrides */
-#fcc-calculator .fcc-add-to-meal{background:#148B43!important;color:#fff!important;border-color:#148B43!important;box-shadow:0 2px 8px rgba(20,139,67,.3)!important;}
+#fcc-calculator .fcc-add-to-meal{background:#148B43!important;color:#fff!important;border-color:#148B43!important;box-shadow:0 2px 8px rgba(20,139,67,.3)!important;border-radius:5px!important;}
 #fcc-calculator .fcc-add-to-meal:hover{background:#0e6b33!important;border-color:#0e6b33!important;}
 /* PWA install button */
 #fcc-calculator .fcc-pwa-install-btn{
