@@ -1546,7 +1546,7 @@
 	text-align: center;
 	border-radius: 10px;
 	padding: 0.5rem 0.3rem;
-	border: 2px solid rgba(255,255,255,.8);
+	border: 2px solid #fff;
 	box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 .fcc-macro-detail__stat-val {
