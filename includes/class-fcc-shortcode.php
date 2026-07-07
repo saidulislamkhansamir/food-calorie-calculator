@@ -132,6 +132,15 @@ class Shortcode {
 	width:fit-content!important;border-radius:8px!important;
 	margin-top:2.5rem!important;
 }
+/* Compare actions row */
+#fcc-calculator .fcc-compare-actions{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:0.5rem!important;padding-top:0.875rem!important;border-top:1px solid #e5ebea!important;}
+/* Reset — ghost with red-on-hover */
+#fcc-calculator .fcc-compare-reset-btn{display:inline-flex!important;align-items:center!important;gap:0.4rem!important;padding:0.5rem 1rem!important;border:1.5px solid #d4ddd8!important;border-radius:8px!important;background:transparent!important;color:#6b7280!important;font-size:0.82rem!important;font-weight:600!important;cursor:pointer!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-compare-reset-btn:hover{border-color:#f87171!important;color:#ef4444!important;background:#fff5f5!important;}
+/* Share Comparison — primary green */
+#fcc-calculator .fcc-compare-share-btn{display:inline-flex!important;align-items:center!important;gap:0.4rem!important;padding:0.5rem 1.1rem!important;border:none!important;border-radius:8px!important;background:#148B43!important;color:#fff!important;font-size:0.82rem!important;font-weight:600!important;cursor:pointer!important;box-shadow:0 2px 8px rgba(20,139,67,.25)!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-compare-share-btn:hover{background:#117a39!important;box-shadow:0 4px 12px rgba(20,139,67,.35)!important;}
+#fcc-calculator .fcc-compare-share-btn.fcc-btn--copied{background:#059669!important;box-shadow:none!important;color:#fff!important;}
 </style>' . "\n";
 	}
 
