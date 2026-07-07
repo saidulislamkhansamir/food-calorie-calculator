@@ -2038,6 +2038,7 @@
 				if ( el ) el.remove();
 			} );
 			clone.querySelectorAll( '.fcc-add-to-meal' ).forEach( function ( b ) { b.remove(); } );
+			clone.querySelectorAll( '.fcc-pwa-install-btn' ).forEach( function ( b ) { b.remove(); } );
 
 			// Remove empty sections (omega-3 with no values, caffeine with no data).
 			clone.querySelectorAll( '.fcc-omega3-section, .fcc-caffeine-section' ).forEach( function ( sec ) {
