@@ -69,10 +69,12 @@ class Shortcode {
 /* RI footnote — remove table margin-bottom that creates gap, then balance footnote padding */
 #fcc-calculator .fcc-nutrition-table{margin-bottom:0!important;}
 #fcc-calculator p.fcc-ri-footnote{color:rgba(255,255,255,0.8)!important;margin:0!important;padding:0.4rem 0.75rem!important;display:block!important;}
-/* Share buttons — individual boxes with gaps, override WoodMart */
+/* Share buttons — individual boxes with gaps, ::after pseudo-border WoodMart can't override */
 #fcc-calculator .fcc-share-group{display:inline-flex!important;gap:5px!important;border:none!important;border-radius:0!important;overflow:visible!important;background:transparent!important;box-shadow:none!important;}
-#fcc-calculator .fcc-share-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:0!important;max-width:34px!important;border:none!important;border-radius:7px!important;background:#fff!important;padding:0!important;box-shadow:0 0 0 1.5px #d0d7d2!important;cursor:pointer!important;}
-#fcc-calculator .fcc-share-icon:hover{background:#f0f4f0!important;box-shadow:0 0 0 1.5px #148B43!important;}
+#fcc-calculator .fcc-share-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:0!important;max-width:34px!important;border:none!important;border-radius:7px!important;background:#fff!important;padding:0!important;box-shadow:none!important;cursor:pointer!important;position:relative!important;}
+#fcc-calculator .fcc-share-icon::after{content:''!important;position:absolute!important;inset:0!important;border:1.5px solid #d0d7d2!important;border-radius:7px!important;pointer-events:none!important;}
+#fcc-calculator .fcc-share-icon:hover{background:#f4f9f6!important;}
+#fcc-calculator .fcc-share-icon:hover::after{border-color:#148B43!important;}
 /* Action bar buttons — force through WoodMart */
 #fcc-calculator .fcc-action-btn{display:inline-flex!important;align-items:center!important;gap:0.35rem!important;padding:0.42rem 0.85rem!important;border-radius:8px!important;font-size:0.82rem!important;font-weight:600!important;line-height:1.4!important;cursor:pointer!important;white-space:nowrap!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;transition:all .15s!important;}
 #fcc-calculator .fcc-action-btn--primary,#fcc-calculator .fcc-add-to-meal{background:#FF3F33!important;color:#fff!important;border:1.5px solid #FF3F33!important;box-shadow:0 2px 8px rgba(255,63,51,.25)!important;border-radius:8px!important;}
