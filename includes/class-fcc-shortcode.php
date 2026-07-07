@@ -87,6 +87,9 @@ class Shortcode {
 #fcc-calculator .fcc-action-btn--outline:hover{border-color:#148B43!important;color:#148B43!important;background:#EEF8F1!important;}
 #fcc-calculator .fcc-action-btn--ghost{background:transparent!important;border:1.5px solid #dde3e0!important;color:#555!important;box-shadow:none!important;}
 #fcc-calculator .fcc-action-btn--ghost:hover{border-color:#148B43!important;color:#148B43!important;background:#EEF8F1!important;}
+/* Meal serves row — WoodMart stretches the input to 100%; lock it */
+#fcc-calculator .fcc-meal-serves{display:flex!important;align-items:center!important;justify-content:center!important;flex-wrap:wrap!important;gap:10px!important;}
+#fcc-calculator .fcc-meal-serves__input{width:46px!important;min-width:0!important;max-width:46px!important;box-sizing:border-box!important;}
 /* Meal section — prevent WoodMart from breaking meal buttons */
 #fcc-calculator .fcc-meal-item{display:flex!important;align-items:center!important;overflow:hidden!important;box-sizing:border-box!important;}
 #fcc-calculator .fcc-meal-item__controls{display:flex!important;align-items:center!important;flex-shrink:0!important;gap:0.4rem!important;}
