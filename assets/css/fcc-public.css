@@ -2846,7 +2846,7 @@ select.fcc-bmr-input {
 		gap: 4px !important;
 	}
 	.fcc-print-clone .fcc-meal-item:nth-child(even) { background: #f8fafa !important; }
-	.fcc-print-clone .fcc-meal-item__controls { gap: 3px !important; }
+	.fcc-print-clone .fcc-meal-item__controls { gap: 3px !important; width: 130px !important; flex-shrink: 0 !important; justify-content: flex-end !important; }
 	.fcc-print-clone .fcc-meal-item__qty {
 		width: 36px !important;
 		padding: 1px 2px !important;
@@ -2856,18 +2856,22 @@ select.fcc-bmr-input {
 		border-radius: 3px !important;
 		font-weight: 600 !important;
 		color: #333 !important;
+		flex-shrink: 0 !important;
 	}
 	.fcc-print-clone .fcc-meal-item__unit {
 		font-size: 7pt !important;
 		padding: 0 3px !important;
 		border-radius: 2px !important;
 		background: #148B43 !important;
+		flex-shrink: 0 !important;
 	}
 	.fcc-print-clone .fcc-meal-item__kcal {
 		font-size: 8pt !important;
 		padding: 1px 5px !important;
-		min-width: auto !important;
+		min-width: 52px !important;
+		text-align: center !important;
 		border-radius: 3px !important;
+		flex-shrink: 0 !important;
 	}
 	.fcc-print-clone .fcc-meal-item__num {
 		width: 20px !important;
