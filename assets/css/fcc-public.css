@@ -1271,9 +1271,9 @@
 .fcc-nutrition-table-wrapper {
 	border-radius: 16px;
 	overflow: hidden;
-	box-shadow: 0 4px 16px rgba(20,139,67,.1);
+	box-shadow: 0 4px 16px rgba(20,139,67,.15);
 	padding: 2px;
-	background: linear-gradient(135deg, #159A4C 0%, #148B43 50%, #9FC87E 100%);
+	background: #148B43;
 }
 
 .fcc-nutrition-table {
@@ -1292,7 +1292,7 @@
 }
 
 .fcc-nutrition-table thead th {
-	background: linear-gradient(135deg, #159A4C 0%, #148B43 50%, #2D9A54 100%);
+	background: #148B43;
 	font-weight: 700;
 	font-size: 0.7rem;
 	text-transform: uppercase;
@@ -1311,10 +1311,10 @@
 	transition: background .15s;
 }
 .fcc-nutrition-table tbody tr:nth-child(even) {
-	background: linear-gradient(to right, #f5fafa 0%, #fafcfc 100%);
+	background: #EEF8F1;
 }
 .fcc-nutrition-table tbody tr:hover {
-	background: linear-gradient(to right, #e0f2f2 0%, #edf8f8 100%);
+	background: #d6eedd;
 }
 
 /* Nutrient name column */
