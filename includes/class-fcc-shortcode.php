@@ -95,9 +95,10 @@ class Shortcode {
 #fcc-calculator .fcc-meal-cat-pill--active{background:#148B43!important;border-color:#148B43!important;color:#fff!important;box-shadow:0 2px 6px rgba(20,139,67,.2)!important;}
 #fcc-calculator .fcc-meal-cat-pill:not(.fcc-meal-cat-pill--active):hover{border-color:#148B43!important;}
 /* Saved template chips — WoodMart overrides inner buttons */
-#fcc-calculator .fcc-meal-tpl-chip{display:inline-flex!important;align-items:center!important;border:1.5px solid #d4ddd8!important;border-radius:20px!important;overflow:hidden!important;background:transparent!important;box-shadow:none!important;}
-#fcc-calculator .fcc-meal-tpl-chip__load{padding:5px 12px!important;border:none!important;background:#fff!important;font-size:0.78rem!important;font-weight:600!important;color:#148B43!important;cursor:pointer!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
-#fcc-calculator .fcc-meal-tpl-chip__del{padding:5px 8px!important;border:none!important;border-left:1px solid #e6eded!important;background:transparent!important;color:#ccc!important;font-size:0.85rem!important;cursor:pointer!important;box-shadow:none!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-meal-templates__list{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:6px!important;}
+#fcc-calculator .fcc-meal-tpl-chip{display:inline-flex!important;align-items:stretch!important;border:1.5px solid #d4ddd8!important;border-radius:20px!important;overflow:hidden!important;background:transparent!important;box-shadow:none!important;}
+#fcc-calculator .fcc-meal-tpl-chip__load{display:inline-flex!important;align-items:center!important;padding:5px 12px!important;border:none!important;background:#fff!important;font-size:0.78rem!important;font-weight:600!important;color:#148B43!important;cursor:pointer!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-meal-tpl-chip__del{display:inline-flex!important;align-items:center!important;padding:5px 8px!important;border:none!important;border-left:1px solid #e6eded!important;background:transparent!important;color:#ccc!important;font-size:0.85rem!important;cursor:pointer!important;box-shadow:none!important;min-height:0!important;height:auto!important;}
 #fcc-calculator .fcc-meal-tpl-chip__del:hover{color:#e74c3c!important;background:#fff5f5!important;}
 #fcc-calculator .fcc-meal-tpl-chip--active{border-color:#148B43!important;background:#148B43!important;}
 #fcc-calculator .fcc-meal-tpl-chip--active .fcc-meal-tpl-chip__load{background:#148B43!important;color:#fff!important;}
