@@ -70,10 +70,10 @@ class Shortcode {
 #fcc-calculator .fcc-nutrition-table{margin-bottom:0!important;}
 #fcc-calculator p.fcc-ri-footnote{color:rgba(255,255,255,0.8)!important;margin:0!important;padding:0.4rem 0.75rem!important;display:block!important;}
 /* Share row — force vertical alignment WoodMart cannot override */
-#fcc-calculator .fcc-actions-share{display:flex!important;align-items:center!important;gap:0.5rem!important;}
+#fcc-calculator .fcc-actions-share{display:flex!important;align-items:center!important;gap:0.5rem!important;margin-top:0.6rem!important;}
 #fcc-calculator .fcc-actions-share__label{line-height:1!important;margin:0!important;padding:0!important;}
 /* Share buttons — seamless group: outer border on group ::after, dividers via button ::before */
-#fcc-calculator .fcc-share-group{display:inline-flex!important;gap:0!important;border:none!important;border-radius:6px!important;overflow:hidden!important;background:transparent!important;box-shadow:none!important;margin-top:0.6rem!important;position:relative!important;}
+#fcc-calculator .fcc-share-group{display:inline-flex!important;gap:0!important;border:none!important;border-radius:6px!important;overflow:hidden!important;background:transparent!important;box-shadow:none!important;margin-top:0!important;position:relative!important;}
 #fcc-calculator .fcc-share-group::after{content:""!important;position:absolute!important;inset:0!important;border:1.5px solid #d0d7d2!important;border-radius:6px!important;pointer-events:none!important;z-index:1!important;}
 #fcc-calculator .fcc-share-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:32px!important;height:32px!important;min-width:0!important;max-width:32px!important;min-height:0!important;max-height:32px!important;border:none!important;border-radius:0!important;background:#fff!important;padding:0!important;box-shadow:none!important;cursor:pointer!important;position:relative!important;}
 #fcc-calculator .fcc-share-icon::after{content:none!important;}
