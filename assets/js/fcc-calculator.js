@@ -2098,7 +2098,10 @@
 				+ '</div>'
 				+ '<div class="fcc-print-footer__disclaimer">'
 				+ 'Nutritional values are per 100g (unless otherwise stated) and for general information only. Not a substitute for professional dietary or medical advice. '
-				+ 'If you have a health condition, allergy, or are pregnant, consult a qualified healthcare professional. Data sourced from USDA FDC and UK food composition tables. '
+				+ 'If you have a health condition, allergy, or are pregnant, consult a qualified healthcare professional. '
+				+ 'Data sourced from UK references including McCance &amp; Widdowson\'s Composition of Foods, Food Standards Agency (FSA), British Nutrition Foundation (BNF), NHS Eat Well, Scientific Advisory Committee on Nutrition (SACN), British Heart Foundation (BHF), and British Dietetic Association (BDA); '
+				+ 'European sources including EFSA (European Food Safety Authority) and EuroFIR; '
+				+ 'and international databases including USDA FDC (US Department of Agriculture Food Data Central) and WHO. '
 				+ 'Values may vary depending on brand, preparation method, and serving size.'
 				+ '</div>';
 			clone.appendChild( printFooter );
