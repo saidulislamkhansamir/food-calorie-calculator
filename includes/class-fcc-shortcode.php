@@ -69,6 +69,10 @@ class Shortcode {
 /* RI footnote — remove table margin-bottom that creates gap, then balance footnote padding */
 #fcc-calculator .fcc-nutrition-table{margin-bottom:0!important;}
 #fcc-calculator p.fcc-ri-footnote{color:rgba(255,255,255,0.8)!important;margin:0!important;padding:0.4rem 0.75rem!important;display:block!important;}
+/* Share buttons — individual boxes with gaps, override WoodMart */
+#fcc-calculator .fcc-share-group{display:inline-flex!important;gap:5px!important;border:none!important;border-radius:0!important;overflow:visible!important;background:transparent!important;box-shadow:none!important;}
+#fcc-calculator .fcc-share-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:0!important;max-width:34px!important;border:1.5px solid #d0d7d2!important;border-radius:7px!important;background:#fff!important;padding:0!important;box-shadow:none!important;}
+#fcc-calculator .fcc-share-icon:hover{background:#f0f4f0!important;border-color:#148B43!important;}
 /* Add to Meal button — force brand green through WoodMart overrides */
 #fcc-calculator .fcc-add-to-meal{background:#148B43!important;color:#fff!important;border-color:#148B43!important;box-shadow:0 2px 8px rgba(20,139,67,.3)!important;border-radius:5px!important;}
 #fcc-calculator .fcc-add-to-meal:hover{background:#0e6b33!important;border-color:#0e6b33!important;}
