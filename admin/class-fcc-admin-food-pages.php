@@ -56,9 +56,10 @@ class Food_Pages_Admin {
 		}
 
 		wp_send_json_success( [
-			'rows'       => self::render_food_rows( $foods, $cat_map, $cat_slug_map ),
-			'pagination' => self::render_pagination_html( $paged, $total_pages, $total, $per_page, $search ),
-			'total'      => $total,
+			'rows'            => self::render_food_rows( $foods, $cat_map, $cat_slug_map ),
+			'pagination'      => self::render_pagination_html( $paged, $total_pages, $total, $per_page, $search ),
+			'pagination_top'  => self::render_pagination_html( $paged, $total_pages, $total, $per_page, $search, 'top' ),
+			'total'           => $total,
 		] );
 	}
 
@@ -180,7 +181,7 @@ class Food_Pages_Admin {
 		return ob_get_clean();
 	}
 
-	public static function render_pagination_html( int $paged, int $total_pages, int $total, int $per_page, string $search ): string {
+	public static function render_pagination_html( int $paged, int $total_pages, int $total, int $per_page, string $search, string $position = 'bottom' ): string {
 		if ( $total_pages < 1 ) { return ''; }
 
 		// Build smart window: first 3, last 3, current ±2.
@@ -193,9 +194,11 @@ class Food_Pages_Admin {
 		$show = array_unique( $show );
 		sort( $show );
 
+		$extra_class = 'top' === $position ? ' fcc-fp-pag--top' : '';
+
 		ob_start();
 		?>
-		<div class="fcc-fp-pag">
+		<div class="fcc-fp-pag<?php echo $extra_class; ?>">
 			<div class="fcc-fp-pag-info">
 				Page <strong><?php echo $paged; ?></strong> of <strong><?php echo $total_pages; ?></strong>
 				&nbsp;·&nbsp; <strong><?php echo number_format( $total ); ?></strong> foods total

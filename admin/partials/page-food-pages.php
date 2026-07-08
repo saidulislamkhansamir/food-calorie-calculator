@@ -336,6 +336,7 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 
 /* Rich pagination */
 .fcc-fp-pag { display:flex; align-items:center; gap:12px; padding:14px 24px; border-top:1px solid #f1f5f9; flex-wrap:wrap; }
+.fcc-fp-pag--top { border-top:none; border-bottom:1px solid #f1f5f9; }
 .fcc-fp-pag-info { font-size:0.82rem; color:#94a3b8; flex:1; min-width:160px; }
 .fcc-fp-pag-info strong { color:#475569; }
 .fcc-fp-pag-pages { display:flex; align-items:center; gap:3px; flex-wrap:wrap; }
@@ -799,6 +800,9 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 
 		<?php if ( $foods ) : ?>
 		<div id="fcc-foods-wrap">
+			<div id="fcc-foods-pagination-top">
+				<?php echo \FCC\Admin\Food_Pages_Admin::render_pagination_html( $paged, $total_pages, $total_foods, $per_page, $search, 'top' ); ?>
+			</div>
 			<table class="fcc-fp-table">
 				<thead>
 					<tr>
@@ -899,9 +903,10 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 	} );
 
 	// --- AJAX food page loader ---
-	var wrap         = document.getElementById( 'fcc-foods-wrap' );
-	var tbody        = document.getElementById( 'fcc-foods-tbody' );
-	var paginationDiv = document.getElementById( 'fcc-foods-pagination' );
+	var wrap            = document.getElementById( 'fcc-foods-wrap' );
+	var tbody           = document.getElementById( 'fcc-foods-tbody' );
+	var paginationDiv   = document.getElementById( 'fcc-foods-pagination' );
+	var paginationTop   = document.getElementById( 'fcc-foods-pagination-top' );
 
 	function loadFoodPage( page, pp, search ) {
 		if ( wrap ) wrap.classList.add( 'fcc-loading' );
@@ -915,8 +920,9 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 			.then( function ( r ) { return r.json(); } )
 			.then( function ( data ) {
 				if ( data.success ) {
-					if ( tbody )        tbody.innerHTML         = data.data.rows;
-					if ( paginationDiv ) paginationDiv.innerHTML = data.data.pagination;
+					if ( tbody )        tbody.innerHTML           = data.data.rows;
+					if ( paginationDiv ) paginationDiv.innerHTML  = data.data.pagination;
+					if ( paginationTop ) paginationTop.innerHTML  = data.data.pagination_top;
 					curPaged  = page;
 					curPP     = pp;
 					curSearch = search;
@@ -932,17 +938,18 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 			} );
 	}
 
-	// Pagination button clicks (delegated).
+	// Pagination button clicks (delegated — works for both top and bottom bars).
 	document.addEventListener( 'click', function ( e ) {
 		var btn = e.target.closest( '.fcc-fp-pag-btn' );
-		if ( btn && paginationDiv && paginationDiv.contains( btn ) ) {
+		if ( btn && ( ( paginationDiv && paginationDiv.contains( btn ) ) || ( paginationTop && paginationTop.contains( btn ) ) ) ) {
 			var page = parseInt( btn.dataset.page, 10 );
 			if ( page && page !== curPaged ) loadFoodPage( page, curPP, curSearch );
 			return;
 		}
 		var go = e.target.closest( '.fcc-fp-pag-go' );
-		if ( go && paginationDiv && paginationDiv.contains( go ) ) {
-			var jumpInput = paginationDiv.querySelector( '.fcc-fp-pag-jump-input' );
+		var goContainer = go && ( ( paginationDiv && paginationDiv.contains( go ) ) ? paginationDiv : ( paginationTop && paginationTop.contains( go ) ? paginationTop : null ) );
+		if ( go && goContainer ) {
+			var jumpInput = goContainer.querySelector( '.fcc-fp-pag-jump-input' );
 			var page = jumpInput ? parseInt( jumpInput.value, 10 ) : 0;
 			if ( page >= 1 ) loadFoodPage( page, curPP, curSearch );
 		}
