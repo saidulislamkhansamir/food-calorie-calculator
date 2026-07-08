@@ -745,6 +745,20 @@ class Database {
 		);
 	}
 
+	public static function update_category_seo( int $cat_id, string $seo_title, string $seo_description ): bool {
+		global $wpdb;
+		return false !== $wpdb->update(
+			self::categories_table(),
+			[
+				'seo_title'       => '' !== $seo_title       ? $seo_title       : null,
+				'seo_description' => '' !== $seo_description ? $seo_description : null,
+			],
+			[ 'id' => $cat_id ],
+			[ '%s', '%s' ],
+			[ '%d' ]
+		);
+	}
+
 	public static function update_category_description( int $id, string $desc ): bool {
 		global $wpdb;
 		return false !== $wpdb->update(

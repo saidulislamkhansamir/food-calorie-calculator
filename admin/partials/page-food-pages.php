@@ -11,6 +11,11 @@ $saved      = isset( $_GET['saved'] )   ? sanitize_key( $_GET['saved'] ) : '';
 $saved_cat  = isset( $_GET['cat_id'] )  ? absint( $_GET['cat_id'] ) : 0;
 $saved_food = isset( $_GET['food_id'] ) ? absint( $_GET['food_id'] ) : 0;
 
+$hub_seo_title       = \FCC\Settings::get( 'content.hub_seo_title', '' );
+$hub_seo_description = \FCC\Settings::get( 'content.hub_seo_description', '' );
+$hub_auto_title      = \FCC\Food_Pages::generate_hub_title();
+$hub_auto_desc       = \FCC\Food_Pages::generate_hub_meta_desc();
+
 $hub_intro     = FCC\Settings::get( 'content.hub_intro', '' );
 $hub_editorial = FCC\Settings::get( 'content.hub_editorial', '' );
 $categories    = FCC\Database::get_all_categories();
@@ -379,7 +384,17 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 	<?php if ( 'seo' === $saved && $saved_food ) : ?>
 		<div class="fcc-fp-notice">
 			<svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-			<?php esc_html_e( 'SEO title and description saved.', 'food-calorie-calculator' ); ?>
+			<?php esc_html_e( 'Food SEO title and description saved.', 'food-calorie-calculator' ); ?>
+		</div>
+	<?php elseif ( 'cat_seo' === $saved && $saved_cat ) : ?>
+		<div class="fcc-fp-notice">
+			<svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			<?php esc_html_e( 'Category SEO title and description saved.', 'food-calorie-calculator' ); ?>
+		</div>
+	<?php elseif ( 'hub_seo' === $saved ) : ?>
+		<div class="fcc-fp-notice">
+			<svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			<?php esc_html_e( 'Hub SEO title and description saved.', 'food-calorie-calculator' ); ?>
 		</div>
 	<?php elseif ( 'hub' === $saved ) : ?>
 		<div class="fcc-fp-notice">
@@ -461,6 +476,72 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 					</button>
 				</div>
 			</form>
+
+			<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+
+			<p style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:16px;">
+				<?php esc_html_e( 'Hub Page SEO Override', 'food-calorie-calculator' ); ?>
+			</p>
+
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="fcc_save_hub_seo">
+				<?php wp_nonce_field( 'fcc_save_hub_seo' ); ?>
+
+				<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;">
+
+					<div>
+						<label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+							<span style="font-weight:500;"><?php esc_html_e( 'SEO Title Override', 'food-calorie-calculator' ); ?></span>
+							<span class="fcc-seo-chr" data-max="60" style="font-size:0.75rem;color:#94a3b8;font-weight:400;"></span>
+						</label>
+						<input type="text" name="hub_seo_title" class="fcc-seo-title-input"
+							value="<?php echo esc_attr( $hub_seo_title ); ?>"
+							maxlength="60"
+							placeholder="<?php echo esc_attr( $hub_auto_title ); ?>"
+							style="width:100%;border:1px solid #93c5fd;border-radius:8px;padding:9px 12px;font-size:0.875rem;box-sizing:border-box;">
+						<p class="description" style="margin-top:6px;">
+							<?php esc_html_e( 'Auto:', 'food-calorie-calculator' ); ?>
+							<em style="color:#475569;"><?php echo esc_html( $hub_auto_title ); ?></em>
+							&nbsp;<span style="color:#94a3b8;">(<?php echo mb_strlen( $hub_auto_title ); ?> <?php esc_html_e( 'chars', 'food-calorie-calculator' ); ?>)</span>
+						</p>
+					</div>
+
+					<div>
+						<label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+							<span style="font-weight:500;"><?php esc_html_e( 'SEO Description Override', 'food-calorie-calculator' ); ?></span>
+							<span class="fcc-seo-chr" data-max="160" style="font-size:0.75rem;color:#94a3b8;font-weight:400;"></span>
+						</label>
+						<textarea name="hub_seo_description" class="fcc-seo-desc-input" rows="3" maxlength="160"
+							placeholder="<?php echo esc_attr( $hub_auto_desc ); ?>"
+							style="width:100%;border:1px solid #93c5fd;border-radius:8px;padding:9px 12px;font-size:0.875rem;box-sizing:border-box;resize:vertical;"><?php echo esc_textarea( $hub_seo_description ); ?></textarea>
+						<p class="description" style="margin-top:6px;">
+							<?php esc_html_e( 'Auto:', 'food-calorie-calculator' ); ?>
+							<em style="color:#475569;"><?php echo esc_html( mb_strimwidth( $hub_auto_desc, 0, 80, '…' ) ); ?></em>
+							&nbsp;<span style="color:#94a3b8;">(<?php echo mb_strlen( $hub_auto_desc ); ?> <?php esc_html_e( 'chars', 'food-calorie-calculator' ); ?>)</span>
+						</p>
+					</div>
+
+				</div>
+
+				<p class="description" style="margin-bottom:12px;color:#64748b;">
+					<?php esc_html_e( 'Leave both fields blank to use the auto-generated values.', 'food-calorie-calculator' ); ?>
+				</p>
+
+				<div class="fcc-fp-hub-actions">
+					<button type="submit" class="fcc-fp-btn-save">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+						<?php esc_html_e( 'Save Hub SEO', 'food-calorie-calculator' ); ?>
+					</button>
+					<?php if ( ! empty( $hub_seo_title ) || ! empty( $hub_seo_description ) ) : ?>
+						<button type="submit" name="hub_seo_title" value=""
+							class="fcc-fp-btn-cancel" style="color:#dc2626;border-color:#fca5a5;"
+							onclick="this.form.querySelector('[name=hub_seo_description]').value='';"
+							title="<?php esc_attr_e( 'Clear overrides and revert to auto-generated', 'food-calorie-calculator' ); ?>">
+							&#10005; <?php esc_html_e( 'Clear overrides', 'food-calorie-calculator' ); ?>
+						</button>
+					<?php endif; ?>
+				</div>
+			</form>
 		</div>
 	</div>
 
@@ -490,18 +571,23 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 		<table class="fcc-fp-table">
 			<thead>
 				<tr>
-					<th style="width:22%"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
-					<th style="width:30%"><?php esc_html_e( 'URL', 'food-calorie-calculator' ); ?></th>
+					<th style="width:20%"><?php esc_html_e( 'Category', 'food-calorie-calculator' ); ?></th>
+					<th style="width:26%"><?php esc_html_e( 'URL', 'food-calorie-calculator' ); ?></th>
 					<th><?php esc_html_e( 'Description', 'food-calorie-calculator' ); ?></th>
-					<th style="width:10%"><?php esc_html_e( 'Status', 'food-calorie-calculator' ); ?></th>
-					<th style="width:10%"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
+					<th style="width:8%"><?php esc_html_e( 'Content', 'food-calorie-calculator' ); ?></th>
+					<th style="width:8%"><?php esc_html_e( 'SEO', 'food-calorie-calculator' ); ?></th>
+					<th style="width:14%"><?php esc_html_e( 'Actions', 'food-calorie-calculator' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 			<?php foreach ( $categories as $cat ) :
-				$cat_url    = home_url( '/calories/' . $cat['slug'] . '/' );
-				$has_custom = ! empty( $cat['description'] );
-				$row_id     = 'fcc-cat-edit-' . (int) $cat['id'];
+				$cat_url     = home_url( '/calories/' . $cat['slug'] . '/' );
+				$has_custom  = ! empty( $cat['description'] );
+				$has_cat_seo = ! empty( $cat['seo_title'] ) || ! empty( $cat['seo_description'] );
+				$row_id      = 'fcc-cat-edit-' . (int) $cat['id'];
+				$seo_row_id  = 'fcc-cat-seo-edit-' . (int) $cat['id'];
+				$cat_auto_title = \FCC\Food_Pages::generate_category_title( $cat );
+				$cat_auto_desc  = \FCC\Food_Pages::generate_category_meta_desc( $cat );
 			?>
 				<tr id="fcc-cat-row-<?php echo (int) $cat['id']; ?>">
 					<td class="fcc-fp-food-name"><?php echo esc_html( $cat['name'] ); ?></td>
@@ -511,7 +597,7 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 							<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 						</a>
 					</td>
-					<td style="color:#64748b;font-size:0.82rem;max-width:260px;">
+					<td style="color:#64748b;font-size:0.82rem;max-width:200px;">
 						<?php if ( $has_custom ) : ?>
 							<?php echo esc_html( mb_strimwidth( $cat['description'], 0, 90, '…' ) ); ?>
 						<?php else : ?>
@@ -526,6 +612,13 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 						<?php endif; ?>
 					</td>
 					<td>
+						<?php if ( $has_cat_seo ) : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--custom">&#10003; <?php esc_html_e( 'Custom', 'food-calorie-calculator' ); ?></span>
+						<?php else : ?>
+							<span class="fcc-fp-badge fcc-fp-badge--auto"><?php esc_html_e( 'Auto', 'food-calorie-calculator' ); ?></span>
+						<?php endif; ?>
+					</td>
+					<td>
 						<div class="fcc-fp-actions">
 							<button type="button"
 								class="fcc-fp-btn-toggle fcc-fp-cat-toggle"
@@ -533,11 +626,15 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
 								<?php esc_html_e( 'Edit', 'food-calorie-calculator' ); ?>
 							</button>
+							<button type="button" class="fcc-fp-btn-toggle fcc-fp-seo-toggle" data-target="<?php echo esc_attr( $seo_row_id ); ?>">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+								SEO
+							</button>
 						</div>
 					</td>
 				</tr>
 				<tr id="<?php echo esc_attr( $row_id ); ?>" class="fcc-fp-edit-row" style="display:none;">
-					<td colspan="5">
+					<td colspan="6">
 						<div class="fcc-fp-edit-inner">
 							<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 								<input type="hidden" name="action" value="fcc_save_cat_content">
@@ -562,6 +659,71 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 										data-target="<?php echo esc_attr( $row_id ); ?>">
 										<?php esc_html_e( 'Cancel', 'food-calorie-calculator' ); ?>
 									</button>
+								</div>
+							</form>
+						</div>
+					</td>
+				</tr>
+				<tr id="<?php echo esc_attr( $seo_row_id ); ?>" class="fcc-fp-edit-row" style="display:none;">
+					<td colspan="6">
+						<div class="fcc-fp-edit-inner">
+							<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+								<input type="hidden" name="action" value="fcc_save_cat_seo">
+								<input type="hidden" name="cat_id" value="<?php echo (int) $cat['id']; ?>">
+								<?php wp_nonce_field( 'fcc_save_cat_seo' ); ?>
+
+								<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;">
+									<div>
+										<label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+											<span><?php esc_html_e( 'SEO Title Override', 'food-calorie-calculator' ); ?></span>
+											<span class="fcc-seo-chr" data-max="60" style="font-size:0.75rem;color:#94a3b8;font-weight:400;"></span>
+										</label>
+										<input type="text" name="seo_title" class="fcc-seo-title-input"
+											value="<?php echo esc_attr( $cat['seo_title'] ?? '' ); ?>"
+											maxlength="60"
+											placeholder="<?php echo esc_attr( $cat_auto_title ); ?>"
+											style="width:100%;border:1px solid #93c5fd;border-radius:8px;padding:9px 12px;font-size:0.875rem;box-sizing:border-box;">
+										<p class="description" style="margin-top:6px;">
+											<?php esc_html_e( 'Auto:', 'food-calorie-calculator' ); ?>
+											<em style="color:#475569;"><?php echo esc_html( $cat_auto_title ); ?></em>
+											&nbsp;<span style="color:#94a3b8;">(<?php echo mb_strlen( $cat_auto_title ); ?> <?php esc_html_e( 'chars', 'food-calorie-calculator' ); ?>)</span>
+										</p>
+									</div>
+									<div>
+										<label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+											<span><?php esc_html_e( 'SEO Description Override', 'food-calorie-calculator' ); ?></span>
+											<span class="fcc-seo-chr" data-max="160" style="font-size:0.75rem;color:#94a3b8;font-weight:400;"></span>
+										</label>
+										<textarea name="seo_description" class="fcc-seo-desc-input" rows="3" maxlength="160"
+											placeholder="<?php echo esc_attr( $cat_auto_desc ); ?>"
+											style="width:100%;border:1px solid #93c5fd;border-radius:8px;padding:9px 12px;font-size:0.875rem;box-sizing:border-box;resize:vertical;"><?php echo esc_textarea( $cat['seo_description'] ?? '' ); ?></textarea>
+										<p class="description" style="margin-top:6px;">
+											<?php esc_html_e( 'Auto:', 'food-calorie-calculator' ); ?>
+											<em style="color:#475569;"><?php echo esc_html( mb_strimwidth( $cat_auto_desc, 0, 80, '…' ) ); ?></em>
+											&nbsp;<span style="color:#94a3b8;">(<?php echo mb_strlen( $cat_auto_desc ); ?> <?php esc_html_e( 'chars', 'food-calorie-calculator' ); ?>)</span>
+										</p>
+									</div>
+								</div>
+
+								<p class="description" style="margin-bottom:12px;color:#64748b;">
+									<?php esc_html_e( 'Leave both fields blank to use the auto-generated values.', 'food-calorie-calculator' ); ?>
+								</p>
+
+								<div class="fcc-fp-edit-actions">
+									<button type="submit" class="fcc-fp-btn-save">
+										<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+										<?php esc_html_e( 'Save SEO', 'food-calorie-calculator' ); ?>
+									</button>
+									<button type="button" class="fcc-fp-btn-cancel fcc-fp-seo-cancel" data-target="<?php echo esc_attr( $seo_row_id ); ?>">
+										<?php esc_html_e( 'Cancel', 'food-calorie-calculator' ); ?>
+									</button>
+									<?php if ( $has_cat_seo ) : ?>
+										<button type="submit" name="seo_title" value="" class="fcc-fp-btn-cancel" style="color:#dc2626;border-color:#fca5a5;"
+											onclick="this.form.querySelector('[name=seo_description]').value='';"
+											title="<?php esc_attr_e( 'Clear overrides', 'food-calorie-calculator' ); ?>">
+											&#10005; <?php esc_html_e( 'Clear overrides', 'food-calorie-calculator' ); ?>
+										</button>
+									<?php endif; ?>
 								</div>
 							</form>
 						</div>
@@ -842,16 +1004,29 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 		input.addEventListener( 'input', function () { fccSeoCounter( input ); } );
 	} );
 
-	// Scroll to saved SEO row and open it.
+	// Scroll to saved SEO row and open it (food).
 	<?php if ( 'seo' === $saved && $saved_food ) : ?>
 	( function () {
-		var row    = document.getElementById( 'fcc-food-row-<?php echo (int) $saved_food; ?>' );
-		var target = 'fcc-seo-edit-<?php echo (int) $saved_food; ?>';
+		var row     = document.getElementById( 'fcc-food-row-<?php echo (int) $saved_food; ?>' );
+		var target  = 'fcc-seo-edit-<?php echo (int) $saved_food; ?>';
 		var editRow = document.getElementById( target );
 		var btn     = document.querySelector( '[data-target="' + target + '"].fcc-fp-seo-toggle' );
 		if ( row ) row.scrollIntoView( { behavior: 'smooth', block: 'center' } );
 		if ( editRow ) editRow.style.display = '';
-		if ( btn )    btn.classList.add( 'is-open' );
+		if ( btn )     btn.classList.add( 'is-open' );
+	} )();
+	<?php endif; ?>
+
+	// Scroll to saved category SEO row and open it.
+	<?php if ( 'cat_seo' === $saved && $saved_cat ) : ?>
+	( function () {
+		var row     = document.getElementById( 'fcc-cat-row-<?php echo (int) $saved_cat; ?>' );
+		var target  = 'fcc-cat-seo-edit-<?php echo (int) $saved_cat; ?>';
+		var editRow = document.getElementById( target );
+		var btn     = document.querySelector( '[data-target="' + target + '"].fcc-fp-seo-toggle' );
+		if ( row ) row.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+		if ( editRow ) editRow.style.display = '';
+		if ( btn )     btn.classList.add( 'is-open' );
 	} )();
 	<?php endif; ?>
 } )();

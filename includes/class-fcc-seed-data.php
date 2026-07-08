@@ -19770,4 +19770,19 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 109 );
 	}
+
+	/** Seed v110: Add seo_title and seo_description columns to fcc_categories for per-category SEO overrides. */
+	public static function seed_v110(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 110 ) { return; }
+		global $wpdb;
+		$t    = $wpdb->prefix . 'fcc_categories';
+		$cols = $wpdb->get_col( "DESCRIBE {$t}", 0 ); // phpcs:ignore
+		if ( ! in_array( 'seo_title', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN seo_title varchar(100) DEFAULT NULL" ); // phpcs:ignore
+		}
+		if ( ! in_array( 'seo_description', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN seo_description varchar(300) DEFAULT NULL AFTER seo_title" ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 110 );
+	}
 }

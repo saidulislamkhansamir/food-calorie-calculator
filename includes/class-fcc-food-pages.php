@@ -1200,15 +1200,19 @@ class Food_Pages {
 	public function output_seo_meta(): void {
 		// Directory page.
 		if ( 'directory' === self::$page_type ) {
-			echo '<meta name="description" content="Browse calories and nutrition facts for over 4,900 foods. Calories, protein, fat, carbs, vitamins, and minerals. Free UK food calorie calculator.">' . "\n";
+			$hub_desc = Settings::get( 'content.hub_seo_description', '' );
+			$meta_desc = ! empty( $hub_desc ) ? $hub_desc : self::generate_hub_meta_desc();
+			echo '<meta name="description" content="' . esc_attr( $meta_desc ) . '">' . "\n";
 			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' ) ) . '">' . "\n";
 			return;
 		}
 
 		// Category page.
 		if ( 'category' === self::$page_type && self::$current_category ) {
-			$cn = esc_attr( self::$current_category['name'] );
-			echo '<meta name="description" content="' . esc_attr( "{$cn}: browse calories, protein, fat, and full nutrition facts for all foods in this category. Free UK food calorie calculator." ) . '">' . "\n";
+			$cat_desc = ! empty( self::$current_category['seo_description'] )
+				? self::$current_category['seo_description']
+				: self::generate_category_meta_desc( self::$current_category );
+			echo '<meta name="description" content="' . esc_attr( $cat_desc ) . '">' . "\n";
 			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' . self::$current_category['slug'] . '/' ) ) . '">' . "\n";
 			return;
 		}
@@ -1249,27 +1253,14 @@ class Food_Pages {
 	public function override_title_pre( $title ): string {
 		$title = (string) $title;
 		if ( 'directory' === self::$page_type ) {
-			return 'Browse UK Food Calories: 4,900+ Foods Free';
+			$hub_title = Settings::get( 'content.hub_seo_title', '' );
+			return ! empty( $hub_title ) ? $hub_title : self::generate_hub_title();
 		}
 		if ( 'category' === self::$page_type && self::$current_category ) {
-			$cn     = self::$current_category['name'];
-			$cat_id = (int) ( self::$current_category['id'] ?? 1 );
-			$opts   = array_values( array_filter( [
-				"{$cn}: Full UK Calorie and Nutrition Guide",
-				"UK Calorie and Nutrition Facts for {$cn} Foods",
-				"Browse {$cn} Calories and Nutrition Facts",
-				"{$cn} Foods: UK Calorie and Nutrition Data",
-				"{$cn}: Calories and Nutrition Facts",
-				"Calories in {$cn} Foods",
-				"{$cn} Food Calories and Macros",
-				"UK {$cn} Calorie Guide",
-			], fn( $s ) => mb_strlen( $s ) >= 40 && mb_strlen( $s ) <= 60 ) );
-			if ( ! $opts ) {
-				$under60 = array_values( array_filter( [ "Calories in {$cn} Foods", "{$cn}: UK Calorie Data" ], fn( $s ) => mb_strlen( $s ) <= 60 ) );
-				usort( $under60, fn( $a, $b ) => mb_strlen( $b ) - mb_strlen( $a ) );
-				return $under60 ? $under60[0] : mb_substr( $cn, 0, 60 );
+			if ( ! empty( self::$current_category['seo_title'] ) ) {
+				return self::$current_category['seo_title'];
 			}
-			return $opts[ $cat_id % count( $opts ) ];
+			return self::generate_category_title( self::$current_category );
 		}
 		if ( self::$current_food ) {
 			if ( ! empty( self::$current_food['seo_title'] ) ) {
@@ -1286,27 +1277,13 @@ class Food_Pages {
 
 	public function filter_title( array $title ): array {
 		if ( 'directory' === self::$page_type ) {
-			$title['title'] = 'Browse UK Food Calories: 4,900+ Foods Free';
+			$hub_title      = Settings::get( 'content.hub_seo_title', '' );
+			$title['title'] = ! empty( $hub_title ) ? $hub_title : self::generate_hub_title();
 			$title['site']  = '';
 		} elseif ( 'category' === self::$page_type && self::$current_category ) {
-			$cn     = self::$current_category['name'];
-			$cat_id = (int) ( self::$current_category['id'] ?? 1 );
-			$opts   = array_values( array_filter( [
-				"{$cn}: Full UK Calorie and Nutrition Guide",
-				"UK Calorie and Nutrition Facts for {$cn} Foods",
-				"Browse {$cn} Calories and Nutrition Facts",
-				"{$cn} Foods: UK Calorie and Nutrition Data",
-				"{$cn}: Calories and Nutrition Facts",
-				"Calories in {$cn} Foods",
-				"{$cn} Food Calories and Macros",
-				"UK {$cn} Calorie Guide",
-			], fn( $s ) => mb_strlen( $s ) >= 40 && mb_strlen( $s ) <= 60 ) );
-			if ( ! $opts ) {
-				$under60 = array_values( array_filter( [ "Calories in {$cn} Foods", "{$cn}: UK Calorie Data" ], fn( $s ) => mb_strlen( $s ) <= 60 ) );
-				usort( $under60, fn( $a, $b ) => mb_strlen( $b ) - mb_strlen( $a ) );
-				$opts = $under60 ?: [ mb_substr( $cn, 0, 60 ) ];
-			}
-			$title['title'] = $opts[ $cat_id % count( $opts ) ];
+			$title['title'] = ! empty( self::$current_category['seo_title'] )
+				? self::$current_category['seo_title']
+				: self::generate_category_title( self::$current_category );
 			$title['site']  = '';
 		} elseif ( self::$current_food ) {
 			$title['title'] = ! empty( self::$current_food['seo_title'] )
@@ -1354,6 +1331,40 @@ class Food_Pages {
 		}
 
 		return $fitting[ $id % count( $fitting ) ];
+	}
+
+	public static function generate_category_title( array $cat ): string {
+		$cn     = $cat['name'];
+		$cat_id = (int) ( $cat['id'] ?? 1 );
+		$opts   = array_values( array_filter( [
+			"{$cn}: Full UK Calorie and Nutrition Guide",
+			"UK Calorie and Nutrition Facts for {$cn} Foods",
+			"Browse {$cn} Calories and Nutrition Facts",
+			"{$cn} Foods: UK Calorie and Nutrition Data",
+			"{$cn}: Calories and Nutrition Facts",
+			"Calories in {$cn} Foods",
+			"{$cn} Food Calories and Macros",
+			"UK {$cn} Calorie Guide",
+		], fn( $s ) => mb_strlen( $s ) >= 40 && mb_strlen( $s ) <= 60 ) );
+		if ( ! $opts ) {
+			$under60 = array_values( array_filter( [ "Calories in {$cn} Foods", "{$cn}: UK Calorie Data" ], fn( $s ) => mb_strlen( $s ) <= 60 ) );
+			usort( $under60, fn( $a, $b ) => mb_strlen( $b ) - mb_strlen( $a ) );
+			return $under60 ? $under60[0] : mb_substr( $cn, 0, 60 );
+		}
+		return $opts[ $cat_id % count( $opts ) ];
+	}
+
+	public static function generate_category_meta_desc( array $cat ): string {
+		$cn = $cat['name'];
+		return "{$cn}: browse calories, protein, fat, and full nutrition facts for all foods in this category. Free UK food calorie calculator.";
+	}
+
+	public static function generate_hub_title(): string {
+		return 'Browse UK Food Calories: 4,900+ Foods Free';
+	}
+
+	public static function generate_hub_meta_desc(): string {
+		return 'Browse calories and nutrition facts for over 4,900 foods. Calories, protein, fat, carbs, vitamins, and minerals. Free UK food calorie calculator.';
 	}
 
 	private function build_faq_schema( array $food ): array {
