@@ -54,7 +54,7 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 	<div class="fcc-stg-hero">
 		<div class="fcc-stg-hero__inner">
 			<div class="fcc-stg-hero__content">
-				<div class="fcc-stg-hero__icon" aria-hidden="true">⚙️</div>
+				<div class="fcc-stg-hero__icon" aria-hidden="true"><img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="40" height="40" alt="" decoding="async" style="display:block;width:40px;height:40px;object-fit:contain;"></div>
 				<div>
 					<div class="fcc-stg-hero__title"><?php esc_html_e( 'Settings', 'food-calorie-calculator' ); ?></div>
 					<p class="fcc-stg-hero__sub">

@@ -31,7 +31,7 @@ if ( ! is_array( $import_history ) ) { $import_history = []; }
 	<div class="fcc-ie-hero">
 		<div class="fcc-ie-hero__inner">
 			<div class="fcc-ie-hero__content">
-				<div class="fcc-ie-hero__icon" aria-hidden="true">📦</div>
+				<div class="fcc-ie-hero__icon" aria-hidden="true"><img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="48" height="48" alt="" decoding="async" style="display:block;width:48px;height:48px;object-fit:contain;"></div>
 				<div>
 					<div class="fcc-ie-hero__title"><?php esc_html_e( 'Import / Export', 'food-calorie-calculator' ); ?></div>
 					<p class="fcc-ie-hero__sub">

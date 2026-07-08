@@ -74,7 +74,7 @@ $edit_id = (int) $edit_id;
 		<div class="fcc-cats-hero__inner">
 
 			<div class="fcc-cats-hero__content">
-				<div class="fcc-cats-hero__icon" aria-hidden="true">&#127991;</div>
+				<div class="fcc-cats-hero__icon" aria-hidden="true"><img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="48" height="48" alt="" decoding="async" style="display:block;width:48px;height:48px;object-fit:contain;"></div>
 				<div>
 					<div class="fcc-cats-hero__title">
 						<?php esc_html_e( 'Categories', 'food-calorie-calculator' ); ?>
