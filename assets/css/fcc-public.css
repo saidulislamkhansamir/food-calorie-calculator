@@ -3155,6 +3155,21 @@ select.fcc-bmr-input {
 /* Qty controls inside compare col */
 .fcc-compare-qty-controls { margin-top: 0.125rem; }
 
+/* Narrow compare columns: shrink the fixed qty width so unit has room */
+.fcc-compare-qty-controls .fcc-qty-group:first-child {
+	max-width: 80px;
+	flex: 0 0 80px;
+}
+.fcc-compare-qty-controls .fcc-qty-group:last-child {
+	min-width: 0;
+	overflow: hidden;
+}
+.fcc-compare-qty-controls .fcc-unit-trigger__text {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 /* â”€â”€ Results area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .fcc-compare-results { margin-top: 1.25rem; }
 
