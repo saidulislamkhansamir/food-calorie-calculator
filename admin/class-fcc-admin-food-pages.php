@@ -14,6 +14,7 @@ class Food_Pages_Admin {
 	public function register( \FCC\Loader $loader ): void {
 		$loader->add_action( 'admin_post_fcc_save_hub_content', $this, 'save_hub_content' );
 		$loader->add_action( 'admin_post_fcc_save_cat_content', $this, 'save_cat_content' );
+		$loader->add_action( 'admin_post_fcc_save_food_seo',    $this, 'save_food_seo' );
 	}
 
 	public function page_food_pages(): void {
@@ -42,6 +43,24 @@ class Food_Pages_Admin {
 		\FCC\Settings::save( $all );
 
 		wp_safe_redirect( add_query_arg( [ 'page' => 'fcc-food-pages', 'saved' => 'hub' ], admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	public function save_food_seo(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'food-calorie-calculator' ) );
+		}
+		check_admin_referer( 'fcc_save_food_seo' );
+
+		$food_id         = absint( $_POST['food_id'] ?? 0 );
+		$seo_title       = isset( $_POST['seo_title'] )       ? sanitize_text_field( wp_unslash( $_POST['seo_title'] ) )       : '';
+		$seo_description = isset( $_POST['seo_description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['seo_description'] ) ) : '';
+
+		if ( $food_id > 0 ) {
+			\FCC\Database::update_food_seo( $food_id, $seo_title, $seo_description );
+		}
+
+		wp_safe_redirect( add_query_arg( [ 'page' => 'fcc-food-pages', 'saved' => 'seo', 'food_id' => $food_id ], admin_url( 'admin.php' ) ) );
 		exit;
 	}
 

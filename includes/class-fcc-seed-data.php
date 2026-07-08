@@ -19755,4 +19755,19 @@ class Seed_Data {
 		Settings::save( $all );
 		update_option( 'fcc_seed_version', 108 );
 	}
+
+	/** Seed v109: Add seo_title and seo_description columns for per-food SEO overrides. */
+	public static function seed_v109(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 109 ) { return; }
+		global $wpdb;
+		$t    = $wpdb->prefix . 'fcc_foods';
+		$cols = $wpdb->get_col( "DESCRIBE {$t}", 0 ); // phpcs:ignore
+		if ( ! in_array( 'seo_title', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN seo_title varchar(100) DEFAULT NULL AFTER page_content" ); // phpcs:ignore
+		}
+		if ( ! in_array( 'seo_description', $cols, true ) ) {
+			$wpdb->query( "ALTER TABLE {$t} ADD COLUMN seo_description varchar(300) DEFAULT NULL AFTER seo_title" ); // phpcs:ignore
+		}
+		update_option( 'fcc_seed_version', 109 );
+	}
 }

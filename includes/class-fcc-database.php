@@ -731,6 +731,20 @@ class Database {
 		return $result ? (int) $wpdb->insert_id : false;
 	}
 
+	public static function update_food_seo( int $food_id, string $seo_title, string $seo_description ): bool {
+		global $wpdb;
+		return false !== $wpdb->update(
+			self::foods_table(),
+			[
+				'seo_title'       => '' !== $seo_title       ? $seo_title       : null,
+				'seo_description' => '' !== $seo_description ? $seo_description : null,
+			],
+			[ 'id' => $food_id ],
+			[ '%s', '%s' ],
+			[ '%d' ]
+		);
+	}
+
 	public static function update_category_description( int $id, string $desc ): bool {
 		global $wpdb;
 		return false !== $wpdb->update(
