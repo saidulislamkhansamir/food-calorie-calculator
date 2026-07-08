@@ -93,8 +93,14 @@ class Shortcode {
 /* Compare tab — prevent grid blowout; no overflow:hidden so dropdowns stay visible */
 #fcc-calculator .fcc-compare-grid{display:grid!important;grid-template-columns:1fr auto 1fr!important;box-sizing:border-box!important;}
 #fcc-calculator .fcc-compare-col{min-width:0!important;box-sizing:border-box!important;}
-#fcc-calculator .fcc-compare-search-wrap{width:100%!important;min-width:0!important;box-sizing:border-box!important;}
-#fcc-calculator .fcc-compare-search{width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+#fcc-calculator .fcc-compare-search-wrap{position:relative!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+#fcc-calculator .fcc-compare-search{width:100%!important;min-width:0!important;box-sizing:border-box!important;padding-right:2.25rem!important;}
+#fcc-calculator .fcc-compare-search::-webkit-search-cancel-button{display:none!important;}
+#fcc-calculator .fcc-compare-clear{position:absolute!important;right:0.4rem!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;z-index:10!important;margin:0!important;padding:0!important;width:26px!important;height:26px!important;min-width:0!important;min-height:0!important;max-width:26px!important;max-height:26px!important;border-radius:50%!important;background:transparent!important;border:none!important;color:#9ca3af!important;cursor:pointer!important;box-shadow:none!important;flex-shrink:0!important;}
+#fcc-calculator .fcc-compare-clear[hidden]{display:none!important;}
+#fcc-calculator .fcc-compare-clear:not([hidden]){display:flex!important;align-items:center!important;justify-content:center!important;}
+#fcc-calculator .fcc-compare-clear:hover{background:#fee2e2!important;color:#dc2626!important;}
+#fcc-calculator .fcc-compare-clear svg{display:block!important;width:11px!important;height:11px!important;flex-shrink:0!important;stroke:currentColor!important;}
 /* Meal category pills (ADDING TO) — WoodMart overrides button style */
 #fcc-calculator .fcc-meal-cat-pill{display:inline-flex!important;align-items:center!important;gap:4px!important;padding:5px 12px!important;border:1.5px solid #d4ddd8!important;border-radius:20px!important;background:#fff!important;font-size:0.78rem!important;font-weight:600!important;color:#1a2e2f!important;cursor:pointer!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
 #fcc-calculator .fcc-meal-cat-pill--active{background:#148B43!important;border-color:#148B43!important;color:#fff!important;box-shadow:0 2px 6px rgba(20,139,67,.2)!important;}
