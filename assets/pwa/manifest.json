@@ -1,6 +1,6 @@
 {
   "name": "Food Calorie Calculator",
-  "short_name": "Calorie Calc",
+  "short_name": "Food Calorie",
   "description": "UK food calorie calculator with FSA traffic lights and Reference Intakes",
   "start_url": "/?utm_source=pwa",
   "display": "standalone",
