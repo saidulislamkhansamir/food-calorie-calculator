@@ -1133,7 +1133,7 @@ class Food_Pages {
 			return "With just {$kcal} kcal per 100g, {$name} is a low-calorie choice. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts and FSA traffic light labels.";
 		}
 		if ( $kcal_raw <= 80 ) {
-			return "{$name} contains {$kcal} kcal per 100g — a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA labels, and allergen info.";
+			return "{$name} contains {$kcal} kcal per 100g, making it a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA labels, and allergen info.";
 		}
 		if ( $carb_raw <= 3 ) {
 			return "{$name} has {$kcal} kcal per 100g with just {$carb}g of carbs, making it suitable for low-carb diets. Protein {$prot}g, Fat {$fat}g. Full UK nutrition facts and FSA ratings.";
@@ -1145,7 +1145,7 @@ class Food_Pages {
 			return "{$name} contains {$fat}g of fat per 100g at {$kcal} kcal. Protein {$prot}g, Carbs {$carb}g. View the full UK nutrition profile, FSA traffic lights, and allergen info.";
 		}
 		// Default — question-led hook, still unique per food via its stats.
-		return "How many calories in {$name}? {$kcal} kcal per 100g — Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA traffic light labels, and allergen info.";
+		return "How many calories in {$name}? {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA traffic light labels, and allergen info.";
 	}
 
 	public function output_seo_meta(): void {
