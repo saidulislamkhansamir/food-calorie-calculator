@@ -2430,7 +2430,7 @@ select.fcc-bmr-input {
 /* ── 380px — Small phones ───────────────────────────────────────────── */
 @media (max-width: 380px) {
 	.fcc-hero { padding: 1rem 0.75rem; }
-	.fcc-hero__icon { display: none; }
+	.fcc-hero__icon { display: flex; }
 	.fcc-title { font-size: 1.1rem; }
 	.fcc-subtitle { font-size: 0.7rem; }
 
