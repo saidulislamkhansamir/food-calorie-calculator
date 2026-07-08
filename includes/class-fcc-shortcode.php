@@ -141,6 +141,39 @@ class Shortcode {
 #fcc-calculator .fcc-compare-share-btn{display:inline-flex!important;align-items:center!important;gap:0.4rem!important;padding:0.5rem 1.1rem!important;border:none!important;border-radius:8px!important;background:#148B43!important;color:#fff!important;font-size:0.82rem!important;font-weight:600!important;cursor:pointer!important;box-shadow:0 2px 8px rgba(20,139,67,.25)!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
 #fcc-calculator .fcc-compare-share-btn:hover{background:#117a39!important;box-shadow:0 4px 12px rgba(20,139,67,.35)!important;}
 #fcc-calculator .fcc-compare-share-btn.fcc-btn--copied{background:#059669!important;box-shadow:none!important;color:#fff!important;}
+/* ── Daily Calorie Need (BMR/TDEE) — WoodMart overrides ── */
+/* Lock section padding so header bleeds flush on all sides */
+#fcc-calculator .fcc-bmr-section{padding:1.25rem!important;overflow:hidden!important;}
+/* Header — dark teal gradient */
+#fcc-calculator .fcc-bmr-header{margin:-1.25rem -1.25rem 1.25rem!important;border-radius:14px 14px 0 0!important;background:linear-gradient(135deg,#0C3D28 0%,#148B43 100%)!important;}
+/* Sex toggle buttons */
+#fcc-calculator .fcc-bmr-sex-btn{display:flex!important;min-height:54px!important;align-items:center!important;justify-content:center!important;gap:0.45rem!important;padding:0.65rem 0.75rem!important;border:1.5px solid #d4ddd8!important;border-radius:10px!important;background:#fff!important;color:#4b5563!important;font-size:0.875rem!important;font-weight:600!important;cursor:pointer!important;text-transform:none!important;letter-spacing:normal!important;box-shadow:none!important;height:auto!important;width:100%!important;box-sizing:border-box!important;}
+#fcc-calculator .fcc-bmr-sex-btn--active{border-color:#148B43!important;background:#EEF8F1!important;color:#1a5c35!important;box-shadow:0 0 0 3px rgba(20,139,67,.14)!important;}
+#fcc-calculator .fcc-bmr-sex-btn:not(.fcc-bmr-sex-btn--active):hover{border-color:#148B43!important;background:#EEF8F1!important;color:#1a5c35!important;}
+/* Height unit buttons */
+#fcc-calculator .fcc-bmr-height-unit-btn{display:inline-block!important;padding:0.18rem 0.6rem!important;font-size:0.7rem!important;font-weight:700!important;border:none!important;background:#fff!important;color:#6b7280!important;cursor:pointer!important;text-transform:none!important;letter-spacing:0!important;box-shadow:none!important;margin:0!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-bmr-height-unit-btn--active{background:#148B43!important;color:#fff!important;}
+/* Number input boxes */
+#fcc-calculator .fcc-bmr-input-box{display:flex!important;align-items:stretch!important;min-height:54px!important;background:#fff!important;border:1.5px solid #d4ddd8!important;border-radius:10px!important;overflow:hidden!important;box-sizing:border-box!important;box-shadow:none!important;}
+#fcc-calculator .fcc-bmr-num-input{flex:1!important;min-width:0!important;padding:0.7rem 0.5rem 0.7rem 0.875rem!important;font-size:1.1rem!important;font-weight:700!important;color:#111827!important;background:transparent!important;border:none!important;box-shadow:none!important;outline:none!important;text-transform:none!important;letter-spacing:normal!important;}
+#fcc-calculator .fcc-bmr-input-box__unit{display:flex!important;align-items:center!important;padding:0 0.75rem!important;font-size:0.72rem!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.04em!important;color:#fff!important;background:#148B43!important;flex-shrink:0!important;border-left:none!important;}
+/* Activity cards */
+#fcc-calculator .fcc-bmr-act-card{display:flex!important;flex-direction:column!important;align-items:center!important;gap:0.2rem!important;padding:0.65rem 0.4rem!important;border:1.5px solid #d4ddd8!important;border-radius:12px!important;background:#fff!important;cursor:pointer!important;text-align:center!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-bmr-act-card:not(.fcc-bmr-act-card--active):hover{border-color:#148B43!important;background:#EEF8F1!important;}
+#fcc-calculator .fcc-bmr-act-card--active{border-color:#148B43!important;background:#EEF8F1!important;box-shadow:0 0 0 3px rgba(20,139,67,.15)!important;}
+#fcc-calculator .fcc-bmr-act-card__name{font-size:0.72rem!important;font-weight:700!important;color:#111827!important;text-transform:none!important;letter-spacing:normal!important;}
+#fcc-calculator .fcc-bmr-act-card--active .fcc-bmr-act-card__name{color:#1a5c35!important;}
+#fcc-calculator .fcc-bmr-act-card__desc{font-size:0.62rem!important;color:#6b7280!important;text-transform:none!important;letter-spacing:normal!important;line-height:1.2!important;}
+/* Goal pills */
+#fcc-calculator .fcc-bmr-goal-pill{display:flex!important;flex-direction:column!important;align-items:center!important;gap:0.15rem!important;padding:0.7rem 0.5rem!important;border:1.5px solid #d4ddd8!important;border-radius:12px!important;background:#fff!important;cursor:pointer!important;text-align:center!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-bmr-goal-pill__name{font-size:0.78rem!important;font-weight:700!important;color:#111827!important;text-transform:none!important;letter-spacing:normal!important;}
+#fcc-calculator .fcc-bmr-goal-pill__sub{font-size:0.65rem!important;color:#6b7280!important;text-transform:none!important;letter-spacing:normal!important;}
+#fcc-calculator .fcc-bmr-goal-pill--lose:hover,#fcc-calculator .fcc-bmr-goal-pill--lose.fcc-bmr-goal-pill--active{border-color:#ef4444!important;background:#fff1f2!important;box-shadow:0 0 0 3px rgba(239,68,68,.12)!important;}
+#fcc-calculator .fcc-bmr-goal-pill--maintain:hover,#fcc-calculator .fcc-bmr-goal-pill--maintain.fcc-bmr-goal-pill--active{border-color:#148B43!important;background:#EEF8F1!important;box-shadow:0 0 0 3px rgba(20,139,67,.12)!important;}
+#fcc-calculator .fcc-bmr-goal-pill--gain:hover,#fcc-calculator .fcc-bmr-goal-pill--gain.fcc-bmr-goal-pill--active{border-color:#22c55e!important;background:#f0fdf4!important;box-shadow:0 0 0 3px rgba(34,197,94,.12)!important;}
+/* Calculate my TDEE button — WoodMart overrides .fcc-btn--primary */
+#fcc-calculator .fcc-bmr-calculate{display:flex!important;align-items:center!important;justify-content:center!important;gap:0.4rem!important;width:100%!important;padding:0.75rem 1.25rem!important;border:none!important;border-radius:10px!important;background:#148B43!important;color:#fff!important;font-size:0.9rem!important;font-weight:700!important;cursor:pointer!important;box-shadow:0 2px 8px rgba(20,139,67,.3)!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
+#fcc-calculator .fcc-bmr-calculate:hover{background:#117a39!important;box-shadow:0 4px 12px rgba(20,139,67,.4)!important;}
 </style>' . "\n";
 	}
 
