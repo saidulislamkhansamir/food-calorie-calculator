@@ -3152,22 +3152,22 @@ select.fcc-bmr-input {
 	white-space: nowrap;
 }
 
-/* Qty controls inside compare col */
+/* Qty controls inside compare col — stack vertically to fit narrow columns */
 .fcc-compare-qty-controls { margin-top: 0.125rem; }
 
-/* Narrow compare columns: shrink the fixed qty width so unit has room */
+.fcc-compare-qty-controls .fcc-quantity-controls {
+	flex-direction: column;
+}
 .fcc-compare-qty-controls .fcc-qty-group:first-child {
-	max-width: 80px;
-	flex: 0 0 80px;
+	max-width: none;
+	flex: none;
+	border-right: none;
+	border-bottom: 1.5px solid var(--fcc-border);
+	border-radius: 10px 10px 0 0;
 }
 .fcc-compare-qty-controls .fcc-qty-group:last-child {
-	min-width: 0;
-	overflow: hidden;
-}
-.fcc-compare-qty-controls .fcc-unit-trigger__text {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	border-radius: 0 0 10px 10px;
+	overflow: visible;
 }
 
 /* â”€â”€ Results area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
