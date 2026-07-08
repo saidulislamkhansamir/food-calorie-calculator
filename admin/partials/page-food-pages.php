@@ -347,10 +347,13 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 .fcc-fp-pag-ellipsis { padding:0 4px; color:#94a3b8; font-size:0.85rem; line-height:32px; }
 .fcc-fp-pag-controls { display:flex; align-items:center; gap:8px; margin-left:auto; }
 .fcc-fp-pag-jump { display:flex; align-items:center; gap:4px; }
-.fcc-fp-pag-jump-input { width:60px; height:30px; padding:0 8px; border:1px solid #d1d5db; border-radius:7px; font-size:0.8rem; text-align:center; }
-.fcc-fp-pag-go { height:30px; padding:0 10px; background:#fff; border:1px solid #d1d5db; border-radius:7px; font-size:0.8rem; cursor:pointer; transition:background .12s; }
-.fcc-fp-pag-go:hover { background:#f1f5f9; }
-.fcc-fp-per-page-sel { height:30px; padding:0 6px; border:1px solid #d1d5db; border-radius:7px; font-size:0.8rem; cursor:pointer; }
+.fcc-fp-pag-jump-input { width:58px; height:32px; padding:0 8px; border:1px solid #e2e8f0; border-radius:7px; font-size:0.8rem; font-weight:500; color:#374151; text-align:center; background:#fff; outline:none; transition:border-color .12s, box-shadow .12s; }
+.fcc-fp-pag-jump-input:focus { border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,.12); }
+.fcc-fp-pag-go { height:32px; padding:0 12px; background:#7c3aed; color:#fff; border:1px solid #7c3aed; border-radius:7px; font-size:0.8rem; font-weight:600; cursor:pointer; transition:background .12s, border-color .12s; }
+.fcc-fp-pag-go:hover { background:#6d28d9; border-color:#6d28d9; }
+.fcc-fp-per-page-sel { height:32px; padding:0 28px 0 10px; border:1px solid #e2e8f0; border-radius:7px; font-size:0.8rem; font-weight:500; color:#374151; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 8px center; -webkit-appearance:none; appearance:none; cursor:pointer; outline:none; transition:border-color .12s, box-shadow .12s; }
+.fcc-fp-per-page-sel:hover { border-color:#94a3b8; }
+.fcc-fp-per-page-sel:focus { border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,.12); }
 #fcc-foods-wrap { transition:opacity .15s; }
 #fcc-foods-wrap.fcc-loading { opacity:.5; pointer-events:none; }
 
