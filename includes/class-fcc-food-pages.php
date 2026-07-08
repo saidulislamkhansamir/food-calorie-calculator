@@ -24,9 +24,11 @@ class Food_Pages {
 		$loader->add_filter( 'query_vars',        $this, 'add_query_vars' );
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_assets' );
 		$loader->add_action( 'template_redirect', $this, 'handle_food_page' );
-		$loader->add_action( 'wp_head',              $this, 'output_seo_meta', 1 );
-		$loader->add_filter( 'document_title_parts', $this, 'filter_title',       999 );
-		$loader->add_filter( 'pre_get_document_title', $this, 'override_title_pre', 999 );
+		$loader->add_action( 'wp_head',                  $this, 'output_seo_meta',        1   );
+		$loader->add_filter( 'document_title_parts',     $this, 'filter_title',            999 );
+		$loader->add_filter( 'pre_get_document_title',   $this, 'override_title_pre',      999 );
+		$loader->add_filter( 'rank_math/frontend/description', $this, 'suppress_seo_plugin_desc', 999 );
+		$loader->add_filter( 'wpseo_metadesc',           $this, 'suppress_seo_plugin_desc', 999 );
 	}
 
 	public function maybe_enqueue_assets(): void {
@@ -1111,7 +1113,7 @@ class Food_Pages {
 	// SEO Meta Tags
 	// -------------------------------------------------------------------------
 
-	private function generate_food_meta_desc( array $food ): string {
+	public static function generate_food_meta_desc( array $food ): string {
 		$name     = $food['name'];
 		$kcal_raw = (float) $food['energy_kcal'];
 		$prot_raw = (float) $food['protein_g'];
@@ -1216,7 +1218,10 @@ class Food_Pages {
 
 		$url  = self::food_url( $food );
 
-		echo '<meta name="description" content="' . esc_attr( $this->generate_food_meta_desc( $food ) ) . '">' . "\n";
+		$meta_desc = ! empty( $food['seo_description'] )
+			? $food['seo_description']
+			: self::generate_food_meta_desc( $food );
+		echo '<meta name="description" content="' . esc_attr( $meta_desc ) . '">' . "\n";
 		echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
 
 		// JSON-LD NutritionInformation schema.
@@ -1241,7 +1246,8 @@ class Food_Pages {
 		echo '<script type="application/ld+json">' . wp_json_encode( $this->build_faq_schema( $food ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 	}
 
-	public function override_title_pre( string $title ): string {
+	public function override_title_pre( $title ): string {
+		$title = (string) $title;
 		if ( 'directory' === self::$page_type ) {
 			return 'Browse UK Food Calories: 4,900+ Foods Free';
 		}
@@ -1266,9 +1272,16 @@ class Food_Pages {
 			return $opts[ $cat_id % count( $opts ) ];
 		}
 		if ( self::$current_food ) {
-			return $this->generate_food_title( self::$current_food );
+			if ( ! empty( self::$current_food['seo_title'] ) ) {
+				return self::$current_food['seo_title'];
+			}
+			return self::generate_food_title( self::$current_food );
 		}
 		return $title;
+	}
+
+	public function suppress_seo_plugin_desc( $desc ): string {
+		return ( self::$current_food || self::$page_type ) ? '' : (string) $desc;
 	}
 
 	public function filter_title( array $title ): array {
@@ -1296,13 +1309,15 @@ class Food_Pages {
 			$title['title'] = $opts[ $cat_id % count( $opts ) ];
 			$title['site']  = '';
 		} elseif ( self::$current_food ) {
-			$title['title'] = $this->generate_food_title( self::$current_food );
+			$title['title'] = ! empty( self::$current_food['seo_title'] )
+				? self::$current_food['seo_title']
+				: self::generate_food_title( self::$current_food );
 			$title['site']  = '';
 		}
 		return $title;
 	}
 
-	private function generate_food_title( array $food ): string {
+	public static function generate_food_title( array $food ): string {
 		$name = $food['name'];
 		$kcal = (int) round( (float) $food['energy_kcal'] );
 		$id   = (int) ( $food['id'] ?? 1 );
