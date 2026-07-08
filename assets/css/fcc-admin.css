@@ -4449,11 +4449,10 @@ button.fcc-reqs-tab {
 	width: 52px;
 	height: 52px;
 	border-radius: 12px;
-	background: rgba(20,139,67,.25);
+	background: rgba(255,255,255,.15);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #2D9A54;
 }
 
 .fcc-reqs-hero__title {
