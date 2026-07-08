@@ -6384,7 +6384,7 @@ button.fcc-reqs-tab {
 	flex-shrink: 0;
 }
 
-.fcc-ads-hero__title { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.2rem; }
+.fcc-ads-hero__title { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.2rem; color: #fff; }
 .fcc-ads-hero__sub   { font-size: 0.85rem; opacity: 0.85; margin: 0; }
 
 .fcc-ads-hero__stats {
