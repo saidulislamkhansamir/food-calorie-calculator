@@ -1110,6 +1110,44 @@ class Food_Pages {
 	// SEO Meta Tags
 	// -------------------------------------------------------------------------
 
+	private function generate_food_meta_desc( array $food ): string {
+		$name     = $food['name'];
+		$kcal_raw = (float) $food['energy_kcal'];
+		$prot_raw = (float) $food['protein_g'];
+		$carb_raw = (float) $food['carbohydrate_g'];
+		$fat_raw  = (float) $food['fat_g'];
+
+		$kcal = (int) round( $kcal_raw );
+		$prot = number_format( $prot_raw, 1 );
+		$carb = number_format( $carb_raw, 1 );
+		$fat  = number_format( $fat_raw,  1 );
+
+		// Pick a description angle based on the food's actual nutritional profile.
+		if ( $prot_raw >= 20 && $carb_raw <= 5 ) {
+			return "{$name} is high in protein ({$prot}g) and very low in carbs ({$carb}g) at {$kcal} kcal per 100g. Full UK nutrition facts, FSA traffic lights, and allergen info.";
+		}
+		if ( $prot_raw >= 15 ) {
+			return "{$name} delivers {$prot}g of protein per 100g at {$kcal} kcal. Carbs {$carb}g, Fat {$fat}g. View complete UK nutrition data, FSA labels, and allergen details.";
+		}
+		if ( $kcal_raw <= 50 ) {
+			return "With just {$kcal} kcal per 100g, {$name} is a low-calorie choice. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts and FSA traffic light labels.";
+		}
+		if ( $kcal_raw <= 80 ) {
+			return "{$name} contains {$kcal} kcal per 100g — a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA labels, and allergen info.";
+		}
+		if ( $carb_raw <= 3 ) {
+			return "{$name} has {$kcal} kcal per 100g with just {$carb}g of carbs, making it suitable for low-carb diets. Protein {$prot}g, Fat {$fat}g. Full UK nutrition facts and FSA ratings.";
+		}
+		if ( $kcal_raw >= 400 ) {
+			return "{$name} is energy-dense at {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Check the full UK nutrition breakdown, FSA traffic lights, and allergen data.";
+		}
+		if ( $fat_raw >= 20 ) {
+			return "{$name} contains {$fat}g of fat per 100g at {$kcal} kcal. Protein {$prot}g, Carbs {$carb}g. View the full UK nutrition profile, FSA traffic lights, and allergen info.";
+		}
+		// Default — question-led hook, still unique per food via its stats.
+		return "How many calories in {$name}? {$kcal} kcal per 100g — Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA traffic light labels, and allergen info.";
+	}
+
 	public function output_seo_meta(): void {
 		// Directory page.
 		if ( 'directory' === self::$page_type ) {
@@ -1129,14 +1167,9 @@ class Food_Pages {
 		$food = self::$current_food;
 		if ( ! $food ) { return; }
 
-		$name = esc_attr( $food['name'] );
-		$kcal = number_format( (float) $food['energy_kcal'], 0 );
-		$prot = number_format( (float) $food['protein_g'], 1 );
-		$carb = number_format( (float) $food['carbohydrate_g'], 1 );
-		$fat  = number_format( (float) $food['fat_g'], 1 );
 		$url  = self::food_url( $food );
 
-		echo '<meta name="description" content="' . esc_attr( "{$name} has {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full nutrition facts, FSA traffic lights, allergen info, and macro breakdown." ) . '">' . "\n";
+		echo '<meta name="description" content="' . esc_attr( $this->generate_food_meta_desc( $food ) ) . '">' . "\n";
 		echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
 
 		// JSON-LD NutritionInformation schema.
