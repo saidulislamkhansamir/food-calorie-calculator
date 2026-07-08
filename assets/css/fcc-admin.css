@@ -6779,7 +6779,7 @@ button.fcc-reqs-tab {
 	flex-shrink: 0;
 }
 
-.fcc-supps-hero__title { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.2rem; }
+.fcc-supps-hero__title { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.2rem; color: #fff; }
 .fcc-supps-hero__sub   { font-size: 0.82rem; opacity: 0.85; margin: 0; max-width: 460px; line-height: 1.45; }
 
 .fcc-supps-hero__stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
