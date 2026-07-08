@@ -3093,6 +3093,7 @@ select.fcc-bmr-input {
 	left: 0;
 	right: 0;
 	top: calc(100% + 4px);
+	min-width: 260px;
 	background: #fff;
 	border: 1.5px solid var(--fcc-border);
 	border-radius: 12px;
