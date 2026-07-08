@@ -2682,6 +2682,7 @@ select.fcc-bmr-input {
 	}
 	.fcc-print-clone .fcc-macro-rings { gap: 0.5rem !important; }
 	.fcc-print-clone .fcc-macro-ring { width: 70px !important; height: 70px !important; }
+	.fcc-print-clone .fcc-macro-detail { margin-top: 1rem !important; }
 	.fcc-print-clone .fcc-macro-detail__grid { break-inside: avoid; }
 
 	/* Omega-3 cards */
