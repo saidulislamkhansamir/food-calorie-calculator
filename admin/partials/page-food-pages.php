@@ -24,7 +24,8 @@ $hub_url    = home_url( '/calories/' );
 // Foods list (paginated + searchable).
 $search   = isset( $_GET['fps'] ) ? sanitize_text_field( wp_unslash( $_GET['fps'] ) ) : '';
 $paged    = max( 1, absint( $_GET['fpp'] ?? 1 ) );
-$per_page = in_array( (int) ( $_GET['fpps'] ?? 50 ), [ 50, 100, 250, 500 ], true ) ? (int) $_GET['fpps'] : 50;
+$_fpps    = isset( $_GET['fpps'] ) ? (int) $_GET['fpps'] : 50;
+$per_page = in_array( $_fpps, [ 50, 100, 250, 500 ], true ) ? $_fpps : 50;
 
 $result     = FCC\Database::get_foods( [
 	'search'   => $search,
