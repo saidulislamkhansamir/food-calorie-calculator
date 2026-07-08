@@ -86,6 +86,21 @@
 	const suppSec        = root.querySelector( '.fcc-supplement-suggestions' );
 	const suppGrid       = suppSec ? suppSec.querySelector( '.fcc-supplement-suggestions__grid' ) : null;
 
+	// WoodMart overrides button size via !important CSS — force-reset after all theme JS settles.
+	setTimeout( function () {
+		root.querySelectorAll( '.fcc-add-to-meal--action' ).forEach( function ( btn ) {
+			btn.style.setProperty( 'padding',       '0.42rem 0.85rem', 'important' );
+			btn.style.setProperty( 'min-height',    '0px',             'important' );
+			btn.style.setProperty( 'height',        'auto',            'important' );
+			btn.style.setProperty( 'font-size',     '0.82rem',         'important' );
+			btn.style.setProperty( 'line-height',   '1.4',             'important' );
+			btn.style.setProperty( 'white-space',   'nowrap',          'important' );
+			btn.style.setProperty( 'box-sizing',    'border-box',      'important' );
+			btn.style.setProperty( 'display',       'inline-flex',     'important' );
+			btn.style.setProperty( 'align-items',   'center',          'important' );
+		} );
+	}, 100 );
+
 	// -------------------------------------------------------------------------
 	// REST helpers
 	// -------------------------------------------------------------------------
