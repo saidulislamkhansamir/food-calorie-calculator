@@ -18,9 +18,12 @@ $status_labels = [
 <div class="wrap fcc-admin-wrap">
 
 	<div class="fcc-sp-hero">
-		<div>
-			<h1><?php esc_html_e( 'Sponsored Listings', 'food-calorie-calculator' ); ?></h1>
-			<p><?php printf( esc_html__( '%d sponsored food(s) in the database', 'food-calorie-calculator' ), count( $sponsored ) ); ?></p>
+		<div style="display:flex;align-items:center;gap:1.25rem;">
+			<div aria-hidden="true" style="flex-shrink:0;"><img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="40" height="40" alt="" decoding="async" style="display:block;width:40px;height:40px;object-fit:contain;"></div>
+			<div>
+				<h1><?php esc_html_e( 'Sponsored Listings', 'food-calorie-calculator' ); ?></h1>
+				<p><?php printf( esc_html__( '%d sponsored food(s) in the database', 'food-calorie-calculator' ), count( $sponsored ) ); ?></p>
+			</div>
 		</div>
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=fcc-foods' ) ); ?>" class="button" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.5)">
 			<?php esc_html_e( '+ Add Food', 'food-calorie-calculator' ); ?>
