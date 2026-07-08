@@ -4942,6 +4942,12 @@ button.fcc-reqs-tab {
 	gap: 1rem;
 }
 
+.fcc-an-hero__main {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
 .fcc-an-hero__icon {
 	width: 44px;
 	height: 44px;
