@@ -32,7 +32,7 @@ class Admin {
 
 	public function register_menus(): void {
 		$capability = 'manage_options';
-		$icon       = esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Logo - Icon (3).png' );
+		$icon       = esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' );
 
 		add_menu_page(
 			__( 'Food Calorie Calculator', 'food-calorie-calculator' ),
