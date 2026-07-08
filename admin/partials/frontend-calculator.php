@@ -439,7 +439,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 						<?php endif; ?>
 
 						<?php if ( ! empty( $features['meal_builder'] ) ) : ?>
-						<button type="button" class="fcc-action-btn fcc-action-btn--primary fcc-add-to-meal fcc-add-to-meal--action" hidden>
+						<button type="button" class="fcc-action-btn fcc-action-btn--primary fcc-add-to-meal fcc-add-to-meal--action" style="padding:0.42rem 0.85rem;font-size:0.82rem;line-height:1.4;min-height:0;height:auto;white-space:nowrap;box-sizing:border-box;display:inline-flex;align-items:center;" hidden>
 							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 							<?php echo esc_html( $labels['add_to_meal_label'] ?? __( 'Add to Meal', 'food-calorie-calculator' ) ); ?>
 						</button>
