@@ -24,8 +24,9 @@ class Food_Pages {
 		$loader->add_filter( 'query_vars',        $this, 'add_query_vars' );
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_assets' );
 		$loader->add_action( 'template_redirect', $this, 'handle_food_page' );
-		$loader->add_action( 'wp_head',           $this, 'output_seo_meta', 1 );
-		$loader->add_filter( 'document_title_parts', $this, 'filter_title' );
+		$loader->add_action( 'wp_head',              $this, 'output_seo_meta', 1 );
+		$loader->add_filter( 'document_title_parts', $this, 'filter_title',       999 );
+		$loader->add_filter( 'pre_get_document_title', $this, 'override_title_pre', 999 );
 	}
 
 	public function maybe_enqueue_assets(): void {
@@ -1238,6 +1239,27 @@ class Food_Pages {
 
 		// FAQPage schema.
 		echo '<script type="application/ld+json">' . wp_json_encode( $this->build_faq_schema( $food ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+	}
+
+	public function override_title_pre( string $title ): string {
+		if ( 'directory' === self::$page_type ) {
+			return 'Browse UK Food Calories: 4,900+ Foods Free';
+		}
+		if ( 'category' === self::$page_type && self::$current_category ) {
+			$cn     = self::$current_category['name'];
+			$cat_id = (int) ( self::$current_category['id'] ?? 1 );
+			$opts   = array_values( array_filter( [
+				"{$cn}: Calories and Nutrition Facts",
+				"Calories in {$cn} Foods",
+				"{$cn} Food Calories and Macros",
+				"UK {$cn} Calorie Guide",
+			], fn( $s ) => mb_strlen( $s ) <= 60 ) );
+			return $opts ? $opts[ $cat_id % count( $opts ) ] : mb_substr( $cn, 0, 57 ) . '...';
+		}
+		if ( self::$current_food ) {
+			return $this->generate_food_title( self::$current_food );
+		}
+		return $title;
 	}
 
 	public function filter_title( array $title ): array {
