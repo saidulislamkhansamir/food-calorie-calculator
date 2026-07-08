@@ -600,19 +600,116 @@ class Food_Pages {
 	}
 
 	private function build_highlights( array $food ): array {
-		$h = [];
 		$kcal = (float) $food['energy_kcal'];
 		$prot = (float) $food['protein_g'];
 		$fat  = (float) $food['fat_g'];
+		$id   = (int) ( $food['id'] ?? 1 );
+		$v    = $id % 3; // 0-2, deterministic per food
 
-		if ( $prot >= 15 ) { $h[] = 'It is <strong>high in protein</strong>.'; }
-		if ( $fat <= 3 )   { $h[] = 'It is <strong>low in fat</strong>.'; }
-		if ( $kcal <= 100 ){ $h[] = 'It is <strong>low in calories</strong>, making it suitable for calorie-controlled diets.'; }
-		if ( $kcal >= 400 ){ $h[] = 'It is <strong>energy-dense</strong>.'; }
+		$high_prot = $prot >= 15;
+		$low_fat   = $fat  <= 3;
+		$low_cal   = $kcal <= 100;
+		$hi_cal    = $kcal >= 400;
+		$keto      = ! empty( $food['diet_keto'] );
+		$vegan     = ! empty( $food['diet_vegan'] );
+		$veg       = ! empty( $food['diet_vegetarian'] ) && ! $vegan;
 
-		if ( ! empty( $food['diet_keto'] ) )       { $h[] = 'It is considered <strong>keto-friendly</strong>.'; }
-		if ( ! empty( $food['diet_vegan'] ) )       { $h[] = 'It is <strong>suitable for vegans</strong>.'; }
-		if ( ! empty( $food['diet_vegetarian'] ) && empty( $food['diet_vegan'] ) ) { $h[] = 'It is <strong>suitable for vegetarians</strong>.'; }
+		$h              = [];
+		$prot_done      = false;
+		$fat_done       = false;
+		$keto_done      = false;
+
+		// --- Combine high-protein + low-fat (very common; avoids two "It is" back-to-back) ---
+		if ( $high_prot && $low_fat ) {
+			$pf = [
+				'<strong>High in protein</strong> yet low in fat, making it a lean, nutritious choice.',
+				'With <strong>high protein</strong> and very little fat, it suits lean and active diets well.',
+				'A lean option: <strong>high in protein</strong> (' . number_format( $prot, 1 ) . 'g per 100g) and low in fat.',
+			];
+			$h[] = $pf[ $v ];
+			$prot_done = $fat_done = true;
+		}
+
+		// --- Combine high-protein + keto (when fat not already handled above) ---
+		if ( $high_prot && $keto && ! $prot_done ) {
+			$pk = [
+				'<strong>High in protein</strong> with a low-carb profile, making it popular on <strong>ketogenic diets</strong>.',
+				'A <strong>high-protein</strong>, <strong>keto-friendly</strong> food with minimal carbohydrates.',
+				'<strong>High in protein</strong> and low in carbohydrates — a natural fit for a <strong>keto diet</strong>.',
+			];
+			$h[]       = $pk[ $v ];
+			$prot_done = $keto_done = true;
+		}
+
+		// --- Remaining protein ---
+		if ( $high_prot && ! $prot_done ) {
+			$pp = [
+				'It is <strong>high in protein</strong>.',
+				'<strong>High in protein</strong>, providing ' . number_format( $prot, 1 ) . 'g per 100g.',
+				'A good <strong>source of protein</strong>, with ' . number_format( $prot, 1 ) . 'g per 100g.',
+			];
+			$h[] = $pp[ $v ];
+		}
+
+		// --- Remaining low-fat ---
+		if ( $low_fat && ! $fat_done ) {
+			$ff = [
+				'It is <strong>low in fat</strong>.',
+				'<strong>Low in fat</strong>, with just ' . number_format( $fat, 1 ) . 'g per 100g.',
+				'A <strong>low-fat</strong> option at just ' . number_format( $fat, 1 ) . 'g of fat per 100g.',
+			];
+			$h[] = $ff[ ( $v + 1 ) % 3 ];
+		}
+
+		// --- Low calories ---
+		if ( $low_cal ) {
+			$lc = [
+				'It is <strong>low in calories</strong>, making it suitable for calorie-controlled diets.',
+				'At just ' . (int) round( $kcal ) . ' kcal per 100g, it fits well into <strong>calorie-controlled diets</strong>.',
+				'A <strong>low-calorie</strong> choice at ' . (int) round( $kcal ) . ' kcal per 100g, great for those watching their intake.',
+			];
+			$h[] = $lc[ ( $v + 2 ) % 3 ];
+		}
+
+		// --- Energy-dense ---
+		if ( $hi_cal ) {
+			$ec = [
+				'It is <strong>energy-dense</strong>.',
+				'At ' . (int) round( $kcal ) . ' kcal per 100g, it is an <strong>energy-dense</strong> food.',
+				'Relatively <strong>high in calories</strong>, packing ' . (int) round( $kcal ) . ' kcal per 100g.',
+			];
+			$h[] = $ec[ $v ];
+		}
+
+		// --- Keto ---
+		if ( $keto && ! $keto_done ) {
+			$kt = [
+				'It is considered <strong>keto-friendly</strong>.',
+				'Its low carb content makes it a good fit for <strong>ketogenic diets</strong>.',
+				'A naturally <strong>keto-friendly</strong> food, thanks to its minimal carbohydrate content.',
+			];
+			$h[] = $kt[ ( $v + 1 ) % 3 ];
+		}
+
+		// --- Vegan ---
+		if ( $vegan ) {
+			$vn = [
+				'It is <strong>suitable for vegans</strong>.',
+				'Naturally <strong>vegan</strong> and plant-based.',
+				'A <strong>vegan-friendly</strong> option.',
+			];
+			$h[] = $vn[ ( $v + 2 ) % 3 ];
+		}
+
+		// --- Vegetarian only ---
+		if ( $veg ) {
+			$vi = [
+				'It is <strong>suitable for vegetarians</strong>.',
+				'A <strong>vegetarian-friendly</strong> choice.',
+				'Suitable for those following a <strong>vegetarian</strong> diet.',
+			];
+			$h[] = $vi[ $v ];
+		}
 
 		return $h;
 	}
