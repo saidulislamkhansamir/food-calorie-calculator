@@ -149,11 +149,8 @@ class Food_Pages {
 	private function inject_page_spacing_fix(): void {
 		add_action( 'wp_head', static function () {
 			echo '<style>
-#page-content{padding-top:0!important;margin-top:0!important}
-#page-content>.container,
-#page-content>.woodmart-content-container,
-#page-content>.wd-content-container,
-.wd-page-content,.site-main,.main-page-wrapper{padding-top:0!important;margin-top:0!important}
+.wd-page-content,.main-page-wrapper,
+#main-content,.wd-content-layout,.content-layout-wrapper{padding-top:0!important;margin-top:0!important}
 </style>' . "\n";
 		}, 99 );
 	}
