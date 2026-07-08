@@ -1249,12 +1249,21 @@ class Food_Pages {
 			$cn     = self::$current_category['name'];
 			$cat_id = (int) ( self::$current_category['id'] ?? 1 );
 			$opts   = array_values( array_filter( [
+				"{$cn}: Full UK Calorie and Nutrition Guide",
+				"UK Calorie and Nutrition Facts for {$cn} Foods",
+				"Browse {$cn} Calories and Nutrition Facts",
+				"{$cn} Foods: UK Calorie and Nutrition Data",
 				"{$cn}: Calories and Nutrition Facts",
 				"Calories in {$cn} Foods",
 				"{$cn} Food Calories and Macros",
 				"UK {$cn} Calorie Guide",
-			], fn( $s ) => mb_strlen( $s ) <= 60 ) );
-			return $opts ? $opts[ $cat_id % count( $opts ) ] : mb_substr( $cn, 0, 57 ) . '...';
+			], fn( $s ) => mb_strlen( $s ) >= 40 && mb_strlen( $s ) <= 60 ) );
+			if ( ! $opts ) {
+				$under60 = array_values( array_filter( [ "Calories in {$cn} Foods", "{$cn}: UK Calorie Data" ], fn( $s ) => mb_strlen( $s ) <= 60 ) );
+				usort( $under60, fn( $a, $b ) => mb_strlen( $b ) - mb_strlen( $a ) );
+				return $under60 ? $under60[0] : mb_substr( $cn, 0, 60 );
+			}
+			return $opts[ $cat_id % count( $opts ) ];
 		}
 		if ( self::$current_food ) {
 			return $this->generate_food_title( self::$current_food );
@@ -1270,12 +1279,21 @@ class Food_Pages {
 			$cn     = self::$current_category['name'];
 			$cat_id = (int) ( self::$current_category['id'] ?? 1 );
 			$opts   = array_values( array_filter( [
+				"{$cn}: Full UK Calorie and Nutrition Guide",
+				"UK Calorie and Nutrition Facts for {$cn} Foods",
+				"Browse {$cn} Calories and Nutrition Facts",
+				"{$cn} Foods: UK Calorie and Nutrition Data",
 				"{$cn}: Calories and Nutrition Facts",
 				"Calories in {$cn} Foods",
 				"{$cn} Food Calories and Macros",
 				"UK {$cn} Calorie Guide",
-			], fn( $s ) => mb_strlen( $s ) <= 60 ) );
-			$title['title'] = $opts ? $opts[ $cat_id % count( $opts ) ] : mb_substr( $cn, 0, 57 ) . '...';
+			], fn( $s ) => mb_strlen( $s ) >= 40 && mb_strlen( $s ) <= 60 ) );
+			if ( ! $opts ) {
+				$under60 = array_values( array_filter( [ "Calories in {$cn} Foods", "{$cn}: UK Calorie Data" ], fn( $s ) => mb_strlen( $s ) <= 60 ) );
+				usort( $under60, fn( $a, $b ) => mb_strlen( $b ) - mb_strlen( $a ) );
+				$opts = $under60 ?: [ mb_substr( $cn, 0, 60 ) ];
+			}
+			$title['title'] = $opts[ $cat_id % count( $opts ) ];
 			$title['site']  = '';
 		} elseif ( self::$current_food ) {
 			$title['title'] = $this->generate_food_title( self::$current_food );
@@ -1289,23 +1307,35 @@ class Food_Pages {
 		$kcal = (int) round( (float) $food['energy_kcal'] );
 		$id   = (int) ( $food['id'] ?? 1 );
 
+		// Longer fixed-text templates bring short food names above 40 chars.
+		// Shorter fixed-text templates are filtered out if the food name is long.
 		$templates = [
+			"Calorie and Nutrition Facts for {$name} per 100g",
+			"{$name}: UK Calories, Protein, Carbs and Fat Data",
+			"{$name}: Full UK Calorie Count and Nutrition Facts",
 			"Calories in {$name}: {$kcal} kcal per 100g",
 			"{$name} Nutrition Facts and Calories",
-			"How Many Calories in {$name}?",
 			"{$name}: Calories, Protein and Fat",
 			"{$name} - UK Calorie and Nutrition Facts",
-			"{$name}: {$kcal} kcal per 100g",
 			"{$name} Calories and Nutrition",
+			"How Many Calories in {$name}?",
+			"{$name}: {$kcal} kcal per 100g",
 			"Full Nutrition: {$name}",
 		];
 
+		// Target the 40-60 char sweet spot.
 		$fitting = array_values(
-			array_filter( $templates, fn( $s ) => mb_strlen( $s ) <= 60 )
+			array_filter( $templates, fn( $s ) => mb_strlen( $s ) >= 40 && mb_strlen( $s ) <= 60 )
 		);
 
+		// Fallback: use longest template under 60 if nothing reaches 40.
 		if ( empty( $fitting ) ) {
-			return mb_substr( $name, 0, 57 ) . '...';
+			$under60 = array_values( array_filter( $templates, fn( $s ) => mb_strlen( $s ) <= 60 ) );
+			if ( $under60 ) {
+				usort( $under60, fn( $a, $b ) => mb_strlen( $b ) - mb_strlen( $a ) );
+				return $under60[0];
+			}
+			return mb_substr( $name, 0, 60 );
 		}
 
 		return $fitting[ $id % count( $fitting ) ];
