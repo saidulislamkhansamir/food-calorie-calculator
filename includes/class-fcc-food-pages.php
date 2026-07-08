@@ -146,11 +146,24 @@ class Food_Pages {
 	// Page Rendering
 	// -------------------------------------------------------------------------
 
+	private function inject_page_spacing_fix(): void {
+		add_action( 'wp_head', static function () {
+			echo '<style>
+#page-content{padding-top:0!important;margin-top:0!important}
+#page-content>.container,
+#page-content>.woodmart-content-container,
+#page-content>.wd-content-container,
+.wd-page-content,.site-main,.main-page-wrapper{padding-top:0!important;margin-top:0!important}
+</style>' . "\n";
+		}, 99 );
+	}
+
 	private function render_food_page( array $food ): void {
 		// Ensure shortcode assets load.
 		$shortcode = new Shortcode();
 
 		status_header( 200 );
+		$this->inject_page_spacing_fix();
 		get_header();
 
 		echo '<div class="fcc-food-page" style="max-width:900px;margin:0 auto;padding:0.5rem 1rem;">';
@@ -199,6 +212,7 @@ class Food_Pages {
 		foreach ( $categories as $c ) { $total += (int) $c['food_count']; }
 
 		status_header( 200 );
+		$this->inject_page_spacing_fix();
 		get_header();
 
 		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:0.5rem 1rem;">';
@@ -332,6 +346,7 @@ class Food_Pages {
 		}
 
 		status_header( 200 );
+		$this->inject_page_spacing_fix();
 		get_header();
 
 		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:0.5rem 1rem;">';
