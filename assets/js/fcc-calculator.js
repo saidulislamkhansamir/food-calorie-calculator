@@ -2579,7 +2579,30 @@
 			unitTriggerTxt: root.querySelector( '.fcc-compare-unit-custom[data-slot="' + s + '"] .fcc-unit-trigger__text' ),
 			unitOptions:    root.querySelector( '.fcc-compare-unit-custom[data-slot="' + s + '"] .fcc-unit-options' ),
 			unitTriggerBtn: root.querySelector( '.fcc-compare-unit-custom[data-slot="' + s + '"] .fcc-unit-trigger' ),
+			clearBtn:       root.querySelector( '.fcc-compare-clear[data-slot="' + s + '"]' ),
 		};
+	} );
+
+	[ 'a', 'b' ].forEach( function ( s ) {
+		var sl = cSlot[ s ];
+		if ( ! sl.clearBtn ) return;
+		sl.clearBtn.addEventListener( 'click', function () {
+			var S = s.toUpperCase();
+			state[ 'compare' + S ]     = null;
+			state[ 'compareQty' + S ]  = 100;
+			state[ 'compareUnit' + S ] = 'g';
+			if ( sl.search   ) sl.search.value   = '';
+			if ( sl.selected ) sl.selected.hidden = true;
+			if ( sl.clearBtn ) sl.clearBtn.hidden = true;
+			if ( sl.qty      ) sl.qty.value       = 100;
+			if ( sl.unitSelect ) {
+				sl.unitSelect.innerHTML = '<option value="g">grams (g)</option><option value="kg">kilograms (kg)</option>';
+			}
+			updateCompareUnitTriggerText( s );
+			hideCompareDropdown( s );
+			renderComparison();
+			updateCompareDots();
+		} );
 	} );
 
 	const compareResults  = root.querySelector( '.fcc-compare-results' );
@@ -2702,6 +2725,7 @@
 		if ( sl.foodName ) sl.foodName.textContent   = food.name;
 		if ( sl.selected ) sl.selected.hidden        = false;
 		if ( sl.qty      ) sl.qty.value              = 100;
+		if ( sl.clearBtn ) sl.clearBtn.hidden        = false;
 
 		rebuildCompareUnitSelect( s, food );
 		hideCompareDropdown( s );
@@ -2912,6 +2936,7 @@
 				state[ 'compareUnit' + S ] = 'g';
 				if ( sl.search   ) sl.search.value   = '';
 				if ( sl.selected ) sl.selected.hidden = true;
+				if ( sl.clearBtn ) sl.clearBtn.hidden = true;
 				if ( sl.qty      ) sl.qty.value       = 100;
 				if ( sl.unitSelect ) {
 					sl.unitSelect.innerHTML = '<option value="g">grams (g)</option><option value="kg">kilograms (kg)</option>';

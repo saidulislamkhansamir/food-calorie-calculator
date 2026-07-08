@@ -667,6 +667,9 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 							placeholder="<?php esc_attr_e( 'Search a food…', 'food-calorie-calculator' ); ?>"
 							autocomplete="off"
 							aria-label="<?php esc_attr_e( 'Search first food', 'food-calorie-calculator' ); ?>" />
+						<button type="button" class="fcc-compare-clear" data-slot="a" hidden aria-label="<?php esc_attr_e( 'Clear first food', 'food-calorie-calculator' ); ?>">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+						</button>
 						<ul class="fcc-compare-dropdown" data-slot="a" role="listbox" hidden></ul>
 					</div>
 					<div class="fcc-compare-selected" data-slot="a" hidden>
@@ -716,6 +719,9 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 							placeholder="<?php esc_attr_e( 'Search a food…', 'food-calorie-calculator' ); ?>"
 							autocomplete="off"
 							aria-label="<?php esc_attr_e( 'Search second food', 'food-calorie-calculator' ); ?>" />
+						<button type="button" class="fcc-compare-clear" data-slot="b" hidden aria-label="<?php esc_attr_e( 'Clear second food', 'food-calorie-calculator' ); ?>">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+						</button>
 						<ul class="fcc-compare-dropdown" data-slot="b" role="listbox" hidden></ul>
 					</div>
 					<div class="fcc-compare-selected" data-slot="b" hidden>

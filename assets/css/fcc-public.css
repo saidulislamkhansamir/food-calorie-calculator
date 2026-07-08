@@ -3088,6 +3088,28 @@ select.fcc-bmr-input {
 	box-shadow: 0 0 0 3px rgba(5,150,105,.12);
 }
 
+.fcc-compare-clear {
+	position: absolute;
+	right: 0.5rem;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: none;
+	background: transparent;
+	color: var(--fcc-text-light);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background var(--fcc-transition), color var(--fcc-transition);
+	flex-shrink: 0;
+	z-index: 2;
+}
+.fcc-compare-clear:hover { background: var(--fcc-red-bg); color: var(--fcc-red); }
+.fcc-compare-clear[hidden] { display: none; }
+
 .fcc-compare-dropdown {
 	position: absolute;
 	left: 0;
