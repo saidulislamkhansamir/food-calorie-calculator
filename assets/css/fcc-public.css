@@ -3153,9 +3153,8 @@ select.fcc-bmr-input {
 }
 
 /* Qty controls inside compare col — stack vertically to fit narrow columns */
-.fcc-compare-qty-controls { margin-top: 0.125rem; }
-
-.fcc-compare-qty-controls .fcc-quantity-controls {
+.fcc-compare-qty-controls {
+	margin-top: 0.125rem;
 	flex-direction: column;
 }
 .fcc-compare-qty-controls .fcc-qty-group:first-child {
