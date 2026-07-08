@@ -1307,20 +1307,20 @@ class Food_Pages {
 		$kcal = (int) round( (float) $food['energy_kcal'] );
 		$id   = (int) ( $food['id'] ?? 1 );
 
-		// Longer fixed-text templates bring short food names above 40 chars.
-		// Shorter fixed-text templates are filtered out if the food name is long.
+		// All templates include "per 100g". Longer fixed-text templates bring short
+		// food names above 40 chars; shorter ones are filtered out for long names.
 		$templates = [
 			"Calorie and Nutrition Facts for {$name} per 100g",
-			"{$name}: UK Calories, Protein, Carbs and Fat Data",
-			"{$name}: Full UK Calorie Count and Nutrition Facts",
+			"{$name}: UK Calories, Protein, Carbs and Fat per 100g",
+			"{$name}: Full Calorie and Nutrition Facts per 100g",
 			"Calories in {$name}: {$kcal} kcal per 100g",
-			"{$name} Nutrition Facts and Calories",
-			"{$name}: Calories, Protein and Fat",
-			"{$name} - UK Calorie and Nutrition Facts",
-			"{$name} Calories and Nutrition",
-			"How Many Calories in {$name}?",
+			"{$name} Nutrition Facts and Calories per 100g",
+			"{$name}: Calories, Protein and Fat per 100g",
+			"{$name} - UK Calorie and Nutrition per 100g",
+			"{$name} Calories and Nutrition per 100g",
+			"How Many Calories in {$name} per 100g?",
 			"{$name}: {$kcal} kcal per 100g",
-			"Full Nutrition: {$name}",
+			"Full Nutrition: {$name} per 100g",
 		];
 
 		// Target the 40-60 char sweet spot.
