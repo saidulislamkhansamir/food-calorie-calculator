@@ -1242,16 +1242,51 @@ class Food_Pages {
 
 	public function filter_title( array $title ): array {
 		if ( 'directory' === self::$page_type ) {
-			$title['title'] = 'Calorie Counter: Browse All Foods by Category';
-			$title['site']  = 'Food Calorie Calculator';
+			$title['title'] = 'Browse UK Food Calories: 4,900+ Foods Free';
+			$title['site']  = '';
 		} elseif ( 'category' === self::$page_type && self::$current_category ) {
-			$title['title'] = self::$current_category['name'] . ': Calories & Nutrition';
-			$title['site']  = 'Food Calorie Calculator';
+			$cn     = self::$current_category['name'];
+			$cat_id = (int) ( self::$current_category['id'] ?? 1 );
+			$opts   = array_values( array_filter( [
+				"{$cn}: Calories and Nutrition Facts",
+				"Calories in {$cn} Foods",
+				"{$cn} Food Calories and Macros",
+				"UK {$cn} Calorie Guide",
+			], fn( $s ) => mb_strlen( $s ) <= 60 ) );
+			$title['title'] = $opts ? $opts[ $cat_id % count( $opts ) ] : mb_substr( $cn, 0, 57 ) . '...';
+			$title['site']  = '';
 		} elseif ( self::$current_food ) {
-			$title['title'] = self::$current_food['name'] . ' Calories & Nutrition';
-			$title['site']  = 'Food Calorie Calculator';
+			$title['title'] = $this->generate_food_title( self::$current_food );
+			$title['site']  = '';
 		}
 		return $title;
+	}
+
+	private function generate_food_title( array $food ): string {
+		$name = $food['name'];
+		$kcal = (int) round( (float) $food['energy_kcal'] );
+		$id   = (int) ( $food['id'] ?? 1 );
+
+		$templates = [
+			"Calories in {$name}: {$kcal} kcal per 100g",
+			"{$name} Nutrition Facts and Calories",
+			"How Many Calories in {$name}?",
+			"{$name}: Calories, Protein and Fat",
+			"{$name} - UK Calorie and Nutrition Facts",
+			"{$name}: {$kcal} kcal per 100g",
+			"{$name} Calories and Nutrition",
+			"Full Nutrition: {$name}",
+		];
+
+		$fitting = array_values(
+			array_filter( $templates, fn( $s ) => mb_strlen( $s ) <= 60 )
+		);
+
+		if ( empty( $fitting ) ) {
+			return mb_substr( $name, 0, 57 ) . '...';
+		}
+
+		return $fitting[ $id % count( $fitting ) ];
 	}
 
 	private function build_faq_schema( array $food ): array {
