@@ -1116,36 +1116,80 @@ class Food_Pages {
 		$prot_raw = (float) $food['protein_g'];
 		$carb_raw = (float) $food['carbohydrate_g'];
 		$fat_raw  = (float) $food['fat_g'];
+		$id       = (int) ( $food['id'] ?? 1 );
+		$cat_id   = (int) ( $food['category_id'] ?? 1 );
 
 		$kcal = (int) round( $kcal_raw );
 		$prot = number_format( $prot_raw, 1 );
 		$carb = number_format( $carb_raw, 1 );
 		$fat  = number_format( $fat_raw,  1 );
 
-		// Pick a description angle based on the food's actual nutritional profile.
+		// Pool A — 8 action verbs.
+		$verbs = [
+			'Find out', 'Discover', 'See', 'Check',
+			'Learn', 'Explore', 'Compare', 'Understand',
+		];
+		// Pool B — 15 subject phrases.
+		$subjects = [
+			'how it fits your daily calorie target',
+			'whether it suits your dietary goals',
+			'how it compares to similar UK foods',
+			'its full vitamin and mineral profile',
+			'its allergen data and FSA traffic lights',
+			'how many calories it adds per serving',
+			'its fibre, sugar, and salt content',
+			'how it ranks in its food category',
+			'its complete macro and micronutrient data',
+			'whether it fits a low-calorie plan',
+			'how it stacks up nutritionally',
+			'its UK nutrition profile in full',
+			'its carb, fat, and protein ratio',
+			'whether it suits a balanced UK diet',
+			'its calorie density and macro split',
+		];
+		// Pool C — 6 closing tails.
+		$tails = [
+			' on our free UK nutrition tool.',
+			' in our UK food database.',
+			' using our free calorie calculator.',
+			' with our free UK food tracker.',
+			' on FoodCalorieCalculator.co.uk.',
+			' for free on our UK nutrition tool.',
+		];
+
+		// 8 × 15 × 6 = 720 unique endings; × 8 body profiles = 5,760 combinations.
+		$verb    = $verbs[    $id % count( $verbs )                              ];
+		$subject = $subjects[ ( $id * 3  + $cat_id     ) % count( $subjects )   ];
+		$tail    = $tails[    ( $id * 7  + $cat_id * 3 ) % count( $tails )      ];
+		$ending  = $verb . ' ' . $subject . $tail;
+
+		// Profile-based body chosen by nutritional characteristics.
 		if ( $prot_raw >= 20 && $carb_raw <= 5 ) {
-			return "{$name} is high in protein ({$prot}g) and very low in carbs ({$carb}g) at {$kcal} kcal per 100g. A strong choice for high-protein, low-carb diets.";
+			$body = "{$name} is high in protein ({$prot}g) and very low in carbs ({$carb}g) at {$kcal} kcal per 100g.";
+		} elseif ( $prot_raw >= 15 ) {
+			$body = "{$name} delivers {$prot}g of protein per 100g at {$kcal} kcal. Carbs {$carb}g, Fat {$fat}g.";
+		} elseif ( $kcal_raw <= 50 ) {
+			$body = "With just {$kcal} kcal per 100g, {$name} is a low-calorie choice. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
+		} elseif ( $kcal_raw <= 80 ) {
+			$body = "{$name} contains {$kcal} kcal per 100g, making it a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
+		} elseif ( $carb_raw <= 3 ) {
+			$body = "{$name} has {$kcal} kcal per 100g with just {$carb}g of carbs. Protein {$prot}g, Fat {$fat}g.";
+		} elseif ( $kcal_raw >= 400 ) {
+			$body = "{$name} is energy-dense at {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
+		} elseif ( $fat_raw >= 20 ) {
+			$body = "{$name} contains {$fat}g of fat per 100g at {$kcal} kcal. Protein {$prot}g, Carbs {$carb}g.";
+		} else {
+			$body = "How many calories in {$name}? {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
 		}
-		if ( $prot_raw >= 15 ) {
-			return "{$name} delivers {$prot}g of protein per 100g at {$kcal} kcal. Carbs {$carb}g, Fat {$fat}g. Compare it with other protein sources in our free UK food database.";
+
+		$desc = $body . ' ' . $ending;
+
+		// Hard clamp: never exceed 160 characters.
+		if ( mb_strlen( $desc ) > 160 ) {
+			$desc = mb_substr( $desc, 0, 157 ) . '...';
 		}
-		if ( $kcal_raw <= 50 ) {
-			return "With just {$kcal} kcal per 100g, {$name} is a low-calorie choice. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. See how it fits a calorie-controlled diet.";
-		}
-		if ( $kcal_raw <= 80 ) {
-			return "{$name} contains {$kcal} kcal per 100g, making it a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Browse the full nutrition breakdown including vitamins and allergens.";
-		}
-		if ( $carb_raw <= 3 ) {
-			return "{$name} has {$kcal} kcal per 100g with just {$carb}g of carbs. Protein {$prot}g, Fat {$fat}g. Find out how it fits a low-carb or keto eating plan.";
-		}
-		if ( $kcal_raw >= 400 ) {
-			return "{$name} is energy-dense at {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. See the full breakdown including fibre, salt, vitamins, and allergens.";
-		}
-		if ( $fat_raw >= 20 ) {
-			return "{$name} contains {$fat}g of fat per 100g at {$kcal} kcal. Protein {$prot}g, Carbs {$carb}g. Check the fat type breakdown and allergen data on our free UK nutrition tool.";
-		}
-		// Default — question-led hook.
-		return "How many calories in {$name}? {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Compare it with similar foods using our free UK calorie database.";
+
+		return $desc;
 	}
 
 	public function output_seo_meta(): void {
