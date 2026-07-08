@@ -92,7 +92,7 @@ $shortcode = '[food_calorie_calculator]';
 	<div class="fcc-dash-hero">
 		<div class="fcc-dash-hero__inner">
 			<div class="fcc-dash-hero__content">
-				<div class="fcc-dash-hero__icon" aria-hidden="true">🥕</div>
+				<div class="fcc-dash-hero__icon" aria-hidden="true"><img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="48" height="48" alt="" decoding="async" style="display:block;width:48px;height:48px;object-fit:contain;"></div>
 				<div>
 					<div class="fcc-dash-hero__title">
 						<?php esc_html_e( 'Food Calorie Calculator', 'food-calorie-calculator' ); ?>
