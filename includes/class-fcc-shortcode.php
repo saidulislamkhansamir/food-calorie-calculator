@@ -174,6 +174,7 @@ class Shortcode {
 /* Calculate my TDEE button — WoodMart overrides .fcc-btn--primary */
 #fcc-calculator .fcc-bmr-calculate{display:flex!important;align-items:center!important;justify-content:center!important;gap:0.4rem!important;width:100%!important;padding:0.75rem 1.25rem!important;border:none!important;border-radius:10px!important;background:#148B43!important;color:#fff!important;font-size:0.9rem!important;font-weight:700!important;cursor:pointer!important;box-shadow:0 2px 8px rgba(20,139,67,.3)!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;}
 #fcc-calculator .fcc-bmr-calculate:hover{background:#117a39!important;box-shadow:0 4px 12px rgba(20,139,67,.4)!important;}
+@media(max-width:767px){#fcc-calculator .fcc-compare-grid{grid-template-columns:1fr!important;}}
 </style>' . "\n";
 	}
 
