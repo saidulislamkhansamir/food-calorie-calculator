@@ -32,7 +32,7 @@ class Admin {
 	// -------------------------------------------------------------------------
 
 	public function menu_icon_css(): void {
-		echo '<style>#toplevel_page_fcc-dashboard .wp-menu-image img{width:20px!important;height:20px!important;padding:0!important;object-fit:contain;}</style>' . "\n";
+		echo '<style>#toplevel_page_fcc-dashboard .wp-menu-image{display:flex!important;align-items:center!important;justify-content:center!important;}#toplevel_page_fcc-dashboard .wp-menu-image img{width:20px!important;height:20px!important;padding:0!important;object-fit:contain!important;}</style>' . "\n";
 	}
 
 	// -------------------------------------------------------------------------
