@@ -1124,28 +1124,28 @@ class Food_Pages {
 
 		// Pick a description angle based on the food's actual nutritional profile.
 		if ( $prot_raw >= 20 && $carb_raw <= 5 ) {
-			return "{$name} is high in protein ({$prot}g) and very low in carbs ({$carb}g) at {$kcal} kcal per 100g. Full UK nutrition facts, FSA traffic lights, and allergen info.";
+			return "{$name} is high in protein ({$prot}g) and very low in carbs ({$carb}g) at {$kcal} kcal per 100g. A strong choice for high-protein, low-carb diets.";
 		}
 		if ( $prot_raw >= 15 ) {
-			return "{$name} delivers {$prot}g of protein per 100g at {$kcal} kcal. Carbs {$carb}g, Fat {$fat}g. View complete UK nutrition data, FSA labels, and allergen details.";
+			return "{$name} delivers {$prot}g of protein per 100g at {$kcal} kcal. Carbs {$carb}g, Fat {$fat}g. Compare it with other protein sources in our free UK food database.";
 		}
 		if ( $kcal_raw <= 50 ) {
-			return "With just {$kcal} kcal per 100g, {$name} is a low-calorie choice. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts and FSA traffic light labels.";
+			return "With just {$kcal} kcal per 100g, {$name} is a low-calorie choice. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. See how it fits a calorie-controlled diet.";
 		}
 		if ( $kcal_raw <= 80 ) {
-			return "{$name} contains {$kcal} kcal per 100g, making it a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA labels, and allergen info.";
+			return "{$name} contains {$kcal} kcal per 100g, making it a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Browse the full nutrition breakdown including vitamins and allergens.";
 		}
 		if ( $carb_raw <= 3 ) {
-			return "{$name} has {$kcal} kcal per 100g with just {$carb}g of carbs, making it suitable for low-carb diets. Protein {$prot}g, Fat {$fat}g. Full UK nutrition facts and FSA ratings.";
+			return "{$name} has {$kcal} kcal per 100g with just {$carb}g of carbs. Protein {$prot}g, Fat {$fat}g. Find out how it fits a low-carb or keto eating plan.";
 		}
 		if ( $kcal_raw >= 400 ) {
-			return "{$name} is energy-dense at {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Check the full UK nutrition breakdown, FSA traffic lights, and allergen data.";
+			return "{$name} is energy-dense at {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. See the full breakdown including fibre, salt, vitamins, and allergens.";
 		}
 		if ( $fat_raw >= 20 ) {
-			return "{$name} contains {$fat}g of fat per 100g at {$kcal} kcal. Protein {$prot}g, Carbs {$carb}g. View the full UK nutrition profile, FSA traffic lights, and allergen info.";
+			return "{$name} contains {$fat}g of fat per 100g at {$kcal} kcal. Protein {$prot}g, Carbs {$carb}g. Check the fat type breakdown and allergen data on our free UK nutrition tool.";
 		}
-		// Default — question-led hook, still unique per food via its stats.
-		return "How many calories in {$name}? {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Full UK nutrition facts, FSA traffic light labels, and allergen info.";
+		// Default — question-led hook.
+		return "How many calories in {$name}? {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g. Compare it with similar foods using our free UK calorie database.";
 	}
 
 	public function output_seo_meta(): void {
