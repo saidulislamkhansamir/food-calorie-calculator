@@ -17,6 +17,7 @@ class Admin {
 	public function register( \FCC\Loader $loader ): void {
 		$loader->add_action( 'admin_menu',            $this, 'register_menus' );
 		$loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_assets', 10, 1 );
+		$loader->add_action( 'admin_head',            $this, 'menu_icon_css' );
 		$loader->add_filter(
 			'plugin_action_links_' . FCC_PLUGIN_BASENAME,
 			$this,
@@ -24,6 +25,14 @@ class Admin {
 			10,
 			1
 		);
+	}
+
+	// -------------------------------------------------------------------------
+	// Menu icon sizing (PNG icons don't auto-constrain in WP admin sidebar).
+	// -------------------------------------------------------------------------
+
+	public function menu_icon_css(): void {
+		echo '<style>#toplevel_page_fcc-dashboard .wp-menu-image img{width:20px!important;height:20px!important;padding:0!important;object-fit:contain;}</style>' . "\n";
 	}
 
 	// -------------------------------------------------------------------------
