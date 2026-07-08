@@ -3152,22 +3152,8 @@ select.fcc-bmr-input {
 	white-space: nowrap;
 }
 
-/* Qty controls inside compare col — stack vertically to fit narrow columns */
-.fcc-compare-qty-controls {
-	margin-top: 0.125rem;
-	flex-direction: column;
-}
-.fcc-compare-qty-controls .fcc-qty-group:first-child {
-	max-width: none;
-	flex: none;
-	border-right: none;
-	border-bottom: 1.5px solid var(--fcc-border);
-	border-radius: 10px 10px 0 0;
-}
-.fcc-compare-qty-controls .fcc-qty-group:last-child {
-	border-radius: 0 0 10px 10px;
-	overflow: visible;
-}
+/* Qty controls inside compare col */
+.fcc-compare-qty-controls { margin-top: 0.125rem; }
 
 /* â”€â”€ Results area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .fcc-compare-results { margin-top: 1.25rem; }
@@ -3402,7 +3388,7 @@ select.fcc-bmr-input {
 /* ==========================================================================
    Compare â€” Responsive
    ========================================================================== */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
 	.fcc-compare-grid {
 		grid-template-columns: 1fr;
 		gap: 0;
