@@ -774,32 +774,27 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 						<span class="fcc-fp-stat-pill">
 							<strong><?php echo number_format( $total_foods ); ?></strong> <?php esc_html_e( 'food pages', 'food-calorie-calculator' ); ?>
 						</span>
-						<?php if ( $search ) : ?>
-							<span class="fcc-fp-badge fcc-fp-badge--auto"><?php printf( esc_html__( 'Filtering: "%s"', 'food-calorie-calculator' ), esc_html( $search ) ); ?></span>
-						<?php endif; ?>
+						<span id="fcc-fp-filter-badge-wrap"><?php if ( $search ) : ?><span class="fcc-fp-badge fcc-fp-badge--auto"><?php printf( esc_html__( 'Filtering: "%s"', 'food-calorie-calculator' ), esc_html( $search ) ); ?></span><?php endif; ?></span>
 					</div>
 				</div>
 			</div>
 
-			<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>">
+			<form id="fcc-fp-search-form" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>">
 				<input type="hidden" name="page" value="fcc-food-pages">
 				<div class="fcc-fp-search-row">
-					<input type="search" name="fps" value="<?php echo esc_attr( $search ); ?>"
+					<input id="fcc-fp-search-input" type="search" name="fps" value="<?php echo esc_attr( $search ); ?>"
 						placeholder="<?php esc_attr_e( 'Search food pages…', 'food-calorie-calculator' ); ?>"
 						class="fcc-fp-search-input">
 					<button type="submit" class="fcc-fp-btn-search">
 						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 						<?php esc_html_e( 'Search', 'food-calorie-calculator' ); ?>
 					</button>
-					<?php if ( $search ) : ?>
-						<a href="<?php echo esc_url( $page_url ); ?>" class="fcc-fp-btn-clear"><?php esc_html_e( 'Clear', 'food-calorie-calculator' ); ?></a>
-					<?php endif; ?>
+					<a id="fcc-fp-btn-clear" href="<?php echo esc_url( $page_url ); ?>" class="fcc-fp-btn-clear"<?php if ( ! $search ) echo ' style="display:none"'; ?>><?php esc_html_e( 'Clear', 'food-calorie-calculator' ); ?></a>
 				</div>
 			</form>
 		</div>
 
-		<?php if ( $foods ) : ?>
-		<div id="fcc-foods-wrap">
+		<div id="fcc-foods-wrap"<?php if ( ! $foods ) echo ' style="display:none"'; ?>>
 			<div id="fcc-foods-pagination-top">
 				<?php echo \FCC\Admin\Food_Pages_Admin::render_pagination_html( $paged, $total_pages, $total_foods, $per_page, $search, 'top' ); ?>
 			</div>
@@ -822,12 +817,10 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 				<?php echo \FCC\Admin\Food_Pages_Admin::render_pagination_html( $paged, $total_pages, $total_foods, $per_page, $search ); ?>
 			</div>
 		</div>
-		<?php else : ?>
-		<div class="fcc-fp-empty">
+		<div id="fcc-fp-empty" class="fcc-fp-empty"<?php if ( $foods ) echo ' style="display:none"'; ?>>
 			<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-			<p><?php echo $search ? esc_html__( 'No food pages match your search.', 'food-calorie-calculator' ) : esc_html__( 'No food pages found.', 'food-calorie-calculator' ); ?></p>
+			<p id="fcc-fp-empty-msg"><?php echo $search ? esc_html__( 'No food pages match your search.', 'food-calorie-calculator' ) : esc_html__( 'No food pages found.', 'food-calorie-calculator' ); ?></p>
 		</div>
-		<?php endif; ?>
 	</div>
 
 </div><!-- .wrap -->
@@ -907,6 +900,15 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 	var tbody           = document.getElementById( 'fcc-foods-tbody' );
 	var paginationDiv   = document.getElementById( 'fcc-foods-pagination' );
 	var paginationTop   = document.getElementById( 'fcc-foods-pagination-top' );
+	var emptyDiv        = document.getElementById( 'fcc-fp-empty' );
+	var emptyMsg        = document.getElementById( 'fcc-fp-empty-msg' );
+	var filterBadge     = document.getElementById( 'fcc-fp-filter-badge-wrap' );
+	var searchInput     = document.getElementById( 'fcc-fp-search-input' );
+	var clearBtn        = document.getElementById( 'fcc-fp-btn-clear' );
+	var searchForm      = document.getElementById( 'fcc-fp-search-form' );
+	var i18nNoMatch     = '<?php echo esc_js( __( 'No food pages match your search.', 'food-calorie-calculator' ) ); ?>';
+	var i18nNoFoods     = '<?php echo esc_js( __( 'No food pages found.', 'food-calorie-calculator' ) ); ?>';
+	var i18nFiltering   = '<?php echo esc_js( __( 'Filtering: "%s"', 'food-calorie-calculator' ) ); ?>';
 
 	function loadFoodPage( page, pp, search ) {
 		if ( wrap ) wrap.classList.add( 'fcc-loading' );
@@ -920,22 +922,63 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 			.then( function ( r ) { return r.json(); } )
 			.then( function ( data ) {
 				if ( data.success ) {
-					if ( tbody )        tbody.innerHTML           = data.data.rows;
-					if ( paginationDiv ) paginationDiv.innerHTML  = data.data.pagination;
-					if ( paginationTop ) paginationTop.innerHTML  = data.data.pagination_top;
 					curPaged  = page;
 					curPP     = pp;
 					curSearch = search;
-					document.querySelectorAll( '#fcc-foods-tbody .fcc-seo-title-input, #fcc-foods-tbody .fcc-seo-desc-input' ).forEach( function ( inp ) {
-						fccSeoCounter( inp );
-					} );
-					if ( wrap ) wrap.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+
+					// Show/hide empty state vs table.
+					if ( data.data.total > 0 ) {
+						if ( wrap )     { wrap.style.display     = ''; }
+						if ( emptyDiv ) { emptyDiv.style.display = 'none'; }
+						if ( tbody )        tbody.innerHTML           = data.data.rows;
+						if ( paginationDiv ) paginationDiv.innerHTML  = data.data.pagination;
+						if ( paginationTop ) paginationTop.innerHTML  = data.data.pagination_top;
+						document.querySelectorAll( '#fcc-foods-tbody .fcc-seo-title-input, #fcc-foods-tbody .fcc-seo-desc-input' ).forEach( function ( inp ) {
+							fccSeoCounter( inp );
+						} );
+					} else {
+						if ( wrap )     { wrap.style.display     = 'none'; }
+						if ( emptyDiv ) { emptyDiv.style.display = ''; }
+						if ( emptyMsg ) { emptyMsg.textContent   = search ? i18nNoMatch : i18nNoFoods; }
+					}
+
+					// Update filter badge.
+					if ( filterBadge ) {
+						if ( search ) {
+							filterBadge.innerHTML = '<span class="fcc-fp-badge fcc-fp-badge--auto">' + i18nFiltering.replace( '%s', search ) + '</span>';
+						} else {
+							filterBadge.innerHTML = '';
+						}
+					}
+
+					// Sync search input & clear button.
+					if ( searchInput ) { searchInput.value         = search; }
+					if ( clearBtn )    { clearBtn.style.display    = search ? '' : 'none'; }
+
+					if ( wrap && data.data.total > 0 ) wrap.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 				}
 			} )
 			.catch( function () {} )
 			.finally( function () {
 				if ( wrap ) wrap.classList.remove( 'fcc-loading' );
 			} );
+	}
+
+	// Intercept search form submit — run AJAX instead of full reload.
+	if ( searchForm ) {
+		searchForm.addEventListener( 'submit', function ( e ) {
+			e.preventDefault();
+			var q = searchInput ? searchInput.value.trim() : '';
+			loadFoodPage( 1, curPP, q );
+		} );
+	}
+
+	// Clear button — reset search via AJAX.
+	if ( clearBtn ) {
+		clearBtn.addEventListener( 'click', function ( e ) {
+			e.preventDefault();
+			loadFoodPage( 1, curPP, '' );
+		} );
 	}
 
 	// Pagination button clicks (delegated — works for both top and bottom bars).
