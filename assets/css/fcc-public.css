@@ -4938,6 +4938,9 @@ select.fcc-bmr-input {
 	border: 1px solid #e2e8f0;
 	border-radius: 8px;
 	font-size: 0.88rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .fcc-food-page__related a {
 	color: #148B43;
