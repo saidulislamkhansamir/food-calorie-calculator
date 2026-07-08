@@ -812,6 +812,12 @@ $custom_cat_count = count( array_filter( $categories, fn( $c ) => ! empty( $c['d
 				<?php echo \FCC\Admin\Food_Pages_Admin::render_pagination_html( $paged, $total_pages, $total_foods, $per_page, $search ); ?>
 			</div>
 		</div>
+		<?php else : ?>
+		<div class="fcc-fp-empty">
+			<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+			<p><?php echo $search ? esc_html__( 'No food pages match your search.', 'food-calorie-calculator' ) : esc_html__( 'No food pages found.', 'food-calorie-calculator' ); ?></p>
+		</div>
+		<?php endif; ?>
 	</div>
 
 </div><!-- .wrap -->
