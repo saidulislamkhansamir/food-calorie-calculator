@@ -1124,37 +1124,37 @@ class Food_Pages {
 		$carb = number_format( $carb_raw, 1 );
 		$fat  = number_format( $fat_raw,  1 );
 
-		// Pool A — 8 action verbs.
+		// Pool A — 8 action verbs (max 10 chars each).
 		$verbs = [
 			'Find out', 'Discover', 'See', 'Check',
 			'Learn', 'Explore', 'Compare', 'Understand',
 		];
-		// Pool B — 15 subject phrases.
+		// Pool B — 15 short subject phrases (max 19 chars each).
 		$subjects = [
-			'how it fits your daily calorie target',
-			'whether it suits your dietary goals',
-			'how it compares to similar UK foods',
-			'its full vitamin and mineral profile',
-			'its allergen data and FSA traffic lights',
-			'how many calories it adds per serving',
-			'its fibre, sugar, and salt content',
-			'how it ranks in its food category',
-			'its complete macro and micronutrient data',
-			'whether it fits a low-calorie plan',
-			'how it stacks up nutritionally',
-			'its UK nutrition profile in full',
-			'its carb, fat, and protein ratio',
-			'whether it suits a balanced UK diet',
-			'its calorie density and macro split',
+			'full UK food data',
+			'its macro profile',
+			'all calorie details',
+			'fibre and salt data',
+			'all nutrient data',
+			'full nutrition data',
+			'all macro details',
+			'FSA traffic data',
+			'its allergen info',
+			'its macro split',
+			'its calorie data',
+			'daily calorie info',
+			'its vitamin data',
+			'full allergen data',
+			'all food nutrients',
 		];
-		// Pool C — 6 closing tails.
+		// Pool C — 6 short closing tails (max 20 chars each).
 		$tails = [
-			' on our free UK nutrition tool.',
-			' in our UK food database.',
-			' using our free calorie calculator.',
-			' with our free UK food tracker.',
-			' on FoodCalorieCalculator.co.uk.',
-			' for free on our UK nutrition tool.',
+			' on our free tool.',
+			' in our UK database.',
+			' on our UK site.',
+			' free on our tool.',
+			' on our UK tool.',
+			' at our UK database.',
 		];
 
 		// 8 × 15 × 6 = 720 unique endings; × 8 body profiles = 5,760 combinations.
@@ -1165,13 +1165,13 @@ class Food_Pages {
 
 		// Profile-based body chosen by nutritional characteristics.
 		if ( $prot_raw >= 20 && $carb_raw <= 5 ) {
-			$body = "{$name} is high in protein ({$prot}g) and very low in carbs ({$carb}g) at {$kcal} kcal per 100g.";
+			$body = "{$name} is high in protein ({$prot}g) with just {$carb}g carbs at {$kcal} kcal/100g.";
 		} elseif ( $prot_raw >= 15 ) {
 			$body = "{$name} delivers {$prot}g of protein per 100g at {$kcal} kcal. Carbs {$carb}g, Fat {$fat}g.";
 		} elseif ( $kcal_raw <= 50 ) {
-			$body = "With just {$kcal} kcal per 100g, {$name} is a low-calorie choice. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
+			$body = "{$name} has just {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
 		} elseif ( $kcal_raw <= 80 ) {
-			$body = "{$name} contains {$kcal} kcal per 100g, making it a light, everyday option. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
+			$body = "{$name} is light at {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
 		} elseif ( $carb_raw <= 3 ) {
 			$body = "{$name} has {$kcal} kcal per 100g with just {$carb}g of carbs. Protein {$prot}g, Fat {$fat}g.";
 		} elseif ( $kcal_raw >= 400 ) {
@@ -1179,14 +1179,16 @@ class Food_Pages {
 		} elseif ( $fat_raw >= 20 ) {
 			$body = "{$name} contains {$fat}g of fat per 100g at {$kcal} kcal. Protein {$prot}g, Carbs {$carb}g.";
 		} else {
-			$body = "How many calories in {$name}? {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
+			$body = "Calories in {$name}: {$kcal} kcal per 100g. Protein {$prot}g, Carbs {$carb}g, Fat {$fat}g.";
 		}
 
 		$desc = $body . ' ' . $ending;
 
-		// Hard clamp: never exceed 160 characters.
+		// Safety: clip at word boundary without ellipsis for very long food names.
 		if ( mb_strlen( $desc ) > 160 ) {
-			$desc = mb_substr( $desc, 0, 157 ) . '...';
+			$trimmed = mb_substr( $desc, 0, 160 );
+			$last    = mb_strrpos( $trimmed, ' ' );
+			$desc    = $last > 100 ? mb_substr( $trimmed, 0, $last ) : $trimmed;
 		}
 
 		return $desc;
