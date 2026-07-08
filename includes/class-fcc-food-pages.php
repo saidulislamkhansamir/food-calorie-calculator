@@ -153,7 +153,7 @@ class Food_Pages {
 		status_header( 200 );
 		get_header();
 
-		echo '<div class="fcc-food-page" style="max-width:900px;margin:0 auto;padding:0.75rem 1rem 2rem;">';
+		echo '<div class="fcc-food-page" style="max-width:900px;margin:0 auto;padding:0.5rem 1rem;">';
 
 		// Breadcrumb: Home > Calories > {Category} > {Food Name}
 		$bread_cat = Database::get_category( (int) $food['category_id'] );
@@ -201,7 +201,7 @@ class Food_Pages {
 		status_header( 200 );
 		get_header();
 
-		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:0.75rem 1rem 2rem;">';
+		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:0.5rem 1rem;">';
 		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; Calories</p>';
 		$hub_intro = Settings::get( 'content.hub_intro' );
 		if ( '' === $hub_intro ) {
@@ -334,7 +334,7 @@ class Food_Pages {
 		status_header( 200 );
 		get_header();
 
-		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:0.75rem 1rem 2rem;">';
+		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:0.5rem 1rem;">';
 		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; <a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
 		echo '<h1 class="fcc-food-page__title">' . $this->get_category_h1( $cat ) . '</h1>';
 		echo '<p class="fcc-food-page__intro">' . esc_html( $desc ) . ' Showing <strong>' . $count . '</strong> foods in this category.</p>';
