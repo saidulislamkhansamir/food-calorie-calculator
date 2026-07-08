@@ -41,7 +41,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 	<header class="fcc-hero">
 		<div class="fcc-hero__inner">
 			<div class="fcc-hero__icon" aria-hidden="true">
-				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 4 5.5 4 10c0 3.9 2.5 7.1 6 8.5V21h4v-2.5c3.5-1.4 6-4.6 6-8.5C20 5.5 16 2 12 2z"/><line x1="12" y1="6" x2="12" y2="10"/><line x1="10" y1="8" x2="14" y2="8"/></svg>
+				<img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="28" height="28" alt="" decoding="async" style="display:block;width:28px;height:28px;object-fit:contain;">
 			</div>
 			<div class="fcc-hero__text">
 				<?php $htag = apply_filters( 'fcc_heading_tag', 'h1' ); ?>
@@ -831,7 +831,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<div class="fcc-bmr-header">
 					<div class="fcc-bmr-header__left">
 						<div class="fcc-bmr-header__icon" aria-hidden="true">
-							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 0-5 7-5 11a5 5 0 0 0 10 0c0-4-5-11-5-11z"/><path d="M12 17a2 2 0 0 1-2-2c0-1.5 2-4 2-4s2 2.5 2 4a2 2 0 0 1-2 2z" fill="currentColor" stroke="none"/></svg>
+							<img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="24" height="24" alt="" decoding="async" style="display:block;width:24px;height:24px;object-fit:contain;">
 						</div>
 						<div>
 							<h3 class="fcc-bmr-header__title"><?php echo esc_html( $labels['bmr_title'] ?? __( 'Daily Calorie Need', 'food-calorie-calculator' ) ); ?></h3>

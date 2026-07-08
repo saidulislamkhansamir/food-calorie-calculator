@@ -293,10 +293,10 @@ class Shortcode {
 
 		$manifest_url = FCC_PLUGIN_URL . 'assets/pwa/manifest.json';
 		echo '<link rel="manifest" href="' . esc_url( $manifest_url ) . '">' . "\n";
-		echo '<meta name="theme-color" content="#21BA5F">' . "\n";
+		echo '<meta name="theme-color" content="#148B43">' . "\n";
 		echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
 		echo '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' . "\n";
-		echo '<link rel="apple-touch-icon" href="' . esc_url( FCC_PLUGIN_URL . 'assets/pwa/icon.svg' ) . '">' . "\n";
+		echo '<link rel="apple-touch-icon" href="' . esc_url( FCC_PLUGIN_URL . 'assets/pwa/icon-192.png' ) . '">' . "\n";
 	}
 
 	/**
@@ -398,7 +398,8 @@ class Shortcode {
 			'fccData',
 			[
 				'restUrl'    => esc_url_raw( rest_url( 'fcc/v1' ) ),
-				'pluginUrl'  => esc_url_raw( FCC_PLUGIN_URL ),
+				'pluginUrl'    => esc_url_raw( FCC_PLUGIN_URL ),
+				'brandLogoUrl' => esc_url_raw( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon (3).png' ),
 				'restNonce'  => wp_create_nonce( 'wp_rest' ),
 				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 				'features'   => $features,

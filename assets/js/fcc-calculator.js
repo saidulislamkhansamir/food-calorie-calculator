@@ -2085,8 +2085,11 @@
 			printHeader.className = 'fcc-print-header';
 			printHeader.innerHTML =
 				'<div class="fcc-print-header__brand">'
+				+ ( fccData.brandLogoUrl ? '<img src="' + escHtml( fccData.brandLogoUrl ) + '" width="32" height="32" alt="" style="display:block;width:32px;height:32px;object-fit:contain;border-radius:6px;flex-shrink:0;">' : '' )
+				+ '<span style="display:flex;flex-direction:column;gap:1px;">'
 				+ '<strong>Food Calorie Calculator</strong>'
 				+ '<a href="https://foodcaloriecalculator.co.uk" style="color:rgba(255,255,255,.7);text-decoration:none;">foodcaloriecalculator.co.uk</a>'
+				+ '</span>'
 				+ '</div>'
 				+ '<div class="fcc-print-header__info">'
 				+ '<span class="fcc-print-header__food">' + ( isMealPrint ? 'Meal Plan (' + state.meal.length + ' items)' : ( food ? food.name : '' ) ) + '</span>'
