@@ -1721,14 +1721,12 @@ class Food_Pages {
 		}
 
 		if ( ! empty( $sm['include_categories'] ) ) {
-			$cats = $wpdb->get_results(
-				"SELECT slug, updated_at FROM {$cat_tbl} ORDER BY display_order ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				ARRAY_A
-			);
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$cats = $wpdb->get_results( "SELECT slug FROM {$cat_tbl} ORDER BY display_order ASC, name ASC", ARRAY_A );
 			foreach ( $cats ?? [] as $c ) {
 				$urls[] = [
 					'loc'        => home_url( '/calories/' . $c['slug'] . '/' ),
-					'lastmod'    => $c['updated_at'] ? gmdate( 'Y-m-d', strtotime( $c['updated_at'] ) ) : gmdate( 'Y-m-d' ),
+					'lastmod'    => gmdate( 'Y-m-d' ),
 					'changefreq' => $sm['changefreq_categories'] ?? 'weekly',
 					'priority'   => $sm['priority_categories'] ?? '0.7',
 				];
