@@ -115,7 +115,7 @@ class Food_Pages {
 
 			$food_id = $food['id'];
 			add_filter( 'fcc_preload_food', function () use ( $food_id ) { return $food_id; } );
-			add_filter( 'fcc_heading_tag', function () { return 'h2'; } );
+			add_filter( 'fcc_heading_tag', function () { return 'div'; } );
 
 			$this->render_food_page( $food );
 			exit;
