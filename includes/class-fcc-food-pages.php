@@ -1295,56 +1295,129 @@ class Food_Pages {
 	}
 
 	public function output_seo_meta(): void {
-		// Directory page.
+		$home_url = home_url( '/' );
+		$cal_url  = home_url( '/calories/' );
+		$flags    = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+
+		// --- Hub page ---
 		if ( 'directory' === self::$page_type ) {
-			$hub_desc = Settings::get( 'content.hub_seo_description', '' );
+			$hub_desc  = Settings::get( 'content.hub_seo_description', '' );
 			$meta_desc = ! empty( $hub_desc ) ? $hub_desc : self::generate_hub_meta_desc();
 			echo '<meta name="description" content="' . esc_attr( $meta_desc ) . '">' . "\n";
-			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' ) ) . '">' . "\n";
+			echo '<link rel="canonical" href="' . esc_url( $cal_url ) . '">' . "\n";
+
+			$breadcrumb = [
+				'@context'        => 'https://schema.org',
+				'@type'           => 'BreadcrumbList',
+				'itemListElement' => [
+					[ '@type' => 'ListItem', 'position' => 1, 'name' => 'Home',     'item' => $home_url ],
+					[ '@type' => 'ListItem', 'position' => 2, 'name' => 'Calories', 'item' => $cal_url  ],
+				],
+			];
+			echo '<script type="application/ld+json">' . wp_json_encode( $breadcrumb, $flags ) . '</script>' . "\n";
 			return;
 		}
 
-		// Category page.
+		// --- Category page ---
 		if ( 'category' === self::$page_type && self::$current_category ) {
-			$cat_desc = ! empty( self::$current_category['seo_description'] )
-				? self::$current_category['seo_description']
-				: self::generate_category_meta_desc( self::$current_category );
+			$cat      = self::$current_category;
+			$cat_url  = home_url( '/calories/' . $cat['slug'] . '/' );
+			$cat_desc = ! empty( $cat['seo_description'] )
+				? $cat['seo_description']
+				: self::generate_category_meta_desc( $cat );
 			echo '<meta name="description" content="' . esc_attr( $cat_desc ) . '">' . "\n";
-			echo '<link rel="canonical" href="' . esc_url( home_url( '/calories/' . self::$current_category['slug'] . '/' ) ) . '">' . "\n";
+			echo '<link rel="canonical" href="' . esc_url( $cat_url ) . '">' . "\n";
+
+			// BreadcrumbList.
+			$breadcrumb = [
+				'@context'        => 'https://schema.org',
+				'@type'           => 'BreadcrumbList',
+				'itemListElement' => [
+					[ '@type' => 'ListItem', 'position' => 1, 'name' => 'Home',      'item' => $home_url ],
+					[ '@type' => 'ListItem', 'position' => 2, 'name' => 'Calories',  'item' => $cal_url  ],
+					[ '@type' => 'ListItem', 'position' => 3, 'name' => $cat['name'], 'item' => $cat_url ],
+				],
+			];
+			echo '<script type="application/ld+json">' . wp_json_encode( $breadcrumb, $flags ) . '</script>' . "\n";
+
+			// ItemList — all foods in this category.
+			$cat_foods = Database::get_foods_in_category( (int) $cat['id'] );
+			if ( $cat_foods ) {
+				$items = [];
+				foreach ( $cat_foods as $i => $f ) {
+					$f_url   = home_url( '/calories/' . $cat['slug'] . '/' . $f['slug'] . '/' );
+					$items[] = [
+						'@type'    => 'ListItem',
+						'position' => $i + 1,
+						'url'      => $f_url,
+						'name'     => $f['name'] . ' — ' . (int) round( (float) $f['energy_kcal'] ) . ' kcal per 100g',
+					];
+				}
+				$item_list = [
+					'@context'        => 'https://schema.org',
+					'@type'           => 'ItemList',
+					'name'            => $cat['name'] . ' — Calories & Nutrition',
+					'url'             => $cat_url,
+					'numberOfItems'   => count( $items ),
+					'itemListElement' => $items,
+				];
+				echo '<script type="application/ld+json">' . wp_json_encode( $item_list, $flags ) . '</script>' . "\n";
+			}
 			return;
 		}
 
+		// --- Single food page ---
 		$food = self::$current_food;
 		if ( ! $food ) { return; }
 
-		$url  = self::food_url( $food );
+		$food_url = self::food_url( $food );
+		$cat      = Database::get_category( (int) $food['category_id'] );
+		$cat_url  = $cat ? home_url( '/calories/' . $cat['slug'] . '/' ) : $cal_url;
+		$cat_name = $cat ? $cat['name'] : 'Calories';
 
 		$meta_desc = ! empty( $food['seo_description'] )
 			? $food['seo_description']
 			: self::generate_food_meta_desc( $food );
 		echo '<meta name="description" content="' . esc_attr( $meta_desc ) . '">' . "\n";
-		echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
+		echo '<link rel="canonical" href="' . esc_url( $food_url ) . '">' . "\n";
 
-		// JSON-LD NutritionInformation schema.
-		$schema = [
+		// BreadcrumbList.
+		$breadcrumb = [
 			'@context'        => 'https://schema.org',
-			'@type'           => 'NutritionInformation',
-			'name'            => $food['name'],
-			'calories'        => $kcal . ' kcal',
-			'proteinContent'  => $prot . 'g',
-			'carbohydrateContent' => $carb . 'g',
-			'fatContent'      => $fat . 'g',
-			'servingSize'     => '100g',
+			'@type'           => 'BreadcrumbList',
+			'itemListElement' => [
+				[ '@type' => 'ListItem', 'position' => 1, 'name' => 'Home',        'item' => $home_url  ],
+				[ '@type' => 'ListItem', 'position' => 2, 'name' => 'Calories',    'item' => $cal_url   ],
+				[ '@type' => 'ListItem', 'position' => 3, 'name' => $cat_name,     'item' => $cat_url   ],
+				[ '@type' => 'ListItem', 'position' => 4, 'name' => $food['name'], 'item' => $food_url  ],
+			],
 		];
-		if ( null !== $food['fibre_g'] )   { $schema['fiberContent']          = number_format( $food['fibre_g'], 1 ) . 'g'; }
-		if ( null !== $food['salt_g'] )    { $schema['sodiumContent']         = number_format( $food['salt_g'] * 400, 0 ) . 'mg'; }
-		if ( null !== $food['of_which_saturates_g'] ) { $schema['saturatedFatContent'] = number_format( $food['of_which_saturates_g'], 1 ) . 'g'; }
-		if ( null !== $food['of_which_sugars_g'] )    { $schema['sugarContent']        = number_format( $food['of_which_sugars_g'], 1 ) . 'g'; }
+		echo '<script type="application/ld+json">' . wp_json_encode( $breadcrumb, $flags ) . '</script>' . "\n";
 
-		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+		// NutritionInformation.
+		$kcal = number_format( (float) $food['energy_kcal'], 0 );
+		$prot = number_format( (float) $food['protein_g'], 1 );
+		$carb = number_format( (float) $food['carbohydrate_g'], 1 );
+		$fat  = number_format( (float) $food['fat_g'], 1 );
 
-		// FAQPage schema.
-		echo '<script type="application/ld+json">' . wp_json_encode( $this->build_faq_schema( $food ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+		$nutrition = [
+			'@context'            => 'https://schema.org',
+			'@type'               => 'NutritionInformation',
+			'name'                => $food['name'],
+			'calories'            => $kcal . ' kcal',
+			'proteinContent'      => $prot . 'g',
+			'carbohydrateContent' => $carb . 'g',
+			'fatContent'          => $fat . 'g',
+			'servingSize'         => '100g',
+		];
+		if ( null !== $food['fibre_g'] )              { $nutrition['fiberContent']        = number_format( $food['fibre_g'], 1 ) . 'g'; }
+		if ( null !== $food['salt_g'] )               { $nutrition['sodiumContent']       = number_format( $food['salt_g'] * 400, 0 ) . 'mg'; }
+		if ( null !== $food['of_which_saturates_g'] ) { $nutrition['saturatedFatContent'] = number_format( $food['of_which_saturates_g'], 1 ) . 'g'; }
+		if ( null !== $food['of_which_sugars_g'] )    { $nutrition['sugarContent']        = number_format( $food['of_which_sugars_g'], 1 ) . 'g'; }
+		echo '<script type="application/ld+json">' . wp_json_encode( $nutrition, $flags ) . '</script>' . "\n";
+
+		// FAQPage.
+		echo '<script type="application/ld+json">' . wp_json_encode( $this->build_faq_schema( $food ), $flags ) . '</script>' . "\n";
 	}
 
 	public function override_title_pre( $title ): string {
