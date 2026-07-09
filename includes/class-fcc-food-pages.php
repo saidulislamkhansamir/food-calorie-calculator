@@ -1596,6 +1596,15 @@ class Food_Pages {
 		$type = get_query_var( 'fcc_sitemap' );
 		if ( ! $type ) { return; }
 
+		// Strip trailing slash — redirect to clean URL regardless of what added it.
+		$uri  = isset( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
+		$path = (string) parse_url( $uri, PHP_URL_PATH );
+		if ( str_ends_with( $path, '/' ) ) {
+			$qs = (string) parse_url( $uri, PHP_URL_QUERY );
+			wp_redirect( home_url( rtrim( $path, '/' ) ) . ( $qs !== '' ? '?' . $qs : '' ), 301 );
+			exit;
+		}
+
 		$sm = \FCC\Settings::get_section( 'xml_sitemap' );
 
 		switch ( $type ) {
