@@ -15,8 +15,9 @@ defined( 'ABSPATH' ) || exit;
 class Settings_Page {
 
 	public function register( \FCC\Loader $loader ): void {
-		$loader->add_action( 'admin_post_fcc_save_settings',  $this, 'handle_save_settings' );
-		$loader->add_action( 'wp_ajax_fcc_ajax_save_settings', $this, 'ajax_save_settings' );
+		$loader->add_action( 'admin_post_fcc_save_settings',    $this, 'handle_save_settings' );
+		$loader->add_action( 'wp_ajax_fcc_ajax_save_settings',  $this, 'ajax_save_settings' );
+		$loader->add_action( 'wp_ajax_fcc_ping_google_sitemap', $this, 'ajax_ping_google' );
 	}
 
 	public function handle_save_settings(): void {
@@ -48,6 +49,9 @@ class Settings_Page {
 				break;
 			case 'advanced':
 				$all['advanced'] = $this->sanitise_advanced( $_POST );
+				break;
+			case 'xml_sitemap':
+				$all['xml_sitemap'] = $this->sanitise_xml_sitemap( $_POST );
 				break;
 		}
 
@@ -93,6 +97,9 @@ class Settings_Page {
 				break;
 			case 'advanced':
 				$all['advanced'] = $this->sanitise_advanced( $_POST );
+				break;
+			case 'xml_sitemap':
+				$all['xml_sitemap'] = $this->sanitise_xml_sitemap( $_POST );
 				break;
 		}
 
@@ -318,5 +325,72 @@ class Settings_Page {
 		$css = preg_replace( '/expression\s*\(/i', '', $css );
 		$css = preg_replace( '/@import\b/i', '', $css );
 		return $css;
+	}
+
+	/** @param array<string,mixed> $post */
+	private function sanitise_xml_sitemap( array $post ): array {
+		$allowed_freqs = [ 'always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never' ];
+
+		$freq = function( string $key, string $default ) use ( $post, $allowed_freqs ): string {
+			$val = sanitize_key( $post[ $key ] ?? $default );
+			return in_array( $val, $allowed_freqs, true ) ? $val : $default;
+		};
+
+		$pri = function( string $key, string $default ) use ( $post ): string {
+			$val = (float) ( $post[ $key ] ?? $default );
+			$val = max( 0.0, min( 1.0, $val ) );
+			return number_format( $val, 1 );
+		};
+
+		$excluded = [];
+		if ( ! empty( $post['excluded_pages'] ) && is_array( $post['excluded_pages'] ) ) {
+			foreach ( $post['excluded_pages'] as $id ) {
+				$id = absint( $id );
+				if ( $id > 0 ) {
+					$excluded[] = $id;
+				}
+			}
+		}
+
+		return [
+			'foods_per_page'        => max( 50, min( 2000, absint( $post['foods_per_page'] ?? 500 ) ) ),
+			'include_wp_pages'      => ! empty( $post['include_wp_pages'] ),
+			'include_hub'           => ! empty( $post['include_hub'] ),
+			'include_categories'    => ! empty( $post['include_categories'] ),
+			'include_foods'         => ! empty( $post['include_foods'] ),
+			'priority_homepage'     => $pri( 'priority_homepage',     '1.0' ),
+			'priority_hub'          => $pri( 'priority_hub',          '0.9' ),
+			'priority_categories'   => $pri( 'priority_categories',   '0.7' ),
+			'priority_foods'        => $pri( 'priority_foods',        '0.6' ),
+			'priority_wp_pages'     => $pri( 'priority_wp_pages',     '0.4' ),
+			'changefreq_homepage'   => $freq( 'changefreq_homepage',   'weekly' ),
+			'changefreq_hub'        => $freq( 'changefreq_hub',        'weekly' ),
+			'changefreq_categories' => $freq( 'changefreq_categories', 'weekly' ),
+			'changefreq_foods'      => $freq( 'changefreq_foods',      'monthly' ),
+			'changefreq_wp_pages'   => $freq( 'changefreq_wp_pages',   'yearly' ),
+			'excluded_pages'        => array_values( array_unique( $excluded ) ),
+		];
+	}
+
+	public function ajax_ping_google(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => 'Permission denied.' ], 403 );
+		}
+		check_ajax_referer( 'fcc_save_settings' );
+
+		$sitemap_url = home_url( '/sitemap.xml' );
+		$ping_url    = 'https://www.google.com/ping?sitemap=' . rawurlencode( $sitemap_url );
+		$response    = wp_remote_get( $ping_url, [ 'timeout' => 10 ] );
+
+		if ( is_wp_error( $response ) ) {
+			wp_send_json_error( [ 'message' => $response->get_error_message() ] );
+		}
+
+		$code = (int) wp_remote_retrieve_response_code( $response );
+		if ( $code >= 200 && $code < 300 ) {
+			wp_send_json_success( [ 'message' => 'Google pinged successfully (HTTP ' . $code . ').' ] );
+		} else {
+			wp_send_json_error( [ 'message' => 'Ping returned HTTP ' . $code . '.' ] );
+		}
 	}
 }

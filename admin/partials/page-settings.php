@@ -7,12 +7,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$settings   = FCC\Settings::get_all();
-$general    = $settings['general'];
-$features   = $settings['features'];
-$appearance = $settings['appearance'];
-$labels     = $settings['labels'];
-$advanced   = $settings['advanced'];
+$settings    = FCC\Settings::get_all();
+$general     = $settings['general'];
+$features    = $settings['features'];
+$appearance  = $settings['appearance'];
+$labels      = $settings['labels'];
+$advanced    = $settings['advanced'];
+$xml_sitemap = FCC\Settings::get_section( 'xml_sitemap' );
 
 $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
 
@@ -23,6 +24,7 @@ $tabs = [
 	'labels'     => [ 'label' => __( 'Labels',     'food-calorie-calculator' ), 'icon' => '🏷️' ],
 	'pinned'     => [ 'label' => __( 'Pinned',     'food-calorie-calculator' ), 'icon' => '📌' ],
 	'advanced'   => [ 'label' => __( 'Advanced',   'food-calorie-calculator' ), 'icon' => '🔧' ],
+	'xml_sitemap' => [ 'label' => __( 'XML Sitemap', 'food-calorie-calculator' ), 'icon' => '🗺️' ],
 ];
 
 $categories = FCC\Database::get_all_categories();
@@ -1171,6 +1173,267 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 					</div>
 				</div>
 			</div>
+
+		<?php elseif ( 'xml_sitemap' === $active_tab ) :
+		// ============================================================
+		// XML SITEMAP TAB
+		// ============================================================
+
+		// Pre-compute food sub-sitemap count for quick links.
+		global $wpdb;
+		$_sm_per   = max( 50, (int) ( $xml_sitemap['foods_per_page'] ?? 500 ) );
+		$_sm_total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}fcc_foods WHERE is_active = 1" ); // phpcs:ignore
+		$_sm_pages = max( 1, (int) ceil( $_sm_total / $_sm_per ) );
+		$_all_wp_pages = get_posts( [ 'post_type' => 'page', 'post_status' => 'publish', 'posts_per_page' => -1 ] );
+		$_excluded_ids = array_map( 'absint', (array) ( $xml_sitemap['excluded_pages'] ?? [] ) );
+		$_freqs = [ 'always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never' ];
+		?>
+
+		<!-- Quick Links -->
+		<div class="fcc-stg-section">
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Quick Links', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Click any link to preview that sitemap in a new tab.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php esc_html_e( 'Master Index', 'food-calorie-calculator' ); ?></div>
+					<div class="fcc-stg-row__control">
+						<a href="<?php echo esc_url( home_url( '/sitemap.xml' ) ); ?>" target="_blank" rel="noopener" class="button button-secondary">
+							<?php echo esc_url( home_url( '/sitemap.xml' ) ); ?> ↗
+						</a>
+					</div>
+				</div>
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php esc_html_e( 'Pages Sitemap', 'food-calorie-calculator' ); ?></div>
+					<div class="fcc-stg-row__control">
+						<a href="<?php echo esc_url( home_url( '/page-sitemap.xml' ) ); ?>" target="_blank" rel="noopener" class="button button-secondary">
+							<?php echo esc_url( home_url( '/page-sitemap.xml' ) ); ?> ↗
+						</a>
+					</div>
+				</div>
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php esc_html_e( 'Food Category Sitemap', 'food-calorie-calculator' ); ?></div>
+					<div class="fcc-stg-row__control">
+						<a href="<?php echo esc_url( home_url( '/food-category-sitemap.xml' ) ); ?>" target="_blank" rel="noopener" class="button button-secondary">
+							<?php echo esc_url( home_url( '/food-category-sitemap.xml' ) ); ?> ↗
+						</a>
+					</div>
+				</div>
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php echo esc_html( sprintf( __( 'Food Sitemaps (%d files)', 'food-calorie-calculator' ), $_sm_pages ) ); ?></div>
+					<div class="fcc-stg-row__control" style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+						<?php for ( $i = 1; $i <= min( $_sm_pages, 20 ); $i++ ) : ?>
+						<a href="<?php echo esc_url( home_url( '/food-sitemap-' . $i . '.xml' ) ); ?>" target="_blank" rel="noopener" class="button button-secondary" style="font-size:0.8rem;padding:2px 8px;">
+							food-sitemap-<?php echo esc_html( $i ); ?>.xml ↗
+						</a>
+						<?php endfor; ?>
+						<?php if ( $_sm_pages > 20 ) : ?>
+						<span style="color:#666;font-size:0.85rem;align-self:center;">+ <?php echo esc_html( $_sm_pages - 20 ); ?> more</span>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Ping Google -->
+		<div class="fcc-stg-section">
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Ping Google', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Notify Google that your sitemap has been updated. Do this after major content changes.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php esc_html_e( 'Notify Google', 'food-calorie-calculator' ); ?></div>
+					<div class="fcc-stg-row__control">
+						<button type="button" id="fcc-ping-google" class="button button-primary">
+							<?php esc_html_e( 'Ping Google Now', 'food-calorie-calculator' ); ?>
+						</button>
+						<span id="fcc-ping-result" style="margin-left:1rem;font-size:0.875rem;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Pagination -->
+		<div class="fcc-stg-section">
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Pagination', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Control how many food pages appear per sub-sitemap file.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="foods_per_page"><?php esc_html_e( 'Foods per sub-sitemap', 'food-calorie-calculator' ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
+						<select name="foods_per_page" id="foods_per_page" class="fcc-stg-select">
+							<?php foreach ( [ 100 => '100', 200 => '200', 500 => '500 (recommended)', 1000 => '1000' ] as $val => $label ) : ?>
+							<option value="<?php echo esc_attr( $val ); ?>" <?php selected( (int) ( $xml_sitemap['foods_per_page'] ?? 500 ), $val ); ?>>
+								<?php echo esc_html( $label ); ?>
+							</option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description"><?php echo esc_html( sprintf( __( 'Currently: %d foods split across %d sub-sitemap files.', 'food-calorie-calculator' ), $_sm_total, $_sm_pages ) ); ?></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Section Toggles -->
+		<div class="fcc-stg-section">
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Include in Sitemap', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Toggle which sections appear in the sitemap index.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+				<?php
+				$_sm_toggles = [
+					'include_wp_pages'   => __( 'WordPress Pages (Homepage, About, Contact, etc.)', 'food-calorie-calculator' ),
+					'include_hub'        => __( 'Food Hub (/calories/)', 'food-calorie-calculator' ),
+					'include_categories' => __( 'Food Category Pages', 'food-calorie-calculator' ),
+					'include_foods'      => __( 'Individual Food Pages (4,900+)', 'food-calorie-calculator' ),
+				];
+				foreach ( $_sm_toggles as $_sm_key => $_sm_label ) : ?>
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="<?php echo esc_attr( $_sm_key ); ?>"><?php echo esc_html( $_sm_label ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
+						<label class="fcc-toggle">
+							<input type="checkbox" name="<?php echo esc_attr( $_sm_key ); ?>" id="<?php echo esc_attr( $_sm_key ); ?>" value="1"
+								<?php checked( ! empty( $xml_sitemap[ $_sm_key ] ) ); ?>>
+							<span class="fcc-toggle__slider"></span>
+						</label>
+					</div>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+
+		<!-- Priorities -->
+		<div class="fcc-stg-section">
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Priority', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Values from 0.0 (lowest) to 1.0 (highest). Indicates relative importance to search engines.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-numgrid">
+				<?php
+				$_sm_priorities = [
+					'priority_homepage'   => __( 'Homepage', 'food-calorie-calculator' ),
+					'priority_hub'        => __( 'Food Hub', 'food-calorie-calculator' ),
+					'priority_categories' => __( 'Category Pages', 'food-calorie-calculator' ),
+					'priority_foods'      => __( 'Food Pages', 'food-calorie-calculator' ),
+					'priority_wp_pages'   => __( 'WP Pages (About, Contact, etc.)', 'food-calorie-calculator' ),
+				];
+				foreach ( $_sm_priorities as $_sm_key => $_sm_label ) : ?>
+				<div class="fcc-stg-numfield">
+					<label class="fcc-stg-numfield__label" for="<?php echo esc_attr( $_sm_key ); ?>"><?php echo esc_html( $_sm_label ); ?></label>
+					<input type="number" id="<?php echo esc_attr( $_sm_key ); ?>" name="<?php echo esc_attr( $_sm_key ); ?>"
+						step="0.1" min="0" max="1" value="<?php echo esc_attr( $xml_sitemap[ $_sm_key ] ?? '0.5' ); ?>"
+						class="fcc-stg-numfield__input">
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+
+		<!-- Change Frequency -->
+		<div class="fcc-stg-section">
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Change Frequency', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'How often each section is expected to change. Used as a hint by search engines.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+				<?php
+				$_sm_freqs_map = [
+					'changefreq_homepage'   => __( 'Homepage', 'food-calorie-calculator' ),
+					'changefreq_hub'        => __( 'Food Hub', 'food-calorie-calculator' ),
+					'changefreq_categories' => __( 'Category Pages', 'food-calorie-calculator' ),
+					'changefreq_foods'      => __( 'Food Pages', 'food-calorie-calculator' ),
+					'changefreq_wp_pages'   => __( 'WP Pages (About, Contact, etc.)', 'food-calorie-calculator' ),
+				];
+				foreach ( $_sm_freqs_map as $_sm_key => $_sm_label ) : ?>
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="<?php echo esc_attr( $_sm_key ); ?>"><?php echo esc_html( $_sm_label ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
+						<select name="<?php echo esc_attr( $_sm_key ); ?>" id="<?php echo esc_attr( $_sm_key ); ?>" class="fcc-stg-select">
+							<?php foreach ( $_freqs as $_f ) : ?>
+							<option value="<?php echo esc_attr( $_f ); ?>" <?php selected( $xml_sitemap[ $_sm_key ] ?? '', $_f ); ?>>
+								<?php echo esc_html( ucfirst( $_f ) ); ?>
+							</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+
+		<!-- Exclude Pages -->
+		<div class="fcc-stg-section">
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Exclude WordPress Pages', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Pages checked here will not appear in the sitemap. Useful for login pages, account pages, and thin-content pages.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+				<?php if ( empty( $_all_wp_pages ) ) : ?>
+				<div class="fcc-stg-row"><div class="fcc-stg-row__control"><p class="description"><?php esc_html_e( 'No published pages found.', 'food-calorie-calculator' ); ?></p></div></div>
+				<?php else : ?>
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php esc_html_e( 'Exclude pages', 'food-calorie-calculator' ); ?></div>
+					<div class="fcc-stg-row__control">
+						<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.4rem 1.5rem;">
+						<?php foreach ( $_all_wp_pages as $_pg ) : ?>
+							<label style="display:flex;align-items:center;gap:0.4rem;font-size:0.875rem;cursor:pointer;">
+								<input type="checkbox" name="excluded_pages[]" value="<?php echo esc_attr( $_pg->ID ); ?>"
+									<?php checked( in_array( (int) $_pg->ID, $_excluded_ids, true ) ); ?>>
+								<?php echo esc_html( get_the_title( $_pg->ID ) ); ?>
+								<span style="color:#999;font-size:0.78rem;"><?php echo esc_html( str_replace( home_url(), '', get_permalink( $_pg->ID ) ) ); ?></span>
+							</label>
+						<?php endforeach; ?>
+						</div>
+					</div>
+				</div>
+				<?php endif; ?>
+			</div>
+		</div>
+
+		<script>
+		( function () {
+			var btn    = document.getElementById( 'fcc-ping-google' );
+			var result = document.getElementById( 'fcc-ping-result' );
+			if ( ! btn ) { return; }
+			btn.addEventListener( 'click', function () {
+				btn.disabled = true;
+				btn.textContent = '<?php echo esc_js( __( 'Pinging…', 'food-calorie-calculator' ) ); ?>';
+				result.textContent = '';
+				result.style.color = '';
+				fetch( '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+					body: new URLSearchParams( {
+						action:   'fcc_ping_google_sitemap',
+						_wpnonce: '<?php echo esc_js( wp_create_nonce( 'fcc_save_settings' ) ); ?>',
+					} ),
+				} )
+				.then( function ( r ) { return r.json(); } )
+				.then( function ( data ) {
+					btn.disabled    = false;
+					btn.textContent = '<?php echo esc_js( __( 'Ping Google Now', 'food-calorie-calculator' ) ); ?>';
+					result.textContent = data.data && data.data.message ? data.data.message : ( data.success ? 'Done.' : 'Failed.' );
+					result.style.color = data.success ? '#1a7a3f' : '#c0392b';
+				} )
+				.catch( function () {
+					btn.disabled    = false;
+					btn.textContent = '<?php echo esc_js( __( 'Ping Google Now', 'food-calorie-calculator' ) ); ?>';
+					result.textContent = 'Network error.';
+					result.style.color = '#c0392b';
+				} );
+			} );
+		}() );
+		</script>
 
 		<?php endif; ?>
 

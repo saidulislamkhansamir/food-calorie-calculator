@@ -1562,13 +1562,18 @@ class Food_Pages {
 	}
 
 	// -------------------------------------------------------------------------
-	// Sitemap — standalone /sitemap.xml endpoint
+	// Sitemap — sitemap index + sub-sitemaps
 	// -------------------------------------------------------------------------
 
 	public static function register_sitemap(): void {
-		add_rewrite_rule( '^sitemap\.xml$', 'index.php?fcc_sitemap=1', 'top' );
+		add_rewrite_rule( '^sitemap\.xml$',                      'index.php?fcc_sitemap=index',                             'top' );
+		add_rewrite_rule( '^page-sitemap\.xml$',                 'index.php?fcc_sitemap=pages',                             'top' );
+		add_rewrite_rule( '^food-category-sitemap\.xml$',        'index.php?fcc_sitemap=food-category',                    'top' );
+		add_rewrite_rule( '^food-sitemap-([0-9]+)\.xml$',        'index.php?fcc_sitemap=food&fcc_sitemap_page=$matches[1]', 'top' );
+
 		add_filter( 'query_vars', function( array $vars ): array {
 			$vars[] = 'fcc_sitemap';
+			$vars[] = 'fcc_sitemap_page';
 			return $vars;
 		} );
 		add_action( 'template_redirect', [ __CLASS__, 'maybe_serve_sitemap' ] );
@@ -1579,12 +1584,152 @@ class Food_Pages {
 	}
 
 	public static function maybe_serve_sitemap(): void {
-		if ( ! get_query_var( 'fcc_sitemap' ) ) { return; }
-		self::serve_sitemap();
+		$type = get_query_var( 'fcc_sitemap' );
+		if ( ! $type ) { return; }
+
+		$sm = \FCC\Settings::get_section( 'xml_sitemap' );
+
+		switch ( $type ) {
+			case 'index':
+				self::serve_sitemap_index( $sm );
+				break;
+			case 'pages':
+				self::serve_page_sitemap( $sm );
+				break;
+			case 'food-category':
+				self::serve_food_category_sitemap( $sm );
+				break;
+			case 'food':
+				$page = max( 1, (int) get_query_var( 'fcc_sitemap_page', 1 ) );
+				self::serve_food_sitemap( $sm, $page );
+				break;
+			default:
+				return;
+		}
 		exit;
 	}
 
-	private static function serve_sitemap(): void {
+	private static function xsl_pi(): string {
+		return '<?xml-stylesheet type="text/xsl" href="' . esc_url( FCC_PLUGIN_URL . 'assets/xsl/sitemap.xsl' ) . '"?>' . "\n";
+	}
+
+	private static function serve_sitemap_index( array $sm ): void {
+		global $wpdb;
+
+		header( 'Content-Type: application/xml; charset=UTF-8' );
+		header( 'X-Robots-Tag: noindex, follow' );
+
+		$food_tbl = $wpdb->prefix . 'fcc_foods';
+		$sitemaps = [];
+
+		if ( ! empty( $sm['include_wp_pages'] ) ) {
+			$sitemaps[] = [ 'loc' => home_url( '/page-sitemap.xml' ), 'lastmod' => gmdate( 'Y-m-d' ) ];
+		}
+
+		if ( ! empty( $sm['include_hub'] ) || ! empty( $sm['include_categories'] ) ) {
+			$sitemaps[] = [ 'loc' => home_url( '/food-category-sitemap.xml' ), 'lastmod' => gmdate( 'Y-m-d' ) ];
+		}
+
+		if ( ! empty( $sm['include_foods'] ) ) {
+			$per     = max( 50, (int) ( $sm['foods_per_page'] ?? 500 ) );
+			$total   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$food_tbl} WHERE is_active = 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$pages   = max( 1, (int) ceil( $total / $per ) );
+			$latest  = $wpdb->get_var( "SELECT MAX(updated_at) FROM {$food_tbl} WHERE is_active = 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$lastmod = $latest ? gmdate( 'Y-m-d', strtotime( $latest ) ) : gmdate( 'Y-m-d' );
+			for ( $i = 1; $i <= $pages; $i++ ) {
+				$sitemaps[] = [ 'loc' => home_url( '/food-sitemap-' . $i . '.xml' ), 'lastmod' => $lastmod ];
+			}
+		}
+
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+		echo self::xsl_pi();
+		echo '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+		foreach ( $sitemaps as $s ) {
+			echo "<sitemap>\n";
+			echo '  <loc>' . esc_url( $s['loc'] ) . "</loc>\n";
+			echo '  <lastmod>' . esc_html( $s['lastmod'] ) . "</lastmod>\n";
+			echo "</sitemap>\n";
+		}
+		echo '</sitemapindex>';
+		// phpcs:enable
+	}
+
+	private static function serve_page_sitemap( array $sm ): void {
+		header( 'Content-Type: application/xml; charset=UTF-8' );
+		header( 'X-Robots-Tag: noindex, follow' );
+
+		$front_id    = (int) get_option( 'page_on_front' );
+		$excluded    = array_map( 'absint', (array) ( $sm['excluded_pages'] ?? [] ) );
+		$exclude_all = array_unique( array_filter( array_merge( $excluded, $front_id ? [ $front_id ] : [] ) ) );
+
+		$urls = [];
+
+		// Homepage always first
+		$urls[] = [
+			'loc'        => home_url( '/' ),
+			'lastmod'    => gmdate( 'Y-m-d' ),
+			'changefreq' => $sm['changefreq_homepage'] ?? 'weekly',
+			'priority'   => $sm['priority_homepage'] ?? '1.0',
+		];
+
+		if ( ! empty( $sm['include_wp_pages'] ) ) {
+			$pages = get_posts( [
+				'post_type'      => 'page',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'exclude'        => $exclude_all,
+			] );
+			foreach ( $pages as $p ) {
+				$urls[] = [
+					'loc'        => get_permalink( $p->ID ),
+					'lastmod'    => gmdate( 'Y-m-d', strtotime( $p->post_modified_gmt ) ),
+					'changefreq' => $sm['changefreq_wp_pages'] ?? 'yearly',
+					'priority'   => $sm['priority_wp_pages'] ?? '0.4',
+				];
+			}
+		}
+
+		self::output_urlset( $urls );
+	}
+
+	private static function serve_food_category_sitemap( array $sm ): void {
+		global $wpdb;
+
+		header( 'Content-Type: application/xml; charset=UTF-8' );
+		header( 'X-Robots-Tag: noindex, follow' );
+
+		$cat_tbl = $wpdb->prefix . 'fcc_categories';
+		$urls    = [];
+
+		if ( ! empty( $sm['include_hub'] ) ) {
+			$urls[] = [
+				'loc'        => home_url( '/calories/' ),
+				'lastmod'    => gmdate( 'Y-m-d' ),
+				'changefreq' => $sm['changefreq_hub'] ?? 'weekly',
+				'priority'   => $sm['priority_hub'] ?? '0.9',
+			];
+		}
+
+		if ( ! empty( $sm['include_categories'] ) ) {
+			$cats = $wpdb->get_results(
+				"SELECT slug, updated_at FROM {$cat_tbl} ORDER BY display_order ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				ARRAY_A
+			);
+			foreach ( $cats ?? [] as $c ) {
+				$urls[] = [
+					'loc'        => home_url( '/calories/' . $c['slug'] . '/' ),
+					'lastmod'    => $c['updated_at'] ? gmdate( 'Y-m-d', strtotime( $c['updated_at'] ) ) : gmdate( 'Y-m-d' ),
+					'changefreq' => $sm['changefreq_categories'] ?? 'weekly',
+					'priority'   => $sm['priority_categories'] ?? '0.7',
+				];
+			}
+		}
+
+		self::output_urlset( $urls );
+	}
+
+	private static function serve_food_sitemap( array $sm, int $page ): void {
 		global $wpdb;
 
 		header( 'Content-Type: application/xml; charset=UTF-8' );
@@ -1592,77 +1737,41 @@ class Food_Pages {
 
 		$table   = $wpdb->prefix . 'fcc_foods';
 		$cat_tbl = $wpdb->prefix . 'fcc_categories';
-		$urls    = [];
+		$per     = max( 50, (int) ( $sm['foods_per_page'] ?? 500 ) );
+		$offset  = ( $page - 1 ) * $per;
 
-		// Homepage
-		$urls[] = [
-			'loc'        => home_url( '/' ),
-			'lastmod'    => gmdate( 'Y-m-d' ),
-			'changefreq' => 'weekly',
-			'priority'   => '1.0',
-		];
-
-		// WordPress published pages (exclude homepage)
-		$pages = get_posts( [
-			'post_type'      => 'page',
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'exclude'        => [ (int) get_option( 'page_on_front' ) ],
-		] );
-		foreach ( $pages as $page ) {
-			$urls[] = [
-				'loc'        => get_permalink( $page->ID ),
-				'lastmod'    => gmdate( 'Y-m-d', strtotime( $page->post_modified_gmt ) ),
-				'changefreq' => 'yearly',
-				'priority'   => '0.4',
-			];
-		}
-
-		// Hub
-		$urls[] = [
-			'loc'        => home_url( '/calories/' ),
-			'lastmod'    => gmdate( 'Y-m-d' ),
-			'changefreq' => 'weekly',
-			'priority'   => '0.9',
-		];
-
-		// Category pages
-		$cats = $wpdb->get_results(
-			"SELECT slug, updated_at FROM {$cat_tbl} ORDER BY display_order ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			ARRAY_A
-		);
-		foreach ( $cats ?? [] as $c ) {
-			$urls[] = [
-				'loc'        => home_url( '/calories/' . $c['slug'] . '/' ),
-				'lastmod'    => $c['updated_at'] ? gmdate( 'Y-m-d', strtotime( $c['updated_at'] ) ) : gmdate( 'Y-m-d' ),
-				'changefreq' => 'weekly',
-				'priority'   => '0.7',
-			];
-		}
-
-		// Food pages — single JOIN avoids per-row get_category() calls
 		$foods = $wpdb->get_results(
-			"SELECT f.slug, f.updated_at, c.slug AS cat_slug
-			 FROM {$table} f
-			 LEFT JOIN {$cat_tbl} c ON c.id = f.category_id
-			 WHERE f.is_active = 1
-			 ORDER BY f.slug ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->prepare(
+				"SELECT f.slug, f.updated_at, c.slug AS cat_slug
+				 FROM {$table} f
+				 LEFT JOIN {$cat_tbl} c ON c.id = f.category_id
+				 WHERE f.is_active = 1
+				 ORDER BY f.slug ASC
+				 LIMIT %d OFFSET %d",
+				$per,
+				$offset
+			),
 			ARRAY_A
 		);
+
+		$urls = [];
 		foreach ( $foods ?? [] as $row ) {
 			$cat_slug = $row['cat_slug'] ?? 'uncategorised';
 			$urls[]   = [
 				'loc'        => home_url( '/calories/' . $cat_slug . '/' . $row['slug'] . '/' ),
 				'lastmod'    => $row['updated_at'] ? gmdate( 'Y-m-d', strtotime( $row['updated_at'] ) ) : '',
-				'changefreq' => 'monthly',
-				'priority'   => '0.6',
+				'changefreq' => $sm['changefreq_foods'] ?? 'monthly',
+				'priority'   => $sm['priority_foods'] ?? '0.6',
 			];
 		}
 
-		// Output XML
+		self::output_urlset( $urls );
+	}
+
+	private static function output_urlset( array $urls ): void {
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-		echo '<?xml-stylesheet type="text/xsl" href="' . esc_url( FCC_PLUGIN_URL . 'assets/xsl/sitemap.xsl' ) . '"?>' . "\n";
+		echo self::xsl_pi();
 		echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 		foreach ( $urls as $u ) {
 			echo "<url>\n";

@@ -165,6 +165,24 @@ class Settings {
 				'hub_intro'     => '',
 				'hub_editorial' => '',
 			],
+			'xml_sitemap' => [
+				'foods_per_page'        => 500,
+				'include_wp_pages'      => true,
+				'include_hub'           => true,
+				'include_categories'    => true,
+				'include_foods'         => true,
+				'priority_homepage'     => '1.0',
+				'priority_hub'          => '0.9',
+				'priority_categories'   => '0.7',
+				'priority_foods'        => '0.6',
+				'priority_wp_pages'     => '0.4',
+				'changefreq_homepage'   => 'weekly',
+				'changefreq_hub'        => 'weekly',
+				'changefreq_categories' => 'weekly',
+				'changefreq_foods'      => 'monthly',
+				'changefreq_wp_pages'   => 'yearly',
+				'excluded_pages'        => [],
+			],
 		];
 	}
 
