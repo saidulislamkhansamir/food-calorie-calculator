@@ -266,7 +266,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 			     RESULTS PANEL
 			     ============================================================ -->
 			<section class="fcc-section fcc-results-section" aria-label="<?php esc_attr_e( 'Nutrition results', 'food-calorie-calculator' ); ?>" hidden aria-live="polite">
-				<h3 class="fcc-section-title"><?php echo esc_html( $labels['results_title'] ?? __( 'Nutrition Information', 'food-calorie-calculator' ) ); ?></h3>
+				<div class="fcc-section-title"><?php echo esc_html( $labels['results_title'] ?? __( 'Nutrition Information', 'food-calorie-calculator' ) ); ?></div>
 
 				<?php if ( ! isset( $features['health_highlights'] ) || ! empty( $features['health_highlights'] ) ) : ?>
 				<!-- Health Highlights -->
@@ -353,7 +353,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<!-- Omega-3 -->
 				<?php if ( ! empty( $features['omega3_display'] ) ) : ?>
 				<div class="fcc-omega3-section" hidden aria-live="polite">
-					<h4 class="fcc-subsection-title"><?php echo esc_html( $labels['omega3_title'] ?? __( 'Omega-3 Fatty Acids', 'food-calorie-calculator' ) ); ?></h4>
+					<div class="fcc-subsection-title"><?php echo esc_html( $labels['omega3_title'] ?? __( 'Omega-3 Fatty Acids', 'food-calorie-calculator' ) ); ?></div>
 					<div class="fcc-omega3-cards">
 						<div class="fcc-omega3-card fcc-omega3-card--total" data-omega3="total">
 							<span class="fcc-omega3-card__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/></svg></span>
@@ -386,14 +386,14 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 				<!-- Caffeine -->
 				<?php if ( ! empty( $features['caffeine_display'] ) ) : ?>
 				<div class="fcc-caffeine-section" hidden aria-live="polite">
-					<h4 class="fcc-subsection-title"><?php echo esc_html( $labels['caffeine_title'] ?? __( 'Caffeine', 'food-calorie-calculator' ) ); ?></h4>
+					<div class="fcc-subsection-title"><?php echo esc_html( $labels['caffeine_title'] ?? __( 'Caffeine', 'food-calorie-calculator' ) ); ?></div>
 					<p class="fcc-caffeine-value"></p>
 				</div>
 				<?php endif; ?>
 
 				<!-- Micronutrients (Iron, Calcium, Vitamin C) -->
 				<div class="fcc-micronutrients-section" hidden aria-live="polite">
-					<h4 class="fcc-subsection-title"><?php esc_html_e( 'Key Micronutrients', 'food-calorie-calculator' ); ?></h4>
+					<div class="fcc-subsection-title"><?php esc_html_e( 'Key Micronutrients', 'food-calorie-calculator' ); ?></div>
 					<div class="fcc-micro-cards">
 						<div class="fcc-micro-card" data-micro="iron">
 							<span class="fcc-micro-card__icon" aria-hidden="true">🩸</span>
@@ -421,7 +421,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 
 				<!-- Supplement suggestions (contextual, trigger-matched) -->
 				<div class="fcc-supplement-suggestions" hidden aria-label="<?php esc_attr_e( 'Recommended supplements', 'food-calorie-calculator' ); ?>">
-					<h4 class="fcc-supplement-suggestions__heading"></h4>
+					<div class="fcc-supplement-suggestions__heading"></div>
 					<div class="fcc-supplement-suggestions__grid"></div>
 					<p class="fcc-supplement-suggestions__disclosure"></p>
 				</div>
@@ -539,7 +539,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 						<div class="fcc-meal-header__icon" aria-hidden="true">
 							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
 						</div>
-						<h3 class="fcc-meal-header__title"><?php echo esc_html( $labels['meal_title'] ?? __( 'Your Meal', 'food-calorie-calculator' ) ); ?></h3>
+						<div class="fcc-meal-header__title"><?php echo esc_html( $labels['meal_title'] ?? __( 'Your Meal', 'food-calorie-calculator' ) ); ?></div>
 					</div>
 					<div class="fcc-meal-header__kcal" aria-live="polite" aria-label="<?php esc_attr_e( 'Total calories', 'food-calorie-calculator' ); ?>">
 						<span class="fcc-meal-total-kcal">0</span>
@@ -840,7 +840,7 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 							<img src="<?php echo esc_url( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon - White (1).png' ); ?>" width="24" height="24" alt="" decoding="async" style="display:block;width:24px;height:24px;object-fit:contain;">
 						</div>
 						<div>
-							<h3 class="fcc-bmr-header__title"><?php echo esc_html( $labels['bmr_title'] ?? __( 'Daily Calorie Need', 'food-calorie-calculator' ) ); ?></h3>
+							<div class="fcc-bmr-header__title"><?php echo esc_html( $labels['bmr_title'] ?? __( 'Daily Calorie Need', 'food-calorie-calculator' ) ); ?></div>
 							<p class="fcc-bmr-header__sub"><?php esc_html_e( 'Mifflin-St Jeor formula · TDEE', 'food-calorie-calculator' ); ?></p>
 						</div>
 					</div>
