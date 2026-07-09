@@ -1577,6 +1577,10 @@ class Food_Pages {
 			return $vars;
 		} );
 		add_action( 'template_redirect', [ __CLASS__, 'maybe_serve_sitemap' ] );
+		// Prevent WordPress redirect_canonical() from appending a trailing slash to .xml URLs.
+		add_filter( 'redirect_canonical', function( $redirect_url ) {
+			return get_query_var( 'fcc_sitemap' ) ? false : $redirect_url;
+		} );
 		add_filter( 'robots_txt', function( string $output, string $public ): string {
 			if ( '0' === $public ) { return $output; }
 			return $output . "\nSitemap: " . home_url( '/sitemap.xml' ) . "\n";
