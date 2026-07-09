@@ -377,10 +377,6 @@ class Shortcode {
 					'availableLanguage' => 'en',
 				],
 			],
-			'address' => [
-				'@type'          => 'PostalAddress',
-				'addressCountry' => 'GB',
-			],
 			'founder' => [
 				'@type'    => 'Person',
 				'@id'      => 'https://thekhandigital.com/#saidul-islam-khan-samir',
