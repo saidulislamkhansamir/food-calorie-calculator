@@ -26,6 +26,7 @@ class Shortcode {
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_style_early' );
 		$loader->add_action( 'wp_head', $this, 'maybe_output_pwa_manifest', 1 );
 		$loader->add_action( 'wp_head', $this, 'output_webapp_schema', 2 );
+		$loader->add_action( 'wp_head', $this, 'output_organization_schema', 3 );
 		$loader->add_action( 'wp_footer', $this, 'maybe_enqueue_assets' );
 		add_action( 'wp_head', [ $this, 'output_theme_compat_css' ], 9999 );
 	}
@@ -341,6 +342,66 @@ class Shortcode {
 				'url'   => home_url( '/' ),
 			],
 		];
+
+		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+	}
+
+	public function output_organization_schema(): void {
+		// Logo: prefer theme custom logo, fall back to site icon.
+		$logo_url = '';
+		$logo_id  = get_theme_mod( 'custom_logo' );
+		if ( $logo_id ) {
+			$logo_url = (string) wp_get_attachment_image_url( $logo_id, 'full' );
+		}
+		if ( ! $logo_url ) {
+			$logo_url = (string) get_site_icon_url( 512 );
+		}
+
+		$schema = [
+			'@context'    => 'https://schema.org',
+			'@type'       => 'Organization',
+			'@id'         => 'https://foodcaloriecalculator.co.uk/#organization',
+			'name'        => 'Food Calorie Calculator',
+			'url'         => 'https://foodcaloriecalculator.co.uk/',
+			'description' => 'Food Calorie Calculator (foodcaloriecalculator.co.uk) exists to answer one question quickly and honestly: how many calories are in the food you\'re actually eating? Most calorie databases are built around generic, US-centric entries. This one is built for the UK — the foods you recognise from your weekly shop and your Friday night takeaway sit alongside everyday staples.',
+			'sameAs'      => [
+				'https://www.linkedin.com/company/food-calorie-calculator/',
+			],
+			'contactPoint' => [
+				[
+					'@type'             => 'ContactPoint',
+					'email'             => 'info@foodcaloriecalculator.co.uk',
+					'contactType'       => 'customer support',
+					'url'               => 'https://foodcaloriecalculator.co.uk/contact-us/',
+					'areaServed'        => 'GB',
+					'availableLanguage' => 'en',
+				],
+			],
+			'address' => [
+				'@type'          => 'PostalAddress',
+				'addressCountry' => 'GB',
+			],
+			'founder' => [
+				'@type'    => 'Person',
+				'@id'      => 'https://thekhandigital.com/#saidul-islam-khan-samir',
+				'name'     => 'Saidul Islam Khan Samir',
+				'jobTitle' => 'SEO Specialist and Web Developer',
+				'url'      => 'https://thekhandigital.com/',
+				'sameAs'   => [
+					'https://www.linkedin.com/in/saidulislamkhansamir/',
+					'https://x.com/sikhansamir',
+					'https://www.facebook.com/saidulislamkhansamir/',
+					'https://www.instagram.com/saidulislamkhansamir/',
+				],
+			],
+		];
+
+		if ( $logo_url ) {
+			$schema['logo'] = [
+				'@type' => 'ImageObject',
+				'url'   => $logo_url,
+			];
+		}
 
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 	}
