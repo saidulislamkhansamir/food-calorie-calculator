@@ -153,7 +153,7 @@ class Food_Pages {
 		add_action( 'wp_head', static function () {
 			echo '<style>
 .wd-page-content,.main-page-wrapper,
-#main-content,.wd-content-layout,.content-layout-wrapper{padding-top:0!important;margin-top:0!important}
+#main-content,.wd-content-layout,.content-layout-wrapper{padding-top:0!important;margin-top:0!important;padding-bottom:0!important;margin-bottom:0!important}
 </style>' . "\n";
 		}, 99 );
 	}
@@ -166,7 +166,7 @@ class Food_Pages {
 		$this->inject_page_spacing_fix();
 		get_header();
 
-		echo '<div class="fcc-food-page" style="max-width:900px;margin:0 auto;padding:1rem;">';
+		echo '<div class="fcc-food-page" style="max-width:900px;margin:0 auto;padding:1rem 1rem 0.5rem;">';
 
 		// Breadcrumb: Home > Calories > {Category} > {Food Name}
 		$bread_cat = Database::get_category( (int) $food['category_id'] );
@@ -215,7 +215,7 @@ class Food_Pages {
 		$this->inject_page_spacing_fix();
 		get_header();
 
-		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:1rem;">';
+		echo '<div class="fcc-food-page fcc-directory" style="max-width:1000px;margin:0 auto;padding:1rem 1rem 0.5rem;">';
 		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; Calories</p>';
 		$hub_intro = Settings::get( 'content.hub_intro' );
 		if ( '' === $hub_intro ) {
@@ -349,7 +349,7 @@ class Food_Pages {
 		$this->inject_page_spacing_fix();
 		get_header();
 
-		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:1rem;">';
+		echo '<div class="fcc-food-page fcc-category-page" style="max-width:1000px;margin:0 auto;padding:1rem 1rem 0.5rem;">';
 		echo '<p class="fcc-category-page__breadcrumb"><a href="' . esc_url( home_url( '/' ) ) . '">Home</a> &rsaquo; <a href="' . esc_url( home_url( '/calories/' ) ) . '">Calories</a> &rsaquo; ' . esc_html( $cat['name'] ) . '</p>';
 		echo '<h1 class="fcc-food-page__title">' . $this->get_category_h1( $cat ) . '</h1>';
 		echo '<p class="fcc-food-page__intro">' . esc_html( $desc ) . ' Showing <strong>' . $count . '</strong> foods in this category.</p>';

@@ -4915,6 +4915,7 @@ select.fcc-bmr-input {
 /* Related Foods */
 .fcc-food-page__related {
 	margin-top: 2rem;
+	margin-bottom: 0.5rem;
 	padding-top: 1.5rem;
 	border-top: 2px solid #e2e8f0;
 }
