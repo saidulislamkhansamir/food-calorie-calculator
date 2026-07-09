@@ -1562,67 +1562,118 @@ class Food_Pages {
 	}
 
 	// -------------------------------------------------------------------------
-	// Sitemap — registered via init
+	// Sitemap — standalone /sitemap.xml endpoint
 	// -------------------------------------------------------------------------
 
 	public static function register_sitemap(): void {
-		if ( ! class_exists( 'WP_Sitemaps_Provider' ) ) { return; }
-
-		$provider = new Food_Sitemap_Provider();
-		wp_register_sitemap_provider( 'fcc-foods', $provider );
-	}
-}
-
-// ---------------------------------------------------------------------------
-// Custom Sitemap Provider
-// ---------------------------------------------------------------------------
-
-class Food_Sitemap_Provider extends \WP_Sitemaps_Provider {
-
-	public function __construct() {
-		$this->name        = 'fcc-foods';
-		$this->object_type = 'fcc-food';
+		add_rewrite_rule( '^sitemap\.xml$', 'index.php?fcc_sitemap=1', 'top' );
+		add_filter( 'query_vars', function( array $vars ): array {
+			$vars[] = 'fcc_sitemap';
+			return $vars;
+		} );
+		add_action( 'template_redirect', [ __CLASS__, 'maybe_serve_sitemap' ] );
+		add_filter( 'robots_txt', function( string $output, string $public ): string {
+			if ( '0' === $public ) { return $output; }
+			return $output . "\nSitemap: " . home_url( '/sitemap.xml' ) . "\n";
+		}, 10, 2 );
 	}
 
-	public function get_url_list( $page_num, $object_subtype = '' ): array {
+	public static function maybe_serve_sitemap(): void {
+		if ( ! get_query_var( 'fcc_sitemap' ) ) { return; }
+		self::serve_sitemap();
+		exit;
+	}
+
+	private static function serve_sitemap(): void {
 		global $wpdb;
+
+		header( 'Content-Type: application/xml; charset=UTF-8' );
+		header( 'X-Robots-Tag: noindex, follow' );
+
 		$table   = $wpdb->prefix . 'fcc_foods';
-		$per     = 2000;
-		$offset  = ( $page_num - 1 ) * $per;
+		$cat_tbl = $wpdb->prefix . 'fcc_categories';
+		$urls    = [];
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$rows = $wpdb->get_results( $wpdb->prepare(
-			"SELECT slug, category_id, updated_at FROM {$table} WHERE is_active = 1 ORDER BY slug ASC LIMIT %d OFFSET %d",
-			$per, $offset
-		), ARRAY_A );
+		// Homepage
+		$urls[] = [
+			'loc'        => home_url( '/' ),
+			'lastmod'    => gmdate( 'Y-m-d' ),
+			'changefreq' => 'weekly',
+			'priority'   => '1.0',
+		];
 
-		$urls = [];
-
-		// First page: include /calories/ hub and category pages.
-		if ( 1 === $page_num ) {
-			$urls[] = [ 'loc' => home_url( '/calories/' ) ];
-			$cats = $wpdb->get_results( "SELECT slug FROM {$wpdb->prefix}fcc_categories ORDER BY display_order ASC", ARRAY_A ); // phpcs:ignore
-			foreach ( $cats ?? [] as $c ) {
-				$urls[] = [ 'loc' => home_url( '/calories/' . $c['slug'] . '/' ) ];
-			}
-		}
-
-		foreach ( $rows ?? [] as $row ) {
-			$cat     = \FCC\Database::get_category( (int) $row['category_id'] );
-			$cat_slug = $cat['slug'] ?? 'uncategorised';
+		// WordPress published pages (exclude homepage)
+		$pages = get_posts( [
+			'post_type'      => 'page',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'exclude'        => [ (int) get_option( 'page_on_front' ) ],
+		] );
+		foreach ( $pages as $page ) {
 			$urls[] = [
-				'loc'     => home_url( '/calories/' . $cat_slug . '/' . $row['slug'] . '/' ),
-				'lastmod' => $row['updated_at'] ? gmdate( 'Y-m-d\TH:i:s+00:00', strtotime( $row['updated_at'] ) ) : '',
+				'loc'        => get_permalink( $page->ID ),
+				'lastmod'    => gmdate( 'Y-m-d', strtotime( $page->post_modified_gmt ) ),
+				'changefreq' => 'yearly',
+				'priority'   => '0.4',
 			];
 		}
-		return $urls;
-	}
 
-	public function get_max_num_pages( $object_subtype = '' ): int {
-		global $wpdb;
-		$table = $wpdb->prefix . 'fcc_foods';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE is_active = 1" );
-		return (int) ceil( $total / 2000 );
+		// Hub
+		$urls[] = [
+			'loc'        => home_url( '/calories/' ),
+			'lastmod'    => gmdate( 'Y-m-d' ),
+			'changefreq' => 'weekly',
+			'priority'   => '0.9',
+		];
+
+		// Category pages
+		$cats = $wpdb->get_results(
+			"SELECT slug, updated_at FROM {$cat_tbl} ORDER BY display_order ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			ARRAY_A
+		);
+		foreach ( $cats ?? [] as $c ) {
+			$urls[] = [
+				'loc'        => home_url( '/calories/' . $c['slug'] . '/' ),
+				'lastmod'    => $c['updated_at'] ? gmdate( 'Y-m-d', strtotime( $c['updated_at'] ) ) : gmdate( 'Y-m-d' ),
+				'changefreq' => 'weekly',
+				'priority'   => '0.7',
+			];
+		}
+
+		// Food pages — single JOIN avoids per-row get_category() calls
+		$foods = $wpdb->get_results(
+			"SELECT f.slug, f.updated_at, c.slug AS cat_slug
+			 FROM {$table} f
+			 LEFT JOIN {$cat_tbl} c ON c.id = f.category_id
+			 WHERE f.is_active = 1
+			 ORDER BY f.slug ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			ARRAY_A
+		);
+		foreach ( $foods ?? [] as $row ) {
+			$cat_slug = $row['cat_slug'] ?? 'uncategorised';
+			$urls[]   = [
+				'loc'        => home_url( '/calories/' . $cat_slug . '/' . $row['slug'] . '/' ),
+				'lastmod'    => $row['updated_at'] ? gmdate( 'Y-m-d', strtotime( $row['updated_at'] ) ) : '',
+				'changefreq' => 'monthly',
+				'priority'   => '0.6',
+			];
+		}
+
+		// Output XML
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+		echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+		foreach ( $urls as $u ) {
+			echo "<url>\n";
+			echo '  <loc>' . esc_url( $u['loc'] ) . "</loc>\n";
+			if ( ! empty( $u['lastmod'] ) ) {
+				echo '  <lastmod>' . esc_html( $u['lastmod'] ) . "</lastmod>\n";
+			}
+			echo '  <changefreq>' . esc_html( $u['changefreq'] ) . "</changefreq>\n";
+			echo '  <priority>' . esc_html( $u['priority'] ) . "</priority>\n";
+			echo "</url>\n";
+		}
+		echo '</urlset>';
+		// phpcs:enable
 	}
 }
