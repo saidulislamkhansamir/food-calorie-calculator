@@ -45,12 +45,12 @@
           .sm-header__icon {
             width: 52px;
             height: 52px;
-            background: rgba(255,255,255,0.18);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            overflow: hidden;
           }
           .sm-header__title { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
           .sm-header__sub { font-size: 0.875rem; opacity: 0.8; margin-top: 0.2rem; }
@@ -153,9 +153,11 @@
         <header class="sm-header">
           <div class="sm-header__inner">
             <div class="sm-header__icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C12 2 7 8 7 13a5 5 0 0 0 10 0c0-5-5-11-5-11z" fill="#fff" fill-opacity="0.9"/>
-                <path d="M12 14c0 1.1-.9 2-2 2s-2-.9-2-2c0-2 2-4 2-4s2 2 2 4z" fill="#fff" fill-opacity="0.5"/>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="52" height="52">
+                <rect width="512" height="512" rx="96" fill="#075B5E"/>
+                <text x="256" y="300" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="240" font-weight="700" fill="#fff">C</text>
+                <circle cx="380" cy="140" r="50" fill="#FF3F33"/>
+                <text x="380" y="158" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="60" font-weight="700" fill="#fff">k</text>
               </svg>
             </div>
             <div>
