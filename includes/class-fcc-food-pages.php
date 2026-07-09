@@ -1418,6 +1418,32 @@ class Food_Pages {
 
 		// FAQPage.
 		echo '<script type="application/ld+json">' . wp_json_encode( $this->build_faq_schema( $food ), $flags ) . '</script>' . "\n";
+
+		// WebApplication — calculator is embedded on every food page via do_shortcode().
+		$app_name = Settings::get( 'white_label.app_name', '' );
+		if ( empty( $app_name ) ) { $app_name = 'Food Calorie Calculator'; }
+		$webapp = [
+			'@context'            => 'https://schema.org',
+			'@type'               => 'WebApplication',
+			'name'                => $app_name,
+			'url'                 => home_url( '/' ),
+			'applicationCategory' => 'HealthApplication',
+			'operatingSystem'     => 'Web',
+			'browserRequirements' => 'Requires JavaScript',
+			'inLanguage'          => 'en-GB',
+			'isAccessibleForFree' => true,
+			'offers'              => [
+				'@type'         => 'Offer',
+				'price'         => '0',
+				'priceCurrency' => 'GBP',
+			],
+			'publisher' => [
+				'@type' => 'Organization',
+				'name'  => $app_name,
+				'url'   => home_url( '/' ),
+			],
+		];
+		echo '<script type="application/ld+json">' . wp_json_encode( $webapp, $flags ) . '</script>' . "\n";
 	}
 
 	public function override_title_pre( $title ): string {
