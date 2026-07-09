@@ -14,10 +14,10 @@
         <meta name="robots" content="noindex, follow"/>
         <xsl:choose>
           <xsl:when test="sm:sitemapindex">
-            <title>XML Sitemap Index — Food Calorie Calculator</title>
+            <title>XML Sitemap Index | Food Calorie Calculator</title>
           </xsl:when>
           <xsl:otherwise>
-            <title>XML Sitemap — Food Calorie Calculator</title>
+            <title>XML Sitemap | Food Calorie Calculator</title>
           </xsl:otherwise>
         </xsl:choose>
         <style>
@@ -156,11 +156,11 @@
             <div>
               <xsl:choose>
                 <xsl:when test="sm:sitemapindex">
-                  <div class="sm-header__title">Food Calorie Calculator — XML Sitemap Index</div>
+                  <div class="sm-header__title">Food Calorie Calculator | XML Sitemap Index</div>
                   <div class="sm-header__sub">foodcaloriecalculator.co.uk · Master index of all sitemap files</div>
                 </xsl:when>
                 <xsl:otherwise>
-                  <div class="sm-header__title">Food Calorie Calculator — XML Sitemap</div>
+                  <div class="sm-header__title">Food Calorie Calculator | XML Sitemap</div>
                   <div class="sm-header__sub">foodcaloriecalculator.co.uk · Complete URL index for search engines</div>
                 </xsl:otherwise>
               </xsl:choose>
@@ -204,7 +204,7 @@
         <div class="sm-notice">
           <p class="sm-notice__box">
             This XML sitemap is used by search engines to discover and index all pages on this website.
-            The styling is for human readability only — search engines read the raw XML data.
+            The styling is for human readability only. Search engines read the raw XML data.
           </p>
         </div>
 
