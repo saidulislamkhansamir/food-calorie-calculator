@@ -25,6 +25,7 @@ class Shortcode {
 		$loader->add_action( 'init', $this, 'register_shortcode' );
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_style_early' );
 		$loader->add_action( 'wp_head', $this, 'maybe_output_pwa_manifest', 1 );
+		$loader->add_action( 'wp_head', $this, 'output_webapp_schema', 2 );
 		$loader->add_action( 'wp_footer', $this, 'maybe_enqueue_assets' );
 		add_action( 'wp_head', [ $this, 'output_theme_compat_css' ], 9999 );
 	}
@@ -304,6 +305,44 @@ class Shortcode {
 		echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
 		echo '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' . "\n";
 		echo '<link rel="apple-touch-icon" href="' . esc_url( FCC_PLUGIN_URL . 'assets/pwa/icon-192.png' ) . '">' . "\n";
+	}
+
+	public function output_webapp_schema(): void {
+		if ( ! is_singular() ) return;
+		global $post;
+		if ( ! $post ) return;
+		if ( ! has_shortcode( $post->post_content, 'food_calorie_calculator' )
+			&& ! ( function_exists( 'has_block' ) && has_block( 'fcc/calculator', $post ) ) ) return;
+
+		$url  = get_permalink( $post->ID );
+		$name = Settings::get( 'white_label.app_name', '' );
+		if ( empty( $name ) ) { $name = 'Food Calorie Calculator'; }
+		$desc = 'Free UK food calorie calculator. Search 4,900+ foods for calories, protein, fat, carbs, fibre, and FSA traffic light ratings. Build meals, track macros, and calculate your BMR and TDEE — no sign-up required.';
+
+		$schema = [
+			'@context'            => 'https://schema.org',
+			'@type'               => 'WebApplication',
+			'name'                => $name,
+			'url'                 => $url,
+			'description'         => $desc,
+			'applicationCategory' => 'HealthApplication',
+			'operatingSystem'     => 'Web',
+			'browserRequirements' => 'Requires JavaScript',
+			'inLanguage'          => 'en-GB',
+			'isAccessibleForFree' => true,
+			'offers'              => [
+				'@type'         => 'Offer',
+				'price'         => '0',
+				'priceCurrency' => 'GBP',
+			],
+			'publisher' => [
+				'@type' => 'Organization',
+				'name'  => 'Food Calorie Calculator',
+				'url'   => home_url( '/' ),
+			],
+		];
+
+		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 	}
 
 	/**
