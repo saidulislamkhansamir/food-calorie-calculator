@@ -105,7 +105,7 @@ class Food_Pages {
 			$cat  = Database::get_category_by_slug( sanitize_title( $cat_slug ) );
 			$food = Database::get_food_by_slug( sanitize_title( $food_slug ) );
 
-			if ( ! $food || ! $cat || (int) $food['category_id'] !== (int) $cat['id'] || empty( $food['is_active'] ) ) {
+			if ( ! $food || ! $cat || (int) $food['category_id'] !== (int) $cat['id'] || empty( $food['is_active'] ) || empty( $food['page_published'] ) ) {
 				wp_safe_redirect( home_url( '/calories/' ), 301 );
 				exit;
 			}
@@ -1650,12 +1650,13 @@ class Food_Pages {
 
 		if ( ! empty( $sm['include_foods'] ) ) {
 			$per     = max( 50, (int) ( $sm['foods_per_page'] ?? 500 ) );
-			$total   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$food_tbl} WHERE is_active = 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$pages   = max( 1, (int) ceil( $total / $per ) );
-			$latest  = $wpdb->get_var( "SELECT MAX(updated_at) FROM {$food_tbl} WHERE is_active = 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$total   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$food_tbl} WHERE is_active = 1 AND page_published = 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( $total === 0 ) { $total = 0; $pages = 0; }
+			$pages   = max( 0, (int) ceil( $total / $per ) );
+			$latest  = $wpdb->get_var( "SELECT MAX(page_published_at) FROM {$food_tbl} WHERE is_active = 1 AND page_published = 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$lastmod = $latest ? gmdate( 'Y-m-d', strtotime( $latest ) ) : gmdate( 'Y-m-d' );
 			for ( $i = 1; $i <= $pages; $i++ ) {
-				$sitemaps[] = [ 'loc' => home_url( '/food-sitemap-' . $i . '.xml' ), 'lastmod' => $lastmod ];
+				$sitemaps[] = [ 'loc' => home_url( '/food-sitemap-' . $i . '.xml' ), 'lastmod' => $lastmod ?: gmdate( 'Y-m-d' ) ];
 			}
 		}
 
@@ -1758,11 +1759,11 @@ class Food_Pages {
 
 		$foods = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT f.slug, f.updated_at, c.slug AS cat_slug
+				"SELECT f.slug, f.page_published_at AS updated_at, c.slug AS cat_slug
 				 FROM {$table} f
 				 LEFT JOIN {$cat_tbl} c ON c.id = f.category_id
-				 WHERE f.is_active = 1
-				 ORDER BY f.slug ASC
+				 WHERE f.is_active = 1 AND f.page_published = 1
+				 ORDER BY f.page_published_at DESC, f.slug ASC
 				 LIMIT %d OFFSET %d",
 				$per,
 				$offset

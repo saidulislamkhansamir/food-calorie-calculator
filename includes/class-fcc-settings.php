@@ -165,6 +165,13 @@ class Settings {
 				'hub_intro'     => '',
 				'hub_editorial' => '',
 			],
+			'auto_publisher' => [
+				'enabled'       => false,
+				'min_per_day'   => 7,
+				'max_per_day'   => 21,
+				'run_hour'      => 8,
+				'publish_order' => 'random',
+			],
 			'xml_sitemap' => [
 				'foods_per_page'        => 500,
 				'include_wp_pages'      => true,

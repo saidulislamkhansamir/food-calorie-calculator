@@ -129,6 +129,8 @@ class Database {
   diet_vegan tinyint(1) DEFAULT NULL,
   diet_vegetarian tinyint(1) DEFAULT NULL,
   is_active tinyint(1) NOT NULL DEFAULT 1,
+  page_published tinyint(1) NOT NULL DEFAULT 1,
+  page_published_at datetime DEFAULT NULL,
   page_content text DEFAULT NULL,
   is_sponsored tinyint(1) NOT NULL DEFAULT 0,
   sponsor_active tinyint(1) NOT NULL DEFAULT 0,
@@ -142,7 +144,8 @@ class Database {
   UNIQUE KEY slug (slug),
   KEY category_id (category_id),
   KEY name (name(50)),
-  KEY is_sponsored (is_sponsored)
+  KEY is_sponsored (is_sponsored),
+  KEY page_published (page_published)
 ) {$charset_collate};";
 		// phpcs:enable
 
@@ -605,7 +608,7 @@ class Database {
 		$table = self::foods_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results( $wpdb->prepare(
-			"SELECT id, name, slug, energy_kcal, protein_g, fat_g FROM {$table} WHERE category_id = %d AND is_active = 1 ORDER BY name ASC",
+			"SELECT id, name, slug, energy_kcal, protein_g, fat_g FROM {$table} WHERE category_id = %d AND is_active = 1 AND page_published = 1 ORDER BY name ASC",
 			$category_id
 		), ARRAY_A );
 		return $rows ?? [];
@@ -617,7 +620,7 @@ class Database {
 		$ct = self::categories_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results(
-			"SELECT c.id, c.name, c.slug, COUNT(f.id) AS food_count FROM {$ct} c LEFT JOIN {$ft} f ON f.category_id = c.id AND f.is_active = 1 GROUP BY c.id ORDER BY c.display_order ASC, c.name ASC",
+			"SELECT c.id, c.name, c.slug, COUNT(f.id) AS food_count FROM {$ct} c LEFT JOIN {$ft} f ON f.category_id = c.id AND f.is_active = 1 AND f.page_published = 1 GROUP BY c.id ORDER BY c.display_order ASC, c.name ASC",
 			ARRAY_A
 		);
 		return $rows ?? [];
@@ -628,7 +631,7 @@ class Database {
 		$table = self::foods_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$table} WHERE category_id = %d AND id != %d AND is_active = 1 ORDER BY search_count DESC, name ASC LIMIT %d",
+			"SELECT * FROM {$table} WHERE category_id = %d AND id != %d AND is_active = 1 AND page_published = 1 ORDER BY search_count DESC, name ASC LIMIT %d",
 			$category_id, $exclude_id, $limit
 		), ARRAY_A );
 		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
@@ -653,7 +656,7 @@ class Database {
 		$table = self::foods_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$table} WHERE category_id = %d AND id != %d AND is_active = 1 AND `{$nutrient_col}` IS NOT NULL AND `{$nutrient_col}` > 0 ORDER BY `{$nutrient_col}` DESC, search_count DESC LIMIT %d",
+			"SELECT * FROM {$table} WHERE category_id = %d AND id != %d AND is_active = 1 AND page_published = 1 AND `{$nutrient_col}` IS NOT NULL AND `{$nutrient_col}` > 0 ORDER BY `{$nutrient_col}` DESC, search_count DESC LIMIT %d",
 			$category_id, $exclude_id, $limit
 		), ARRAY_A );
 		return array_map( [ self::class, 'decode_food' ], $rows ?? [] );
@@ -675,6 +678,70 @@ class Database {
 			"UPDATE {$table} SET is_active = %d WHERE id IN ({$placeholders})",
 			$active, ...$ids
 		) );
+	}
+
+	// -------------------------------------------------------------------------
+	// Auto-publisher helpers
+	// -------------------------------------------------------------------------
+
+	public static function get_published_food_counts(): array {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row(
+			"SELECT COUNT(*) AS total, SUM(page_published=1) AS published, SUM(page_published=0) AS unpublished FROM {$table} WHERE is_active = 1",
+			ARRAY_A
+		);
+		return [
+			'total'       => (int) ( $row['total']       ?? 0 ),
+			'published'   => (int) ( $row['published']   ?? 0 ),
+			'unpublished' => (int) ( $row['unpublished'] ?? 0 ),
+		];
+	}
+
+	public static function bulk_set_page_published( int $value ): void {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( $wpdb->prepare( "UPDATE {$table} SET page_published = %d WHERE is_active = 1", $value ) );
+	}
+
+	public static function publish_food_batch( int $count, string $order = 'random' ): int {
+		global $wpdb;
+		$table = self::foods_table();
+
+		$order_sql = match ( $order ) {
+			'alphabetical' => 'name ASC',
+			'by_category'  => 'category_id ASC, name ASC',
+			default        => 'RAND()',
+		};
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$ids = $wpdb->get_col( $wpdb->prepare(
+			"SELECT id FROM {$table} WHERE is_active = 1 AND page_published = 0 ORDER BY {$order_sql} LIMIT %d",
+			$count
+		) );
+
+		if ( empty( $ids ) ) { return 0; }
+
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( $wpdb->prepare(
+			"UPDATE {$table} SET page_published = 1, page_published_at = NOW() WHERE id IN ({$placeholders})",
+			...$ids
+		) );
+
+		return count( $ids );
+	}
+
+	public static function migrate_add_page_published(): void {
+		global $wpdb;
+		$table = self::foods_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$col = $wpdb->get_var( "SHOW COLUMNS FROM {$table} LIKE 'page_published'" );
+		if ( $col ) { return; }
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "ALTER TABLE {$table} ADD COLUMN page_published tinyint(1) NOT NULL DEFAULT 1 AFTER is_active, ADD COLUMN page_published_at datetime DEFAULT NULL AFTER page_published, ADD KEY page_published (page_published)" );
 	}
 
 	/**

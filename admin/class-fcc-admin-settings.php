@@ -53,6 +53,10 @@ class Settings_Page {
 			case 'xml_sitemap':
 				$all['xml_sitemap'] = $this->sanitise_xml_sitemap( $_POST );
 				break;
+			case 'auto_publisher':
+				$all['auto_publisher'] = $this->sanitise_auto_publisher( $_POST );
+				\FCC\Auto_Publisher::maybe_reschedule();
+				break;
 		}
 
 		\FCC\Settings::save( $all );
@@ -100,6 +104,10 @@ class Settings_Page {
 				break;
 			case 'xml_sitemap':
 				$all['xml_sitemap'] = $this->sanitise_xml_sitemap( $_POST );
+				break;
+			case 'auto_publisher':
+				$all['auto_publisher'] = $this->sanitise_auto_publisher( $_POST );
+				\FCC\Auto_Publisher::maybe_reschedule();
 				break;
 		}
 
@@ -325,6 +333,19 @@ class Settings_Page {
 		$css = preg_replace( '/expression\s*\(/i', '', $css );
 		$css = preg_replace( '/@import\b/i', '', $css );
 		return $css;
+	}
+
+	/** @param array<string,mixed> $post */
+	private function sanitise_auto_publisher( array $post ): array {
+		$allowed_orders = [ 'random', 'alphabetical', 'by_category' ];
+		$order          = sanitize_key( $post['publish_order'] ?? 'random' );
+		return [
+			'enabled'       => ! empty( $post['enabled'] ),
+			'min_per_day'   => max( 1, min( 100, absint( $post['min_per_day'] ?? 7 ) ) ),
+			'max_per_day'   => max( 1, min( 500, absint( $post['max_per_day'] ?? 21 ) ) ),
+			'run_hour'      => max( 0, min( 23, absint( $post['run_hour'] ?? 8 ) ) ),
+			'publish_order' => in_array( $order, $allowed_orders, true ) ? $order : 'random',
+		];
 	}
 
 	/** @param array<string,mixed> $post */

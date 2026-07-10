@@ -3,7 +3,7 @@
  * Plugin Name:       Food Calorie Calculator
  * Plugin URI:        https://foodcaloriecalculator.co.uk
  * Description:       A comprehensive UK food calorie calculator. Ships with 5,200+ foods from 190+ countries, FSA traffic lights, SVG macro rings, Omega-3/caffeine/micronutrient tracking, meal builder with templates, BMR/TDEE, promotion suite, analytics dashboard, and a fully-featured admin control panel, no coding required.
- * Version:           14.15.73
+ * Version:           14.15.74
  * Requires at least: 6.0
  * Requires PHP:      8.1
  * Author:            The Khan Digital
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 // ---------------------------------------------------------------------------
 // Constants.
 // ---------------------------------------------------------------------------
-define( 'FCC_VERSION',         '14.15.73' );
+define( 'FCC_VERSION',         '14.15.74' );
 define( 'FCC_DB_VERSION',      '1.5' );
 define( 'FCC_PLUGIN_FILE',     __FILE__ );
 define( 'FCC_PLUGIN_DIR',      plugin_dir_path( __FILE__ ) );
@@ -38,6 +38,7 @@ require_once FCC_PLUGIN_DIR . 'includes/class-fcc-import-export.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-rest-api.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-shortcode.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-food-pages.php';
+require_once FCC_PLUGIN_DIR . 'includes/class-fcc-auto-publisher.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-block.php';
 
 // Affiliates, Ads, and Supplements classes loaded unconditionally — their static helpers are called by the shortcode on the frontend.
@@ -97,6 +98,10 @@ add_action( 'plugins_loaded', function (): void {
 	$food_pages = new FCC\Food_Pages();
 	$food_pages->register( $loader );
 	add_action( 'init', [ FCC\Food_Pages::class, 'register_sitemap' ], 20 );
+
+	// Auto-publisher (cron + AJAX).
+	( new FCC\Auto_Publisher() )->register();
+	add_action( 'init', [ FCC\Auto_Publisher::class, 'maybe_reschedule' ], 15 );
 
 	// Affiliates, Ads, and Supplements AJAX handlers registered for admin + frontend.
 	( new FCC\Admin\Affiliates() )->register( $loader );
@@ -234,4 +239,7 @@ add_action( 'plugins_loaded', function (): void {
 	FCC\Seed_Data::seed_v108();
 	FCC\Seed_Data::seed_v109();
 	FCC\Seed_Data::seed_v110();
+
+	// Schema migration: add page_published column if not present.
+	FCC\Database::migrate_add_page_published();
 } );
