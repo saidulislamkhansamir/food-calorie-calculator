@@ -106,7 +106,10 @@ class Food_Pages {
 			$food = Database::get_food_by_slug( sanitize_title( $food_slug ) );
 
 			if ( ! $food || ! $cat || (int) $food['category_id'] !== (int) $cat['id'] || empty( $food['is_active'] ) || empty( $food['page_published'] ) ) {
-				wp_safe_redirect( home_url( '/calories/' ), 301 );
+				$redirect = ( $cat && ! empty( $cat['slug'] ) )
+					? home_url( '/calories/' . $cat['slug'] . '/' )
+					: home_url( '/calories/' );
+				wp_safe_redirect( $redirect, 302 );
 				exit;
 			}
 
