@@ -1591,7 +1591,7 @@ class Food_Pages {
 		} );
 		add_filter( 'robots_txt', function( string $output, string $public ): string {
 			if ( '0' === $public ) { return $output; }
-			return $output . "\nSitemap: " . home_url( '/sitemap.xml' ) . "\n";
+			return $output . "\n\nSitemap: " . home_url( '/sitemap.xml' ) . "\n";
 		}, 10, 2 );
 	}
 
