@@ -1449,111 +1449,176 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 		$ap_pct       = $ap_total > 0 ? round( $ap_published / $ap_total * 100 ) : 0;
 		?>
 
-		<!-- Status Dashboard -->
+		<!-- Publication Status -->
 		<div class="fcc-stg-section">
-			<h2 class="fcc-stg-section__title">Publication Status</h2>
-			<div style="background:#f8fbf8;border:1px solid #d1e7d8;border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1rem;">
-				<div style="display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1rem;">
-					<div><span style="font-size:1.75rem;font-weight:700;color:#1a7a3f;" id="fcc-ap-published"><?php echo esc_html( number_format( $ap_published ) ); ?></span><div style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">Published</div></div>
-					<div><span style="font-size:1.75rem;font-weight:700;color:#6b7280;" id="fcc-ap-unpublished"><?php echo esc_html( number_format( (int) $auto_pub_stats['unpublished'] ) ); ?></span><div style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">Remaining</div></div>
-					<div><span style="font-size:1.75rem;font-weight:700;color:#374151;" id="fcc-ap-total"><?php echo esc_html( number_format( $ap_total ) ); ?></span><div style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">Total Foods</div></div>
-					<div><span style="font-size:1.75rem;font-weight:700;color:#1a7a3f;" id="fcc-ap-pct"><?php echo esc_html( $ap_pct ); ?>%</span><div style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">Complete</div></div>
-					<div><span style="font-size:1.1rem;font-weight:600;color:#374151;" id="fcc-ap-est"><?php echo $auto_pub_stats['est_days'] > 0 ? esc_html( $auto_pub_stats['est_days'] ) . ' days' : '—'; ?></span><div style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">Est. to finish</div></div>
-				</div>
-				<div style="background:#e5e7eb;border-radius:999px;height:10px;overflow:hidden;">
-					<div id="fcc-ap-bar" style="height:100%;border-radius:999px;background:linear-gradient(90deg,#1a7a3f,#28a356);transition:width .4s;width:<?php echo esc_attr( $ap_pct ); ?>%;"></div>
-				</div>
-				<div style="margin-top:.75rem;font-size:0.82rem;color:#6b7280;">Next scheduled run: <strong id="fcc-ap-next"><?php echo esc_html( $auto_pub_stats['next_run'] ); ?></strong></div>
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Publication Status', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Live count of published vs. remaining food pages.', 'food-calorie-calculator' ); ?></p>
 			</div>
+			<div class="fcc-stg-rows">
 
-			<!-- Quick actions -->
-			<div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-				<button type="button" id="fcc-ap-run-now" class="button button-primary" style="background:#1a7a3f;border-color:#1a7a3f;">Run Batch Now</button>
-				<button type="button" id="fcc-ap-publish-all" class="button">Publish All Pages</button>
-				<button type="button" id="fcc-ap-reset-all" class="button" style="color:#b91c1c;border-color:#b91c1c;">Reset All to Unpublished</button>
+				<!-- Stat row -->
+				<div class="fcc-stg-row" style="align-items:flex-start;flex-wrap:wrap;gap:1.5rem;">
+					<div style="display:flex;gap:2.5rem;flex-wrap:wrap;">
+						<div class="fcc-stg-stat">
+							<span class="fcc-stg-stat__val" id="fcc-ap-published"><?php echo esc_html( number_format( $ap_published ) ); ?></span>
+							<span class="fcc-stg-stat__lbl">Published</span>
+						</div>
+						<div class="fcc-stg-stat">
+							<span class="fcc-stg-stat__val" style="color:#6b7280;" id="fcc-ap-unpublished"><?php echo esc_html( number_format( (int) $auto_pub_stats['unpublished'] ) ); ?></span>
+							<span class="fcc-stg-stat__lbl">Remaining</span>
+						</div>
+						<div class="fcc-stg-stat">
+							<span class="fcc-stg-stat__val" style="color:#374151;" id="fcc-ap-total"><?php echo esc_html( number_format( $ap_total ) ); ?></span>
+							<span class="fcc-stg-stat__lbl">Total Foods</span>
+						</div>
+						<div class="fcc-stg-stat">
+							<span class="fcc-stg-stat__val" id="fcc-ap-pct"><?php echo esc_html( $ap_pct ); ?>%</span>
+							<span class="fcc-stg-stat__lbl">Complete</span>
+						</div>
+						<div class="fcc-stg-stat">
+							<span class="fcc-stg-stat__val" style="font-size:1.2rem;" id="fcc-ap-est"><?php echo $auto_pub_stats['est_days'] > 0 ? esc_html( $auto_pub_stats['est_days'] ) . ' days' : '&mdash;'; ?></span>
+							<span class="fcc-stg-stat__lbl">Est. to finish</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Progress bar row -->
+				<div class="fcc-stg-row" style="flex-direction:column;align-items:stretch;gap:.5rem;">
+					<div style="background:#e5e7eb;border-radius:999px;height:12px;overflow:hidden;">
+						<div id="fcc-ap-bar" style="height:100%;border-radius:999px;background:linear-gradient(90deg,#1a7a3f,#28a356);transition:width .5s ease;width:<?php echo esc_attr( $ap_pct ); ?>%;"></div>
+					</div>
+					<p style="margin:0;font-size:0.82rem;color:#6b7280;">Next scheduled run: <strong id="fcc-ap-next"><?php echo esc_html( $auto_pub_stats['next_run'] ); ?></strong></p>
+				</div>
+
+				<!-- Action buttons row -->
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php esc_html_e( 'Quick Actions', 'food-calorie-calculator' ); ?></div>
+					<div class="fcc-stg-row__control" style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;">
+						<button type="button" id="fcc-ap-run-now" class="button button-primary" style="background:#1a7a3f;border-color:#1a7a3f;"><?php esc_html_e( 'Run Batch Now', 'food-calorie-calculator' ); ?></button>
+						<button type="button" id="fcc-ap-publish-all" class="button button-secondary"><?php esc_html_e( 'Publish All Pages', 'food-calorie-calculator' ); ?></button>
+						<button type="button" id="fcc-ap-reset-all" class="button" style="color:#b91c1c;border-color:#fca5a5;"><?php esc_html_e( 'Reset All to Unpublished', 'food-calorie-calculator' ); ?></button>
+						<span id="fcc-ap-msg" style="font-size:.85rem;display:none;"></span>
+					</div>
+				</div>
+
 			</div>
-			<p id="fcc-ap-msg" style="margin-top:.6rem;font-size:.85rem;color:#1a7a3f;display:none;"></p>
 		</div>
 
-		<!-- Settings form -->
+		<!-- Publisher Settings -->
 		<div class="fcc-stg-section">
-			<h2 class="fcc-stg-section__title">Publisher Settings</h2>
-			<table class="form-table" style="max-width:600px;">
-				<tr>
-					<th><?php esc_html_e( 'Enable Auto-Publisher', 'food-calorie-calculator' ); ?></th>
-					<td>
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Publisher Settings', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Configure the daily schedule. Save Settings after making changes.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="fcc-ap-enabled"><?php esc_html_e( 'Enable Auto-Publisher', 'food-calorie-calculator' ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
 						<label class="fcc-stg-toggle">
-							<input type="checkbox" name="enabled" value="1" <?php checked( ! empty( $auto_pub_cfg['enabled'] ) ); ?>>
+							<input type="checkbox" name="enabled" id="fcc-ap-enabled" value="1" <?php checked( ! empty( $auto_pub_cfg['enabled'] ) ); ?>>
 							<span class="fcc-stg-toggle__track"></span>
 						</label>
-						<p class="description">When enabled, a daily batch of food pages will go live automatically.</p>
-					</td>
-				</tr>
-				<tr>
-					<th><?php esc_html_e( 'Min foods per day', 'food-calorie-calculator' ); ?></th>
-					<td><input type="number" name="min_per_day" value="<?php echo esc_attr( $auto_pub_cfg['min_per_day'] ); ?>" min="1" max="100" class="small-text"></td>
-				</tr>
-				<tr>
-					<th><?php esc_html_e( 'Max foods per day', 'food-calorie-calculator' ); ?></th>
-					<td><input type="number" name="max_per_day" value="<?php echo esc_attr( $auto_pub_cfg['max_per_day'] ); ?>" min="1" max="500" class="small-text"></td>
-				</tr>
-				<tr>
-					<th><?php esc_html_e( 'Daily run hour (0–23)', 'food-calorie-calculator' ); ?></th>
-					<td>
-						<input type="number" name="run_hour" value="<?php echo esc_attr( $auto_pub_cfg['run_hour'] ); ?>" min="0" max="23" class="small-text">
-						<p class="description">Server UTC time. e.g. 8 = 08:00 UTC.</p>
-					</td>
-				</tr>
-				<tr>
-					<th><?php esc_html_e( 'Publish order', 'food-calorie-calculator' ); ?></th>
-					<td>
-						<select name="publish_order">
-							<?php foreach ( [ 'random' => 'Random', 'alphabetical' => 'Alphabetical (A-Z)', 'by_category' => 'By Category' ] as $val => $label ) : ?>
-								<option value="<?php echo esc_attr( $val ); ?>" <?php selected( $auto_pub_cfg['publish_order'], $val ); ?>><?php echo esc_html( $label ); ?></option>
+						<p class="description"><?php esc_html_e( 'When enabled, a daily batch of food pages will go live automatically.', 'food-calorie-calculator' ); ?></p>
+					</div>
+				</div>
+
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="fcc-ap-min"><?php esc_html_e( 'Min foods per day', 'food-calorie-calculator' ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
+						<input type="number" name="min_per_day" id="fcc-ap-min" value="<?php echo esc_attr( $auto_pub_cfg['min_per_day'] ); ?>" min="1" max="100" class="small-text">
+					</div>
+				</div>
+
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="fcc-ap-max"><?php esc_html_e( 'Max foods per day', 'food-calorie-calculator' ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
+						<input type="number" name="max_per_day" id="fcc-ap-max" value="<?php echo esc_attr( $auto_pub_cfg['max_per_day'] ); ?>" min="1" max="500" class="small-text">
+					</div>
+				</div>
+
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="fcc-ap-hour"><?php esc_html_e( 'Daily run hour (0–23)', 'food-calorie-calculator' ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
+						<input type="number" name="run_hour" id="fcc-ap-hour" value="<?php echo esc_attr( $auto_pub_cfg['run_hour'] ); ?>" min="0" max="23" class="small-text">
+						<p class="description"><?php esc_html_e( 'Server UTC time. e.g. 8 = 08:00 UTC.', 'food-calorie-calculator' ); ?></p>
+					</div>
+				</div>
+
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="fcc-ap-order"><?php esc_html_e( 'Publish order', 'food-calorie-calculator' ); ?></label>
+					</div>
+					<div class="fcc-stg-row__control">
+						<select name="publish_order" id="fcc-ap-order" class="fcc-stg-select">
+							<?php foreach ( [ 'random' => 'Random', 'alphabetical' => 'Alphabetical (A–Z)', 'by_category' => 'By Category' ] as $val => $lbl ) : ?>
+								<option value="<?php echo esc_attr( $val ); ?>" <?php selected( $auto_pub_cfg['publish_order'], $val ); ?>><?php echo esc_html( $lbl ); ?></option>
 							<?php endforeach; ?>
 						</select>
-					</td>
-				</tr>
-			</table>
+					</div>
+				</div>
+
+			</div>
 		</div>
 
 		<?php if ( ! empty( $auto_pub_log ) ) : ?>
-		<!-- Activity log -->
+		<!-- Activity Log -->
 		<div class="fcc-stg-section">
-			<h2 class="fcc-stg-section__title">Activity Log (last 30 days)</h2>
-			<table class="widefat striped" style="max-width:400px;">
-				<thead><tr><th>Date</th><th>Foods Published</th></tr></thead>
-				<tbody>
-					<?php foreach ( $auto_pub_log as $entry ) : ?>
-					<tr>
-						<td><?php echo esc_html( $entry['date'] ); ?></td>
-						<td><?php echo esc_html( number_format( (int) $entry['count'] ) ); ?></td>
-					</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
+			<div class="fcc-stg-section__hd">
+				<h2 class="fcc-stg-section__title"><?php esc_html_e( 'Activity Log', 'food-calorie-calculator' ); ?></h2>
+				<p class="fcc-stg-section__sub"><?php esc_html_e( 'Last 30 daily publishing runs.', 'food-calorie-calculator' ); ?></p>
+			</div>
+			<div class="fcc-stg-rows">
+				<?php foreach ( $auto_pub_log as $entry ) : ?>
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label"><?php echo esc_html( $entry['date'] ); ?></div>
+					<div class="fcc-stg-row__control">
+						<span style="display:inline-block;background:#ecfdf5;color:#1a7a3f;border:1px solid #a7f3d0;border-radius:6px;padding:.2rem .6rem;font-size:.8rem;font-weight:600;">
+							+<?php echo esc_html( number_format( (int) $entry['count'] ) ); ?> pages published
+						</span>
+					</div>
+				</div>
+				<?php endforeach; ?>
+			</div>
 		</div>
 		<?php endif; ?>
 
+		<style>
+		.fcc-stg-stat { display:flex; flex-direction:column; }
+		.fcc-stg-stat__val { font-size:1.75rem; font-weight:700; color:#1a7a3f; line-height:1; }
+		.fcc-stg-stat__lbl { font-size:.7rem; color:#6b7280; text-transform:uppercase; letter-spacing:.06em; margin-top:.2rem; }
+		</style>
+
 		<script>
 		( function () {
-			var nonce = <?php echo wp_json_encode( $ap_nonce ); ?>;
+			var nonce   = <?php echo wp_json_encode( $ap_nonce ); ?>;
 			var ajaxUrl = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
 
 			function updateStats( data ) {
-				document.getElementById('fcc-ap-published').textContent    = data.published.toLocaleString();
-				document.getElementById('fcc-ap-unpublished').textContent  = data.unpublished.toLocaleString();
-				document.getElementById('fcc-ap-total').textContent        = data.total.toLocaleString();
+				document.getElementById('fcc-ap-published').textContent   = data.published.toLocaleString();
+				document.getElementById('fcc-ap-unpublished').textContent = data.unpublished.toLocaleString();
+				document.getElementById('fcc-ap-total').textContent       = data.total.toLocaleString();
 				var pct = data.total > 0 ? Math.round( data.published / data.total * 100 ) : 0;
-				document.getElementById('fcc-ap-pct').textContent          = pct + '%';
-				document.getElementById('fcc-ap-bar').style.width          = pct + '%';
-				document.getElementById('fcc-ap-next').textContent         = data.next_run;
-				document.getElementById('fcc-ap-est').textContent          = data.est_days > 0 ? data.est_days + ' days' : '—';
+				document.getElementById('fcc-ap-pct').textContent         = pct + '%';
+				document.getElementById('fcc-ap-bar').style.width         = pct + '%';
+				document.getElementById('fcc-ap-next').textContent        = data.next_run;
+				document.getElementById('fcc-ap-est').textContent         = data.est_days > 0 ? data.est_days + ' days' : '—';
 			}
 
 			function apCall( action, confirmMsg ) {
 				if ( confirmMsg && ! confirm( confirmMsg ) ) { return; }
-				var msg = document.getElementById('fcc-ap-msg');
+				var btn = document.getElementById( 'fcc-ap-' + action.replace( 'fcc_ap_', '' ).replace( '_', '-' ) );
+				var msg = document.getElementById( 'fcc-ap-msg' );
+				if ( btn ) { btn.disabled = true; }
 				msg.style.display = 'none';
 				fetch( ajaxUrl, {
 					method: 'POST',
@@ -1564,19 +1629,20 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 				.then( function(res) {
 					if ( res.success ) {
 						updateStats( res.data );
-						msg.textContent = 'Done.';
-						msg.style.color = '#1a7a3f';
+						msg.textContent  = 'Done.';
+						msg.style.color  = '#1a7a3f';
 					} else {
-						msg.textContent = 'Error: ' + ( res.data || 'unknown' );
-						msg.style.color = '#b91c1c';
+						msg.textContent  = 'Error: ' + ( res.data || 'unknown' );
+						msg.style.color  = '#b91c1c';
 					}
-					msg.style.display = 'block';
+					msg.style.display = 'inline';
+					if ( btn ) { btn.disabled = false; }
 				} );
 			}
 
 			document.getElementById('fcc-ap-run-now').addEventListener( 'click', function(){ apCall('fcc_ap_run_now', null); } );
-			document.getElementById('fcc-ap-publish-all').addEventListener( 'click', function(){ apCall('fcc_ap_publish_all','Publish ALL food pages now? This will make all foods visible immediately.'); } );
-			document.getElementById('fcc-ap-reset-all').addEventListener( 'click', function(){ apCall('fcc_ap_reset_all','Reset ALL food pages to unpublished? Only the calculator will keep them accessible.'); } );
+			document.getElementById('fcc-ap-publish-all').addEventListener( 'click', function(){ apCall('fcc_ap_publish_all', 'Publish ALL food pages now? They will all become visible immediately.'); } );
+			document.getElementById('fcc-ap-reset-all').addEventListener( 'click', function(){ apCall('fcc_ap_reset_all', 'Reset ALL food pages to unpublished? The calculator will still show all foods.'); } );
 		} )();
 		</script>
 
