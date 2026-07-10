@@ -362,7 +362,7 @@
 .fcc-search-hint {
 	margin: 0.75rem 0 0;
 	font-size: 0.75rem;
-	color: #159A4C;
+	color: #1a7a3f;
 	display: flex;
 	align-items: center;
 	gap: 0.35rem;
@@ -387,7 +387,7 @@
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	color: #159A4C;
+	color: #1a7a3f;
 	margin: 0 0 0.5rem;
 }
 
@@ -416,7 +416,7 @@
 .fcc-popular-chip:focus-visible {
 	background: rgba(33, 186, 95, 0.15);
 	border-color: #148B43;
-	color: #159A4C;
+	color: #1a7a3f;
 	outline: none;
 }
 
@@ -3744,7 +3744,7 @@ select.fcc-bmr-input {
 	text-align: center;
 	padding: 0.5rem 1rem 0.25rem;
 	font-size: 0.72rem;
-	color: rgba(255,255,255,0.75);
+	color: rgba(255,255,255,0.95);
 	letter-spacing: 0.02em;
 }
 

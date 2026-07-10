@@ -55,27 +55,27 @@ $animate_attr   = ! empty( $appearance['results_animation'] ?? true ) ? ' data-f
 	     Tab navigation (only rendered when BMR is enabled)
 	     ====================================================================== -->
 	<?php if ( $has_tabs ) : ?>
-	<nav class="fcc-tabs-nav" aria-label="<?php esc_attr_e( 'Calculator sections', 'food-calorie-calculator' ); ?>">
-		<button type="button" class="fcc-tab-btn fcc-tab-btn--active" data-tab="calculator" aria-selected="true">
+	<nav class="fcc-tabs-nav" role="tablist" aria-label="<?php esc_attr_e( 'Calculator sections', 'food-calorie-calculator' ); ?>">
+		<button type="button" role="tab" class="fcc-tab-btn fcc-tab-btn--active" data-tab="calculator" aria-selected="true">
 			<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 			<?php esc_html_e( 'Food Lookup', 'food-calorie-calculator' ); ?>
 		</button>
 		<?php if ( ! empty( $features['meal_builder'] ) ) : ?>
-		<button type="button" class="fcc-tab-btn" data-tab="meal" aria-selected="false">
+		<button type="button" role="tab" class="fcc-tab-btn" data-tab="meal" aria-selected="false">
 			<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
 			<?php echo esc_html( $labels['meal_title'] ?? __( 'My Meal', 'food-calorie-calculator' ) ); ?>
 			<span class="fcc-tab-badge" hidden aria-label="<?php esc_attr_e( 'items in meal', 'food-calorie-calculator' ); ?>">0</span>
 		</button>
 		<?php endif; ?>
 		<?php if ( $has_compare ) : ?>
-		<button type="button" class="fcc-tab-btn" data-tab="compare" aria-selected="false">
+		<button type="button" role="tab" class="fcc-tab-btn" data-tab="compare" aria-selected="false">
 			<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
 			<?php esc_html_e( 'Compare', 'food-calorie-calculator' ); ?>
 			<span class="fcc-compare-dots"><span class="fcc-compare-dot" id="fcc-dot-a"></span><span class="fcc-compare-dot" id="fcc-dot-b"></span></span>
 		</button>
 		<?php endif; ?>
 		<?php if ( $has_bmr ) : ?>
-		<button type="button" class="fcc-tab-btn" data-tab="bmr" aria-selected="false">
+		<button type="button" role="tab" class="fcc-tab-btn" data-tab="bmr" aria-selected="false">
 			<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
 			<?php echo esc_html( $labels['bmr_title'] ?? __( 'Daily Calorie Need', 'food-calorie-calculator' ) ); ?>
 		</button>
