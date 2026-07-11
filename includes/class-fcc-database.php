@@ -333,11 +333,12 @@ class Database {
 	 */
 	public static function search_foods( string $query, int $category_id = 0, int $limit = 20, array $pinned_rules = [] ): array {
 		global $wpdb;
-		$table = self::foods_table();
-		$like  = '%' . $wpdb->esc_like( $query ) . '%';
+		$table      = self::foods_table();
+		$like       = '%' . $wpdb->esc_like( $query ) . '%';
+		$like_start = $wpdb->esc_like( $query ) . '%';
 
-		// Sponsored + active + not-expired foods float to top; then by search_count DESC.
-		$sponsor_order = "CASE WHEN is_sponsored=1 AND sponsor_active=1 AND (sponsor_expires_at IS NULL OR sponsor_expires_at > NOW()) THEN 0 ELSE 1 END ASC, search_count DESC";
+		// Order: sponsored first, then starts-with before contains, then popularity.
+		$sponsor_order = "CASE WHEN is_sponsored=1 AND sponsor_active=1 AND (sponsor_expires_at IS NULL OR sponsor_expires_at > NOW()) THEN 0 ELSE 1 END ASC, CASE WHEN name LIKE '{$like_start}' THEN 0 ELSE 1 END ASC, search_count DESC";
 
 		if ( $category_id > 0 ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
