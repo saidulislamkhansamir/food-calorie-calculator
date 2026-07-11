@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Admin: Settings page (tabbed).
  *
@@ -1562,6 +1562,20 @@ $active_label = $tabs[ $active_tab ]['label'] ?? '';
 						<select name="publish_order" id="fcc-ap-order" class="fcc-stg-select">
 							<?php foreach ( [ 'random' => 'Random', 'alphabetical' => 'Alphabetical (A–Z)', 'by_category' => 'By Category' ] as $val => $lbl ) : ?>
 								<option value="<?php echo esc_attr( $val ); ?>" <?php selected( $auto_pub_cfg['publish_order'], $val ); ?>><?php echo esc_html( $lbl ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				</div>
+
+				<div class="fcc-stg-row">
+					<div class="fcc-stg-row__label">
+						<label for="fcc-ap-batches"><?php esc_html_e( 'Batches per day', 'food-calorie-calculator' ); ?></label>
+						<p class="fcc-stg-row__hint"><?php esc_html_e( 'Split the daily quota into mini-batches spread evenly across the day.', 'food-calorie-calculator' ); ?></p>
+					</div>
+					<div class="fcc-stg-row__control">
+						<select name="batches_per_day" id="fcc-ap-batches" class="fcc-stg-select">
+							<?php foreach ( [ 1 => '1 — once a day', 2 => '2 — every 12 hours', 3 => '3 — every 8 hours', 4 => '4 — every 6 hours' ] as $val => $lbl ) : ?>
+								<option value="<?php echo esc_attr( $val ); ?>" <?php selected( (int) ( $auto_pub_cfg['batches_per_day'] ?? 1 ), $val ); ?>><?php echo esc_html( $lbl ); ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>

@@ -166,11 +166,12 @@ class Settings {
 				'hub_editorial' => '',
 			],
 			'auto_publisher' => [
-				'enabled'       => false,
-				'min_per_day'   => 7,
-				'max_per_day'   => 21,
-				'run_hour'      => 8,
-				'publish_order' => 'random',
+				'enabled'         => false,
+				'min_per_day'     => 7,
+				'max_per_day'     => 21,
+				'run_hour'        => 8,
+				'publish_order'   => 'random',
+				'batches_per_day' => 1,
 			],
 			'xml_sitemap' => [
 				'foods_per_page'        => 500,

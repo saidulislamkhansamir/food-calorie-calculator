@@ -340,11 +340,12 @@ class Settings_Page {
 		$allowed_orders = [ 'random', 'alphabetical', 'by_category' ];
 		$order          = sanitize_key( $post['publish_order'] ?? 'random' );
 		return [
-			'enabled'       => ! empty( $post['enabled'] ),
-			'min_per_day'   => max( 1, min( 100, absint( $post['min_per_day'] ?? 7 ) ) ),
-			'max_per_day'   => max( 1, min( 500, absint( $post['max_per_day'] ?? 21 ) ) ),
-			'run_hour'      => max( 0, min( 23, absint( $post['run_hour'] ?? 8 ) ) ),
-			'publish_order' => in_array( $order, $allowed_orders, true ) ? $order : 'random',
+			'enabled'         => ! empty( $post['enabled'] ),
+			'min_per_day'     => max( 1, min( 100, absint( $post['min_per_day'] ?? 7 ) ) ),
+			'max_per_day'     => max( 1, min( 500, absint( $post['max_per_day'] ?? 21 ) ) ),
+			'run_hour'        => max( 0, min( 23, absint( $post['run_hour'] ?? 8 ) ) ),
+			'publish_order'   => in_array( $order, $allowed_orders, true ) ? $order : 'random',
+			'batches_per_day' => max( 1, min( 4, absint( $post['batches_per_day'] ?? 1 ) ) ),
 		];
 	}
 
