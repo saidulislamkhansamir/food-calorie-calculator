@@ -6,6 +6,8 @@ Comprehensive UK food calorie and nutrition calculator WordPress plugin. Ships w
 **Version:** 16.3.1
 **Requires:** WordPress 6.0+, PHP 8.1+
 **Text Domain:** `food-calorie-calculator`
+**Company Name:** The Khan Digital
+**Company URL:** https://thekhandigital.com
 
 ---
 
