@@ -591,15 +591,15 @@
 	font-size: 0.875rem;
 	font-family: inherit;
 	font-weight: 600;
-	color: #fff;
-	background: #148B43;
-	border: none;
-	border-radius: 8px;
+	color: #fff !important;
+	background: #148B43 !important;
+	border: none !important;
+	border-radius: 8px !important;
 	cursor: pointer;
 	transition: background 0.15s;
 }
 
-.fcc-req-submit:hover { background: #159A4C; }
+.fcc-req-submit:hover { background: #1a7a3f !important; }
 .fcc-req-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .fcc-request-success {
