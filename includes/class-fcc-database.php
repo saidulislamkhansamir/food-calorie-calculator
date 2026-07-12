@@ -338,7 +338,7 @@ class Database {
 		$like_start = $wpdb->esc_like( $query ) . '%';
 
 		// Order: sponsored first, then starts-with before contains, then popularity.
-		$sponsor_order = "CASE WHEN is_sponsored=1 AND sponsor_active=1 AND (sponsor_expires_at IS NULL OR sponsor_expires_at > NOW()) THEN 0 ELSE 1 END ASC, CASE WHEN name LIKE '{$like_start}' THEN 0 ELSE 1 END ASC, search_count DESC";
+		$sponsor_order = "CASE WHEN is_sponsored=1 AND sponsor_active=1 AND (sponsor_expires_at IS NULL OR sponsor_expires_at > NOW()) THEN 0 ELSE 1 END ASC, CASE WHEN name LIKE %s THEN 0 ELSE 1 END ASC, search_count DESC";
 
 		if ( $category_id > 0 ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -347,6 +347,7 @@ class Database {
 					"SELECT * FROM {$table} WHERE name LIKE %s AND category_id = %d AND is_active = 1 ORDER BY {$sponsor_order} LIMIT %d",
 					$like,
 					$category_id,
+					$like_start,
 					$limit
 				),
 				ARRAY_A
@@ -357,6 +358,7 @@ class Database {
 				$wpdb->prepare(
 					"SELECT * FROM {$table} WHERE name LIKE %s AND is_active = 1 ORDER BY {$sponsor_order} LIMIT %d",
 					$like,
+					$like_start,
 					$limit
 				),
 				ARRAY_A
