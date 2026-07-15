@@ -23,6 +23,7 @@ class Food_Pages {
 		$loader->add_action( 'init',              $this, 'add_rewrite_rules' );
 		$loader->add_filter( 'query_vars',        $this, 'add_query_vars' );
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_assets' );
+		$loader->add_action( 'parse_query',       $this, 'fix_query_flags' );
 		$loader->add_filter( 'pre_handle_404',    $this, 'suppress_404_for_food_pages', 10, 2 );
 		$loader->add_action( 'template_redirect', $this, 'handle_food_page' );
 		$loader->add_action( 'wp_head',                  $this, 'output_seo_meta',        1   );
@@ -52,6 +53,28 @@ class Food_Pages {
 		if ( get_option( 'fcc_rewrite_ver' ) !== FCC_VERSION ) {
 			flush_rewrite_rules( false );
 			update_option( 'fcc_rewrite_ver', FCC_VERSION );
+		}
+	}
+
+	/**
+	 * WP_Query's parse_query() only branches on query vars it recognizes
+	 * (post_type/taxonomy/core params). Our custom fcc_* rewrite vars are
+	 * invisible to that logic, so the query falls through to its default:
+	 * is_home = true, queried object = the assigned Posts page ("Blog").
+	 * SEO plugins build OG/robots tags off that queried object — hence
+	 * pages showing the Blog's title/URL and getting noindexed with it.
+	 * Force the correct flags before anything downstream reads them.
+	 */
+	public function fix_query_flags( \WP_Query $query ): void {
+		if ( ! $query->is_main_query() ) {
+			return;
+		}
+		if ( $query->get( 'fcc_food_directory' ) || $query->get( 'fcc_food_category_slug' ) || $query->get( 'fcc_food_slug' ) ) {
+			$query->is_home     = false;
+			$query->is_404      = false;
+			$query->is_page     = false;
+			$query->is_singular = false;
+			$query->is_archive  = false;
 		}
 	}
 
