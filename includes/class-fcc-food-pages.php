@@ -152,6 +152,18 @@ class Food_Pages {
 	// Page Rendering
 	// -------------------------------------------------------------------------
 
+	/**
+	 * These URLs are custom rewrite rules with no backing WP post/page/CPT,
+	 * so WP's query parser flags $wp_query->is_404 = true before
+	 * template_redirect runs. status_header(200) only changes the HTTP
+	 * response code — SEO plugins (Rank Math/Yoast) read is_404() for
+	 * robots meta, not the header, and force noindex unless this is reset.
+	 */
+	private function clear_404(): void {
+		global $wp_query;
+		$wp_query->is_404 = false;
+	}
+
 	private function inject_page_spacing_fix(): void {
 		add_action( 'wp_head', static function () {
 			echo '<style>
@@ -165,6 +177,7 @@ class Food_Pages {
 		// Ensure shortcode assets load.
 		$shortcode = new Shortcode();
 
+		$this->clear_404();
 		status_header( 200 );
 		$this->inject_page_spacing_fix();
 		get_header();
@@ -214,6 +227,7 @@ class Food_Pages {
 		$total = 0;
 		foreach ( $categories as $c ) { $total += (int) $c['food_count']; }
 
+		$this->clear_404();
 		status_header( 200 );
 		$this->inject_page_spacing_fix();
 		get_header();
@@ -348,6 +362,7 @@ class Food_Pages {
 			$desc = $cat_descriptions[ strtolower( $cat['name'] ) ] ?? 'Browse nutrition facts for foods in the ' . $cat['name'] . ' category.';
 		}
 
+		$this->clear_404();
 		status_header( 200 );
 		$this->inject_page_spacing_fix();
 		get_header();
