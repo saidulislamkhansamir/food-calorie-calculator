@@ -23,6 +23,7 @@ class Food_Pages {
 		$loader->add_action( 'init',              $this, 'add_rewrite_rules' );
 		$loader->add_filter( 'query_vars',        $this, 'add_query_vars' );
 		$loader->add_action( 'wp_enqueue_scripts', $this, 'maybe_enqueue_assets' );
+		$loader->add_filter( 'pre_handle_404',    $this, 'suppress_404_for_food_pages', 10, 2 );
 		$loader->add_action( 'template_redirect', $this, 'handle_food_page' );
 		$loader->add_action( 'wp_head',                  $this, 'output_seo_meta',        1   );
 		$loader->add_filter( 'document_title_parts',     $this, 'filter_title',            999 );
@@ -52,6 +53,23 @@ class Food_Pages {
 			flush_rewrite_rules( false );
 			update_option( 'fcc_rewrite_ver', FCC_VERSION );
 		}
+	}
+
+	/**
+	 * These URLs are custom rewrite rules with no backing WP post/page/CPT,
+	 * so WP_Query finds 0 posts and WP::handle_404() would flag is_404 = true
+	 * during the 'wp' action — before template_redirect runs. SEO plugins
+	 * (Rank Math/Yoast) read that flag to force noindex, and some cache the
+	 * robots value earlier than our own template_redirect hook, so resetting
+	 * is_404 afterwards is too late. Preempt WP's 404 handling entirely here
+	 * instead; validity/redirects for unpublished or unknown slugs are still
+	 * handled explicitly in handle_food_page().
+	 */
+	public function suppress_404_for_food_pages( bool $preempt, \WP_Query $query ): bool {
+		if ( $query->get( 'fcc_food_directory' ) || $query->get( 'fcc_food_category_slug' ) || $query->get( 'fcc_food_slug' ) ) {
+			return true;
+		}
+		return $preempt;
 	}
 
 	public function add_query_vars( array $vars ): array {
