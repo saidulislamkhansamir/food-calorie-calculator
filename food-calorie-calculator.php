@@ -39,6 +39,7 @@ require_once FCC_PLUGIN_DIR . 'includes/class-fcc-rest-api.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-shortcode.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-food-pages.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-auto-publisher.php';
+require_once FCC_PLUGIN_DIR . 'includes/class-fcc-pwa-tracker.php';
 require_once FCC_PLUGIN_DIR . 'includes/class-fcc-block.php';
 
 // Affiliates, Ads, and Supplements classes loaded unconditionally — their static helpers are called by the shortcode on the frontend.
@@ -102,6 +103,9 @@ add_action( 'plugins_loaded', function (): void {
 	// Auto-publisher (cron + AJAX).
 	( new FCC\Auto_Publisher() )->register();
 	add_action( 'init', [ FCC\Auto_Publisher::class, 'maybe_reschedule' ], 15 );
+
+	// PWA install-funnel tracking (public AJAX).
+	( new FCC\Pwa_Tracker() )->register( $loader );
 
 	// Affiliates, Ads, and Supplements AJAX handlers registered for admin + frontend.
 	( new FCC\Admin\Affiliates() )->register( $loader );
@@ -239,6 +243,7 @@ add_action( 'plugins_loaded', function (): void {
 	FCC\Seed_Data::seed_v108();
 	FCC\Seed_Data::seed_v109();
 	FCC\Seed_Data::seed_v110();
+	FCC\Seed_Data::seed_v111();
 
 	// Schema migration: add page_published column if not present.
 	FCC\Database::migrate_add_page_published();

@@ -87,6 +87,7 @@ $est_total_revenue = $supp_revenue + $wl_stats['mrr'];
 
 // ── Audience tab data ───────────────────────────────────────────────────
 $recent_optins = \FCC\Database::get_recent_optins( 10 );
+$pwa_stats     = \FCC\Database::get_pwa_stats( $range > 0 ? $range : 0 );
 
 // ── Nonces ──────────────────────────────────────────────────────────────
 $analytics_nonce = wp_create_nonce( 'fcc_analytics_nonce' );
@@ -926,6 +927,44 @@ function fcc_completeness_ring( float $pct ): string {
 					<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Avg Daily Searches', 'food-calorie-calculator' ); ?></span>
 				</div>
 			</div>
+		</div>
+
+		<!-- PWA Install Funnel -->
+		<div class="fcc-card" style="max-width:900px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;">
+			<div class="fcc-an-chart-card__header" style="margin-bottom:1rem;">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+				<strong><?php esc_html_e( 'App Install Funnel', 'food-calorie-calculator' ); ?></strong>
+				<span class="fcc-an-chart-card__sub"><?php echo esc_html( $range_labels[ $range ] ); ?></span>
+			</div>
+			<div class="fcc-an-kpi-row fcc-an-kpi-row--4">
+				<div class="fcc-an-kpi-card fcc-an-kpi-card--purple">
+					<div>
+						<span class="fcc-an-kpi-card__value"><?php echo number_format( $pwa_stats['clicks'] ); ?></span>
+						<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Install Button Clicks', 'food-calorie-calculator' ); ?></span>
+					</div>
+				</div>
+				<div class="fcc-an-kpi-card fcc-an-kpi-card--teal">
+					<div>
+						<span class="fcc-an-kpi-card__value"><?php echo number_format( $pwa_stats['installs'] ); ?></span>
+						<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'App Installs', 'food-calorie-calculator' ); ?></span>
+					</div>
+				</div>
+				<div class="fcc-an-kpi-card fcc-an-kpi-card--gold">
+					<div>
+						<span class="fcc-an-kpi-card__value"><?php echo esc_html( $pwa_stats['conversion_rate'] ); ?>%</span>
+						<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Click → Install Rate', 'food-calorie-calculator' ); ?></span>
+					</div>
+				</div>
+				<div class="fcc-an-kpi-card fcc-an-kpi-card--green">
+					<div>
+						<span class="fcc-an-kpi-card__value"><?php echo number_format( $pwa_stats['by_device']['mobile'] ); ?> / <?php echo number_format( $pwa_stats['by_device']['desktop'] ); ?></span>
+						<span class="fcc-an-kpi-card__label"><?php esc_html_e( 'Installs — Mobile / Desktop', 'food-calorie-calculator' ); ?></span>
+					</div>
+				</div>
+			</div>
+			<p style="margin:0.75rem 0 0;font-size:0.8125rem;color:#787c82;">
+				<?php esc_html_e( 'Uninstalls aren\'t shown — no browser reports that back to a website.', 'food-calorie-calculator' ); ?>
+			</p>
 		</div>
 
 		<!-- Subscriber Growth Chart -->

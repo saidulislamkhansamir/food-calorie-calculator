@@ -3113,6 +3113,23 @@
 	// -------------------------------------------------------------------------
 	// PWA Install
 	// -------------------------------------------------------------------------
+	function fccPwaDeviceType() {
+		var ua = navigator.userAgent || '';
+		if ( /iPad|Tablet/i.test( ua ) && ! /Mobile/i.test( ua ) ) return 'tablet';
+		if ( /Mobi|Android|iPhone/i.test( ua ) ) return 'mobile';
+		return 'desktop';
+	}
+
+	function fccTrackPwaEvent( eventName ) {
+		if ( ! cfg.ajaxUrl || ! cfg.pwaTrackNonce ) return;
+		var fd = new FormData();
+		fd.append( 'action', 'fcc_pwa_track' );
+		fd.append( 'nonce',  cfg.pwaTrackNonce );
+		fd.append( 'event',  eventName );
+		fd.append( 'device', fccPwaDeviceType() );
+		fetch( cfg.ajaxUrl, { method: 'POST', body: fd, keepalive: true } ).catch( function () {} );
+	}
+
 	if ( features.pwa_install !== false && 'serviceWorker' in navigator ) {
 		var swUrl = ( fccData.pluginUrl || '' ) + 'assets/pwa/sw.js';
 		navigator.serviceWorker.register( swUrl, { scope: '/' } ).catch( function () {} );
@@ -3131,6 +3148,7 @@
 				'<span>Install App</span>';
 			btn.addEventListener( 'click', function () {
 				if ( ! deferredPrompt ) return;
+				fccTrackPwaEvent( 'install_click' );
 				deferredPrompt.prompt();
 				deferredPrompt.userChoice.then( function ( result ) {
 					if ( result.outcome === 'accepted' ) btn.remove();
@@ -3147,6 +3165,7 @@
 		} );
 
 		window.addEventListener( 'appinstalled', function () {
+			fccTrackPwaEvent( 'installed' );
 			var b = root.querySelector( '.fcc-pwa-install-btn' );
 			if ( b ) b.remove();
 			deferredPrompt = null;

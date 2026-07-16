@@ -56,6 +56,11 @@ class Database {
 		return $wpdb->prefix . 'fcc_wl_licenses';
 	}
 
+	public static function pwa_events_table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'fcc_pwa_events';
+	}
+
 	// -------------------------------------------------------------------------
 	// Schema creation / upgrade.
 	// -------------------------------------------------------------------------
@@ -1543,6 +1548,25 @@ class Database {
 		dbDelta( $sql );
 	}
 
+	public static function create_pwa_events_table(): void {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$table           = self::pwa_events_table();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$sql = "CREATE TABLE {$table} (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  event_type varchar(20) NOT NULL,
+  device_type varchar(20) NOT NULL DEFAULT 'desktop',
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id),
+  KEY event_type (event_type),
+  KEY created_at (created_at)
+) {$charset_collate};";
+		// phpcs:enable
+		dbDelta( $sql );
+	}
+
 	/** Log any search query (successful or not) — upserts a daily aggregate row. */
 	public static function log_search( string $query, bool $has_results ): void {
 		global $wpdb;
@@ -2595,6 +2619,60 @@ class Database {
 			),
 			ARRAY_A
 		) ?: [];
+	}
+
+	/** Log a PWA install-funnel event ('install_click' or 'installed'). */
+	public static function log_pwa_event( string $event_type, string $device_type ): void {
+		global $wpdb;
+		$allowed_events  = [ 'install_click', 'installed' ];
+		$allowed_devices = [ 'mobile', 'tablet', 'desktop' ];
+		if ( ! in_array( $event_type, $allowed_events, true ) ) {
+			return;
+		}
+		if ( ! in_array( $device_type, $allowed_devices, true ) ) {
+			$device_type = 'desktop';
+		}
+		$wpdb->insert(
+			self::pwa_events_table(),
+			[ 'event_type' => $event_type, 'device_type' => $device_type ],
+			[ '%s', '%s' ]
+		);
+	}
+
+	/**
+	 * PWA install-funnel totals: clicks, installs, conversion rate, and a
+	 * per-device breakdown of installs. $days = 0 means all time.
+	 *
+	 * @return array{clicks:int,installs:int,conversion_rate:float,by_device:array<string,int>}
+	 */
+	public static function get_pwa_stats( int $days = 30 ): array {
+		global $wpdb;
+		$t          = self::pwa_events_table();
+		$where_date = $days > 0
+			? $wpdb->prepare( 'AND created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)', $days )
+			: '';
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$clicks = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE event_type = 'install_click' {$where_date}" );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$installs = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE event_type = 'installed' {$where_date}" );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$device_rows = $wpdb->get_results(
+			"SELECT device_type, COUNT(*) AS n FROM {$t} WHERE event_type = 'installed' {$where_date} GROUP BY device_type",
+			ARRAY_A
+		) ?: [];
+		$by_device = [ 'mobile' => 0, 'tablet' => 0, 'desktop' => 0 ];
+		foreach ( $device_rows as $row ) {
+			$by_device[ $row['device_type'] ] = (int) $row['n'];
+		}
+
+		return [
+			'clicks'          => $clicks,
+			'installs'        => $installs,
+			'conversion_rate' => $clicks > 0 ? round( $installs / $clicks * 100, 1 ) : 0.0,
+			'by_device'       => $by_device,
+		];
 	}
 
 	/**

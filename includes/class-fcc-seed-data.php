@@ -19785,4 +19785,11 @@ class Seed_Data {
 		}
 		update_option( 'fcc_seed_version', 110 );
 	}
+
+	/** Seed v111: create fcc_pwa_events table for PWA install-funnel tracking. */
+	public static function seed_v111(): void {
+		if ( (int) get_option( 'fcc_seed_version', 0 ) >= 111 ) { return; }
+		\FCC\Database::create_pwa_events_table();
+		update_option( 'fcc_seed_version', 111 );
+	}
 }
