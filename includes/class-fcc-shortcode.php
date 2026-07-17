@@ -503,7 +503,6 @@ class Shortcode {
 				'restUrl'    => esc_url_raw( rest_url( 'fcc/v1' ) ),
 				'pluginUrl'    => esc_url_raw( FCC_PLUGIN_URL ),
 				'brandLogoUrl' => esc_url_raw( FCC_PLUGIN_URL . 'logo/Food Calorie Calculator Favicon (3).png' ),
-				'restNonce'  => wp_create_nonce( 'wp_rest' ),
 				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 				'pwaTrackNonce' => wp_create_nonce( 'fcc_pwa_track' ),
 				'features'   => $features,

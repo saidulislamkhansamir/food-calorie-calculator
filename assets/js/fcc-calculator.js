@@ -110,7 +110,6 @@
 		const url = cfg.restUrl + endpoint;
 		return fetch( url, {
 			headers: {
-				'X-WP-Nonce': cfg.restNonce,
 				'Content-Type': 'application/json',
 			},
 		} ).then( function ( r ) { return r.ok ? r.json() : Promise.reject( r ); } );
@@ -120,7 +119,6 @@
 		return fetch( cfg.restUrl + endpoint, {
 			method: 'POST',
 			headers: {
-				'X-WP-Nonce': cfg.restNonce,
 				'Content-Type': 'application/json',
 			},
 		} ).catch( function () {} );
@@ -217,7 +215,6 @@
 			fetch( cfg.restUrl + '/food-requests', {
 				method: 'POST',
 				headers: {
-					'X-WP-Nonce': cfg.restNonce,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify( { food_name: food_name, note: note, email: email, marketing_optin: marketing_optin } ),
